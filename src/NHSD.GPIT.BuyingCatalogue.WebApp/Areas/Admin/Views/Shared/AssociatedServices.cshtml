@@ -1,5 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.SolutionAssociatedServicesModel;
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.CatalogueItemAssociatedServicesModel;
 @{
     ViewBag.Title = "Associated services";
 }
@@ -9,23 +8,25 @@
         <nhs-validation-summary/>
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.CatalogueItemName"
-                        advice="Select any services that help implement or optimise the live operation of your Catalogue Solution."/>
+                        advice="Select any services that help implement or optimise the live operation of your @(Model.CatalogueItemTypeName)."/>
 
         <vc:nhs-action-link url="@Url.Action(
                                      nameof(SupplierServicesController.AssociatedServices),
                                      typeof(SupplierServicesController).ControllerName(),
-                                     new { supplierId = Model.SolutionId.SupplierId })"
+                                     new { supplierId = Model.CatalogueItemId.SupplierId })"
                             text="Manage associated services"/>
 
         <p>
             If an associated service is not listed, you can add it using the manage associated services link. It’ll then
-            be available for selection on all your Catalogue Solutions.
+            be available for selection on all your @(Model.CatalogueItemTypeName).
         </p>
 
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink"/>
             <input type="hidden" asp-for="@Model.BackLinkText"/>
+            <input type="hidden" asp-for="@Model.CatalogueItemId"/>
             <input type="hidden" asp-for="@Model.CatalogueItemName"/>
+            <input type="hidden" asp-for="@Model.CatalogueItemType"/>
 
             @if (Model.SelectableAssociatedServices.Any())
             {

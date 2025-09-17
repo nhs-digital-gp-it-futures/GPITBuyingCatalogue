@@ -15,7 +15,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
         {
         }
 
-        public EditAdditionalServiceModel(CatalogueItem solution, CatalogueItem additionalService)
+        public EditAdditionalServiceModel(
+            CatalogueItem solution,
+            CatalogueItem additionalService,
+            ICollection<CatalogueItem> associatedServices)
             : this()
         {
             SolutionId = solution.Id;
@@ -30,15 +33,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
                 ? TaskProgress.Completed
                 : TaskProgress.NotStarted;
 
-            CapabilitiesStatus = additionalService.CatalogueItemCapabilities.Any()
+            CapabilitiesStatus = additionalService.CatalogueItemCapabilities.Count != 0
                 ? TaskProgress.Completed
                 : TaskProgress.NotStarted;
 
-            ListPriceStatus = additionalService.CataloguePrices.Any(cp => cp.PublishedStatus == PublicationStatus.Published)
-                ? TaskProgress.Completed
-                : additionalService.CataloguePrices.Any()
-                    ? TaskProgress.InProgress
-                    : TaskProgress.NotStarted;
+            ListPriceStatus =
+                additionalService.CataloguePrices.Any(cp => cp.PublishedStatus == PublicationStatus.Published)
+                    ? TaskProgress.Completed
+                    : additionalService.CataloguePrices.Count != 0
+                        ? TaskProgress.InProgress
+                        : TaskProgress.NotStarted;
+
+            AssociatedServicesStatus = associatedServices.Count != 0 ? TaskProgress.Completed : TaskProgress.Optional;
         }
 
         public CatalogueItemId SolutionId { get; init; }
@@ -63,5 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
         public TaskProgress CapabilitiesStatus { get; init; }
 
         public TaskProgress ListPriceStatus { get; init; }
+
+        public TaskProgress AssociatedServicesStatus { get; init; }
     }
 }

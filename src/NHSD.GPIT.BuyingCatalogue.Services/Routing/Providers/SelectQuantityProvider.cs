@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            var associatedServices = associatedServicesService.GetPublishedAssociatedServicesForSolution(
+            var associatedServices = associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(
                 order.GetSolutionId(),
                 PracticeReorganisationTypeEnum.None).Result;
 

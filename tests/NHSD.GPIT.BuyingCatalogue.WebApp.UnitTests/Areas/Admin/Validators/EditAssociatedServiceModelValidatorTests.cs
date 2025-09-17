@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             solutions.ForEach(s => s.CatalogueItem.PublishedStatus = solutionsPublicationStatus);
 
-            service.GetAllSolutionsForAssociatedService(model.AssociatedServiceId).Returns(solutions.Select(s => s.CatalogueItem).ToList());
+            service.GetAssociatedServiceReferences(model.AssociatedServiceId).Returns(solutions.Select(s => s.CatalogueItem).ToList());
 
             model.AssociatedServicePublicationStatus = PublicationStatus.Published;
             model.SelectedPublicationStatus = PublicationStatus.Unpublished;
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             solutions.ForEach(s => s.CatalogueItem.PublishedStatus = solutionsPublicationStatus);
 
-            service.GetAllSolutionsForAssociatedService(model.AssociatedServiceId).Returns(solutions.Select(s => s.CatalogueItem).ToList());
+            service.GetAssociatedServiceReferences(model.AssociatedServiceId).Returns(solutions.Select(s => s.CatalogueItem).ToList());
 
             model.AssociatedServicePublicationStatus = PublicationStatus.Published;
             model.SelectedPublicationStatus = PublicationStatus.Unpublished;

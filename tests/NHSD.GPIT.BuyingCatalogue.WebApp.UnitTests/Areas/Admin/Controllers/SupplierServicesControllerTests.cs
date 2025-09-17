@@ -137,10 +137,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             supplierService.GetSupplier(supplier.Id).Returns(supplier);
 
             mockAssociatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
-            mockAssociatedServicesService.GetAllSolutionsForAssociatedService(associatedService.CatalogueItemId)
+            mockAssociatedServicesService.GetAssociatedServiceReferences(associatedService.CatalogueItemId)
                 .Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
-            var expectedModel = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem);
+            var expectedModel = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem, []);
 
             var actual = await controller.EditAssociatedService(supplier.Id, associatedService.CatalogueItemId);
 
@@ -341,17 +341,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_SetPublicationStatus_InvalidModel_ReturnsViewWithModel(
             Supplier supplier,
             AssociatedService associatedService,
-            [Frozen] ISuppliersService supplierService,
+            List<Solution> solutions,
+            List<AdditionalService> additionalServices,
             [Frozen] IAssociatedServicesService mockAssociatedServicesService,
             SupplierServicesController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var model = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem);
+            var referencedItems = solutions.Select(x => x.CatalogueItem)
+                .Concat(additionalServices.Select(x => x.CatalogueItem))
+                .ToList();
 
-            supplierService.GetSupplier(supplier.Id).Returns(supplier);
+            var model = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem, referencedItems);
 
-            mockAssociatedServicesService.GetAssociatedService(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
+            mockAssociatedServicesService.GetAssociatedServiceReferences(associatedService.CatalogueItemId).Returns(referencedItems);
 
             var actual = (await controller.SetPublicationStatus(supplier.Id, associatedService.CatalogueItemId, model)).As<ViewResult>();
 

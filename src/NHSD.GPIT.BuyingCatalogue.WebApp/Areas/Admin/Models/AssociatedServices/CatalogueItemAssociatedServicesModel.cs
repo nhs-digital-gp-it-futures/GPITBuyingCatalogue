@@ -1,24 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 {
-    public sealed class SolutionAssociatedServicesModel : NavBaseModel
+    public sealed class CatalogueItemAssociatedServicesModel : NavBaseModel
     {
-        public SolutionAssociatedServicesModel()
+        public CatalogueItemAssociatedServicesModel()
         {
         }
 
-        public SolutionAssociatedServicesModel(
+        public CatalogueItemAssociatedServicesModel(
             CatalogueItem catalogueItem,
             IEnumerable<AssociatedService> associatedServices)
         {
-            SolutionId = catalogueItem.Id;
+            CatalogueItemId = catalogueItem.Id;
             CatalogueItemName = catalogueItem.Name;
+            CatalogueItemType = catalogueItem.CatalogueItemType;
 
             SelectableAssociatedServices = associatedServices
                 .Select(s => new SelectableAssociatedService
@@ -33,11 +35,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
                 .ToList();
         }
 
-        public CatalogueItemId SolutionId { get; set; }
+        public CatalogueItemId CatalogueItemId { get; set; }
 
         public string CatalogueItemName { get; set; }
 
+        public CatalogueItemType CatalogueItemType { get; set; }
+
         public List<SelectableAssociatedService> SelectableAssociatedServices { get; } = new();
+
+        public string CatalogueItemTypeName => CatalogueItemType.DisplayName().ToLowerInvariant();
 
         public SolutionMergerAndSplitTypesModel SolutionMergerAndSplits => new(
             CatalogueItemName,

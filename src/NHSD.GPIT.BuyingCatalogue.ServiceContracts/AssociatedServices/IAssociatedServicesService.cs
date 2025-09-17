@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
 
         Task<List<AssociatedService>> GetPublishedAssociatedServicesForSupplier(int supplierId);
 
-        Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId? catalogueItemId, PracticeReorganisationTypeEnum? practiceReorganisationType = null);
+        Task<List<CatalogueItem>> GetPublishedAssociatedServicesForCatalogueItem(CatalogueItemId? catalogueItemId, PracticeReorganisationTypeEnum? practiceReorganisationType = null);
 
         Task<CatalogueItem> GetAssociatedService(CatalogueItemId associatedServiceId);
 
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
 
         Task<List<SolutionMergerAndSplitTypesModel>> GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(CatalogueItemId associatedServiceId);
 
-        Task RelateAssociatedServicesToSolution(CatalogueItemId solutionId, IEnumerable<CatalogueItemId> associatedServices);
+        Task RelateAssociatedServicesToCatalogueItem(CatalogueItemId solutionId, IEnumerable<CatalogueItemId> associatedServices);
 
         Task RemoveServiceFromSolution(CatalogueItemId solutionId, CatalogueItemId associatedServiceId);
 
@@ -33,6 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
 
         Task<CatalogueItemId> AddAssociatedService(int supplierId, AssociatedServicesDetailsModel model);
 
-        Task<List<CatalogueItem>> GetAllSolutionsForAssociatedService(CatalogueItemId associatedServiceId);
+        Task<List<CatalogueItem>> GetAssociatedServiceReferences(CatalogueItemId associatedServiceId);
     }
 }
