@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
-    public sealed class AssociatedServicesModelValidator : AbstractValidator<SolutionAssociatedServicesModel>
+    public sealed class AssociatedServicesModelValidator : AbstractValidator<CatalogueItemAssociatedServicesModel>
     {
         public AssociatedServicesModelValidator()
         {

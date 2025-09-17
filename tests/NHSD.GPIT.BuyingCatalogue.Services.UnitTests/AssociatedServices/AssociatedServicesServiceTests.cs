@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             context.AssociatedServices.AddRange(associatedServices);
             await context.SaveChangesAsync();
 
-            await service.RelateAssociatedServicesToSolution(solution.CatalogueItemId, associatedServices.Select(a => a.CatalogueItem.Id));
+            await service.RelateAssociatedServicesToCatalogueItem(solution.CatalogueItemId, associatedServices.Select(a => a.CatalogueItem.Id));
 
             var updatedSolution = await context.Solutions
                 .Include(s => s.CatalogueItem)
@@ -295,7 +295,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             context.SaveChanges();
             context.ChangeTracker.Clear();
 
-            var relatedSolutions = await service.GetAllSolutionsForAssociatedService(associatedService.CatalogueItemId);
+            var relatedSolutions = await service.GetAssociatedServiceReferences(associatedService.CatalogueItemId);
 
             relatedSolutions.Should().NotBeEmpty();
             relatedSolutions.Count.Should().Be(solutions.Count);
@@ -308,7 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             PracticeReorganisationTypeEnum? practiceReorganisationType,
             AssociatedServicesService service)
         {
-            var result = await service.GetPublishedAssociatedServicesForSolution(null, practiceReorganisationType);
+            var result = await service.GetPublishedAssociatedServicesForCatalogueItem(null, practiceReorganisationType);
 
             result.Should().NotBeNull();
             result.Should().BeEmpty();
@@ -337,7 +337,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var result = await service.GetPublishedAssociatedServicesForSolution(solution.Id);
+            var result = await service.GetPublishedAssociatedServicesForCatalogueItem(solution.Id);
 
             result.Should().NotBeNull();
             result.Select(r => r.Id).Should().BeEquivalentTo(new[] { associatedService.Id });
@@ -365,7 +365,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var result = await service.GetPublishedAssociatedServicesForSolution(solution.Id, PracticeReorganisationTypeEnum.None);
+            var result = await service.GetPublishedAssociatedServicesForCatalogueItem(solution.Id, PracticeReorganisationTypeEnum.None);
 
             result.Should().NotBeNull();
             result.Should().BeEquivalentTo(Array.Empty<CatalogueItem>());
@@ -393,7 +393,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var result = await service.GetPublishedAssociatedServicesForSolution(solution.Id, reorganisationType);
+            var result = await service.GetPublishedAssociatedServicesForCatalogueItem(solution.Id, reorganisationType);
 
             result.Should().NotBeNull();
             result.Select(r => r.Id).Should().BeEquivalentTo(new[] { associatedService.Id });

@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
             var order = wrapper.Order;
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(
                 order.GetSolutionId(),
                 order.OrderType.ToPracticeReorganisationType);
 

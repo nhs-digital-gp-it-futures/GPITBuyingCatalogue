@@ -31,16 +31,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         public static void EditAssociatedServices_RelatedServices_SetsRelatedServices(
             Supplier supplier,
             AssociatedService associatedService,
-            List<Solution> relatedSolutions)
+            List<Solution> relatedSolutions,
+            List<AdditionalService> relatedAdditionalServices)
         {
-            var expectedRelatedSolutions = relatedSolutions.Select(s => s.CatalogueItem).ToList();
+            var solutions = relatedSolutions.Select(x => x.CatalogueItem)
+                .Where(x => x.PublishedStatus == PublicationStatus.Published)
+                .ToList();
+
+            var additionalServices = relatedAdditionalServices.Select(x => x.CatalogueItem)
+                .Where(x => x.PublishedStatus == PublicationStatus.Published)
+                .ToList();
+
+            var relatedCatalogueItems = solutions.Concat(additionalServices).ToList();
 
             var actual = new EditAssociatedServiceModel(
                 supplier,
                 associatedService.CatalogueItem,
-                expectedRelatedSolutions);
+                relatedCatalogueItems);
 
-            actual.RelatedSolutions.Should().BeEquivalentTo(expectedRelatedSolutions);
+            actual.RelatedSolutions.Should().BeEquivalentTo(solutions.Select(x => x.Solution));
+            actual.RelatedAdditionalServices.Should().BeEquivalentTo(additionalServices.Select(x => x.AdditionalService));
         }
     }
 }

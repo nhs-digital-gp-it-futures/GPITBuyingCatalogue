@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             var associatedServices = new List<CatalogueItem>();
 
             order.OrderItems.ElementAt(0).CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            mockAssociatedServicesService.GetPublishedAssociatedServicesForSolution(order.OrderItems.First().CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices);
+            mockAssociatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(order.OrderItems.First().CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices);
 
             callOffId = new CallOffId(callOffId.OrderNumber, 2);
 
@@ -182,7 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
             order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            mockAssociatedServicesService.GetPublishedAssociatedServicesForSolution(order.OrderItems.First().CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices);
+            mockAssociatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(order.OrderItems.First().CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices);
 
             var solution = order.OrderItems.First();
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
@@ -216,14 +216,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.ElementAt(0).CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            mockAssociatedServicesService.GetPublishedAssociatedServicesForSolution(order.OrderItems.First().CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices);
+            mockAssociatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(order.OrderItems.First().CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices);
 
             var result = provider.Process(new OrderWrapper(order), new RouteValues(
                 internalOrgId,
                 callOffId,
                 order.OrderItems.First().CatalogueItemId));
 
-            mockAssociatedServicesService.Received().GetPublishedAssociatedServicesForSolution(order.OrderItems.First().CatalogueItemId, PracticeReorganisationTypeEnum.None);
+            mockAssociatedServicesService.Received().GetPublishedAssociatedServicesForCatalogueItem(order.OrderItems.First().CatalogueItemId, PracticeReorganisationTypeEnum.None);
 
             var expected = new
             {

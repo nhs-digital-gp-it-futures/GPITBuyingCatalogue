@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
             associatedServicesService
-                .GetPublishedAssociatedServicesForSolution(
+                .GetPublishedAssociatedServicesForCatalogueItem(
                     Arg.Any<CatalogueItemId?>(),
                     Arg.Any<PracticeReorganisationTypeEnum>())
                 .Returns(Enumerable.Empty<CatalogueItem>().ToList());
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             solutionsService.GetSupplierSolutions(order.SupplierId, order.SelectedFrameworkId).Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
             associatedServicesService
-                .GetPublishedAssociatedServicesForSolution(
+                .GetPublishedAssociatedServicesForCatalogueItem(
                     Arg.Any<CatalogueItemId?>(),
                     Arg.Any<PracticeReorganisationTypeEnum>())
                 .Returns(Enumerable.Empty<CatalogueItem>().ToList());

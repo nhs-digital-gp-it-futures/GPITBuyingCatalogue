@@ -54,6 +54,19 @@
                     </a>
                 </nhs-table-cell>
             </nhs-table-row-container>
+            <nhs-table-row-container>
+                <nhs-table-cell>Associated services</nhs-table-cell>
+                <nhs-table-cell>No</nhs-table-cell>
+                <nhs-table-cell><nhs-tag status-enum="@Model.AssociatedServicesStatus" /></nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
+                       asp-action="@nameof(AdditionalServicesController.AssociatedServices)"
+                       asp-route-solutionId="@Model.SolutionId"
+                       asp-route-additionalServiceId="@Model.AdditionalServiceId">
+                        Edit
+                    </a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
         </nhs-table>
 
         <form method="post" asp-action="SetPublicationStatus" asp-route-solutionId="@Model.SolutionId" asp-route-additionalServiceId="@Model.AdditionalServiceId">

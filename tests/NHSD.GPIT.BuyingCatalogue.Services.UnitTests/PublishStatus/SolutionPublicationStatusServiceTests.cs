@@ -54,7 +54,7 @@ public static class SolutionPublicationStatusServiceTests
     {
         additionalServicesService.GetAdditionalServicesBySolutionId(catalogueItemId, true).Returns(additionalServices);
 
-        associatedServicesService.GetPublishedAssociatedServicesForSolution(catalogueItemId, null).Returns(Enumerable.Empty<CatalogueItem>().ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(catalogueItemId, null).Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
         await service.SetPublicationStatus(catalogueItemId, PublicationStatus.Unpublished);
 
@@ -72,9 +72,9 @@ public static class SolutionPublicationStatusServiceTests
         [Frozen] IAdditionalServicesService additionalServicesService,
         SolutionPublicationStatusService service)
     {
-        associatedServicesService.GetPublishedAssociatedServicesForSolution(catalogueItemId, null).Returns(associatedServices);
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(catalogueItemId, null).Returns(associatedServices);
 
-        associatedServicesService.GetAllSolutionsForAssociatedService(Arg.Any<CatalogueItemId>()).Returns(Enumerable.Empty<CatalogueItem>().ToList());
+        associatedServicesService.GetAssociatedServiceReferences(Arg.Any<CatalogueItemId>()).Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
         additionalServicesService.GetAdditionalServicesBySolutionId(catalogueItemId, true).Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
@@ -99,11 +99,11 @@ public static class SolutionPublicationStatusServiceTests
 
         referencedSolution.PublishedStatus = PublicationStatus.Published;
 
-        associatedServicesService.GetPublishedAssociatedServicesForSolution(catalogueItemId, null).Returns(associatedServices);
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(catalogueItemId, null).Returns(associatedServices);
 
-        associatedServicesService.GetAllSolutionsForAssociatedService(associatedService.Id).Returns(new List<CatalogueItem> { referencedSolution });
+        associatedServicesService.GetAssociatedServiceReferences(associatedService.Id).Returns(new List<CatalogueItem> { referencedSolution });
 
-        associatedServicesService.GetAllSolutionsForAssociatedService(Arg.Is<CatalogueItemId>(y => y != associatedService.Id)).Returns(Enumerable.Empty<CatalogueItem>().ToList());
+        associatedServicesService.GetAssociatedServiceReferences(Arg.Is<CatalogueItemId>(y => y != associatedService.Id)).Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
         additionalServicesService.GetAdditionalServicesBySolutionId(catalogueItemId, true).Returns(Enumerable.Empty<CatalogueItem>().ToList());
 

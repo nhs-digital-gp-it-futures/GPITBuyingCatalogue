@@ -100,8 +100,8 @@ public class SupplierServicesController(
         if (associatedService is null)
             return BadRequest($"No associated service found for Id: {associatedServiceId}");
 
-        var relatedSolutions = await associatedServicesService.GetAllSolutionsForAssociatedService(associatedServiceId);
-        var model = new EditAssociatedServiceModel(supplier, associatedService, relatedSolutions)
+        var relatedCatalogueItems = await associatedServicesService.GetAssociatedServiceReferences(associatedServiceId);
+        var model = new EditAssociatedServiceModel(supplier, associatedService, relatedCatalogueItems)
         {
             BackLink = Url.Action(nameof(AssociatedServices), new { supplierId }),
         };
@@ -117,9 +117,12 @@ public class SupplierServicesController(
     {
         if (!ModelState.IsValid)
         {
-            var relatedSolutions =
-                await associatedServicesService.GetAllSolutionsForAssociatedService(associatedServiceId);
-            model.RelatedSolutions = relatedSolutions;
+            var relatedCatalogueItems =
+                await associatedServicesService.GetAssociatedServiceReferences(associatedServiceId);
+
+            model
+                .WithSolutions(relatedCatalogueItems)
+                .WithAdditionalServices(relatedCatalogueItems);
 
             return View("EditAssociatedService", model);
         }

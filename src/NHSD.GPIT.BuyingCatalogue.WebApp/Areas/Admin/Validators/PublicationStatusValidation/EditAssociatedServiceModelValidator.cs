@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.PublicationSta
 
         private bool NotHaveAnyPublishedSolutionReferences(EditAssociatedServiceModel model, PublicationStatus selectedPublicationStatus)
         {
-            var solutions = associatedServicesService.GetAllSolutionsForAssociatedService(model.AssociatedServiceId).GetAwaiter().GetResult();
+            var solutions = associatedServicesService.GetAssociatedServiceReferences(model.AssociatedServiceId).GetAwaiter().GetResult();
             if (solutions.Count == 0)
                 return true;
 

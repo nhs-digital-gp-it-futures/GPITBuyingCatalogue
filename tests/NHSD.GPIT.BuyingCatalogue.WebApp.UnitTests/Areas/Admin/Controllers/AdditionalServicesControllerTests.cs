@@ -9,12 +9,14 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using Xunit;
 
@@ -107,20 +109,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_EditAdditionalService_WithValidIds_ReturnsModel(
             CatalogueItem catalogueItem,
             AdditionalService additionalService,
+            List<AssociatedService> associatedServices,
             [Frozen] ISolutionsService solutionsService,
             [Frozen] IAdditionalServicesService additionalServicesService,
+            [Frozen] IAssociatedServicesService associatedServicesService,
             AdditionalServicesController controller)
         {
-            var expectedResult = new EditAdditionalServiceModel(catalogueItem, additionalService.CatalogueItem);
+            var associatedServiceCatalogueItems = associatedServices
+                .Where(x => x.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+                .Select(x => x.CatalogueItem)
+                .ToList();
+
+            var expectedResult = new EditAdditionalServiceModel(
+                catalogueItem,
+                additionalService.CatalogueItem,
+                associatedServiceCatalogueItems);
 
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            additionalServicesService.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
+            additionalServicesService.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId)
+                .Returns(additionalService.CatalogueItem);
+
+            associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(additionalService.CatalogueItemId)
+                .Returns(associatedServiceCatalogueItems);
 
             var result = await controller.EditAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId);
 
             result.As<ViewResult>().Should().NotBeNull();
-            result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedResult, opt => opt.Excluding(model => model.BackLink));
+            result.As<ViewResult>()
+                .Model.Should()
+                .BeEquivalentTo(expectedResult, opt => opt.Excluding(model => model.BackLink));
         }
 
         [Theory]
@@ -331,6 +349,88 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [MockAutoData]
+        public static async Task Get_AssociatedServices_InvalidAdditionalServiceId_ReturnsBadRequest(
+            CatalogueItemId solutionId,
+            CatalogueItemId additionalServiceId,
+            [Frozen] IAdditionalServicesService additionalServicesService,
+            AdditionalServicesController controller)
+        {
+            additionalServicesService.GetAdditionalService(solutionId, additionalServiceId).Returns((CatalogueItem)null);
+
+            var result = await controller.AssociatedServices(solutionId, additionalServiceId);
+
+            result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_AssociatedServices_ValidAdditionalServiceId_ReturnsViewWithModel(
+            CatalogueItemId solutionId,
+            AdditionalService additionalService,
+            List<AssociatedService> associatedServices,
+            [Frozen] IAdditionalServicesService additionalServicesService,
+            [Frozen] IAssociatedServicesService associatedServicesService,
+            AdditionalServicesController controller)
+        {
+            additionalServicesService.GetAdditionalService(solutionId, additionalService.CatalogueItemId)
+                .Returns(additionalService.CatalogueItem);
+
+            associatedServicesService.GetPublishedAssociatedServicesForSupplier(additionalService.CatalogueItem.SupplierId)
+                .Returns(associatedServices);
+
+            var expectedModel = new CatalogueItemAssociatedServicesModel(
+                additionalService.CatalogueItem,
+                associatedServices);
+
+            var result = await controller.AssociatedServices(solutionId, additionalService.CatalogueItemId);
+
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            viewResult.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_AssociatedServices_InvalidModel_ReturnsView(
+            CatalogueItemId solutionId,
+            CatalogueItemId additionalServiceId,
+            CatalogueItemAssociatedServicesModel model,
+            AdditionalServicesController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = await controller.AssociatedServices(solutionId, additionalServiceId, model);
+
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            viewResult.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_AssociatedServices_SelectedAssociatedServices_Redirects(
+            CatalogueItemId solutionId,
+            AdditionalService additionalService,
+            List<AssociatedService> associatedServices,
+            [Frozen] IAssociatedServicesService associatedServicesService,
+            AdditionalServicesController controller)
+        {
+            associatedServices.ForEach(x => x.CatalogueItem.SupplierServiceAssociations = new List<SupplierServiceAssociation>());
+
+            var model = new CatalogueItemAssociatedServicesModel(additionalService.CatalogueItem, associatedServices);
+
+            var selectedAssociatedService = model.SelectableAssociatedServices.First();
+            selectedAssociatedService.Selected = true;
+
+            var result = await controller.AssociatedServices(solutionId, additionalService.CatalogueItemId, model);
+
+            result.Should().BeOfType<RedirectToActionResult>();
+            await associatedServicesService.Received()
+                .RelateAssociatedServicesToCatalogueItem(
+                    Arg.Any<CatalogueItemId>(),
+                    Arg.Is<IEnumerable<CatalogueItemId>>(x => x.Contains(selectedAssociatedService.CatalogueItemId)));
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Post_SetPublicationStatus_CallsSavePublicationStatus(
             CatalogueItem catalogueItem,
             AdditionalService additionalService,
@@ -386,7 +486,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var model = new EditAdditionalServiceModel(catalogueItem, additionalService.CatalogueItem);
+            var model = new EditAdditionalServiceModel(catalogueItem, additionalService.CatalogueItem, []);
 
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
