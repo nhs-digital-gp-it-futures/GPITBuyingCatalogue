@@ -54,9 +54,9 @@ public sealed class AdditionalServicesController(
         if (solution is null)
             return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (additionalService is null)
-                return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
+        var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+        if (additionalService is null)
+            return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
 
         var associatedServices =
             await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(additionalServiceId);
@@ -128,9 +128,9 @@ public sealed class AdditionalServicesController(
         if (solution is null)
             return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (additionalService is null)
-                return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
+        var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+        if (additionalService is null)
+            return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
 
         var model = new EditAdditionalServiceDetailsModel(solution, additionalService)
         {
@@ -150,9 +150,9 @@ public sealed class AdditionalServicesController(
         if (solution is null)
             return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (additionalService is null)
-                return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
+        var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+        if (additionalService is null)
+            return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
 
         var additionalServiceDetailsModel = new AdditionalServicesDetailsModel
         {
@@ -173,9 +173,9 @@ public sealed class AdditionalServicesController(
         if (solution is null)
             return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (additionalService is null)
-                return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
+        var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+        if (additionalService is null)
+            return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
 
         var capabilities = await capabilitiesService.GetCapabilitiesByCategory();
 
@@ -194,9 +194,9 @@ public sealed class AdditionalServicesController(
         if (!ModelState.IsValid)
             return View(model);
 
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (additionalService is null)
-                return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
+        var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+        if (additionalService is null)
+            return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
 
         var saveRequestModel = new SaveCatalogueItemCapabilitiesModel
         {
