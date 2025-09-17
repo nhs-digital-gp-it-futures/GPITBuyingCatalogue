@@ -7,6 +7,6 @@ locals {
   use_app_gateway        = local.is_live_environment || local.shortenv == "demo"
   gateway_public_access  = local.use_app_gateway && (local.shortenv == "production" || local.shortenv == "demo")
   sql_region2            = "ukwest"
-  web_sku_size           = local.is_live_environment ? "P1v2" : local.use_app_gateway ? "S2" : "S1"
+  web_sku_size           = local.is_live_environment ? "P2v2" : local.use_app_gateway ? "S2" : "S1"
   web_sku_tier           = local.is_live_environment ? "PremiumV2" : "Standard"
 }
