@@ -1,7 +1,7 @@
 environment                 = "$(tf_env)"
 region                      = "$(tf_region)"
 tenant_id                   = "$(tf_tenantid)"
-primary_vpn                 = "$(tf_primaryvpn)"
+primary_vpn                 = [ $(tf_primaryvpn) ]
 secondary_vpn               = [ $(secondary_vpn) ]
 nhsd_network_range          = "$(tf_nhsvpn)"
 app_url                     = "$(tf_appurl)"

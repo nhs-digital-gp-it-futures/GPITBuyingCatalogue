@@ -29,10 +29,11 @@ resource "azurerm_mssql_firewall_rule" "sql_azure_services" {
 }
 
 resource "azurerm_mssql_firewall_rule" "sql_bjss_vpn" {
-  name                = "AllowBjssVpn"
+  for_each            = var.primary_vpn
+  name                = "AllowVpn_${each.key}"
   server_id           = azurerm_mssql_server.sql_server.id
-  start_ip_address    = var.bjssvpn
-  end_ip_address      = var.bjssvpn
+  start_ip_address    = each.value
+  end_ip_address      = each.value
 }
 
 resource "azurerm_mssql_server_extended_auditing_policy" "auditing" {

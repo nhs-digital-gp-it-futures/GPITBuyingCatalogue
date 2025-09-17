@@ -34,6 +34,6 @@ variable "sqladmins" {
   type = string
 }
 
-variable "bjssvpn" {
-  type = string
+variable "primary_vpn" {
+  type = list(string)
 }

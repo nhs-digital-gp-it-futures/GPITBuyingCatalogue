@@ -10,7 +10,7 @@ module "sql_server_pri" {
   sql_admin_username         = module.keyvault[0].sqladminusername
   sql_admin_password         = module.keyvault[0].sqladminpassword
   sqladmins                  = var.sql_admin_group
-  bjssvpn                    = var.primary_vpn
+  primary_vpn                = var.primary_vpn
 }
 
 resource "azurerm_mssql_virtual_network_rule" "sqlvnetrule" {
@@ -36,5 +36,5 @@ module "sql_server_sec" {
   sql_admin_username         = module.keyvault[0].sqladminusername
   sql_admin_password         = module.keyvault[0].sqladminpassword
   sqladmins                  = var.sql_admin_group
-  bjssvpn                    = var.primary_vpn
+  primary_vpn                = var.primary_vpn
 }

@@ -72,7 +72,7 @@ resource "azurerm_storage_account" "function_app_storage" {
 
   network_rules {
     default_action             = "Deny"
-    ip_rules                   = [split("/", var.primary_vpn)[0]]
+    ip_rules                   = var.primary_vpn
     virtual_network_subnet_ids = [azurerm_subnet.function_app_subnet.id, data.azurerm_subnet.default-subnet.id]
   }
 }
@@ -134,10 +134,16 @@ resource "azurerm_windows_function_app" "function_app" {
     http2_enabled                     = true
     use_32_bit_worker                 = false
 
-    ip_restriction {
-      ip_address = var.primary_vpn
-    }
+    dynamic "ip_restriction" {
+      for_each = var.primary_vpn
 
+      content {
+        name       = "VPN_ACCESS_${ip_restriction.key}"
+        ip_address = "${ip_restriction.value}/32"
+        priority   = 300 + ip_restriction.key
+      }
+    }
+    
     ip_restriction {
       ip_address = var.nhsd_network_range
     }
