@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var selectedAdditionalServices = order.GetAdditionalServices();
 
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId, order.OrderType.ToPracticeReorganisationType);
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(solutionId, order.OrderType.ToPracticeReorganisationType);
 
             var selectedAssociatedServices = order.GetAssociatedServices();
 

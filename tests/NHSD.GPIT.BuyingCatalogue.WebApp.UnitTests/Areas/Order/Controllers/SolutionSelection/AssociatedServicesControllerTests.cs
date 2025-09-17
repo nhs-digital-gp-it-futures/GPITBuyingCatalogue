@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(orderWrapper);
 
-            mockAssociatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId(), orderType.ToPracticeReorganisationType).Returns(services);
+            mockAssociatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(order.GetSolutionId(), orderType.ToPracticeReorganisationType).Returns(services);
 
             var result = await controller.SelectAssociatedServices(internalOrgId, callOffId);
 
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(orderWrapper);
 
-            mockAssociatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId(), orderType.ToPracticeReorganisationType).Returns(new[] { service }.ToList());
+            mockAssociatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(order.GetSolutionId(), orderType.ToPracticeReorganisationType).Returns(new[] { service }.ToList());
 
             var result = await controller.SelectAssociatedServices(internalOrgId, callOffId);
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;

@@ -51,12 +51,12 @@ public class SolutionPublicationStatusService : ISolutionPublicationStatusServic
     private async Task UnpublishStaleAssociatedServicesAsync(CatalogueItemId catalogueItemId)
     {
         var associatedServices =
-            await associatedServicesService.GetPublishedAssociatedServicesForSolution(catalogueItemId);
+            await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(catalogueItemId);
 
         foreach (var associatedService in associatedServices)
         {
             var referencedSolutions =
-                await associatedServicesService.GetAllSolutionsForAssociatedService(associatedService.Id);
+                await associatedServicesService.GetAssociatedServiceReferences(associatedService.Id);
             if (referencedSolutions.Any(x => x.PublishedStatus != PublicationStatus.Unpublished)) continue;
 
             await publicationStatusService.SetPublicationStatus(associatedService.Id, PublicationStatus.Unpublished);

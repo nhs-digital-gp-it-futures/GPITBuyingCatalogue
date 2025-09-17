@@ -395,7 +395,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(catalogueItem.Supplier.Id);
 
-            var model = new SolutionAssociatedServicesModel(catalogueItem, associatedServices)
+            var model = new CatalogueItemAssociatedServicesModel(catalogueItem, associatedServices)
             {
                 BackLink = Url.Action(
                     nameof(ManageCatalogueSolution),
@@ -406,7 +406,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("manage/{solutionId}/associated-services")]
-        public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, SolutionAssociatedServicesModel model)
+        public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, CatalogueItemAssociatedServicesModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -419,7 +419,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             }
 
             var associatedServices = model.SelectableAssociatedServices.Where(a => a.Selected).Select(a => a.CatalogueItemId);
-            await associatedServicesService.RelateAssociatedServicesToSolution(solutionId, associatedServices);
+            await associatedServicesService.RelateAssociatedServicesToCatalogueItem(solutionId, associatedServices);
 
             return RedirectToAction(
                 nameof(ManageCatalogueSolution),
