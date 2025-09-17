@@ -1,3 +1,9 @@
+locals {
+  firewall_rules = {
+    for idx, ip in var.primary_vpn : format("AllowVpn_%03d", idx + 1) => ip
+  }
+}
+
 resource "azurerm_mssql_server" "sql_server" {
   name                          = var.sqlsvr_name
   resource_group_name           = var.resource_group
@@ -29,8 +35,8 @@ resource "azurerm_mssql_firewall_rule" "sql_azure_services" {
 }
 
 resource "azurerm_mssql_firewall_rule" "sql_bjss_vpn" {
-  for_each            = var.primary_vpn
-  name                = "AllowVpn_${each.key}"
+  for_each            = local.firewall_rules
+  name                = each.key
   server_id           = azurerm_mssql_server.sql_server.id
   start_ip_address    = each.value
   end_ip_address      = each.value
