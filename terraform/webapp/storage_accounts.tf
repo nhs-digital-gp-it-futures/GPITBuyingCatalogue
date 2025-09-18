@@ -8,7 +8,7 @@ module "documentstorageaccount" {
   resource_group = azurerm_resource_group.storageaccount.name
   key_vault_id   = module.keyvault[0].keyvault_id
 
-  ip_rules   = concat([var.primary_vpn], var.secondary_vpn)
+  ip_rules   = concat(var.primary_vpn, var.secondary_vpn)
   subnet_ids = [data.azurerm_subnet.default-subnet.id, azurerm_subnet.backend.id]
 }
 

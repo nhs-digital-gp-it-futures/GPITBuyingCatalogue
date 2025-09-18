@@ -51,18 +51,11 @@ resource "azurerm_linux_web_app_slot" "slot" {
       headers    = []
     }
 
-    ip_restriction {
-      name       = "PRIMARY_VPN"
-      ip_address = "${var.primary_vpn}/32"
-      priority   = 210
-      headers    = []
-    }
-
     dynamic "ip_restriction" {
-      for_each = var.secondary_vpn
+      for_each = var.vpn
 
       content {
-        name       = "SECONDARY_VPN_ACCESS_${ip_restriction.key}"
+        name       = "VPN_ACCESS_${ip_restriction.key}"
         ip_address = "${ip_restriction.value}/32"
         priority   = 300 + ip_restriction.key
       }
