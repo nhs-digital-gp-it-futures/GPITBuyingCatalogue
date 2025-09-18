@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
@@ -28,7 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         ISolutionsFilterService solutionsFilterService,
         IFrameworkService frameworkService,
         IIntegrationsService integrationsService,
-        ISolutionStandardsService solutionStandardsService)
+        ISolutionStandardsService solutionStandardsService,
+        IAssociatedServicesService associatedServicesService)
         : Controller
     {
         private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
@@ -38,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         private readonly IFrameworkService frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
         private readonly IIntegrationsService integrationsService = integrationsService ?? throw new ArgumentNullException(nameof(integrationsService));
         private readonly ISolutionStandardsService solutionStandardsService = solutionStandardsService ?? throw new ArgumentNullException(nameof(solutionStandardsService));
+        private readonly IAssociatedServicesService associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
 
         [HttpGet]
         public async Task<IActionResult> Index(
@@ -257,6 +260,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 IndexValue = 4,
                 Caption = additionalService.Name,
             });
+        }
+
+        [HttpGet("{solutionId}/additional-services/{serviceId}/associated-services")]
+        public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, CatalogueItemId serviceId)
+        {
+            var item = await solutionsService.GetSolutionWithCapabilities(solutionId);
+            if (item is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
+            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, serviceId);
+            if (additionalService is null)
+                return BadRequest($"No additional service found for Id: {serviceId}");
+
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            var associatedServices =
+                await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(serviceId);
+
+            return View(nameof(AssociatedServices), new AdditionalAssociatedServicesModel(item, additionalService, associatedServices, contentStatus));
         }
 
         [HttpGet("{solutionId}/capabilities")]

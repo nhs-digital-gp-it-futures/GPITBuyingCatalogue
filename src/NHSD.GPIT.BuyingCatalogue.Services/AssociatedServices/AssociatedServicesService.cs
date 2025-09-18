@@ -38,7 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .ToListAsync();
         }
 
-        public async Task<List<CatalogueItem>> GetPublishedAssociatedServicesForCatalogueItem(CatalogueItemId? catalogueItemId, PracticeReorganisationTypeEnum? practiceReorganisationType = null)
+        public async Task<List<CatalogueItem>> GetPublishedAssociatedServicesForCatalogueItem(
+            CatalogueItemId? catalogueItemId,
+            PracticeReorganisationTypeEnum? practiceReorganisationType = null)
         {
             if (catalogueItemId is null)
             {
@@ -48,24 +50,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             var query = dbContext.SupplierServiceAssociations
                 .Include(x => x.AssociatedService)
                 .ThenInclude(x => x.CatalogueItem)
+                .ThenInclude(x => x.AssociatedService)
+                .Include(x => x.AssociatedService)
+                .ThenInclude(x => x.CatalogueItem.CataloguePrices)
+                .ThenInclude(x => x.CataloguePriceTiers)
+                .Include(x => x.AssociatedService)
+                .ThenInclude(x => x.CatalogueItem.CataloguePrices)
+                .ThenInclude(x => x.PricingUnit)
                 .Where(x => x.CatalogueItemId == catalogueItemId);
 
             if (practiceReorganisationType.HasValue)
             {
-                if (practiceReorganisationType == PracticeReorganisationTypeEnum.None)
-                {
-                    query = query.Where(ssa => ssa.AssociatedService.PracticeReorganisationType == practiceReorganisationType);
-                }
-                else
-                {
-                    query = query.Where(ssa => ssa.AssociatedService.PracticeReorganisationType.HasFlag(practiceReorganisationType.Value));
-                }
+                query = practiceReorganisationType == PracticeReorganisationTypeEnum.None
+                    ? query.Where(ssa => ssa.AssociatedService.PracticeReorganisationType == practiceReorganisationType)
+                    : query.Where(ssa =>
+                        ssa.AssociatedService.PracticeReorganisationType.HasFlag(practiceReorganisationType.Value));
             }
 
-            return await query.Select(x => x.AssociatedService.CatalogueItem)
+            var data = await query.Select(x => x.AssociatedService.CatalogueItem)
                 .Where(x => x.PublishedStatus == PublicationStatus.Published)
                 .OrderBy(x => x.Name)
                 .ToListAsync();
+
+            return data;
         }
 
         public Task<CatalogueItem> GetAssociatedService(CatalogueItemId associatedServiceId)

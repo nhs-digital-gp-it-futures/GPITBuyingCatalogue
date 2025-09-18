@@ -20,7 +20,7 @@
             <a href="@Model.CapabilitiesAndEpicsUrl"
                class="nhsuk-breadcrumb__link">Check Capabilities and Epics</a>
         </nhs-summary-list-row>
-    } 
+    }
     else if (!string.IsNullOrWhiteSpace(Model.OrderGuidance))
     {
         <nhs-summary-list-row label-text="Order guidance">
@@ -31,11 +31,12 @@
     }
 
     @if (Model.Prices.Where(x => x.CataloguePriceType.Equals(CataloguePriceType.Flat)).ToList().Count <= 1
-    && Model.Prices.Where(x => x.CataloguePriceType.Equals(CataloguePriceType.Tiered)).ToList().Count == 0)
+             && Model.Prices.Where(x => x.CataloguePriceType.Equals(CataloguePriceType.Tiered)).ToList().Count == 0)
     {
-        foreach (var price in Model.Prices.Where(x => x.CataloguePriceType.Equals(CataloguePriceType.Flat)).ToList()){
+        foreach (var price in Model.Prices.Where(x => x.CataloguePriceType.Equals(CataloguePriceType.Flat)).ToList())
+        {
             <nhs-summary-list-row label-text="Price type">
-                @CataloguePriceType.Flat.ToString()
+                @nameof(CataloguePriceType.Flat)
             </nhs-summary-list-row>
 
             <nhs-summary-list-row label-text="Price (excluding VAT)">
@@ -55,12 +56,11 @@
                 </nhs-summary-list-row>
             }
         }
-        
-    } else
+    }
+    else
     {
         <nhs-summary-list-row label-text="Price">
             <a href=@Model.PricePageUrl>Check prices</a>
         </nhs-summary-list-row>
-
     }
 </nhs-summary-list>

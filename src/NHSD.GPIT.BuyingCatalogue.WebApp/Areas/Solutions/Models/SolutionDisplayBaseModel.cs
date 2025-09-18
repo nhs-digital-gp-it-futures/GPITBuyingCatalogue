@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             ShowPagination = !IsSuspended() && !IsSubPage;
         }
 
-        public bool IsSubPage { get; private set; }
+        public bool IsSubPage { get; set; }
 
         public DateTime LastReviewed { get; set; }
 
