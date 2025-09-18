@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
-                .WithErrorMessage("Associated Service name already exists. Enter a different name");
+                .WithErrorMessage("Associated service name already exists. Enter a different name");
         }
 
         [Theory]
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             else
             {
                 result.ShouldHaveValidationErrorFor("practice-reorganisation")
-                .WithErrorMessage("This Associated Service has invalid price types for mergers and splits. You must edit the price types first");
+                .WithErrorMessage("This associated service has invalid price types for mergers and splits. You must edit the price types first");
             }
         }
     }

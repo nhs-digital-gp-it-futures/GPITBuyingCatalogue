@@ -21,7 +21,7 @@
 
             @if (additionalServices.Any())
             {
-                <h2>Additional Services</h2>
+                <h2>Additional services</h2>
                 @foreach (var additionalService in additionalServices)
                 {
                     <partial name="_OrderingInformationItem" model="additionalService"/>
@@ -31,7 +31,7 @@
 
             @if (associatedServices.Any())
             {
-                <h2>Associated Services</h2>
+                <h2>Associated services</h2>
                 @foreach (var associatedService in associatedServices)
                 {
                     <partial name="_OrderingInformationItem" model="associatedService"/>

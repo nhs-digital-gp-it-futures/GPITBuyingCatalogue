@@ -106,7 +106,7 @@
 
         @if (Model.AdditionalServiceIds.Any())
         {
-            <h2>Additional Services</h2>
+            <h2>Additional services</h2>
 
             @foreach (var catalogueItemId in Model.AdditionalServiceIds.Where(x => Model.OrderItemDates(x).Any()))
             {
@@ -149,7 +149,7 @@
         {
             if (!mergerSplit)
             {
-                <h2>Associated Services</h2>
+                <h2>Associated services</h2>
             }
 
             @foreach (var catalogueItemId in Model.AssociatedServiceIds)

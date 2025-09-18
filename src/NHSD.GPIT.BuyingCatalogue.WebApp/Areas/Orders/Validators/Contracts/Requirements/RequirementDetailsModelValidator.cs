@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.Req
     public class RequirementDetailsModelValidator : AbstractValidator<RequirementDetailsModel>
     {
         public const string DetailsRequiredErrorMessage = "Enter the requirement";
-        public const string AssociatedServiceRequiredErrorMessage = "Enter an Associated Service name";
+        public const string AssociatedServiceRequiredErrorMessage = "Enter an associated service name";
 
         public RequirementDetailsModelValidator()
         {

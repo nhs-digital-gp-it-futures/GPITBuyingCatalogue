@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor("selectable-associated-services")
-                .WithErrorMessage("The solution already has an Associated Service of this type, so you cannot add another");
+                .WithErrorMessage("The solution already has an associated service of this type, so you cannot add another");
         }
 
         [Theory]

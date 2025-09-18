@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.Con
     {
         public const string NameRequiredErrorMessage = "Enter a milestone name";
         public const string PaymentTriggerRequiredErrorMessage = "Enter a milestone payment trigger";
-        public const string AssociatedServiceRequiredErrorMessage = "Enter an Associated Service name";
+        public const string AssociatedServiceRequiredErrorMessage = "Enter an associated service name";
         public const string QuantityRequiredErrorMessage = "Enter the number of units to be billed";
 
         public ContractBillingItemModelValidator()

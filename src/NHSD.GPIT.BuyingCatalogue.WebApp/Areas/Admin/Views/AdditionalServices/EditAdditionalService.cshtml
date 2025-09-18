@@ -8,7 +8,7 @@
         <nhs-validation-summary RadioId="@nameof(Model.SelectedPublicationStatus)" />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
-                        advice="Provide information about your Additional Service." />
+                        advice="Provide information about your additional service." />
 
         <nhs-table data-test-id="additional-service-dashboard-table">
             <nhs-table-column>Section</nhs-table-column>
@@ -82,7 +82,7 @@
             <input type="hidden" asp-for="AdditionalServicePublicationStatus" />
 
             <nhs-fieldset-form-label asp-for="@Model"
-                                     label-text="Additional Service status"
+                                     label-text="Additional service status"
                                      label-hint="Select one option."
                                      size="Large">
                 <nhs-radio-buttons asp-for="SelectedPublicationStatus"

@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices.EditAssociatedServiceModel;
 @{
-    ViewBag.Title = $"Associated Service information";
+    ViewBag.Title = $"Associated service information";
 }
 <partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
@@ -8,7 +8,7 @@
         <nhs-validation-summary RadioId="@nameof(Model.SelectedPublicationStatus)"/>
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.AssociatedServiceName"
-                        advice="Provide information about this Associated Service."/>
+                        advice="Provide information about this associated service." />
 
         <nhs-table data-test-id="associated-service-dashboard-table" label-text="Associated service information">
             <nhs-table-column>Section</nhs-table-column>
@@ -129,7 +129,7 @@
             <input type="hidden" asp-for="AssociatedServicePublicationStatus"/>
 
             <nhs-fieldset-form-label asp-for="@Model"
-                                     label-text="What would you like to do with this Associated Service?"
+                                     label-text="What would you like to do with this associated service?"
                                      label-hint="Select one option."
                                      size="Large">
                 <nhs-radio-buttons asp-for="SelectedPublicationStatus"

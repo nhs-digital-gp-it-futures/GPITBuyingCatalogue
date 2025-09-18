@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.PublicationSta
 
             RuleFor(m => m.SelectedPublicationStatus)
                 .Must(NotHaveAnyPublishedSolutionReferences)
-                .WithMessage("This Associated Service cannot be unpublished as it is referenced by at least one solution")
+                .WithMessage("This associated service cannot be unpublished as it is referenced by at least one solution")
                 .When(m => m.SelectedPublicationStatus == PublicationStatus.Unpublished && m.SelectedPublicationStatus != m.AssociatedServicePublicationStatus)
                 .Must(HaveCompletedAllMandatorySections)
                 .WithMessage("Complete all mandatory sections before publishing")

@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(m => m)
                 .Must(NotBeADuplicateServiceName)
-                .WithMessage("Associated Service name already exists. Enter a different name")
+                .WithMessage("Associated service name already exists. Enter a different name")
                 .OverridePropertyName(m => m.Name);
         }
 

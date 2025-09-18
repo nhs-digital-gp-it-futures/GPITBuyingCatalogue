@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         {
             RuleFor(m => m.SolutionMergerAndSplits)
                 .Must(x => x.IsValid)
-                .WithMessage("The solution already has an Associated Service of this type, so you cannot add another")
+                .WithMessage("The solution already has an associated service of this type, so you cannot add another")
                 .OverridePropertyName("selectable-associated-services");
         }
     }

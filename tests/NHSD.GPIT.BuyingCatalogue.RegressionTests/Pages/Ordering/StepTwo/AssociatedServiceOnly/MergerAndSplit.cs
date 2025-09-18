@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
 
         public void MergerAndSplitSolutionSelection()
         {
-            CommonActions.HintText().Should().Be("There is only one solution with this type of Associated Service.".FormatForComparison());
+            CommonActions.HintText().Should().Be("There is only one solution with this type of associated service.".FormatForComparison());
             CommonActions.ClickSave();
         }
     }

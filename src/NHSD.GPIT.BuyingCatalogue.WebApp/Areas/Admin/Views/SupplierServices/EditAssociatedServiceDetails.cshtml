@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices.EditAssociatedServiceDetailsModel;
 @{
-    ViewBag.Title = $"Associated Service details";
+    ViewBag.Title = $"Associated service details";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -9,10 +9,10 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SupplierName"
-                        advice="Provide the following details for the Associated Service." />
+                        advice="Provide the following details for the associated service." />
 
         <nhs-inset-text>
-            <p>Any changes to these details will be visible to anyone ordering your Associated Service in future.</p>
+            <p>Any changes to these details will be visible to anyone ordering your associated service in future.</p>
         </nhs-inset-text>
 
         <form method="post">
@@ -34,16 +34,16 @@
             }
 
             <nhs-input asp-for="Name"
-                       label-text="Associated Service name" />
+                       label-text="Associated service name" />
             <nhs-textarea asp-for="Description"
-                          label-text="Associated Service description"
-                          label-hint="Describe how this Associated Service helps implement or optimise the live operation of your catalogue solution." />
+                          label-text="Associated service description"
+                          label-hint="Describe how this associated service helps implement or optimise the live operation of your catalogue solution." />
             <nhs-textarea asp-for="OrderGuidance"
                           label-text="Order guidance"
-                          label-hint="Help buyers understand how they should order the Associated Services by providing typical order volumes and implementation timescales." />
+                          label-hint="Help buyers understand how they should order the associated services by providing typical order volumes and implementation timescales." />
             <nhs-fieldset-form-label asp-for="@Model.PracticeReorganisation"
-                                     label-text="Does this Associated Service support practice reorganisation? (optional)"
-                                     label-hint="Select all the types of practice reorganisation this Associated Service supports."
+                                     label-text="Does this associated service support practice reorganisation? (optional)"
+                                     label-hint="Select all the types of practice reorganisation this associated service supports."
                                      size="ExtraSmall">
                 <nhs-checkbox-container>
                     <nhs-checkbox asp-for="PracticeSplit" label-text="Practice split" />

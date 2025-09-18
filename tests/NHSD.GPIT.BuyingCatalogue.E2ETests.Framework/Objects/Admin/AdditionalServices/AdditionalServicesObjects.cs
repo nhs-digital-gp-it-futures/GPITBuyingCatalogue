@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.AdditionalS
 
         public static By PublicationStatusInputError => By.Id("edit-additional-service-error");
 
-        public static By AddAdditionalServiceLink => By.LinkText("Add an Additional Service");
+        public static By AddAdditionalServiceLink => By.LinkText("Add an additional service");
 
         public static By EditCapabilitiesLink(string solutionId) => By.XPath($"//a[contains(@href, '/additional-services/{solutionId}/edit-capabilities')]");
 

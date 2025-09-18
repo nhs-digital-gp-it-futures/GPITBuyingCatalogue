@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.InternalOrgId.Should().Be(internalOrgId);
             model.AssociatedServices.Should().BeEquivalentTo(associatedServices);
             model.IsEdit.Should().BeFalse();
-            model.Advice.Should().Be("Add an Associated Service milestone.");
+            model.Advice.Should().Be("Add an associated service milestone.");
         }
 
         [Theory]
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.SelectedOrderItemId.Should().Be(item.OrderItem.CatalogueItemId);
             model.Quantity.Should().Be(item.Quantity);
             model.IsEdit.Should().BeTrue();
-            model.Advice.Should().Be("Edit this Associated Service milestone.");
+            model.Advice.Should().Be("Edit this associated service milestone.");
         }
     }
 }

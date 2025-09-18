@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo
             string catalogueSolutionId = solutionId.ToString();
 
             CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditCompetitionSolutionLink(catalogueSolutionId));
-            CommonActions.HintText().Should().Be("Provide information to calculate the price for this shortlisted solution and any Additional or Associated Services you’ll need.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Provide information to calculate the price for this shortlisted solution and any additional or associated services you’ll need.".FormatForComparison());
         }
 
         public void SelectPrice(CatalogueItemId solutionId)
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo
             string catalogueSolutionId = solutionId.ToString();
 
             CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditCompetitionSolutionLink(catalogueSolutionId));
-            CommonActions.HintText().Should().Be("Provide information to calculate the price for this shortlisted solution and any Additional or Associated Services you’ll need.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Provide information to calculate the price for this shortlisted solution and any additional or associated services you’ll need.".FormatForComparison());
 
             CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditCompetitionSolutionLink(catalogueSolutionId));
 

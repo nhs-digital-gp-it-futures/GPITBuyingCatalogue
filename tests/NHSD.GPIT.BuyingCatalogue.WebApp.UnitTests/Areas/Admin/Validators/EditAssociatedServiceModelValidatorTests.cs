@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedPublicationStatus)
-                .WithErrorMessage("This Associated Service cannot be unpublished as it is referenced by at least one solution");
+                .WithErrorMessage("This associated service cannot be unpublished as it is referenced by at least one solution");
         }
 
         [Theory]

@@ -5,8 +5,8 @@
     {
         title = "Which catalogue solution does the service help implement?";
         advice = Model.CatalogueSolutions.Count > 1
-                    ? "Select the catalogue solution the Associated Service you want to order supports."
-                    : "There is only one solution with this type of Associated Service.";
+                    ? "Select the catalogue solution the associated service you want to order supports."
+                    : "There is only one solution with this type of associated service.";
         caption = $"Order {Model.CallOffId}";
     }
     else
@@ -42,11 +42,11 @@
                     <h3>Which catalogue solution is the service linked with?</h3>
                     if (Model.OrderType.MergerOrSplit)
                     {
-                        <p>These are the solutions from this supplier that have Associated Services supporting mergers or splits.</p>
+                        <p>These are the solutions from this supplier that have associated services supporting mergers or splits.</p>
                     }
                     else
                     {
-                        <p>These are the solutions from this supplier that have Associated Services.</p>
+                        <p>These are the solutions from this supplier that have associated services.</p>
                     }
                 }
                 else

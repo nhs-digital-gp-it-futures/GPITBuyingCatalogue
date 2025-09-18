@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = await controller.EditAdditionalService(solution.CatalogueItemId, additionalServiceId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
-            result.As<BadRequestObjectResult>().Value.Should().Be($"No Additional Service with Id {additionalServiceId} found for Solution {solution.CatalogueItemId}");
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No additional service with Id {additionalServiceId} found for Solution {solution.CatalogueItemId}");
         }
 
         [Theory]
@@ -251,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = await controller.EditAdditionalServiceDetails(solution.CatalogueItemId, additionalServiceId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
-            result.As<BadRequestObjectResult>().Value.Should().Be($"No Additional Service with Id {additionalServiceId} found for Solution {solution.CatalogueItemId}");
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No additional service with Id {additionalServiceId} found for Solution {solution.CatalogueItemId}");
         }
 
         [Theory]
@@ -324,7 +324,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = await controller.EditAdditionalServiceDetails(solution.CatalogueItemId, additionalServiceId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
-            result.As<BadRequestObjectResult>().Value.Should().Be($"No Additional Service with Id {additionalServiceId} found for Solution {solution.CatalogueItemId}");
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No additional service with Id {additionalServiceId} found for Solution {solution.CatalogueItemId}");
         }
 
         [Theory]
@@ -514,7 +514,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalServiceId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
-            result.As<BadRequestObjectResult>().Value.Should().Be($"No Additional Service with Id {additionalServiceId} found for Solution {solution.CatalogueItemId}");
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No additional service with Id {additionalServiceId} found for Solution {solution.CatalogueItemId}");
         }
 
         [Theory]
@@ -575,7 +575,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
-            result.As<BadRequestObjectResult>().Value.Should().Be($"No Additional Service with Id {additionalService.CatalogueItemId} found for Solution {solution.CatalogueItemId}");
+            result.As<BadRequestObjectResult>().Value.Should().Be($"No additional service with Id {additionalService.CatalogueItemId} found for Solution {solution.CatalogueItemId}");
         }
 
         [Theory]
