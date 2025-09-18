@@ -262,8 +262,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             });
         }
 
-        [HttpGet("{solutionId}/additional-services/{serviceId}/associated-services")]
-        public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, CatalogueItemId serviceId)
+        [HttpGet("{solutionId}/additional-services/{additionalServiceId}/associated-services")]
+        public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
         {
             var item = await solutionsService.GetSolutionWithCapabilities(solutionId);
             if (item is null)
@@ -272,16 +272,56 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, serviceId);
+            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (additionalService is null)
-                return BadRequest($"No additional service found for Id: {serviceId}");
+                return BadRequest($"No additional service found for Id: {additionalServiceId}");
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
             var associatedServices =
-                await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(serviceId);
+                await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(additionalServiceId);
 
-            return View(nameof(AssociatedServices), new AdditionalAssociatedServicesModel(item, additionalService, associatedServices, contentStatus));
+            var model =
+                new AdditionalAssociatedServicesModel(item, additionalService, associatedServices, contentStatus)
+                {
+                    BackLink = Url.Action(nameof(AdditionalServices), new { solutionId, additionalServiceId }),
+                };
+
+            return View(model);
+        }
+
+        [HttpGet(
+            "{solutionId}/additional-services/{additionalServiceId}/associated-services/{associatedServiceId}/price")]
+        public async Task<IActionResult> AssociatedServicePrice(
+            CatalogueItemId solutionId,
+            CatalogueItemId additionalServiceId,
+            CatalogueItemId associatedServiceId)
+        {
+            var item = await solutionsService.GetSolutionWithCapabilities(solutionId);
+            if (item is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
+            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+            if (additionalService is null)
+                return BadRequest($"No additional service found for Id: {additionalServiceId}");
+            if (additionalService.SupplierServiceAssociations.All(x => x.AssociatedServiceId != associatedServiceId))
+                return BadRequest($"Associated service not found for Id: {associatedServiceId}");
+
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var associatedService = await listPriceService.GetCatalogueItemWithListPrices(associatedServiceId);
+
+            return View("ListPrice", new ListPriceModel(item, associatedService, contentStatus)
+            {
+                BackLink = Url.Action(
+                    nameof(AssociatedServices),
+                    typeof(SolutionsController).ControllerName(),
+                    new { solutionId, additionalServiceId }),
+                IndexValue = 4,
+                Caption = associatedService.Name,
+            });
         }
 
         [HttpGet("{solutionId}/capabilities")]

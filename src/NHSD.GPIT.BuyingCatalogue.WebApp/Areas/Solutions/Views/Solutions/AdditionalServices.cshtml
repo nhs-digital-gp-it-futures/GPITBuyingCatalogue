@@ -32,7 +32,8 @@
                 <partial name="_MarketingPriceSummary" model="priceSummaryModel" />
                 @if (service.SupplierServiceAssociations.Count > 0)
                 {
-                    <a asp-action="@(nameof(SolutionsController.AssociatedServices))" asp-controller="@(typeof(SolutionsController).ControllerName())" asp-route-solutionId="@(Model.SolutionId)" asp-route-serviceId="@(service.Id)">
+                    <h2 class="nhsuk-heading-m">Associated services</h2>
+                    <a asp-action="@(nameof(SolutionsController.AssociatedServices))" asp-controller="@(typeof(SolutionsController).ControllerName())" asp-route-solutionId="@(Model.SolutionId)" asp-route-additionalServiceId="@(service.Id)">
                         View associated services
                     </a>
                 }

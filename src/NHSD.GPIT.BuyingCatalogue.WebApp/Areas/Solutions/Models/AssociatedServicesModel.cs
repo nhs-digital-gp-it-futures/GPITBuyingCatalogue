@@ -15,7 +15,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             CatalogueItem catalogueItem,
             List<CatalogueItem> associatedServices,
             CatalogueItemContentStatus contentStatus)
-            : base(catalogueItem, contentStatus)
+            : this(catalogueItem, associatedServices, contentStatus, isSubPage: false)
+        {
+        }
+
+        protected AssociatedServicesModel(
+            CatalogueItem catalogueItem,
+            List<CatalogueItem> associatedServices,
+            CatalogueItemContentStatus contentStatus,
+            bool isSubPage)
+            : base(catalogueItem, contentStatus, isSubPage)
         {
             Services = associatedServices;
             PaginationFooter.FullWidth = true;

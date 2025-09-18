@@ -67,12 +67,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                         ssa.AssociatedService.PracticeReorganisationType.HasFlag(practiceReorganisationType.Value));
             }
 
-            var data = await query.Select(x => x.AssociatedService.CatalogueItem)
+            return await query.Select(x => x.AssociatedService.CatalogueItem)
                 .Where(x => x.PublishedStatus == PublicationStatus.Published)
                 .OrderBy(x => x.Name)
                 .ToListAsync();
-
-            return data;
         }
 
         public Task<CatalogueItem> GetAssociatedService(CatalogueItemId associatedServiceId)
