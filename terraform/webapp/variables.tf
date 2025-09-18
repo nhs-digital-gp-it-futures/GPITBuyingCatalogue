@@ -31,7 +31,7 @@ variable "certname" {
 }
 
 variable "primary_vpn" {
-  type = string
+  type = list(string)
 }
 
 variable "secondary_vpn" {

@@ -15,7 +15,7 @@ variable "database_catalog" {
 }
 
 variable "primary_vpn" {
-  type = string
+  type = list(string)
 }
 
 variable "nhsd_network_range" {

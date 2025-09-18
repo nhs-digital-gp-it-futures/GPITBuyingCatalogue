@@ -42,11 +42,7 @@ variable "instrumentation_key" {
   type = string
 }
 
-variable "primary_vpn" {
-  type = string
-}
-
-variable "secondary_vpn" {
+variable "vpn" {
   type = list(string)
 }
 
