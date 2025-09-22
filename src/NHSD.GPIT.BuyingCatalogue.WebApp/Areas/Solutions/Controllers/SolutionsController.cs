@@ -265,7 +265,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/additional-services/{additionalServiceId}/associated-services")]
         public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
         {
-            var item = await solutionsService.GetSolutionWithCapabilities(solutionId);
+            var item = await solutionsService.GetSolutionThin(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
@@ -297,7 +297,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             CatalogueItemId additionalServiceId,
             CatalogueItemId associatedServiceId)
         {
-            var item = await solutionsService.GetSolutionWithCapabilities(solutionId);
+            var item = await solutionsService.GetSolutionThin(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
@@ -308,7 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (additionalService is null)
                 return BadRequest($"No additional service found for Id: {additionalServiceId}");
             if (additionalService.SupplierServiceAssociations.All(x => x.AssociatedServiceId != associatedServiceId))
-                return BadRequest($"Associated service not found for Id: {associatedServiceId}");
+                return BadRequest($"No associated service found for Id: {associatedServiceId}");
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
             var associatedService = await listPriceService.GetCatalogueItemWithListPrices(associatedServiceId);
