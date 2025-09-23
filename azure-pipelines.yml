@@ -84,11 +84,11 @@ jobs:
           command: 'install'
           workingDir: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
-      - task: SonarCloudPrepare@2
+      - task: SonarCloudPrepare@3
         inputs:
           SonarCloud: 'SonarCloud'
           organization: '$(SonarOrganization)'
-          scannerMode: 'MSBuild'
+          scannerMode: 'dotnet'
           projectKey: '$(SonarKey)'
           projectName: '$(SonarProject)'
           extraProperties: |
@@ -119,8 +119,8 @@ jobs:
           arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
           publishTestResults: false
 
-      - task: SonarCloudAnalyze@2
-      - task: SonarCloudPublish@2
+      - task: SonarCloudAnalyze@3
+      - task: SonarCloudPublish@3
 
       - task: DotNetCoreCLI@2
         displayName: Publish BuyingCatalogueFunction
