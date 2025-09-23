@@ -8,7 +8,7 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title model="@Model"/>
+        <nhs-page-title title="@Model.EffectiveTitle" caption="@Model.Caption" advice="@Model.EffectiveAdvice" />
         
         @if (Model.IsAmendment is true)
         {
@@ -32,7 +32,7 @@
         }
 
         <form method="post">
-            <hidden-inputs title="@Model.Title" caption="@Model.Caption" />
+            <hidden-inputs title="@Model.EffectiveTitle" caption="@Model.Caption" />
             <input type="hidden" asp-for="@Model.BackLink" />
             <input type="hidden" asp-for="@Model.FormLabelText" />
 

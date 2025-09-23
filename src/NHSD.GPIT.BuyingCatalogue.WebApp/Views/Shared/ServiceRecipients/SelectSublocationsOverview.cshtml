@@ -21,20 +21,21 @@
             <nhs-card-content title="Sublocations for @Model.ParentName">
                 <nhs-table>
                     <nhs-table-column>Sublocation</nhs-table-column>
+                    <nhs-table-column>Sublocation ODS code</nhs-table-column>
                     <nhs-table-column>Organisations added</nhs-table-column>
                     <nhs-table-column>Status</nhs-table-column>
                     <nhs-table-column>Action</nhs-table-column>
 
-                    @foreach (var sublocation in @Model.Sublocations)
+                    @foreach (var sublocation in Model.Sublocations)
                     {
                         <nhs-table-row-container>
+                            <nhs-table-cell>@sublocation.Name</nhs-table-cell>
                             <nhs-table-cell>@sublocation.OdsCode</nhs-table-cell>
                             <nhs-table-cell>@sublocation.ServiceRecipientCount</nhs-table-cell>
-                            <nhs-table-cell><nhs-tag status-enum="@sublocation.TaskProgress"/></nhs-table-cell>
+                            <nhs-table-cell><nhs-tag status-enum="@sublocation.TaskProgress" /></nhs-table-cell>
                             <nhs-table-cell><a href="@sublocation.RecipientLink">Select</a></nhs-table-cell>
                         </nhs-table-row-container>
                     }
-
                 </nhs-table>
             </nhs-card-content>
             <nhs-card-footer>
