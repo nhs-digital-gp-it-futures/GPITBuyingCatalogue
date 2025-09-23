@@ -5,4 +5,6 @@ locals {
   project_alt_code       = substr(var.project, 0, 4)
   send_notification      = "send-email-notification"
   complete_notification  = "complete-email-notification"
+  role_definition_prefix = "Storage Service Properties Reader"
+  role_definition_name   = var.environment == "production" || var.environment == "preproduction" ? "${local.role_definition_prefix} (Prod)" : "${local.role_definition_prefix} (Test)"
 }

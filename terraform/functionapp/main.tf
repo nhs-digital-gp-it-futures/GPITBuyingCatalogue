@@ -12,9 +12,12 @@ terraform {
 }
 
 provider "azurerm" {
+  storage_use_azuread = true
   features {
   }
 }
+
+data "azurerm_subscription" "current" {}
 
 provider "azurerm" {
   alias           = "infrastructure"
@@ -64,17 +67,23 @@ resource "azurerm_service_plan" "function_app_plan" {
 }
 
 resource "azurerm_storage_account" "function_app_storage" {
-  name                     = "${var.project}${local.environment_short_name}fast"
-  location                 = azurerm_resource_group.function_app_rg.location
-  resource_group_name      = azurerm_resource_group.function_app_rg.name
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+  name                      = "${var.project}${local.environment_short_name}fast"
+  location                  = azurerm_resource_group.function_app_rg.location
+  resource_group_name       = azurerm_resource_group.function_app_rg.name
+  account_tier              = "Standard"
+  account_replication_type  = "LRS"
+  shared_access_key_enabled = false
 
   network_rules {
     default_action             = "Deny"
     ip_rules                   = var.primary_vpn
     virtual_network_subnet_ids = [azurerm_subnet.function_app_subnet.id, data.azurerm_subnet.default-subnet.id]
   }
+}
+
+data "azurerm_role_definition" "storage_service_props_reader" {
+  name        = local.role_definition_name
+  scope       = data.azurerm_subscription.current.id
 }
 
 resource "azurerm_storage_container" "function_app_container" {
@@ -93,11 +102,46 @@ resource "azurerm_storage_queue" "complete_email_queue" {
   storage_account_name = azurerm_storage_account.function_app_storage.name
 }
 
+resource "azurerm_user_assigned_identity" "function_identity" {
+  resource_group_name = azurerm_resource_group.function_app_rg.name
+  location = azurerm_resource_group.function_app_rg.location
+  name = "${local.project_environment}-functionapp-managed-id"
+}
+
+resource "azurerm_role_assignment" "service_props_reader_assignment" {
+  scope              = azurerm_storage_account.function_app_storage.id
+  role_definition_id = data.azurerm_role_definition.storage_service_props_reader.id
+  principal_id       = azurerm_user_assigned_identity.function_identity.principal_id
+}
+
+resource "azurerm_role_assignment" "blob_data_assignment" {
+  scope                = azurerm_storage_account.function_app_storage.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_user_assigned_identity.function_identity.principal_id
+}
+
+resource "azurerm_role_assignment" "queue_data_assignment" {
+  scope                = azurerm_storage_account.function_app_storage.id
+  role_definition_name = "Storage Queue Data Contributor"
+  principal_id         = azurerm_user_assigned_identity.function_identity.principal_id
+}
+
+resource "azurerm_role_assignment" "table_data_assignment" {
+  scope                = azurerm_storage_account.function_app_storage.id
+  role_definition_name = "Storage Table Data Contributor"
+  principal_id         = azurerm_user_assigned_identity.function_identity.principal_id
+}
+
 resource "azurerm_windows_function_app" "function_app" {
   name                      = "${local.project_environment}-functionapp"
   virtual_network_subnet_id = azurerm_subnet.function_app_subnet.id
 
   app_settings = {
+    AZURE_CLIENT_ID                       = azurerm_user_assigned_identity.function_identity.client_id
+    AzureWebJobsStorage__accountName      = azurerm_storage_account.function_app_storage.name
+    AzureWebJobsStorage__credential       = "managedidentity"
+    AzureWebJobsStorage__clientId         = azurerm_user_assigned_identity.function_identity.client_id
+
     APPLICATIONINSIGHTS_CONNECTION_STRING = data.azurerm_application_insights.app_insights.connection_string
     BUYINGCATALOGUECONNECTIONSTRING       = "Server=tcp:${data.azurerm_mssql_server.buyingcataloguedb.fully_qualified_domain_name},1433;Initial Catalog=${var.database_catalog};Persist Security Info=False;User ID=${data.azurerm_key_vault_secret.sqladminusername.value};Password=${data.azurerm_key_vault_secret.sqladminpassword.value};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     NOTIFY_API_KEY                        = var.notify_api_key
@@ -112,7 +156,8 @@ resource "azurerm_windows_function_app" "function_app" {
   }
 
   identity {
-    type = "SystemAssigned"
+    type = "UserAssigned"
+    identity_ids = [ azurerm_user_assigned_identity.function_identity.id ]
   }
 
   ftp_publish_basic_authentication_enabled       = false
@@ -121,7 +166,7 @@ resource "azurerm_windows_function_app" "function_app" {
   location                                       = azurerm_resource_group.function_app_rg.location
   resource_group_name                            = azurerm_resource_group.function_app_rg.name
   storage_account_name                           = azurerm_storage_account.function_app_storage.name
-  storage_account_access_key                     = azurerm_storage_account.function_app_storage.primary_access_key
+  storage_uses_managed_identity                  = true
   https_only                                     = true
   enabled                                        = true
   public_network_access_enabled                  = true
@@ -153,4 +198,11 @@ resource "azurerm_windows_function_app" "function_app" {
       virtual_network_subnet_id = data.azurerm_subnet.default-subnet.id
     }
   }
+
+  depends_on = [
+    azurerm_role_assignment.service_props_reader_assignment,
+    azurerm_role_assignment.blob_data_assignment,
+    azurerm_role_assignment.queue_data_assignment,
+    azurerm_role_assignment.table_data_assignment
+  ]
 }
