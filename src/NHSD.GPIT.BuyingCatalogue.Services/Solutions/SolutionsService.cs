@@ -284,6 +284,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(p => p.CataloguePriceTiers)
                 .Include(ci => ci.CataloguePrices.Where(cp => cp.PublishedStatus == PublicationStatus.Published))
                 .ThenInclude(p => p.PricingUnit)
+                .Include(ci => ci.SupplierServiceAssociations)
                 .Where(ci =>
                 ci.AdditionalService.SolutionId == solutionId
                 && ci.PublishedStatus == PublicationStatus.Published)

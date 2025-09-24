@@ -4,17 +4,14 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public sealed class AdditionalServicesModel : SolutionDisplayBaseModel
+    public sealed class AdditionalServicesModel(
+        CatalogueItem catalogueItem,
+        List<CatalogueItem> additionalServices,
+        CatalogueItemContentStatus contentStatus)
+        : SolutionDisplayBaseModel(catalogueItem, contentStatus)
     {
-        public AdditionalServicesModel(
-            CatalogueItem catalogueItem,
-            List<CatalogueItem> additionalServices,
-            CatalogueItemContentStatus contentStatus)
-            : base(catalogueItem, contentStatus) =>
-            Services = additionalServices;
-
         public override int Index => 4;
 
-        public IList<CatalogueItem> Services { get; set; }
+        public IList<CatalogueItem> Services { get; set; } = additionalServices;
     }
 }

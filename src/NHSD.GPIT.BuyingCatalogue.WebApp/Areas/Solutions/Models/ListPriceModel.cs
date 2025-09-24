@@ -9,7 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     public sealed class ListPriceModel : SolutionDisplayBaseModel
     {
         public ListPriceModel()
-            : base()
         {
         }
 
