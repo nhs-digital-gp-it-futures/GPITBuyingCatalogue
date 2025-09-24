@@ -8,8 +8,6 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.AssociatedServicesModel
 @{
     ViewBag.Title = "Solution associated services";
-    var tieredPriceServices = Model.Services.Where(ci => ci.CataloguePrices.Any(p => p.CataloguePriceType == CataloguePriceType.Tiered)).ToList();
-    var flatPriceServices = Model.Services.Where(ci => ci.CataloguePrices.Any(p => p.CataloguePriceType == CataloguePriceType.Flat)).ToList();
 }
 
 <div>
@@ -33,10 +31,7 @@
                             ServiceId = service.Id,
                             SolutionId = Model.SolutionId,
                             OrderGuidance = service.AssociatedService.OrderGuidance,
-                            PricePageUrl = Url.Action(
-                                nameof(SolutionsController.AssociatedServicePrice),
-                                typeof(SolutionsController).ControllerName(),
-                                new { solutionId = Model.SolutionId, serviceId = service.Id }),
+                            PricePageUrl = Model.GetPricePageUrl(Url, service.Id),
                             Prices = service.CataloguePrices,
                             ItemDescription = service.AssociatedService.Description,
                         };
@@ -45,5 +40,12 @@
                 </nhs-expander>
             }
         </div>
+    }
+
+    @if (Model.IsSubPage)
+    {
+        <vc:nhs-anchor-button url=@Model.BackLink
+                              type="Secondary"
+                              text="Return to additional services" />
     }
 </div>

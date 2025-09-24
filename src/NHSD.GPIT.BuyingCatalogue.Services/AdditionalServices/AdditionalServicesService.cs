@@ -119,6 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                 .Include(i => i.CatalogueItemCapabilities)
                 .Include(i => i.CatalogueItemEpics)
                 .Include(i => i.Supplier)
+                .Include(i => i.SupplierServiceAssociations)
                 .Include(ci => ci.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Include(ci => ci.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .AsSplitQuery()

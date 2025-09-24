@@ -1,13 +1,10 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.AdditionalServicesModel
 @{
     ViewBag.Title = "Solution additional services";
-    var tieredPriceServices = Model.Services.Where(ci => ci.CataloguePrices.Any(p => p.CataloguePriceType == CataloguePriceType.Tiered)).ToList();
-    var flatPriceServices = Model.Services.Where(ci => ci.CataloguePrices.Any(p => p.CataloguePriceType == CataloguePriceType.Flat)).ToList();
 }
 <div>
     <partial name="_solutionSummary" model="Model"/>
@@ -26,13 +23,22 @@
                         CapabilitiesAndEpicsUrl = Url.Action(nameof(SolutionsController.CapabilitiesAdditionalServices), typeof(SolutionsController).ControllerName(), new { Model.SolutionId, additionalServiceId = service.Id }),
                         PricePageUrl = Url.Action(
                             nameof(SolutionsController.AdditionalServicePrice),
-                            typeof(SolutionsController).ControllerName(), 
+                            typeof(SolutionsController).ControllerName(),
                             new { solutionId = Model.SolutionId, serviceId = service.Id }),
                         Prices = service.CataloguePrices,
                         ItemDescription = service.AdditionalService.FullDescription,
                     };
-                 }
-                <partial name="_MarketingPriceSummary" model="priceSummaryModel" />
+                }
+                <partial name="_MarketingPriceSummary" model="priceSummaryModel"/>
+                @if (service.SupplierServiceAssociations.Count > 0)
+                {
+                    <h2 class="nhsuk-heading-m">Associated services</h2>
+                    <a asp-action="@(nameof(SolutionsController.AssociatedServices))"
+                       asp-controller="@(typeof(SolutionsController).ControllerName())"
+                       asp-route-solutionId="@(Model.SolutionId)" asp-route-additionalServiceId="@(service.Id)">
+                        View associated services
+                    </a>
+                }
             </nhs-expander>
         }
     </div>

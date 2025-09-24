@@ -13,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -1216,6 +1217,243 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actual = (await controller.AdditionalServicePrice(catalogueItemId, service.Id)).As<ViewResult>();
 
             actual.Should().BeNull();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_AssociatedServices_NullCatalogueItem_ReturnsError(
+            CatalogueItemId solutionId,
+            CatalogueItemId additionalServiceId,
+            [Frozen] ISolutionsService solutionsService,
+            SolutionsController controller)
+        {
+            solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
+
+            var result = await controller.AssociatedServices(solutionId, additionalServiceId);
+
+            result.Should()
+                .BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should()
+                .Be($"No Catalogue Item found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_AssociatedServices_SuspendedSolution_Redirects(
+            Solution solution,
+            CatalogueItemId additionalServiceId,
+            [Frozen] ISolutionsService solutionsService,
+            SolutionsController controller)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Suspended;
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+
+            var result = await controller.AssociatedServices(solution.CatalogueItemId, additionalServiceId);
+
+            result.Should()
+                .BeOfType<RedirectToActionResult>()
+                .Which.ActionName.Should()
+                .Be(nameof(controller.Description));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_AssociatedServices_NullAdditionalService_ReturnsError(
+            Solution solution,
+            CatalogueItemId additionalServiceId,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IAdditionalServicesService additionalServicesService,
+            SolutionsController controller)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+            additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalServiceId)
+                .Returns((CatalogueItem)null);
+
+            var result = await controller.AssociatedServices(solution.CatalogueItemId, additionalServiceId);
+
+            result.Should()
+                .BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should()
+                .Be($"No additional service found for Id: {additionalServiceId}");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_AssociatedServices_Valid_ReturnsView(
+            Solution solution,
+            AdditionalService additionalService,
+            List<AssociatedService> associatedServices,
+            CatalogueItemContentStatus contentStatus,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IAdditionalServicesService additionalServicesService,
+            [Frozen] IAssociatedServicesService associatedServicesService,
+            SolutionsController controller)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            var associatedServiceCatalogueItems = associatedServices.Select(x => x.CatalogueItem).ToList();
+
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+            solutionsService.GetContentStatusForCatalogueItem(solution.CatalogueItemId).Returns(contentStatus);
+
+            additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId)
+                .Returns(additionalService.CatalogueItem);
+
+            associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(additionalService.CatalogueItemId)
+                .Returns(associatedServiceCatalogueItems);
+
+            var result = await controller.AssociatedServices(solution.CatalogueItemId, additionalService.CatalogueItemId);
+
+            result.Should()
+                .BeOfType<ViewResult>()
+                .Which.Model.Should()
+                .BeEquivalentTo(
+                    new AdditionalAssociatedServicesModel(
+                        solution.CatalogueItem,
+                        additionalService.CatalogueItem,
+                        associatedServiceCatalogueItems,
+                        contentStatus),
+                    opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_AssociatedServicePrice_NullCatalogueItem_ReturnsError(
+            CatalogueItemId solutionId,
+            CatalogueItemId additionalServiceId,
+            CatalogueItemId associatedServiceId,
+            [Frozen] ISolutionsService solutionsService,
+            SolutionsController controller)
+        {
+            solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
+
+            var result = await controller.AssociatedServicePrice(solutionId, additionalServiceId, associatedServiceId);
+
+            result.Should()
+                .BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should()
+                .Be($"No Catalogue Item found for Id: {solutionId}");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_AssociatedServicePrice_SuspendedSolution_Redirects(
+            Solution solution,
+            CatalogueItemId additionalServiceId,
+            CatalogueItemId associatedServiceId,
+            [Frozen] ISolutionsService solutionsService,
+            SolutionsController controller)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Suspended;
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+
+            var result = await controller.AssociatedServicePrice(solution.CatalogueItemId, additionalServiceId, associatedServiceId);
+
+            result.Should()
+                .BeOfType<RedirectToActionResult>()
+                .Which.ActionName.Should()
+                .Be(nameof(controller.Description));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_AssociatedServicePrice_NullAdditionalService_ReturnsError(
+            Solution solution,
+            CatalogueItemId additionalServiceId,
+            CatalogueItemId associatedServiceId,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IAdditionalServicesService additionalServicesService,
+            SolutionsController controller)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+            additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalServiceId)
+                .Returns((CatalogueItem)null);
+
+            var result = await controller.AssociatedServicePrice(solution.CatalogueItemId, additionalServiceId, associatedServiceId);
+
+            result.Should()
+                .BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should()
+                .Be($"No additional service found for Id: {additionalServiceId}");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_AssociatedServicePrice_NullAssociatedService_ReturnsError(
+            Solution solution,
+            AdditionalService additionalService,
+            CatalogueItemId associatedServiceId,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IAdditionalServicesService additionalServicesService,
+            SolutionsController controller)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            additionalService.CatalogueItem.SupplierServiceAssociations = new List<SupplierServiceAssociation>();
+
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+
+            additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId)
+                .Returns(additionalService.CatalogueItem);
+
+            var result = await controller.AssociatedServicePrice(solution.CatalogueItemId, additionalService.CatalogueItemId, associatedServiceId);
+
+            result.Should()
+                .BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should()
+                .Be($"No associated service found for Id: {associatedServiceId}");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_AssociatedServicePrice_Valid_ReturnsView(
+            Solution solution,
+            AdditionalService additionalService,
+            AssociatedService associatedService,
+            List<CataloguePrice> cataloguePrices,
+            CatalogueItemContentStatus contentStatus,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IAdditionalServicesService additionalServicesService,
+            [Frozen] IListPriceService listPriceService,
+            SolutionsController controller)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            associatedService.CatalogueItem.CataloguePrices = cataloguePrices;
+            additionalService.CatalogueItem.SupplierServiceAssociations = new List<SupplierServiceAssociation>
+            {
+                new(additionalService.CatalogueItemId, associatedService.CatalogueItemId)
+                {
+                    AssociatedService = associatedService,
+                },
+            };
+
+            var expectedModel =
+                new ListPriceModel(solution.CatalogueItem, associatedService.CatalogueItem, contentStatus)
+                {
+                    IndexValue = 4, Caption = associatedService.CatalogueItem.Name,
+                };
+
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+            solutionsService.GetContentStatusForCatalogueItem(solution.CatalogueItemId).Returns(contentStatus);
+
+            additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId)
+                .Returns(additionalService.CatalogueItem);
+
+            listPriceService.GetCatalogueItemWithListPrices(associatedService.CatalogueItemId)
+                .Returns(associatedService.CatalogueItem);
+
+            var result = await controller.AssociatedServicePrice(solution.CatalogueItemId, additionalService.CatalogueItemId, associatedService.CatalogueItemId);
+
+            result.Should()
+                .BeOfType<ViewResult>()
+                .Which.Model.Should()
+                .BeEquivalentTo(
+                    expectedModel,
+                    opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
@@ -15,6 +16,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             typeof(AssociatedServicesModel)
                 .Should()
                 .BeAssignableTo<SolutionDisplayBaseModel>();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Construct_SetsSubPageFalse(
+            Solution solution,
+            List<AssociatedService> associatedServices,
+            CatalogueItemContentStatus contentStatus)
+        {
+            var model = new AssociatedServicesModel(
+                solution.CatalogueItem,
+                associatedServices.Select(x => x.CatalogueItem).ToList(),
+                contentStatus);
+
+            model.IsSubPage.Should().BeFalse();
         }
 
         [Theory]

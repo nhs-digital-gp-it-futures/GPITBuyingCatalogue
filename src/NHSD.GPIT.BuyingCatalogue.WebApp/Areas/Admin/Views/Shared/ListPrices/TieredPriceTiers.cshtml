@@ -105,7 +105,7 @@
         CatalogueItemType.AssociatedService => Url.Action(
             nameof(AssociatedServiceListPriceController.EditTieredPriceTier),
             typeof(AssociatedServiceListPriceController).ControllerName(),
-            new { supplierId = Model.SupplierId, associatedServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id }),
+            new { supplierId = Model.SupplierId, associatedServiceId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id }),
         _ => string.Empty,
         };
 }
