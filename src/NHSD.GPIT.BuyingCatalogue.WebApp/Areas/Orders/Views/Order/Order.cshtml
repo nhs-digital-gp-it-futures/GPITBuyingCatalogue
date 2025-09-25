@@ -12,8 +12,8 @@
 
     var serviceRecipientUrl = Model.IsMergerOrSplit
     ? Url.Action(
-        nameof(MergerOrSplitServiceRecipientsController.SelectSublocations),
-        typeof(MergerOrSplitServiceRecipientsController).ControllerName(),
+        nameof(ServiceRecipientsController.SelectServiceRecipients_Merger),
+        typeof(ServiceRecipientsController).ControllerName(),
         new { Model.InternalOrgId, Model.CallOffId })
     : Url.Action(
         nameof(ServiceRecipientsController.UploadOrSelectServiceRecipients),

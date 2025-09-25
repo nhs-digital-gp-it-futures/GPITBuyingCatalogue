@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
@@ -80,6 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpGet("select-sublocations")]
+        [HttpGet("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/select-sublocations")]
         public async Task<IActionResult> SelectSublocations(
             string internalOrgId,
             CallOffId callOffId)
@@ -108,6 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("select-sublocations")]
+        [HttpPost("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/select-sublocations")]
         public async Task<IActionResult> SelectSublocations(
             SelectSublocationsModel selectSublocations,
             string internalOrgId,
@@ -153,6 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpGet("add-sublocations")]
+        [HttpGet("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/add-sublocations")]
         public async Task<IActionResult> AddSublocations(string internalOrgId, CallOffId callOffId)
         {
             var backLink = Url.Action(
@@ -164,6 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("add-sublocations")]
+        [HttpPost("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/add-sublocations")]
         public IActionResult AddSublocations(
             SelectSublocationsOverviewModel model,
             string internalOrgId,
@@ -173,6 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpGet("remove-sublocations")]
+        [HttpGet("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/remove-sublocations")]
         public async Task<IActionResult> RemoveSublocations(
             string internalOrgId,
             CallOffId callOffId,
@@ -205,6 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("remove-sublocations")]
+        [HttpPost("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/remove-sublocations")]
         public async Task<IActionResult> RemoveSublocations(
             RemoveSublocationsModel removeSublocationsModel,
             string internalOrgId,
@@ -243,6 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpGet("{sublocationOdsCode}")]
+        [HttpGet("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/{sublocationOdsCode}")]
         public async Task<IActionResult> SelectSublocationRecipients(
             string internalOrgId,
             CallOffId callOffId,
@@ -332,6 +341,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("{sublocationOdsCode}")]
+        [HttpPost("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/{sublocationOdsCode}")]
         public async Task<IActionResult> SelectSublocationRecipients(
             SelectSublocationRecipientsModel selectSublocationRecipientsModel,
             string internalOrgId,
@@ -382,6 +392,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpGet("confirm-sublocations")]
+        [HttpGet("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/confirm-sublocations")]
         public async Task<IActionResult> ConfirmSublocations(string internalOrgId, CallOffId callOffId)
         {
             var backLink = Url.Action(
@@ -393,6 +404,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("confirm-sublocations")]
+        [HttpPost("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/confirm-sublocations")]
         public IActionResult ConfirmSublocations(
             SelectSublocationsOverviewModel model,
             string internalOrgId,
@@ -578,5 +590,184 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 .Select(x => new ServiceRecipientModel(x))
                 .ToList();
         }
+
+        // ========================= MERGER / SPLIT REGION =========================
+
+        [HttpGet("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/select-recipients")]
+        public async Task<IActionResult> SelectServiceRecipients_Merger(
+            string internalOrgId, CallOffId callOffId, SelectionMode? selectionMode = null)
+        {
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+
+            var orderType = wrapper.Order.OrderType;
+            if (!orderType.MergerOrSplit)
+                return BadRequest($"Expected {callOffId} to be a merger or a split");
+
+            var possibles = MapToModel(await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId), true);
+
+            var preSelected = wrapper.Order.FlattenedRecipients.Select(x => x.RecipientOdsCode).ToList();
+            if (preSelected.Count > 0 && wrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode is not null)
+                preSelected.Add(wrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode);
+
+            var model = new SelectMergerOrSplitRecipientsModel(
+                organisation,
+                callOffId,
+                wrapper.Order.OrderType,
+                possibles,
+                preSelected,
+                selectionMode,
+                wrapper.IsAmendment)
+            {
+                BackLink = Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+            };
+
+            return View("ServiceRecipients/SelectMergerOrSplitRecipients", model);
+        }
+
+        [HttpPost("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/select-recipients")]
+        public async Task<IActionResult> SelectServiceRecipients_Merger(
+            string internalOrgId, CallOffId callOffId, SelectMergerOrSplitRecipientsModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("ServiceRecipients/SelectMergerOrSplitRecipients", model);
+
+            var recipientIds = model.GetServiceRecipients()
+                .Where(x => x.Selected)
+                .Select(x => x.OdsCode)
+                .ToRecipientsString();
+
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var selectedRecipientId = wrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode;
+
+            return RedirectToAction(
+                nameof(SelectRecipientForPracticeReorganisation_Merger),
+                new { internalOrgId, callOffId, recipientIds, selectedRecipientId });
+        }
+
+        [HttpGet("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/select-recipient-for-practice-reorganisation")]
+        public async Task<IActionResult> SelectRecipientForPracticeReorganisation_Merger(
+            string internalOrgId, CallOffId callOffId, string recipientIds, string selectedRecipientId)
+        {
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+            var orderType = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order.OrderType;
+
+            var selectedOds = UrlStringToValues(recipientIds);
+            var serviceRecipients = MapToModel(
+                await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(internalOrgId, selectedOds), false);
+
+            var model = new RecipientForPracticeReorganisationModel(organisation, callOffId, orderType, serviceRecipients)
+            { SelectedOdsCode = selectedRecipientId };
+
+            return View("MergerOrSplitServiceRecipients/SelectRecipientForPracticeReorganisation", model);
+        }
+
+        [HttpPost("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/select-recipient-for-practice-reorganisation")]
+        public IActionResult SelectRecipientForPracticeReorganisation_Merger(
+            string internalOrgId, CallOffId callOffId, string recipientIds, RecipientForPracticeReorganisationModel model)
+        {
+            if (!ModelState.IsValid) return View("MergerOrSplitServiceRecipients/SelectRecipientForPracticeReorganisation", model);
+
+            var selectedRecipientId = model.SelectedOdsCode;
+
+            return RedirectToAction(
+                nameof(ConfirmChanges_Merger),
+                new { internalOrgId, callOffId, recipientIds, selectedRecipientId });
+        }
+
+        [HttpGet("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/confirm-recipients")]
+        public async Task<IActionResult> ConfirmChanges_Merger(
+            string internalOrgId, CallOffId callOffId, string recipientIds, string selectedRecipientId)
+        {
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var orderType = wrapper.Order.OrderType;
+
+            var selected = MapToModel(
+                await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId, UrlStringToValues(recipientIds)),
+                false);
+
+            var retained = selected.FirstOrDefault(r => r.OdsCode == selectedRecipientId);
+            if (retained is null)
+                return BadRequest($"The selected merger or split recipient {selectedRecipientId} isn't in the list of recipients");
+
+            selected.Remove(retained);
+
+            var model = new ConfirmChangesModel(callOffId, orderType, selected, retained)
+            {
+                BackLink = Url.Action(
+                    nameof(SelectRecipientForPracticeReorganisation_Merger),
+                    new { internalOrgId, callOffId, recipientIds, selectedRecipientId }),
+                AddRemoveRecipientsLink = string.Empty,
+            };
+
+            return View("MergerOrSplitServiceRecipients/ConfirmChanges", model);
+        }
+
+        [HttpPost("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/confirm-recipients")]
+        public async Task<IActionResult> ConfirmChanges_Merger(
+            string internalOrgId, CallOffId callOffId, ConfirmChangesModel model)
+        {
+            var wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+
+            await orderService.SetOrderPracticeReorganisationRecipient(
+                internalOrgId, callOffId, model.PracticeReorganisationRecipient.OdsCode);
+
+            var selectedAsServiceRecipient = await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId, model.Selected.Select(x => x.OdsCode));
+
+            var recipientsAsSublocationModel = selectedAsServiceRecipient
+                .GroupBy(x => x.LocationOrgId)
+                .Select(x => new SublocationModel
+                {
+                    OdsCode = x.Key,
+                    ServiceRecipients = x.Select(y => new ServiceRecipientModel(y)).ToList(),
+                })
+                .ToList();
+
+            var sublocationsAsEntityModel = recipientsAsSublocationModel.Select(sl => new OrderSublocation
+            {
+                OrderId = wrapper.Order.Id,
+                OwnerOdsCode = organisation.ExternalIdentifier,
+                SublocationOdsCode = sl.OdsCode,
+                SublocationRecipients = sl.ServiceRecipients
+                    .Select(sr => wrapper.CreateRecipientWithExistingOrderContext(sr.OdsCode, sl.OdsCode))
+                    .ToList(),
+            }).ToList();
+
+            await orderService.SetSublocationsAndRecipients(callOffId, internalOrgId, sublocationsAsEntityModel);
+
+            return RedirectToAction(
+                nameof(OrderController.Order),
+                typeof(OrderController).ControllerName(),
+                new { internalOrgId, callOffId });
+        }
+
+        private static List<ServiceRecipientModel> MapToModel(
+            IEnumerable<ServiceRecipient> recipients,
+            bool orderByName)
+        {
+            if (orderByName)
+            {
+                recipients = recipients.OrderBy(x => x.Name);
+            }
+
+            return recipients
+                .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location })
+                .ToList();
+        }
+
+        private static string[] UrlStringToValues(string recipientIds)
+        {
+            return recipientIds?.Split(
+                RecipientsConstants.Delimiter,
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        }
+
+        // ======================= END MERGER / SPLIT REGION =======================
     }
 }
