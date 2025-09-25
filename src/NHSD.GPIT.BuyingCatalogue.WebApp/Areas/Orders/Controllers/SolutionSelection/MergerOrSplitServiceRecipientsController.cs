@@ -267,7 +267,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     sublocationAsSublocationModel,
                     possibleRecipients,
                     backLink,
-                    selectionMode);
+                    selectionMode)
+                {
+                    CustomTitle = "Add merging Service Recipients",
+                    CustomAdvice = "Select all the practices that will be involved in the merger. They must all be using the same Catalogue Solution.",
+                };
 
                 return View("ServiceRecipients/SelectSublocationRecipients", amendmentModel);
             }
@@ -277,7 +281,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 sublocationAsSublocationModel,
                 possibleRecipients,
                 backLink,
-                selectionMode);
+                selectionMode)
+            {
+                CustomTitle = "Add merging Service Recipients",
+                CustomAdvice = "Select all the practices that will be involved in the merger. They must all be using the same Catalogue Solution.",
+            };
 
             return View("ServiceRecipients/SelectSublocationRecipients", model);
         }
@@ -358,9 +366,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             {
                 SelectedOdsCode = selectedRecipientId,
                 BackLink = Url.Action(
-                    nameof(AddSublocations), // ← go back to “Add organisations” overview
+                    nameof(AddSublocations),
                     typeof(MergerOrSplitServiceRecipientsController).ControllerName(),
                     new { internalOrgId, callOffId }),
+                ShowSublocationsHeading = false,
             };
 
             return View(model);
@@ -496,6 +505,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     nameof(SelectRecipientForPracticeReorganisation),
                     new { internalOrgId, callOffId, recipientIds, selectedRecipientId }),
                 AddRemoveRecipientsLink = string.Empty,
+                Advice = "Review the organisations involved in the merger.",
             };
 
             return View(model);
@@ -675,7 +685,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 wrapper.Order,
                 sublocations,
                 addOrChangeSublocationsLink,
-                backLink);
+                backLink)
+            {
+                CustomTitle = "Add organisations",
+                CustomAdvice = "Select a sublocation to add organisations to this merger.",
+            };
 
             return View("ServiceRecipients/SelectSublocationsOverview", model);
 

@@ -44,6 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public string SelectedOdsCode { get; set; }
 
+        public bool ShowSublocationsHeading { get; set; } = true;
+
         private void GetTitleAndAdviceFromOrderType(OrderType orderType)
         {
             Title = orderType.GetPracticeReorganisationRecipientTitle();

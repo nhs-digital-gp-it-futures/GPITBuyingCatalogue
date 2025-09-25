@@ -1,5 +1,4 @@
-﻿
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.AddOrChange
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
@@ -7,7 +6,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectSublocationsOverviewModel;
 
 @{
-    ViewBag.Title = Model.Title;
+    ViewBag.Title = Model.EffectiveTitle;
 
     var isChangeSublocations = Model.Sublocations.Count > 0;
 }
@@ -16,20 +15,18 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title model="@Model"/>
+        <nhs-page-title title="@Model.EffectiveTitle" caption="@Model.Caption" advice="@Model.EffectiveAdvice" />
         <nhs-card-v2>
             <nhs-card-content title="Sublocations for @Model.ParentName">
                 <nhs-table>
                     <nhs-table-column>Sublocation</nhs-table-column>
-                    <nhs-table-column>Sublocation ODS code</nhs-table-column>
                     <nhs-table-column>Organisations added</nhs-table-column>
                     <nhs-table-column>Status</nhs-table-column>
                     <nhs-table-column>Action</nhs-table-column>
 
-                    @foreach (var sublocation in Model.Sublocations)
+                    @foreach (var sublocation in @Model.Sublocations)
                     {
                         <nhs-table-row-container>
-                            <nhs-table-cell>@sublocation.Name</nhs-table-cell>
                             <nhs-table-cell>@sublocation.OdsCode</nhs-table-cell>
                             <nhs-table-cell>@sublocation.ServiceRecipientCount</nhs-table-cell>
                             <nhs-table-cell><nhs-tag status-enum="@sublocation.TaskProgress" /></nhs-table-cell>

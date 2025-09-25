@@ -7,7 +7,7 @@
 @model SelectSublocationRecipientsModel;
 
 @{
-    ViewBag.Title = Model.Title;
+    ViewBag.Title = Model.EffectiveTitle;
 
     var previousOrderRecipients = Model.RenderedServiceRecipients.Where(x => x.Hidden).ToList();
 
@@ -18,7 +18,7 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary/>
-        <nhs-page-title model="@Model"/>
+        <nhs-page-title title="@Model.EffectiveTitle" caption="@Model.Caption" advice="@Model.EffectiveAdvice" />
 
 
         @if (Model.IsAmendment is true && (previousOrderRecipients.Count > 0))
@@ -58,7 +58,7 @@
         }
 
         <form method="post" id="sr-form">
-            <hidden-inputs title="@Model.Title" advice="@Model.Advice" caption="@Model.Caption" />
+            <hidden-inputs title="@Model.EffectiveTitle" advice="@Model.EffectiveAdvice" caption="@Model.Caption" />
             <input type="hidden" asp-for="@Model.SublocationName" />
             <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-expander-v2 id="recipients-expander" open="@(Model.SelectionMode is null || expandWhenNotValid)">

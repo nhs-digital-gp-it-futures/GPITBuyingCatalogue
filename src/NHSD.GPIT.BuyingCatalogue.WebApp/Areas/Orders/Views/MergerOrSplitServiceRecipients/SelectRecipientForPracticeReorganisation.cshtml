@@ -16,7 +16,7 @@
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="OrganisationName" />
 
-            @if (Model.OrganisationType != OrganisationType.GP)
+            @if (Model.ShowSublocationsHeading && Model.OrganisationType != OrganisationType.GP)
             {
                 <h3 style="white-space:nowrap">Sublocations for @Model.OrganisationName</h3>
             }
