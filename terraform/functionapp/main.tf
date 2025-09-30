@@ -138,11 +138,9 @@ resource "azurerm_windows_function_app" "function_app" {
 
   app_settings = {
     AZURE_CLIENT_ID                       = azurerm_user_assigned_identity.function_identity.client_id
-    AzureWebJobsStorage__accountName      = azurerm_storage_account.function_app_storage.name
     AzureWebJobsStorage__credential       = "managedidentity"
     AzureWebJobsStorage__clientId         = azurerm_user_assigned_identity.function_identity.client_id
 
-    APPLICATIONINSIGHTS_CONNECTION_STRING = data.azurerm_application_insights.app_insights.connection_string
     BUYINGCATALOGUECONNECTIONSTRING       = "Server=tcp:${data.azurerm_mssql_server.buyingcataloguedb.fully_qualified_domain_name},1433;Initial Catalog=${var.database_catalog};Persist Security Info=False;User ID=${data.azurerm_key_vault_secret.sqladminusername.value};Password=${data.azurerm_key_vault_secret.sqladminpassword.value};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     NOTIFY_API_KEY                        = var.notify_api_key
     QUEUE__SEND_EMAIL_NOTIFICATION        = local.send_notification
@@ -172,12 +170,13 @@ resource "azurerm_windows_function_app" "function_app" {
   public_network_access_enabled                  = true
 
   site_config {
-    always_on                         = true
-    ftps_state                        = "Disabled"
-    ip_restriction_default_action     = "Deny"
-    scm_ip_restriction_default_action = "Deny"
-    http2_enabled                     = true
-    use_32_bit_worker                 = false
+    application_insights_connection_string  = data.azurerm_application_insights.app_insights.connection_string
+    always_on                               = true
+    ftps_state                              = "Disabled"
+    ip_restriction_default_action           = "Deny"
+    scm_ip_restriction_default_action       = "Deny"
+    http2_enabled                           = true
+    use_32_bit_worker                       = false
 
     dynamic "ip_restriction" {
       for_each = var.primary_vpn
