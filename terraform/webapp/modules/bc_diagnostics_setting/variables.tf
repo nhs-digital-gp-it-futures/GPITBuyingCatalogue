@@ -13,3 +13,8 @@ variable "log_analytics_workspace_id" {
 variable "enable_logs" {
   type    = list(string)
 }
+
+variable "enable_metrics" {
+  type    = list(string)
+  default = []
+}

@@ -4,6 +4,8 @@ locals {
     "ApplicationGatewayFirewallLog"
   ]
 
+  gateway_metrics = [ "AllMetrics" ]
+
   diagnostics_name            = "${var.project}-${var.environment}-appgwdiag"
   gateway_name                = "${var.project}-${var.environment}-appgateway"
   name_fragment               = "${var.project}-${var.environment}"
