@@ -229,7 +229,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                         Price = (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
-                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative)
+                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType
+                            == CataloguePriceCalculationType.Cumulative)
                             ? null
                             : prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
@@ -264,10 +265,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ThenBy(o => o.ServiceRecipientName)
                 .ToList();
 
-            for (int i = 0; i < distinctItems.Count; i++)
+            foreach (var item in distinctItems)
             {
-                distinctItems[i].ServiceRecipientItemId =
-                    $"{distinctItems[i].CallOffId}-{distinctItems[i].ServiceRecipientId}-{i}";
+                item.ServiceRecipientItemId = $"{item.CallOffId}-{item.ServiceRecipientId}-{item.ProductId}";
             }
 
             return distinctItems;
@@ -294,11 +294,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
                         SubIcbCode = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
-                                ? string.Empty
-                                : or.ParentSublocation.SublocationOdsCode,
+                            ? string.Empty
+                            : or.ParentSublocation.SublocationOdsCode,
                         SubIcbName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
-                                ? string.Empty
-                                : or.ParentSublocation.SublocationOrganisation.Name,
+                            ? string.Empty
+                            : or.ParentSublocation.SublocationOrganisation.Name,
                         CommencementDate = or.Order.CommencementDate,
                         ServiceRecipientId = or.RecipientOdsCode,
                         ServiceRecipientName = or.RecipientOdsOrganisation.Name,
@@ -322,7 +322,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                         Price = (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
-                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative)
+                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType
+                            == CataloguePriceCalculationType.Cumulative)
                             ? null
                             : prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
@@ -356,8 +357,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ThenBy(o => o.ServiceRecipientName)
                 .ToList();
 
-            for (int i = 0; i < ordered.Count; i++)
-                ordered[i].ServiceRecipientItemId = $"{ordered[i].CallOffId}-{ordered[i].ServiceRecipientId}-{i}";
+            foreach (var item in ordered)
+            {
+                item.ServiceRecipientItemId = $"{item.CallOffId}-{item.ServiceRecipientId}-{item.ProductId}";
+            }
 
             return ordered;
         }
@@ -383,13 +386,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
                         SubIcbCode = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
-                                ? string.Empty
-                                : or.ParentSublocation.SublocationOdsCode,
+                            ? string.Empty
+                            : or.ParentSublocation.SublocationOdsCode,
                         SubIcbName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
-                                ? string.Empty
-                                : or.ParentSublocation.SublocationOrganisation.Name,
+                            ? string.Empty
+                            : or.ParentSublocation.SublocationOrganisation.Name,
                         CommencementDate = or.Order.CommencementDate,
-                        ServiceRecipientId = or.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode,
+                        ServiceRecipientId = or.RecipientOdsCode,
                         ServiceRecipientName = or.RecipientOdsOrganisation.Name,
                         ServiceRecipientToRetain = $"{or.RecipientOdsOrganisation.Name} ({or.RecipientOdsCode})",
                         ServiceRecipientToSplit =
@@ -411,7 +414,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                         Price = (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
-                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative)
+                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType
+                            == CataloguePriceCalculationType.Cumulative)
                             ? (decimal?)null
                             : prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
@@ -444,8 +448,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .OrderBy(o => o.ServiceRecipientName)
                 .ToList();
 
-            for (int i = 0; i < ordered.Count; i++)
-                ordered[i].ServiceRecipientItemId = $"{ordered[i].CallOffId}-{ordered[i].ServiceRecipientId}-{i}";
+            foreach (var item in ordered)
+            {
+                item.ServiceRecipientItemId = $"{item.CallOffId}-{item.ServiceRecipientId}-{item.ProductId}";
+            }
 
             return ordered;
         }
