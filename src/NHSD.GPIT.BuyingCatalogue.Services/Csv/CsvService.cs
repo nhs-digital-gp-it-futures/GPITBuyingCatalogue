@@ -229,8 +229,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                         Price = (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
-                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType
-                            == CataloguePriceCalculationType.Cumulative)
+                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative)
                             ? null
                             : prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
@@ -264,11 +263,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ThenBy(o => o.ProductName)
                 .ThenBy(o => o.ServiceRecipientName)
                 .ToList();
-
-            foreach (var item in distinctItems)
-            {
-                item.ServiceRecipientItemId = $"{item.CallOffId}-{item.ServiceRecipientId}-{item.ProductId}";
-            }
 
             return distinctItems;
         }
@@ -322,8 +316,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                         Price = (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
-                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType
-                            == CataloguePriceCalculationType.Cumulative)
+                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative)
                             ? null
                             : prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
@@ -356,11 +349,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ThenBy(o => o.ProductName)
                 .ThenBy(o => o.ServiceRecipientName)
                 .ToList();
-
-            foreach (var item in ordered)
-            {
-                item.ServiceRecipientItemId = $"{item.CallOffId}-{item.ServiceRecipientId}-{item.ProductId}";
-            }
 
             return ordered;
         }
@@ -414,8 +402,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                         Price = (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
-                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType
-                            == CataloguePriceCalculationType.Cumulative)
+                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative)
                             ? (decimal?)null
                             : prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
@@ -447,11 +434,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var ordered = items
                 .OrderBy(o => o.ServiceRecipientName)
                 .ToList();
-
-            foreach (var item in ordered)
-            {
-                item.ServiceRecipientItemId = $"{item.CallOffId}-{item.ServiceRecipientId}-{item.ProductId}";
-            }
 
             return ordered;
         }
