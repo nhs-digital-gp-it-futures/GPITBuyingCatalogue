@@ -193,10 +193,10 @@ public class TrudOdsServiceTests
         var subLocationRelationship = new OrganisationRelationship(
             settings.InGeographyOfRelType,
             organisation.ExternalIdentifier,
-            subLocation.Id);
+            subLocation.Id) { IsActive = true };
 
         var organisationRelationships =
-            organisations.Select(x => new OrganisationRelationship(relationshipTypeId, subLocation.Id, x.Id))
+            organisations.Select(x => new OrganisationRelationship(relationshipTypeId, subLocation.Id, x.Id) { IsActive = true })
                 .ToList();
 
         context.Organisations.Add(organisation);
@@ -247,6 +247,7 @@ public class TrudOdsServiceTests
                 OwnerOrganisationId = parentOdsOrganisation.Id,
                 RelationshipTypeId = relationshipTypeId,
                 TargetOrganisationId = x.Id,
+                IsActive = true,
             });
 
         context.OrganisationRelationships.AddRange(organisationRelationships);
@@ -293,6 +294,7 @@ public class TrudOdsServiceTests
                 OwnerOrganisationId = sublocationOdsOrganisation.Id,
                 RelationshipTypeId = relationshipTypeId,
                 TargetOrganisationId = x.Id,
+                IsActive = true,
             });
 
         context.OrganisationRelationships.AddRange(organisationRelationships);
@@ -411,10 +413,10 @@ public class TrudOdsServiceTests
         var subLocationRelationship = new OrganisationRelationship(
             settings.InGeographyOfRelType,
             organisation.ExternalIdentifier,
-            subLocation.Id);
+            subLocation.Id) { IsActive = true };
 
         var organisationRelationships =
-            organisations.Select(x => new OrganisationRelationship(relationshipTypeId, subLocation.Id, x.Id))
+            organisations.Select(x => new OrganisationRelationship(relationshipTypeId, subLocation.Id, x.Id) { IsActive = true })
                 .ToList();
 
         context.Organisations.Add(organisation);

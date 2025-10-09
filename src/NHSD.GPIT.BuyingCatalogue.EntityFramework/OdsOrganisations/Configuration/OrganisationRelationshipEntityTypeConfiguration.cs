@@ -12,6 +12,8 @@ public class OrganisationRelationshipEntityTypeConfiguration : IEntityTypeConfig
 
         builder.HasKey(x => x.Id);
 
+        builder.HasQueryFilter(x => x.IsActive);
+
         builder.HasOne(x => x.RelationshipType)
             .WithMany()
             .HasForeignKey(x => x.RelationshipTypeId);
