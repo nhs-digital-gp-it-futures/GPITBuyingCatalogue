@@ -36,6 +36,9 @@
                             <span class="nhsuk-u-visually-hidden">Selected</span>
                         </nhs-table-column>
                         <nhs-table-column>
+                            ID
+                        </nhs-table-column>
+                        <nhs-table-column>
                             Associated service
                         </nhs-table-column>
                         <nhs-table-column>
@@ -46,6 +49,7 @@
                         </nhs-table-column>
                         @for (int i = 0; i < Model.SelectableAssociatedServices.Count; i++)
                         {
+                            <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].CatalogueItemId"/>
                             <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].Name"/>
                             <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].Description"/>
                             <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].OrderGuidance"/>
@@ -57,6 +61,9 @@
                                         <nhs-checkbox asp-for="@Model.SelectableAssociatedServices[i].Selected"
                                                       hidden-input="@Model.SelectableAssociatedServices[i].CatalogueItemId"/>
                                     </nhs-checkbox-container>
+                                </nhs-table-cell>
+                                <nhs-table-cell style="white-space:nowrap">
+                                    @Model.SelectableAssociatedServices[i].CatalogueItemId
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     @Model.SelectableAssociatedServices[i].Name

@@ -21,6 +21,9 @@
         {
             <nhs-table data-test-id="additional-services-table" label-text="Additional services available">
                 <nhs-table-column>
+                    ID
+                </nhs-table-column>
+                <nhs-table-column>
                     Additional service
                 </nhs-table-column>
                 <nhs-table-column>
@@ -33,6 +36,9 @@
                 @foreach (var additionalService in Model.AdditionalServices)
                 {
                     <nhs-table-row-container>
+                        <nhs-table-cell style="white-space:nowrap">
+                            @additionalService.Id
+                        </nhs-table-cell>
                         <nhs-table-cell>
                             @additionalService.Name
                         </nhs-table-cell>
