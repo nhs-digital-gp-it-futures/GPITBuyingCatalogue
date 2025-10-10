@@ -20,6 +20,9 @@
             <nhs-fieldset-form-container asp-for="@Model.AssociatedServices">
                 <nhs-table data-test-id="associated-services-table" label-text="Associated services available">
                     <nhs-table-column>
+                        ID
+                    </nhs-table-column>
+                    <nhs-table-column>
                         Associated service
                     </nhs-table-column>
                     <nhs-table-column>
@@ -32,6 +35,9 @@
                     @foreach (var associatedService in Model.AssociatedServices)
                     {
                         <nhs-table-row-container>
+                            <nhs-table-cell style="white-space:nowrap">
+                                @associatedService.CatalogueItemId
+                            </nhs-table-cell>
                             <nhs-table-cell>
                                 @associatedService.CatalogueItem.Name
                             </nhs-table-cell>
