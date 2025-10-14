@@ -10,13 +10,8 @@
 @{
     ViewBag.Title = Model.Title;
 
-    var serviceRecipientUrl = Model.IsMergerOrSplit
-    ? Url.Action(
-        nameof(ServiceRecipientsController.SelectServiceRecipients_Merger),
-        typeof(ServiceRecipientsController).ControllerName(),
-        new { Model.InternalOrgId, Model.CallOffId })
-    : Url.Action(
-        nameof(ServiceRecipientsController.UploadOrSelectServiceRecipients),
+    var serviceRecipientUrl = Url.Action(
+        nameof(ServiceRecipientsController.Start),
         typeof(ServiceRecipientsController).ControllerName(),
         new { Model.InternalOrgId, Model.CallOffId });
 }
