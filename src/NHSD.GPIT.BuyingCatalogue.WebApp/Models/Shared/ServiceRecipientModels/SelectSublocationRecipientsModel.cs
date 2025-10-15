@@ -13,14 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         {
         }
 
-        public string? CustomTitle { get; init; }
-
-        public string? CustomAdvice { get; init; }
-
-        public string EffectiveTitle => CustomTitle ?? Title;
-
-        public string EffectiveAdvice => CustomAdvice ?? Advice;
-
         public SelectSublocationRecipientsModel(
             Competition competition,
             SublocationModel selectedSublocation,
@@ -94,6 +86,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
             SublocationName = selectedSublocation.Name;
         }
+
+        public string CustomTitle { get; init; }
+
+        public string CustomAdvice { get; init; }
+
+        public string EffectiveTitle => CustomTitle ?? Title;
+
+        public string EffectiveAdvice => CustomAdvice ?? Advice;
 
         public string SublocationName { get; init; }
 

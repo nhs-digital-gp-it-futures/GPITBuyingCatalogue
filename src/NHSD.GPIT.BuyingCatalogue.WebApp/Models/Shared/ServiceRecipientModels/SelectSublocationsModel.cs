@@ -13,15 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         {
         }
 
-        public string? CustomTitle { get; init; }
-
-        public string? CustomAdvice { get; init; }
-
-        // What the view should render
-        public string EffectiveTitle => CustomTitle ?? Title;
-
-        public string EffectiveAdvice => CustomAdvice ?? Advice;
-
         public SelectSublocationsModel(
             CompetitionEntityModels.Competition competition,
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
@@ -67,6 +58,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 ? GetRenderedSublocations(possibleSublocations, existingSublocations, previousOrderSublocations)
                 : GetRenderedSublocations(possibleSublocations, existingSublocations);
         }
+
+        public string CustomTitle { get; init; }
+
+        public string CustomAdvice { get; init; }
+
+        public string EffectiveTitle => CustomTitle ?? Title;
+
+        public string EffectiveAdvice => CustomAdvice ?? Advice;
 
         public IReadOnlyList<SelectOption<string>> RenderedSublocations { get; init; }
 

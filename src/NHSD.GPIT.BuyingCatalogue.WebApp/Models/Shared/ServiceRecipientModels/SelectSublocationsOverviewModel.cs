@@ -11,14 +11,6 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
     {
     }
 
-    public string? CustomTitle { get; init; }
-
-    public string? CustomAdvice { get; init; }
-
-    public string EffectiveTitle => CustomTitle ?? Title;
-
-    public string EffectiveAdvice => CustomAdvice ?? Advice;
-
     public SelectSublocationsOverviewModel(
         bool isConfirm,
         Competition competition,
@@ -57,6 +49,14 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
 
         BackLink = backLink;
     }
+
+    public string CustomTitle { get; init; }
+
+    public string CustomAdvice { get; init; }
+
+    public string EffectiveTitle => CustomTitle ?? Title;
+
+    public string EffectiveAdvice => CustomAdvice ?? Advice;
 
     public string ProcessType { get; init; }
 
