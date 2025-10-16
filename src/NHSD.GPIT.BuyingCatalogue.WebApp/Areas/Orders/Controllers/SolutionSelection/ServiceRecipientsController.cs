@@ -501,61 +501,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             return View("~/Views/Shared/ServiceRecipients/ConfirmSublocationRecipients.cshtml", model);
         }
 
-        [HttpGet("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/select-recipients")]
-        public async Task<IActionResult> SelectServiceRecipients_Merger(
-            string internalOrgId, CallOffId callOffId, SelectionMode? selectionMode = null)
-        {
-            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-
-            var orderType = wrapper.Order.OrderType;
-            if (!orderType.MergerOrSplit)
-                return BadRequest($"Expected {callOffId} to be a merger or a split");
-
-            var possibles = MapToModel(await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId), true);
-
-            var preSelected = wrapper.Order.FlattenedRecipients.Select(x => x.RecipientOdsCode).ToList();
-            if (preSelected.Count > 0 && wrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode is not null)
-                preSelected.Add(wrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode);
-
-            var model = new SelectMergerOrSplitRecipientsModel(
-                organisation,
-                callOffId,
-                wrapper.Order.OrderType,
-                possibles,
-                preSelected,
-                selectionMode,
-                wrapper.IsAmendment)
-            {
-                BackLink = Url.Action(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
-                    new { internalOrgId, callOffId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/select-recipients")]
-        public async Task<IActionResult> SelectServiceRecipients_Merger(
-            string internalOrgId, CallOffId callOffId, SelectMergerOrSplitRecipientsModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            var recipientIds = model.GetServiceRecipients()
-                .Where(x => x.Selected)
-                .Select(x => x.OdsCode)
-                .ToRecipientsString();
-
-            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var selectedRecipientId = wrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode;
-
-            return RedirectToAction(
-                nameof(SelectRecipientForPracticeReorganisation),
-                new { internalOrgId, callOffId, recipientIds, selectedRecipientId });
-        }
-
         [HttpGet("select-recipient-for-practice-reorganisation")]
         public async Task<IActionResult> SelectRecipientForPracticeReorganisation(
             string internalOrgId, CallOffId callOffId, string recipientIds, string selectedRecipientId)
