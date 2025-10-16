@@ -194,7 +194,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpGet("remove-sublocations")]
-        [HttpGet("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/remove-sublocations")]
         public async Task<IActionResult> RemoveSublocations(
             string internalOrgId,
             CallOffId callOffId,
@@ -227,7 +226,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("remove-sublocations")]
-        [HttpPost("~/order/organisation/{internalOrgId}/order/{callOffId}/merger-or-split-service-recipients/remove-sublocations")]
         public async Task<IActionResult> RemoveSublocations(
             RemoveSublocationsModel removeSublocationsModel,
             string internalOrgId,
@@ -305,7 +303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     nameof(AddSublocations),
                     new { internalOrgId, callOffId })
                 : Url.Action(
-                    nameof(ConfirmSublocations), 
+                    nameof(ConfirmSublocations),
                     typeof(ServiceRecipientsController).ControllerName(),
                     new { internalOrgId, callOffId });
 
