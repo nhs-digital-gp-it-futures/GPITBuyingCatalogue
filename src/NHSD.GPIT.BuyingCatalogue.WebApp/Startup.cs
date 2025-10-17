@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Environments;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Storage;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.Services.Pdf;
@@ -112,9 +113,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureAuthorization();
 
-            services.ConfigureBlobStorage(Configuration);
+            var settings = Configuration.GetSection("AzureBlobSettings").Get<AzureBlobSettings>();
 
-            services.ConfigureQueueStorage(Configuration);
+            services.ConfigureStorage(settings);
 
             services.AddSingleton<IRoutingService, RoutingService>();
             services.AddSingleton<IOrderTaskProgressProviderService, OrderTaskProgressProviderService>();

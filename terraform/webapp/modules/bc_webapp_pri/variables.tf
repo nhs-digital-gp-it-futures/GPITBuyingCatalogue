@@ -100,9 +100,8 @@ variable "sql_admin_password" {
   sensitive = true
 }
 
-variable "blob_storage_connection_string" {
+variable "storage_account_name" {
   type      = string
-  sensitive = true
 }
 
 variable "recaptcha_site_key" {
@@ -115,4 +114,12 @@ variable "recaptcha_secret_key" {
 
 variable "backend_subnet_id" {
   type = string
+}
+
+variable "webapp_identity" {
+  type = object({
+    id           = string
+    client_id    = string
+    principal_id = string
+  })
 }

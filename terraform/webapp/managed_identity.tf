@@ -8,3 +8,13 @@ resource "azurerm_user_assigned_identity" "managed_id" {
     architecture      = "new"
   }
 }
+
+resource "azurerm_user_assigned_identity" "web_app_identity" {
+  name                = "${var.project}-${var.environment}-webapp-identity"
+  location            = var.region
+  resource_group_name = azurerm_resource_group.webapp.name
+
+  tags = {
+    environment  = var.environment
+  }
+}

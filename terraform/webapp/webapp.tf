@@ -21,10 +21,11 @@ module "webapp" {
   create_host_binding             = !local.use_app_gateway ? 1 : 0
   keyvault_cert_id                = data.azurerm_key_vault_secret.ssl_cert.id
   notify_api_key                  = var.notify_api_key
-  blob_storage_connection_string  = module.documentstorageaccount.primary_connection_string
+  storage_account_name            = module.documentstorageaccount.storage_account_name
   recaptcha_site_key              = var.recaptcha_site_key
   recaptcha_secret_key            = var.recaptcha_secret_key
   backend_subnet_id               = azurerm_subnet.backend.id
+  webapp_identity                 = azurerm_user_assigned_identity.web_app_identity
 
   # SQL Vars
   sqlserver_name     = join("", module.sql_server_pri[*].sql_server_name)
