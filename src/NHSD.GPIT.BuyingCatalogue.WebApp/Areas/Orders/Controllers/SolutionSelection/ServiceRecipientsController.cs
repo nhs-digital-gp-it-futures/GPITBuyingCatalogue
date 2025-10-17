@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                             typeof(OrderController).ControllerName(),
                             new { internalOrgId, callOffId }),
             };
-            return View("~/Views/Shared/ServiceRecipients/UploadOrSelectServiceRecipient.cshtml", model);
+            return View("ServiceRecipients/UploadOrSelectServiceRecipient", model);
         }
 
         [HttpPost("upload-or-select-service-recipients")]
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CallOffId callOffId)
         {
             if (!ModelState.IsValid)
-                return View("~/Views/Shared/ServiceRecipients/UploadOrSelectServiceRecipient.cshtml", model);
+                return View("ServiceRecipients/UploadOrSelectServiceRecipient", model);
 
             if (model.ShouldUploadRecipients.GetValueOrDefault())
             {
@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 possibleSublocations,
                 backLink);
 
-            return View("~/Views/Shared/ServiceRecipients/SelectSublocations.cshtml", model);
+            return View("ServiceRecipients/SelectSublocations", model);
         }
 
         [HttpPost("select-sublocations")]
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             if (!ModelState.IsValid)
             {
-                return View("~/Views/Shared/ServiceRecipients/SelectSublocations.cshtml", selectSublocations);
+                return View("ServiceRecipients/SelectSublocations", selectSublocations);
             }
 
             HashSet<string> sublocationOdsCodes =
@@ -222,7 +222,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 parsedRemoves,
                 backLink);
 
-            return View("~/Views/Shared/ServiceRecipients/RemoveSublocations.cshtml", model);
+            return View("ServiceRecipients/RemoveSublocations", model);
         }
 
         [HttpPost("remove-sublocations")]
@@ -233,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             if (!ModelState.IsValid)
             {
-                return View("~/Views/Shared/ServiceRecipients/RemoveSublocations.cshtml", removeSublocationsModel);
+                return View("ServiceRecipients/RemoveSublocations", removeSublocationsModel);
             }
 
             if (removeSublocationsModel.SublocationOdsCodes is not
@@ -338,7 +338,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                         previousRecipients.Select(x => $"{x.Name} ({x.OdsCode})").ToList(),
                         backAndContinueLink);
 
-                    return View("~/Views/Shared/ServiceRecipients/NoNewRecipientsForSublocationAmendment.cshtml", noNewModel);
+                    return View("ServiceRecipients/NoNewRecipientsForSublocationAmendment", noNewModel);
                 }
 
                 var amendmentModel = new SelectSublocationRecipientsModel(
@@ -353,7 +353,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     CustomAdvice = isMerger ? "Select all the practices that will be involved in the merger. They must all be using the same Catalogue Solution." : "Select all the organisations that will be receiving this order.",
                 };
 
-                return View("~/Views/Shared/ServiceRecipients/SelectSublocationRecipients.cshtml", amendmentModel);
+                return View("ServiceRecipients/SelectSublocationRecipients", amendmentModel);
             }
 
             var model = new SelectSublocationRecipientsModel(
@@ -367,7 +367,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 CustomAdvice = isMerger ? "Select all the practices that will be involved in the merger. They must all be using the same Catalogue Solution." : "Select all the organisations that will be receiving this order.",
             };
 
-            return View("~/Views/Shared/ServiceRecipients/SelectSublocationRecipients.cshtml", model);
+            return View("ServiceRecipients/SelectSublocationRecipients", model);
         }
 
         [HttpPost("{sublocationOdsCode}")]
@@ -379,7 +379,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             if (!ModelState.IsValid)
             {
-                return View("~/Views/Shared/ServiceRecipients/SelectSublocationRecipients.cshtml", selectSublocationRecipientsModel);
+                return View("ServiceRecipients/SelectSublocationRecipients", selectSublocationRecipientsModel);
             }
 
             var externalOrganisationId =
@@ -480,7 +480,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     backLinkUrl,
                     continueLinkUrl);
 
-                return View("~/Views/Shared/ServiceRecipients/NoNewRecipientsForAmendment.cshtml", amendModel);
+                return View("ServiceRecipients/NoNewRecipientsForAmendment", amendModel);
             }
 
             if (wrapper.IsAmendment)
@@ -490,7 +490,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     backLinkUrl,
                     continueLinkUrl);
 
-                return View("~/Views/Shared/ServiceRecipients/ConfirmSublocationRecipients.cshtml", amendWithNewRecipientsModel);
+                return View("ServiceRecipients/ConfirmSublocationRecipients", amendWithNewRecipientsModel);
             }
 
             var model = new ConfirmSublocationRecipientsModel(
@@ -498,7 +498,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 backLinkUrl,
                 continueLinkUrl);
 
-            return View("~/Views/Shared/ServiceRecipients/ConfirmSublocationRecipients.cshtml", model);
+            return View("ServiceRecipients/ConfirmSublocationRecipients", model);
         }
 
         [HttpGet("select-recipient-for-practice-reorganisation")]
