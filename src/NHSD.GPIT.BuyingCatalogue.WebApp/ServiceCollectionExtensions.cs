@@ -386,17 +386,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             }
             else
             {
-                TokenCredential credential = new ManagedIdentityCredential(settings.ClientId);
+                services.AddAzureClients(builder =>
+                {
+                    TokenCredential credential = new ManagedIdentityCredential(
+                        settings.ClientId,
+                        new TokenCredentialOptions());
 
-                services.AddSingleton(
-                    new QueueServiceClient(
-                        new Uri($"https://{settings.AccountName}.queue.core.windows.net"),
-                        credential));
+                    builder.UseCredential(credential);
 
-                services.AddSingleton(
-                    new BlobServiceClient(
-                        new Uri($"https://{settings.AccountName}.blob.core.windows.net"),
-                        credential));
+                    builder.AddQueueServiceClient(
+                            new Uri($"https://{settings.AccountName}.queue.core.windows.net"))
+                        .WithCredential(credential);
+
+                    builder.AddBlobServiceClient(
+                            new Uri($"https://{settings.AccountName}.blob.core.windows.net"))
+                        .WithCredential(credential);
+                });
             }
         }
 
