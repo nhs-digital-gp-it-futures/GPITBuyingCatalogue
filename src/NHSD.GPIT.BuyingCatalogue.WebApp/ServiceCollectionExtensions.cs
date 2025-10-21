@@ -379,12 +379,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static void ConfigureStorage(this IServiceCollection services, AzureBlobSettings settings)
         {
-            if (CurrentEnvironment.IsDevelopment)
-            {
-                services.AddScoped(_ => new QueueServiceClient(settings.ConnectionString));
-                services.AddScoped(_ => new BlobServiceClient(settings.ConnectionString));
-            }
-            else
+            if (!string.IsNullOrEmpty(settings.AccountName) && !string.IsNullOrEmpty(settings.ClientId))
             {
                 services.AddAzureClients(builder =>
                 {
@@ -401,6 +396,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     builder.AddBlobServiceClient(
                             new Uri($"https://{settings.AccountName}.blob.core.windows.net"))
                         .WithCredential(credential);
+                });
+            }
+            else
+            {
+                services.AddAzureClients(builder =>
+                {
+                    builder.AddQueueServiceClient(settings.ConnectionString);
+                    builder.AddBlobServiceClient(settings.ConnectionString);
                 });
             }
         }
