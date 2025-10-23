@@ -39,7 +39,7 @@ public static class PasswordValidatorTests
         IPasswordHasher<AspNetUser> mockPasswordHash,
         PasswordSettings passwordResetSettings)
     {
-        var password = "Pass123123!";
+        const string password = "Pass123123!";
         user.PasswordHash = null;
 
         dbContext.AspNetUsers.Add(user);
@@ -49,10 +49,10 @@ public static class PasswordValidatorTests
         var validator = new PasswordValidator(dbContext, mockPasswordHash, passwordResetSettings);
         PasswordValidator.ConfigurePasswordOptions(userManager.Options.Password);
 
-        var result = validator.ValidateAsync(userManager, user, password);
+        var result = await validator.ValidateAsync(userManager, user, password);
 
         mockPasswordHash.Received(0).VerifyHashedPassword(Arg.Any<AspNetUser>(), Arg.Any<string>(), Arg.Any<string>());
-        result.Result.Succeeded.Should().BeTrue();
+        result.Succeeded.Should().BeTrue();
     }
 
     [Theory(Skip = "Temporal queries not supported in EF Core 7.")]
@@ -64,7 +64,7 @@ public static class PasswordValidatorTests
         UserManager<AspNetUser> userManager,
         PasswordSettings passwordResetSettings)
     {
-        var password = "Pass123123!";
+        const string password = "Pass123123!";
         dbContext.AspNetUsers.Add(user);
 
         await dbContext.SaveChangesAsync();
@@ -74,11 +74,11 @@ public static class PasswordValidatorTests
         var validator = new PasswordValidator(dbContext, mockPasswordHash, passwordResetSettings);
         PasswordValidator.ConfigurePasswordOptions(userManager.Options.Password);
 
-        var result = validator.ValidateAsync(userManager, user, password);
+        var result = await validator.ValidateAsync(userManager, user, password);
 
         mockPasswordHash.Received().VerifyHashedPassword(user, user.PasswordHash, password);
 
-        result.Result.Succeeded.Should().BeTrue();
+        result.Succeeded.Should().BeTrue();
     }
 
     [Theory(Skip = "Temporal queries not supported in EF Core 7.")]
@@ -90,7 +90,7 @@ public static class PasswordValidatorTests
         UserManager<AspNetUser> userManager,
         PasswordSettings passwordResetSettings)
     {
-        var password = "Pass123123!";
+        const string password = "Pass123123!";
         dbContext.AspNetUsers.Add(user);
 
         await dbContext.SaveChangesAsync();
@@ -100,13 +100,13 @@ public static class PasswordValidatorTests
         var validator = new PasswordValidator(dbContext, mockPasswordHash, passwordResetSettings);
         PasswordValidator.ConfigurePasswordOptions(userManager.Options.Password);
 
-        var result = validator.ValidateAsync(userManager, user, password);
+        var result = await validator.ValidateAsync(userManager, user, password);
 
         mockPasswordHash.Received().VerifyHashedPassword(user, user.PasswordHash, password);
 
-        result.Result.Succeeded.Should().BeFalse();
-        result.Result.Errors.Count().Should().Be(1);
-        var error = result.Result.Errors.First();
+        result.Succeeded.Should().BeFalse();
+        result.Errors.Count().Should().Be(1);
+        var error = result.Errors.First();
         error.Code.Should().Be(PasswordValidator.PasswordAlreadyUsedCode);
         error.Description.Should().Be(PasswordValidator.PasswordAlreadyUsed);
     }
@@ -120,18 +120,18 @@ public static class PasswordValidatorTests
     [MockInlineAutoData("pass$$$$$$")]
     [MockInlineAutoData("PASS$$$$$$")]
     [MockInlineAutoData("PASSOneTwoThree")]
-    public static void ValidateAsync_InvalidPassword_ReturnsFailureIdentityResult(
+    public static async Task ValidateAsync_InvalidPassword_ReturnsFailureIdentityResult(
         string password,
         UserManager<AspNetUser> userManager,
         PasswordValidator validator)
     {
         PasswordValidator.ConfigurePasswordOptions(userManager.Options.Password);
 
-        var result = validator.ValidateAsync(userManager, null, password);
+        var result = await validator.ValidateAsync(userManager, null, password);
 
-        result.Result.Succeeded.Should().BeFalse();
-        result.Result.Errors.Count().Should().Be(1);
-        var error = result.Result.Errors.First();
+        result.Succeeded.Should().BeFalse();
+        result.Errors.Count().Should().Be(1);
+        var error = result.Errors.First();
         error.Code.Should().Be(PasswordValidator.InvalidPasswordCode);
         error.Description.Should().Be(PasswordValidator.PasswordConditionsNotMet);
     }
