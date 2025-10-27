@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
             string backLink)
         {
-            Title = "Select sublocations for this competition";
             Caption = competition.Name;
             BackLink = backLink;
 

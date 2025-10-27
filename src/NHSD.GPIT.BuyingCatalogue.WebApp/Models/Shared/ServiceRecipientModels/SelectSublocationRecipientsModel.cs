@@ -24,6 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 backLink,
                 selectionMode)
         {
+            Title = null;
+            Advice = null;
+
             Caption = competition.Name;
             RenderedServiceRecipients = GetRenderedSublocations(
                 possibleServiceRecipients,

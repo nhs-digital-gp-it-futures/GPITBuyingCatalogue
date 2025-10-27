@@ -281,7 +281,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                         .Excluding(m => m.Title)
                         .Excluding(m => m.Caption)
                         .Excluding(m => m.Advice)
-                        .Excluding(m => m.FormLabelText));
+                        .Excluding(m => m.FormLabelText)
+                        .Excluding(m => m.EffectiveTitle)
+                        .Excluding(m => m.EffectiveAdvice)
+                        .Excluding(m => m.CustomTitle)
+                        .Excluding(m => m.CustomAdvice));
         }
 
         [Theory]
@@ -638,7 +642,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static void AddSublocations_Post_ConditionalRedirect_RedirectToTasklistIfIncomplete(
+        public static async Task AddSublocations_Post_ConditionalRedirect_RedirectToTasklistIfIncomplete(
             string internalOrganisationId,
             CallOffId orderId,
             ServiceRecipientsController controller)
@@ -649,9 +653,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     Sublocations = [new SublocationModel { ServiceRecipientCount = 0 }],
                 };
 
-            var result =
-                controller.AddSublocations(callingModel, internalOrganisationId, orderId)
-                    .As<RedirectToActionResult>();
+            var result = (await controller.AddSublocations(callingModel, internalOrganisationId, orderId))
+                            .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(OrderController.Order));
@@ -663,7 +666,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static void AddSublocations_Post_ConditionalRedirect_RedirectToConfirmScreenIfComplete(
+        public static async Task AddSublocations_Post_ConditionalRedirect_RedirectToConfirmScreenIfComplete(
             string internalOrganisationId,
             CallOffId orderId,
             ServiceRecipientsController controller)
@@ -674,9 +677,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     Sublocations = [new SublocationModel { ServiceRecipientCount = 1 }],
                 };
 
-            var result =
-                controller.AddSublocations(callingModel, internalOrganisationId, orderId)
-                    .As<RedirectToActionResult>();
+            var result = (await controller.AddSublocations(callingModel, internalOrganisationId, orderId))
+                            .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.ConfirmSublocationRecipients));
@@ -887,7 +889,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                         .Excluding(m => m.Caption)
                         .Excluding(m => m.Advice)
                         .Excluding(m => m.BackLink)
-                        .Excluding(m => m.RenderedServiceRecipients));
+                        .Excluding(m => m.RenderedServiceRecipients)
+                        .Excluding(m => m.EffectiveTitle)
+                        .Excluding(m => m.EffectiveAdvice)
+                        .Excluding(m => m.CustomTitle)
+                        .Excluding(m => m.CustomAdvice));
 
             IReadOnlyList<SelectOption<string>> renderedRecipientsForFurtherEvaluation =
                 result.Model.As<SelectSublocationRecipientsModel>().RenderedServiceRecipients;
@@ -1179,6 +1185,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 SublocationName = workingSublocation.SublocationOrganisation?.Name,
                 RenderedServiceRecipients = expectedRendered,
                 SelectionMode = selectionMode,
+                CustomTitle = "Add service recipients",
+                CustomAdvice = "Select all the organisations that will be receiving this order.",
             };
 
             var result =
@@ -1601,7 +1609,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static void ConfirmSublocations_Post_ConditionalRedirect_RedirectToTasklistIfIncomplete(
+        public static async Task ConfirmSublocations_Post_ConditionalRedirect_RedirectToTasklistIfIncomplete(
             string internalOrganisationId,
             CallOffId orderId,
             ServiceRecipientsController controller)
@@ -1612,9 +1620,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     Sublocations = [new SublocationModel { ServiceRecipientCount = 0 }],
                 };
 
-            var result =
-                controller.ConfirmSublocations(callingModel, internalOrganisationId, orderId)
-                    .As<RedirectToActionResult>();
+            //var result =
+            //    controller.ConfirmSublocations(callingModel, internalOrganisationId, orderId)
+            //        .As<RedirectToActionResult>();
+
+            var result = (await controller.ConfirmSublocations(callingModel, internalOrganisationId, orderId))
+                            .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(OrderController.Order));
@@ -1626,7 +1637,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static void ConfirmSublocations_Post_ConditionalRedirect_RedirectToConfirmScreenIfComplete(
+        public static async Task ConfirmSublocations_Post_ConditionalRedirect_RedirectToConfirmScreenIfComplete(
             string internalOrganisationId,
             CallOffId orderId,
             ServiceRecipientsController controller)
@@ -1637,9 +1648,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     Sublocations = [new SublocationModel { ServiceRecipientCount = 1 }],
                 };
 
-            var result =
-                controller.ConfirmSublocations(callingModel, internalOrganisationId, orderId)
-                    .As<RedirectToActionResult>();
+            var result = (await controller.ConfirmSublocations(callingModel, internalOrganisationId, orderId))
+                            .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.ConfirmSublocationRecipients));
