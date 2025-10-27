@@ -1,6 +1,6 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0.16-alpine3.21 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0.21-alpine3.21 AS base
 RUN apk update && apk add icu-libs
 RUN apk --no-cache upgrade && apk add --no-cache chromium
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false

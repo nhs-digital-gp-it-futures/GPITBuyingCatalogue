@@ -6,6 +6,7 @@ resource "azurerm_storage_account" "storage_account" {
   account_tier             = "Standard"
   account_kind             = "StorageV2"
   account_replication_type = "GRS"
+  shared_access_key_enabled = false
 
   min_tls_version            = "TLS1_2"
   https_traffic_only_enabled = true
@@ -22,17 +23,16 @@ resource "azurerm_storage_account" "storage_account" {
   }
 }
 
-resource "azurerm_key_vault_secret" "storageaccount_connectionstring" {
-  name         = azurerm_storage_account.storage_account.name
-  value        = azurerm_storage_account.storage_account.primary_connection_string
-  key_vault_id = var.key_vault_id
+resource "azurerm_role_assignment" "blob_data_assignment" {
+  scope                = azurerm_storage_account.storage_account.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = var.principal_id
+}
 
-  tags = {
-    environment  = var.environment,
-    architecture = "new"
-  }
-
-  depends_on = [azurerm_storage_account.storage_account]
+resource "azurerm_role_assignment" "queue_data_assignment" {
+  scope                = azurerm_storage_account.storage_account.id
+  role_definition_name = "Storage Queue Data Contributor"
+  principal_id         = var.principal_id
 }
 
 output "storage_account_id" {

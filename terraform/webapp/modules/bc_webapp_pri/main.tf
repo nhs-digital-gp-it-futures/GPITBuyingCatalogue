@@ -11,18 +11,8 @@ resource "azurerm_service_plan" "webapp_sp" {
   }
 }
 
-resource "azurerm_user_assigned_identity" "web_app_identity" {
-  name                = "${var.project}-${var.environment}-webapp-identity"
-  location            = var.region
-  resource_group_name = var.rg_name
-
-  tags = {
-    environment  = var.environment
-  }
-}
-
 resource "azurerm_role_assignment" "example" {
-  principal_id                     = azurerm_user_assigned_identity.web_app_identity.principal_id
+  principal_id                     = var.webapp_identity.principal_id
   role_definition_name             = "AcrPull"
   scope                            = var.docker_registry_id
 }
@@ -41,14 +31,15 @@ resource "azurerm_linux_web_app" "webapp" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
     ASPNETCORE_ENVIRONMENT              = var.aspnet_environment
     ASPNETCORE_HTTP_PORTS               = "80"
+    AzureBlobSettings__accountName      = var.storage_account_name
+    AzureBlobSettings__clientId         = var.webapp_identity.client_id
 
     APPINSIGHTS_INSTRUMENTATIONKEY = var.instrumentation_key
 
     DOMAIN_NAME = var.app_dns_url
 
     # Settings for sql
-    BC_DB_CONNECTION                    = "Server=tcp:${data.azurerm_mssql_server.sql_server.fully_qualified_domain_name},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;Authentication=Active Directory Managed Identity;User Id=${azurerm_user_assigned_identity.web_app_identity.client_id};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-    AZUREBLOBSETTINGS__CONNECTIONSTRING = var.blob_storage_connection_string
+    BC_DB_CONNECTION                    = "Server=tcp:${data.azurerm_mssql_server.sql_server.fully_qualified_domain_name},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;Authentication=Active Directory Managed Identity;User Id=${var.webapp_identity.client_id};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 
     RECAPTCHASETTINGS__SITEKEY   = var.recaptcha_site_key
     RECAPTCHASETTINGS__SECRETKEY = var.recaptcha_secret_key
@@ -66,7 +57,7 @@ resource "azurerm_linux_web_app" "webapp" {
     ip_restriction_default_action = "Deny"
     ftps_state                    = "Disabled"
     http2_enabled                 = true
-    container_registry_managed_identity_client_id = azurerm_user_assigned_identity.web_app_identity.client_id
+    container_registry_managed_identity_client_id = var.webapp_identity.client_id
     container_registry_use_managed_identity = true
 
     application_stack {
@@ -99,7 +90,7 @@ resource "azurerm_linux_web_app" "webapp" {
 
   identity {
     type = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.web_app_identity.id]
+    identity_ids = [var.webapp_identity.id]
   }
 
   tags = {

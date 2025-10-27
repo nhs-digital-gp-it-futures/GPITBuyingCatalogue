@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Storage;
@@ -10,24 +9,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf;
 
 public class CachedOrderPdfService : IOrderPdfService
 {
+    private const string OrderPdfContainerName = "orderpdfs";
     private readonly IOrderPdfService orderPdfService;
     private readonly IAzureBlobStorageService azureBlobStorageService;
-    private readonly AzureBlobSettings settings;
 
     public CachedOrderPdfService(
         IOrderPdfService orderPdfService,
-        IAzureBlobStorageService azureBlobStorageService,
-        AzureBlobSettings settings)
+        IAzureBlobStorageService azureBlobStorageService)
     {
         this.orderPdfService = orderPdfService ?? throw new ArgumentNullException(nameof(orderPdfService));
         this.azureBlobStorageService =
             azureBlobStorageService ?? throw new ArgumentNullException(nameof(azureBlobStorageService));
-        this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
     }
 
     public async Task<MemoryStream> CreateOrderSummaryPdf(Order order)
     {
-        if (order == null) throw new ArgumentNullException(nameof(order));
+        ArgumentNullException.ThrowIfNull(order);
 
         if (order.OrderStatus == OrderStatus.InProgress)
             return await orderPdfService.CreateOrderSummaryPdf(order);
@@ -36,13 +33,13 @@ public class CachedOrderPdfService : IOrderPdfService
 
         var blobDocument = order.OrderStatus == OrderStatus.Completed ? $"{callOffId}.pdf" : $"{callOffId}-terminated.pdf";
 
-        var cachedPdf = await azureBlobStorageService.DownloadAsync(new(settings.OrderPdfContainerName, blobDocument));
+        var cachedPdf = await azureBlobStorageService.DownloadAsync(new BlobDocument(OrderPdfContainerName, blobDocument));
         if (cachedPdf != null)
             return cachedPdf;
 
         var file = await orderPdfService.CreateOrderSummaryPdf(order);
 
-        await azureBlobStorageService.UploadAsync(new(settings.OrderPdfContainerName, blobDocument), file);
+        await azureBlobStorageService.UploadAsync(new BlobDocument(OrderPdfContainerName, blobDocument), file);
 
         return file;
     }

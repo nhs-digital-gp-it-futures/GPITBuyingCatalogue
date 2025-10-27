@@ -7,5 +7,7 @@ public class AzureBlobSettings
 {
     public string ConnectionString { get; set; }
 
-    public string OrderPdfContainerName { get; set; }
+    public string ClientId { get; set; }
+
+    public string AccountName { get; set; }
 }

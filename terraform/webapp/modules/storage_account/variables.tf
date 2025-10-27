@@ -14,14 +14,14 @@ variable "resource_group" {
   type = string
 }
 
-variable "key_vault_id" {
-  type = string
-}
-
 variable "ip_rules" {
   type = list(string)
 }
 
 variable "subnet_ids" {
   type = list(string)
+}
+
+variable "principal_id" {
+  type = string
 }

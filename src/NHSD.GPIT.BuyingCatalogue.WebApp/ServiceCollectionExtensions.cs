@@ -3,6 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Azure.Core;
+using Azure.Identity;
 using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
 using FluentValidation.AspNetCore;
@@ -14,6 +16,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
@@ -374,20 +377,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             });
         }
 
-        public static void ConfigureBlobStorage(this IServiceCollection services, IConfiguration configuration)
+        public static void ConfigureStorage(this IServiceCollection services, AzureBlobSettings settings)
         {
-            var settings = configuration.GetSection("AzureBlobSettings").Get<AzureBlobSettings>();
+            if (!string.IsNullOrEmpty(settings.AccountName) && !string.IsNullOrEmpty(settings.ClientId))
+            {
+                services.AddAzureClients(builder =>
+                {
+                    TokenCredential credential = new ManagedIdentityCredential(
+                        settings.ClientId,
+                        new TokenCredentialOptions());
 
-            services.AddSingleton(settings);
-            services.AddScoped<BlobServiceClient>(_ => new(settings.ConnectionString));
-        }
+                    builder.UseCredential(credential);
 
-        public static void ConfigureQueueStorage(this IServiceCollection services, IConfiguration configuration)
-        {
-            var settings = configuration.GetSection("AzureBlobSettings").Get<AzureBlobSettings>();
+                    builder.AddQueueServiceClient(
+                            new Uri($"https://{settings.AccountName}.queue.core.windows.net"))
+                        .WithCredential(credential);
 
-            services.AddSingleton(settings);
-            services.AddScoped<QueueServiceClient>(_ => new(settings.ConnectionString));
+                    builder.AddBlobServiceClient(
+                            new Uri($"https://{settings.AccountName}.blob.core.windows.net"))
+                        .WithCredential(credential);
+                });
+            }
+            else
+            {
+                services.AddAzureClients(builder =>
+                {
+                    builder.AddQueueServiceClient(settings.ConnectionString);
+                    builder.AddBlobServiceClient(settings.ConnectionString);
+                });
+            }
         }
 
         public static IServiceCollection ConfigureRecaptcha(this IServiceCollection services, IConfiguration configuration)
