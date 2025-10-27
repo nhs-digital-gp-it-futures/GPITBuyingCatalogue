@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Configuration;
 
@@ -9,41 +8,21 @@ public sealed class CompetitionSolutionEntityTypeConfiguration : IEntityTypeConf
 {
     public void Configure(EntityTypeBuilder<CompetitionSolution> builder)
     {
-        builder.ToTable("CompetitionSolutions", Schemas.Competitions);
+        builder.Property(x => x.Justification).HasMaxLength(1000);
 
-        builder.HasKey(x => new { x.CompetitionId, x.SolutionId });
-
-        builder.Property(x => x.SolutionId)
-            .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
-        builder.Property(x => x.IsShortlisted)
-            .IsRequired()
-            .HasDefaultValue(false);
-
-        builder.HasQueryFilter(x => x.IsShortlisted);
-
-        builder.Property(x => x.Justification)
-            .HasMaxLength(1000);
-
-        builder.HasOne(x => x.Competition)
-            .WithMany(x => x.CompetitionSolutions)
-            .HasForeignKey(x => x.CompetitionId)
-            .HasConstraintName("FK_CompetitionSolutions_Competition")
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(x => x.Solution)
-            .WithMany()
-            .HasForeignKey(x => x.SolutionId)
-            .HasConstraintName("FK_CompetitionSolutions_Solution");
+        builder.HasMany(x => x.Services)
+            .WithOne()
+            .HasForeignKey(x => x.ParentItemId)
+            .HasConstraintName("FK_CompetitionCatalogueItems_Parent")
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasMany(x => x.Scores)
             .WithOne()
-            .HasForeignKey(x => new { x.CompetitionId, x.SolutionId })
-            .HasConstraintName("FK_SolutionScores_Solution");
+            .HasForeignKey(x => x.CompetitionSolutionId)
+            .HasConstraintName("FK_SolutionScores_Solution")
+            .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(x => x.Price)
-            .WithOne()
-            .HasForeignKey<CompetitionSolution>(x => x.CompetitionItemPriceId)
-            .HasConstraintName("FK_CompetitionSolutions_CompetitionItemPrice");
+        builder.Ignore(x => x.AdditionalServices);
+        builder.Ignore(x => x.AssociatedServices);
     }
 }

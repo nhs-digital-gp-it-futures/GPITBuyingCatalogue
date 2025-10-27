@@ -18,14 +18,14 @@ public class CompetitionSolutionHubModel : NavBaseModel
         CompetitionSolution competitionSolution,
         Competition competition)
     {
-        SolutionId = competitionSolution.SolutionId;
-        SolutionName = competitionSolution.Solution.CatalogueItem.Name;
+        SolutionId = competitionSolution.CatalogueItemId;
+        SolutionName = competitionSolution.CatalogueItem.Name;
 
         CatalogueItems = new[]
             {
                 new CatalogueItemHubModel(
-                    competitionSolution.SolutionId,
-                    competitionSolution.Solution.CatalogueItem,
+                    competitionSolution.CatalogueItemId,
+                    competitionSolution.CatalogueItem,
                     competitionSolution.Quantity,
                     competition.FlattenedRecipients.ToDictionary(
                         x => x,
@@ -39,9 +39,9 @@ public class CompetitionSolutionHubModel : NavBaseModel
                     ContractLength = competition.ContractLength,
                 },
             }.Union(
-                competitionSolution.SolutionServices.Select(x => new CatalogueItemHubModel(
-                    competitionSolution.SolutionId,
-                    x.Service,
+                competitionSolution.Services.Select(x => new CatalogueItemHubModel(
+                    competitionSolution.CatalogueItemId,
+                    x.CatalogueItem,
                     x.Quantity,
                     competition.FlattenedRecipients.ToDictionary(
                         y => y,

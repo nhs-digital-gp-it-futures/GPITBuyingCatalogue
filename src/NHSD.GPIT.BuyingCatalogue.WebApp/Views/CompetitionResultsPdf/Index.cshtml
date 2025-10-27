@@ -199,9 +199,9 @@
                         {
                             <p>The filter used for this competition only returned one result. This means you can execute a direct award for this solution</p>
                             <h3 class="nhsuk-heading-l">
-                                @Model.NonShortlistedSolutions.FirstOrDefault().Solution.CatalogueItem.Name
+                                @Model.NonShortlistedSolutions.FirstOrDefault().CatalogueItem.Name
                                 <span class="nhsuk-caption-l nhsuk-caption--bottom">
-                                    @Model.NonShortlistedSolutions.FirstOrDefault().Solution.CatalogueItem.Supplier.Name
+                                    @Model.NonShortlistedSolutions.FirstOrDefault().CatalogueItem.Supplier.Name
                                 </span>
                             </h3>
                             <div style="page-break-after: always"></div>
@@ -258,14 +258,14 @@
                         </thead>
 
                         <tbody>
-                            @foreach (var nonShortlistedSolution in Model.NonShortlistedSolutions.OrderBy(x => x.Solution.CatalogueItem.Name))
+                            @foreach (var nonShortlistedSolution in Model.NonShortlistedSolutions.OrderBy(x => x.CatalogueItem.Name))
                             {
-                                var requiredCompetitionServices = nonShortlistedSolution.SolutionServices.Where(x => x.IsRequired).OrderBy(x => x.Service.Name).ToList();
+                                var requiredCompetitionServices = nonShortlistedSolution.AdditionalServices.Where(x => x.IsRequired).OrderBy(x => x.CatalogueItem.Name).ToList();
                                 <tr class="alternating">
                                     <td style="width:30%">
-                                        @nonShortlistedSolution.Solution.CatalogueItem.Name
+                                        @nonShortlistedSolution.CatalogueItem.Name
                                         <span class="nhsuk-caption-m">
-                                            @nonShortlistedSolution.Solution.CatalogueItem.Supplier.Name
+                                            @nonShortlistedSolution.CatalogueItem.Supplier.Name
                                         </span>
                                     </td>
                                     <td style="width:20%">
@@ -274,7 +274,7 @@
                                             <ul>
                                                 @foreach (var competitionService in requiredCompetitionServices)
                                                 {
-                                                    <li>@competitionService.Service.Name</li>
+                                                    <li>@competitionService.CatalogueItem.Name</li>
                                                 }
                                             </ul>
                                         }

@@ -5,7 +5,7 @@
     var solutionUrl = Url.Action(
                 nameof(SolutionsController.Description),
                 typeof(SolutionsController).ControllerName(),
-            new { solutionId = Model.NonShortlistedSolutions.FirstOrDefault().Solution.CatalogueItem.Id, Area = "Solutions" });
+            new { solutionId = Model.NonShortlistedSolutions.FirstOrDefault().CatalogueItem.Id, Area = "Solutions" });
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -17,10 +17,10 @@
         <nhs-card>
             <h2 class="nhsuk-card__heading nhsuk-heading-m">
                 <a href=@solutionUrl target="_blank">
-                    @Model.NonShortlistedSolutions.FirstOrDefault().Solution.CatalogueItem.Name (opens in new tab)
+                    @Model.NonShortlistedSolutions.FirstOrDefault().CatalogueItem.Name (opens in new tab)
                 </a>
             </h2>
-            <span class="nhsuk-caption-m nhsuk-caption--bottom">@Model.NonShortlistedSolutions.FirstOrDefault().Solution.CatalogueItem.Supplier.Name</span>
+            <span class="nhsuk-caption-m nhsuk-caption--bottom">@Model.NonShortlistedSolutions.FirstOrDefault().CatalogueItem.Supplier.Name</span>
         </nhs-card>
 
         <h2>Filter information</h2>

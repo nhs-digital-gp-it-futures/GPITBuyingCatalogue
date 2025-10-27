@@ -14,12 +14,12 @@ public class SolutionModel
     public SolutionModel(
         CompetitionSolution competitionSolution)
     {
-        SolutionId = competitionSolution.Solution.CatalogueItemId;
-        SolutionName = competitionSolution.Solution.CatalogueItem.Name;
-        SupplierName = competitionSolution.Solution.CatalogueItem.Supplier.Name;
-        RequiredServices = competitionSolution.SolutionServices.Where(x => x.IsRequired).Select(y => y.Service.Name).ToList();
+        SolutionId = competitionSolution.CatalogueItemId;
+        SolutionName = competitionSolution.CatalogueItem.Name;
+        SupplierName = competitionSolution.CatalogueItem.Supplier.Name;
+        RequiredServices = competitionSolution.AdditionalServices.Where(x => x.IsRequired).Select(y => y.CatalogueItem.Name).ToList();
         Selected = competitionSolution.IsShortlisted;
-        Summary = competitionSolution.Solution.Summary;
+        Summary = competitionSolution.CatalogueItem.Solution.Summary;
     }
 
     public CatalogueItemId SolutionId { get; set; }

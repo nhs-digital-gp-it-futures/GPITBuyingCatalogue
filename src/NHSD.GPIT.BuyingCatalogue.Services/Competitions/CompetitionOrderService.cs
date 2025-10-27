@@ -25,11 +25,10 @@ public class CompetitionOrderService : ICompetitionOrderService
     {
         Competition competition = await dbContext.Competitions
             .Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.Solution)
             .ThenInclude(x => x.CatalogueItem)
             .ThenInclude(x => x.Supplier)
             .Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Services)
             .Include(x => x.CompetitionSublocations)
             .ThenInclude(y => y.SublocationRecipients)
             .ThenInclude(z => z.RecipientOrganisation)
@@ -45,7 +44,7 @@ public class CompetitionOrderService : ICompetitionOrderService
                 nameof(competitionId));
         }
 
-        var directAwardSolution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        var directAwardSolution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
 
         if (directAwardSolution is null)
         {
@@ -71,21 +70,20 @@ public class CompetitionOrderService : ICompetitionOrderService
             .ThenInclude(y => y.SublocationRecipients)
             .ThenInclude(z => z.RecipientOrganisation)
             .Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.Solution)
             .ThenInclude(x => x.CatalogueItem)
             .ThenInclude(x => x.Supplier)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Quantities)
-            .ThenInclude(x => x.CompetitionSublocationRecipient)
+            .ThenInclude(x => x.Recipient)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Price)
             .ThenInclude(x => x.Tiers)
             .Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Quantities)
-            .ThenInclude(x => x.CompetitionSublocationRecipient)
+            .ThenInclude(x => x.Recipient)
             .Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Price)
             .ThenInclude(x => x.Tiers)
             .AsNoTracking()
@@ -99,7 +97,7 @@ public class CompetitionOrderService : ICompetitionOrderService
                 nameof(competitionId));
         }
 
-        var winningSolution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        var winningSolution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
         if (winningSolution is null || !winningSolution.IsWinningSolution)
         {
             throw new ArgumentException(
@@ -121,24 +119,24 @@ public class CompetitionOrderService : ICompetitionOrderService
 
     private static IEnumerable<OrderItem> CreateDirectAwardOrderItems(CompetitionSolution directAwardSolution)
     {
-        var orderItems = directAwardSolution.SolutionServices.Select(
-                x => new OrderItem(x.ServiceId) { Created = DateTime.UtcNow })
+        var orderItems = directAwardSolution.Services.Select(
+                x => new OrderItem(x.CatalogueItemId) { Created = DateTime.UtcNow })
             .ToList();
 
-        orderItems.Add(new OrderItem(directAwardSolution.SolutionId) { Created = DateTime.UtcNow });
+        orderItems.Add(new OrderItem(directAwardSolution.CatalogueItemId) { Created = DateTime.UtcNow });
 
         return orderItems;
     }
 
     private static IEnumerable<OrderItem> CreateOrderItems(CompetitionSolution winningSolution)
     {
-        var orderItems = winningSolution.SolutionServices.Select(
-                x => CreateOrderItem(x.ServiceId, x.Quantity, x.Price, x.Price.Tiers))
+        var orderItems = winningSolution.Services.Select(
+                x => CreateOrderItem(x.CatalogueItemId, x.Quantity, x.Price, x.Price.Tiers))
             .ToList();
 
         orderItems.Add(
             CreateOrderItem(
-                winningSolution.SolutionId,
+                winningSolution.CatalogueItemId,
                 winningSolution.Quantity,
                 winningSolution.Price,
                 winningSolution.Price.Tiers));
@@ -180,7 +178,7 @@ public class CompetitionOrderService : ICompetitionOrderService
             OrderSublocations = competition.CompetitionSublocations.Select(x => new OrderSublocation(x)).ToList(),
             OrderItems = orderItems.ToList(),
             OrderingPartyId = competition.OrganisationId,
-            SupplierId = competitionSolution.Solution.CatalogueItem.SupplierId,
+            SupplierId = competitionSolution.CatalogueItem.SupplierId,
             CompetitionId = competition.Id,
             SelectedFrameworkId = competition.FrameworkId,
         };
@@ -189,19 +187,19 @@ public class CompetitionOrderService : ICompetitionOrderService
     private static void AssignRecipientQuantities(Order order, CompetitionSolution winningSolution)
     {
         var competitionItemQuantities = winningSolution.Quantities
-            .Select(x => new { ItemId = x.SolutionId, x.Quantity, x.CompetitionSublocationRecipient.RecipientOdsCode })
+            .Select(x => new { ItemId = winningSolution.CatalogueItemId, x.Quantity, OdsCode = x.RecipientOdsCode })
             .Concat(
-                winningSolution.SolutionServices.SelectMany(
+                winningSolution.Services.SelectMany(
                     x => x.Quantities.Select(
                         y => new
                         {
-                            ItemId = y.ServiceId, y.Quantity, y.CompetitionSublocationRecipient.RecipientOdsCode,
+                            ItemId = x.CatalogueItemId, y.Quantity, OdsCode = y.RecipientOdsCode,
                         })));
 
         foreach (var itemQuantity in competitionItemQuantities)
         {
             OrderSublocationRecipient orderRecipient =
-                order.FlattenedRecipients.FirstOrDefault(x => x.RecipientOdsCode == itemQuantity.RecipientOdsCode);
+                order.FlattenedRecipients.FirstOrDefault(x => x.RecipientOdsCode == itemQuantity.OdsCode);
 
             orderRecipient?.SetQuantityForItem(itemQuantity.ItemId, itemQuantity.Quantity);
         }
