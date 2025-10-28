@@ -39,7 +39,6 @@ public class CompetitionsPriceService : ICompetitionsPriceService
             return;
 
         await SetPrice(
-            competitionId,
             competitionSolution,
             competitionSolution.Price?.CataloguePriceId,
             cataloguePrice,
@@ -61,7 +60,6 @@ public class CompetitionsPriceService : ICompetitionsPriceService
         if (service == null) return;
 
         await SetPrice(
-            competitionId,
             service,
             service.Price?.CataloguePriceId,
             cataloguePrice,
@@ -70,7 +68,6 @@ public class CompetitionsPriceService : ICompetitionsPriceService
     }
 
     private async Task SetPrice(
-        int competitionId,
         CompetitionCatalogueItem entity,
         int? cataloguePriceId,
         CataloguePrice cataloguePrice,
@@ -90,7 +87,7 @@ public class CompetitionsPriceService : ICompetitionsPriceService
             dbContext.Remove(entity.Price);
         }
 
-        entity.Price = new(cataloguePrice, competitionId);
+        entity.Price = new(cataloguePrice);
 
         foreach (var agreedPrice in agreedPrices)
         {

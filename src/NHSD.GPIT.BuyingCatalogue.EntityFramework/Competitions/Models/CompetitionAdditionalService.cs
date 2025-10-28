@@ -10,11 +10,10 @@ public class CompetitionAdditionalService : CompetitionCatalogueItem
 
     public CompetitionAdditionalService(
         int competitionId,
-        CatalogueItemId catalogueItemId,
+        CatalogueItemId additionalServiceId,
         bool isRequired = false)
+        : base(competitionId, additionalServiceId)
     {
-        CompetitionId = competitionId;
-        CatalogueItemId = catalogueItemId;
         IsRequired = isRequired;
     }
 

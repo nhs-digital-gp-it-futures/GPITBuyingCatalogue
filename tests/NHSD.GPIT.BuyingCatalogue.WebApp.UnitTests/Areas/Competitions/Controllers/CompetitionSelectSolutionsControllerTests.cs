@@ -60,8 +60,8 @@ public static class CompetitionSelectSolutionsControllerTests
         competitionSolutions.ForEach(
             x =>
             {
-                x.Solution = solution;
-                x.SolutionServices = new List<SolutionService>();
+                x.CatalogueItem = solution.CatalogueItem;
+                x.Services = new List<CompetitionCatalogueItem>();
             });
 
         competition.CompetitionSolutions = competitionSolutions;
@@ -262,8 +262,8 @@ public static class CompetitionSelectSolutionsControllerTests
     {
         foreach (var (x, i) in competitionSolutions.Select((x, i) => (x, i)))
         {
-            x.Solution = solutions[i];
-            x.Solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            x.CatalogueItem = solutions[i].CatalogueItem;
+            x.CatalogueItem.PublishedStatus = PublicationStatus.Published;
             x.IsShortlisted = true;
         }
 
@@ -293,7 +293,7 @@ public static class CompetitionSelectSolutionsControllerTests
         competitionSolutions.Skip(1).ToList().ForEach(x => x.IsShortlisted = true);
         nonShortlistedSolutions.ForEach(x => x.IsShortlisted = false);
 
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
 
         competition.CompetitionSolutions = competitionSolutions;
 

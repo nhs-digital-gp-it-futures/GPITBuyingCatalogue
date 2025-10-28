@@ -62,7 +62,7 @@ public static class CompetitionsQuantityServiceTests
             .ThenInclude(x => x.Quantities)
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
-        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
         updatedSolution.Quantity.Should().Be(quantity);
     }
@@ -101,7 +101,7 @@ public static class CompetitionsQuantityServiceTests
             .ThenInclude(x => x.Quantities)
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
-        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
         updatedSolution.Quantities.Should().HaveCount(odsOrganisations.Count);
     }
@@ -122,9 +122,9 @@ public static class CompetitionsQuantityServiceTests
             new CompetitionSolution(competition.Id, solution.CatalogueItemId)
             {
                 IsShortlisted = true,
-                SolutionServices = new List<SolutionService>
+                Services = new List<CompetitionCatalogueItem>
                 {
-                    new(competition.Id, solution.CatalogueItemId, additionalService.CatalogueItemId, true),
+                    new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId, true),
                 },
             });
 
@@ -145,13 +145,13 @@ public static class CompetitionsQuantityServiceTests
             quantity);
 
         var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Quantities)
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
-        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        var updatedService = updatedSolution.SolutionServices.First(x => x.ServiceId == additionalService.CatalogueItemId);
+        var updatedService = updatedSolution.Services.First(x => x.CatalogueItemId == additionalService.CatalogueItemId);
 
         updatedService.Quantity.Should().Be(quantity);
     }
@@ -174,9 +174,9 @@ public static class CompetitionsQuantityServiceTests
             new CompetitionSolution(competition.Id, solution.CatalogueItemId)
             {
                 IsShortlisted = true,
-                SolutionServices = new List<SolutionService>
+                Services = new List<CompetitionCatalogueItem>
                 {
-                    new(competition.Id, solution.CatalogueItemId, additionalService.CatalogueItemId, true),
+                    new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId, true),
                 },
             });
 
@@ -198,13 +198,13 @@ public static class CompetitionsQuantityServiceTests
             odsOrganisations.Select(x => new ServiceRecipientQuantityDto(sublocation.Id, x.Id, x.Name, quantity)));
 
         var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Quantities)
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
-        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        var updatedService = updatedSolution.SolutionServices.First(x => x.ServiceId == additionalService.CatalogueItemId);
+        var updatedService = updatedSolution.Services.First(x => x.CatalogueItemId == additionalService.CatalogueItemId);
 
         updatedService.Quantities.Should().HaveCount(odsOrganisations.Count);
     }
@@ -227,10 +227,9 @@ public static class CompetitionsQuantityServiceTests
             {
                 IsShortlisted = true,
                 Quantity = quantity,
-                Quantities = odsOrganisations.Select(x => new SolutionQuantitySublocationRecipient
+                Quantities = odsOrganisations.Select(x => new CompetitionItemQuantity()
                     {
                         CompetitionId = competition.Id,
-                        SolutionId = solution.CatalogueItemId,
                         ParentSublocationOdsCode = sublocation.Id,
                         RecipientOdsCode = x.Id,
                         Quantity = quantity,
@@ -255,7 +254,7 @@ public static class CompetitionsQuantityServiceTests
             .ThenInclude(x => x.Quantities)
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
-        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
         updatedSolution.Quantities.Should().BeNullOrEmpty();
         updatedSolution.Quantity.Should().BeNull();
@@ -279,16 +278,14 @@ public static class CompetitionsQuantityServiceTests
             new CompetitionSolution(competition.Id, solution.CatalogueItemId)
             {
                 IsShortlisted = true,
-                SolutionServices = new List<SolutionService>
+                Services = new List<CompetitionCatalogueItem>
                 {
-                    new(competition.Id, solution.CatalogueItemId, additionalService.CatalogueItemId, true)
+                    new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId, true)
                     {
                         Quantity = quantity,
-                        Quantities = odsOrganisations.Select(x => new ServiceQuantitySublocationRecipient
+                        Quantities = odsOrganisations.Select(x => new CompetitionItemQuantity()
                             {
                                 CompetitionId = competition.Id,
-                                SolutionId = solution.CatalogueItemId,
-                                ServiceId = additionalService.CatalogueItemId,
                                 ParentSublocationOdsCode = sublocation.Id,
                                 RecipientOdsCode = x.Id,
                                 Quantity = quantity,
@@ -313,13 +310,13 @@ public static class CompetitionsQuantityServiceTests
             additionalService.CatalogueItemId);
 
         var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Quantities)
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
-        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        var updatedService = updatedSolution.SolutionServices.First(x => x.ServiceId == additionalService.CatalogueItemId);
+        var updatedService = updatedSolution.Services.First(x => x.CatalogueItemId == additionalService.CatalogueItemId);
 
         updatedService.Quantities.Should().BeNullOrEmpty();
         updatedService.Quantity.Should().BeNull();

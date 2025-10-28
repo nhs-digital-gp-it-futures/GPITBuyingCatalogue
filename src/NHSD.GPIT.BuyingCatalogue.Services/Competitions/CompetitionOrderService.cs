@@ -66,7 +66,8 @@ public class CompetitionOrderService : ICompetitionOrderService
 
     public async Task<CallOffId> CreateOrder(string internalOrgId, int competitionId, CatalogueItemId solutionId)
     {
-        Competition competition = await dbContext.Competitions.Include(x => x.CompetitionSublocations)
+        Competition competition = await dbContext.Competitions
+            .Include(x => x.CompetitionSublocations)
             .ThenInclude(y => y.SublocationRecipients)
             .ThenInclude(z => z.RecipientOrganisation)
             .Include(x => x.CompetitionSolutions)

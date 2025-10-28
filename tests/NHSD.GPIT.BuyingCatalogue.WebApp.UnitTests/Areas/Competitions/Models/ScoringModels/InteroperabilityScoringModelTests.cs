@@ -17,7 +17,7 @@ public static class InteroperabilityScoringModelTests
         List<Integration> integrations)
     {
         competition.CompetitionSolutions =
-            new List<CompetitionSolution> { new(competition.Id, solution.CatalogueItemId) { Solution = solution } };
+            new List<CompetitionSolution> { new(competition.Id, solution.CatalogueItemId) { CatalogueItem = solution.CatalogueItem } };
         competition.NonPriceElements = new()
         {
             IntegrationTypes = new List<IntegrationType>

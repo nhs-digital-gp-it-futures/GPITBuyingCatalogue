@@ -11,8 +11,7 @@ public class CompetitionAssociatedService : CompetitionCatalogueItem
     public CompetitionAssociatedService(
         int competitionId,
         CatalogueItemId associatedServiceId)
+        : base(competitionId, associatedServiceId)
     {
-        CompetitionId = competitionId;
-        CatalogueItemId = associatedServiceId;
     }
 }

@@ -17,7 +17,7 @@ public static class ImplementationScoringModelTests
         string requirements)
     {
         competition.CompetitionSolutions =
-            new List<CompetitionSolution> { new(competition.Id, solution.CatalogueItemId) { Solution = solution } };
+            new List<CompetitionSolution> { new(competition.Id, solution.CatalogueItemId) { CatalogueItem = solution.CatalogueItem } };
         competition.NonPriceElements = new() { Implementation = new() { Requirements = requirements } };
 
         var model = new ImplementationScoringModel(competition);

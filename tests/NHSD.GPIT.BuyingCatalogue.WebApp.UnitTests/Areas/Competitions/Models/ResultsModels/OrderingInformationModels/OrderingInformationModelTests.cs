@@ -23,7 +23,7 @@ public static class OrderingInformationModelTests
     {
         competition.CompetitionSublocations = competitionSublocations;
         competition.Organisation = organisation;
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
 
         var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
 
@@ -48,7 +48,7 @@ public static class OrderingInformationModelTests
     {
         competition.CompetitionSublocations = competitionSublocations;
         competition.Organisation = organisation;
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.Quantity = globalQuantity;
 
         var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
@@ -71,13 +71,15 @@ public static class OrderingInformationModelTests
     {
         competition.CompetitionSublocations = competitionSublocations;
         competition.Organisation = organisation;
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.Quantity = null;
         competitionSolution.Quantities = competition.FlattenedRecipients
             .Select(x =>
-                new SolutionQuantitySublocationRecipient
+                new CompetitionItemQuantity()
                 {
-                    RecipientOdsCode = x.RecipientOdsCode, Quantity = recipientQuantity,
+                    CompetitionId = competition.Id,
+                    RecipientOdsCode = x.RecipientOdsCode,
+                    Quantity = recipientQuantity,
                 })
             .ToList();
 
@@ -98,16 +100,16 @@ public static class OrderingInformationModelTests
         Solution solution,
         CompetitionSolution competitionSolution,
         AdditionalService additionalService,
-        SolutionService solutionService,
+        CompetitionAdditionalService solutionService,
         int globalQuantity)
     {
         competition.CompetitionSublocations = competitionSublocations;
         competition.Organisation = organisation;
 
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.Services = [solutionService];
 
-        solutionService.Service = additionalService.CatalogueItem;
+        solutionService.CatalogueItem = additionalService.CatalogueItem;
         solutionService.Quantity = globalQuantity;
 
         var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
@@ -115,7 +117,7 @@ public static class OrderingInformationModelTests
         var expectedItems = new List<OrderingInformationItem>
         {
             new(
-                solutionService.Service,
+                solutionService.CatalogueItem,
                 solutionService.Price,
                 globalQuantity),
         };
@@ -133,21 +135,22 @@ public static class OrderingInformationModelTests
         Solution solution,
         CompetitionSolution competitionSolution,
         AdditionalService additionalService,
-        SolutionService solutionService,
+        CompetitionAdditionalService solutionService,
         int recipientQuantity)
     {
         competition.CompetitionSublocations = competitionSublocations;
         competition.Organisation = organisation;
 
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.Services = [solutionService];
 
-        solutionService.Service = additionalService.CatalogueItem;
+        solutionService.CatalogueItem = additionalService.CatalogueItem;
         solutionService.Quantity = null;
         solutionService.Quantities = competition.FlattenedRecipients
             .Select(x =>
-                new ServiceQuantitySublocationRecipient
+                new CompetitionItemQuantity()
                 {
+                    CompetitionId = competition.Id,
                     ParentSublocationOdsCode = x.ParentSublocationOdsCode,
                     RecipientOdsCode = x.RecipientOdsCode,
                     Quantity = recipientQuantity,
@@ -159,7 +162,7 @@ public static class OrderingInformationModelTests
         var expectedItems = new List<OrderingInformationItem>
         {
             new(
-                solutionService.Service,
+                solutionService.CatalogueItem,
                 solutionService.Price,
                 solutionService.Quantities.Sum(x => x.Quantity)),
         };
@@ -180,12 +183,12 @@ public static class OrderingInformationModelTests
 
         var associatedServices = model.GetAssociatedServices();
 
-        associatedServices.Should().BeEquivalentTo(new List<OrderingInformationItem> { associatedServiceItem });
+        associatedServices.Should().BeEquivalentTo(model.Items.Where(x => x.CatalogueItemType == CatalogueItemType.AssociatedService));
     }
 
     [Theory]
     [MockAutoData]
-    public static void GetAdditionalServices_ReturnsAssociatedServices(
+    public static void GetAdditionalServices_ReturnsAdditionalServices(
         OrderingInformationModel model)
     {
         var additionalServiceItem = model.Items.First();
@@ -196,7 +199,7 @@ public static class OrderingInformationModelTests
 
         var additionalServices = model.GetAdditionalServices();
 
-        additionalServices.Should().BeEquivalentTo(new List<OrderingInformationItem> { additionalServiceItem });
+        additionalServices.Should().BeEquivalentTo(model.Items.Where(x => x.CatalogueItemType == CatalogueItemType.AdditionalService));
     }
 
     [Theory]

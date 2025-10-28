@@ -12,10 +12,9 @@ public class CompetitionCatalogueItemPrice : IPrice
         Tiers = new HashSet<CompetitionCatalogueItemPriceTier>();
     }
 
-    public CompetitionCatalogueItemPrice(CataloguePrice cataloguePrice, int competitionId)
+    public CompetitionCatalogueItemPrice(CataloguePrice cataloguePrice)
         : this()
     {
-        CompetitionId = competitionId;
         CataloguePriceId = cataloguePrice.CataloguePriceId;
         ProvisioningType = cataloguePrice.ProvisioningType;
         CataloguePriceType = cataloguePrice.CataloguePriceType;
@@ -28,13 +27,11 @@ public class CompetitionCatalogueItemPrice : IPrice
 
         foreach (var tier in cataloguePrice.CataloguePriceTiers)
         {
-            Tiers.Add(new(tier, competitionId));
+            Tiers.Add(new(tier));
         }
     }
 
     public int Id { get; set; }
-
-    public int CompetitionId { get; set; }
 
     public int CompetitionCatalogueItemId { get; set; }
 
@@ -59,6 +56,4 @@ public class CompetitionCatalogueItemPrice : IPrice
     public ICollection<IPriceTier> PriceTiers => Tiers.Cast<IPriceTier>().ToList();
 
     public ICollection<CompetitionCatalogueItemPriceTier> Tiers { get; set; }
-
-    public Competition Competition { get; set; }
 }

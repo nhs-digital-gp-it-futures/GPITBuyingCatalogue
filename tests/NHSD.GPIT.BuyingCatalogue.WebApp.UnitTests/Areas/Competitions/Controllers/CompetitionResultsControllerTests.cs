@@ -264,7 +264,7 @@ public static class CompetitionResultsControllerTests
     {
         competitionSolution.IsWinningSolution = true;
         competitionSolution.IsShortlisted = true;
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
 
         competition.Organisation = organisation;
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
@@ -291,7 +291,7 @@ public static class CompetitionResultsControllerTests
     {
         competitionSolution.IsWinningSolution = true;
         competitionSolution.IsShortlisted = true;
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
 
         competition.Organisation = organisation;
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };

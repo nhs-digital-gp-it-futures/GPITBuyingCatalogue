@@ -8,9 +8,8 @@ public class CompetitionCatalogueItemPriceTier : IOrderablePriceTier
     {
     }
 
-    public CompetitionCatalogueItemPriceTier(IPriceTier tier, int competitionId)
+    public CompetitionCatalogueItemPriceTier(IPriceTier tier)
     {
-        CompetitionId = competitionId;
         Price = tier.Price;
         ListPrice = tier.Price;
         LowerRange = tier.LowerRange;
@@ -20,8 +19,6 @@ public class CompetitionCatalogueItemPriceTier : IOrderablePriceTier
     public int Id { get; set; }
 
     public int CompetitionItemPriceId { get; set; }
-
-    public int CompetitionId { get; set; }
 
     public int LowerRange { get; set; }
 

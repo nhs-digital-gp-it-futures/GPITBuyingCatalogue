@@ -29,7 +29,7 @@ public static class CompetitionSolutionResultTests
         solutionPriceScore.ScoreType = ScoreType.Price;
 
         competition.Organisation = organisation;
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.Scores = new List<SolutionScore> { solutionPriceScore };
 
         var model = new CompetitionSolutionResult(competition, competitionSolution);
@@ -58,7 +58,7 @@ public static class CompetitionSolutionResultTests
         solutionPriceScore.ScoreType = ScoreType.Price;
 
         competition.Organisation = organisation;
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.Scores = new List<SolutionScore> { solutionPriceScore };
 
         var model = new CompetitionSolutionResult(competition, competitionSolution);
@@ -107,7 +107,7 @@ public static class CompetitionSolutionResultTests
         solutionServiceLevelScore.ScoreType = ScoreType.ServiceLevel;
         solutionPriceScore.ScoreType = ScoreType.Price;
 
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.Scores = new List<SolutionScore> { solutionPriceScore }.Concat(nonPriceElementScores).ToList();
 
         var model = new CompetitionSolutionResult(competition, competitionSolution);

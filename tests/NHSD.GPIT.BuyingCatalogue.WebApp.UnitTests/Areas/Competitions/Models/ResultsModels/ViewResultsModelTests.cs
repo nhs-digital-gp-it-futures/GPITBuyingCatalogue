@@ -64,7 +64,7 @@ public static class ViewResultsModelTests
         winningSolution.CatalogueItem.Supplier = supplier;
 
         winningCompetitionSolution.IsWinningSolution = true;
-        winningCompetitionSolution.Solution = winningSolution;
+        winningCompetitionSolution.CatalogueItem = winningSolution.CatalogueItem;
         winningCompetitionSolution.Scores = new List<SolutionScore>
         {
             new(ScoreType.Price, 5, 2.5M),
@@ -74,7 +74,7 @@ public static class ViewResultsModelTests
         };
 
         otherCompetitionSolution.IsWinningSolution = false;
-        otherCompetitionSolution.Solution = otherSolution;
+        otherCompetitionSolution.CatalogueItem = otherSolution.CatalogueItem;
         otherCompetitionSolution.Scores = new List<SolutionScore>
         {
             new(ScoreType.Price, 3, 1.5M),

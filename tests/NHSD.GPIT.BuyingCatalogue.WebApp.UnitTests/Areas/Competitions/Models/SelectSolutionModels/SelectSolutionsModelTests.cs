@@ -36,7 +36,7 @@ public static class SelectSolutionsModelTests
         List<CompetitionSolution> competitionSolutions,
         FilterDetailsModel filterDetailsModel)
     {
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
 
         var model = new SelectSolutionsModel(competitionName, competitionSolutions, frameworkName, filterDetailsModel);
 

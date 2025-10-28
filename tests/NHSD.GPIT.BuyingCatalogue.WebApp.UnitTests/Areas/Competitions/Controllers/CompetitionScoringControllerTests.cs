@@ -64,7 +64,7 @@ public static class CompetitionScoringControllerTests
         [Frozen] IIntegrationsService integrationsService,
         CompetitionScoringController controller)
     {
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
         competition.CompetitionSolutions = competitionSolutions;
         competition.NonPriceElements = new() { IntegrationTypes = Enumerable.Empty<IntegrationType>().ToList() };
 
@@ -94,7 +94,7 @@ public static class CompetitionScoringControllerTests
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
         competition.CompetitionSolutions = competitionSolutions;
         competition.NonPriceElements = new() { IntegrationTypes = Enumerable.Empty<IntegrationType>().ToList() };
 
@@ -138,7 +138,7 @@ public static class CompetitionScoringControllerTests
         [Frozen] ICompetitionsService competitionsService,
         CompetitionScoringController controller)
     {
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
         competition.CompetitionSolutions = competitionSolutions;
         competition.NonPriceElements = new() { Implementation = new() };
 
@@ -165,7 +165,7 @@ public static class CompetitionScoringControllerTests
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
         competition.CompetitionSolutions = competitionSolutions;
         competition.NonPriceElements = new() { Implementation = new() };
 
@@ -209,7 +209,7 @@ public static class CompetitionScoringControllerTests
         [Frozen] ICompetitionsService competitionsService,
         CompetitionScoringController controller)
     {
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
         competition.CompetitionSolutions = competitionSolutions;
         competition.NonPriceElements = new() { ServiceLevel = new() { ApplicableDays = Enum.GetValues<Iso8601DayOfWeek>() } };
 
@@ -236,7 +236,7 @@ public static class CompetitionScoringControllerTests
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
         competition.CompetitionSolutions = competitionSolutions;
         competition.NonPriceElements = new() { ServiceLevel = new() };
 
@@ -280,7 +280,7 @@ public static class CompetitionScoringControllerTests
         [Frozen] ICompetitionsService competitionsService,
         CompetitionScoringController controller)
     {
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
         competition.CompetitionSolutions = competitionSolutions;
         competition.NonPriceElements = new() { Features = new List<FeaturesCriteria>() };
 
@@ -307,7 +307,7 @@ public static class CompetitionScoringControllerTests
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
         competition.CompetitionSolutions = competitionSolutions;
         competition.NonPriceElements = new() { Features = new List<FeaturesCriteria>() };
 

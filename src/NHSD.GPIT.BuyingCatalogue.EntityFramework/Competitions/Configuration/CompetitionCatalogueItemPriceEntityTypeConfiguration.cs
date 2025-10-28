@@ -12,8 +12,6 @@ public class CompetitionCatalogueItemPriceEntityTypeConfiguration : IEntityTypeC
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.CompetitionId).IsRequired();
-
         builder.Property(x => x.CataloguePriceId).IsRequired();
 
         builder.Property(x => x.BillingPeriod)
@@ -35,10 +33,5 @@ public class CompetitionCatalogueItemPriceEntityTypeConfiguration : IEntityTypeC
         builder.Property(x => x.CataloguePriceQuantityCalculationType)
             .HasConversion<int>()
             .HasColumnName("CataloguePriceQuantityCalculationTypeId");
-
-        builder.HasOne(x => x.Competition)
-            .WithMany()
-            .HasForeignKey(x => x.CompetitionId)
-            .HasConstraintName("FK_CompetitionCatalogueItemPrices_Competition");
     }
 }

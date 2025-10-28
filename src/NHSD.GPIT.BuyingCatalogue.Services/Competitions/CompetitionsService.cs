@@ -708,7 +708,6 @@ public class CompetitionsService : ICompetitionsService
             .ThenInclude(competitionSolution => competitionSolution.Services)
             .ThenInclude(solutionService => solutionService.Price)
             .Include(competition => competition.CompetitionSolutions)
-            .ThenInclude(competitionSolution => competitionSolution.AssociatedServices)
             .ThenInclude(competitionCatalogueItem => competitionCatalogueItem.Price)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 

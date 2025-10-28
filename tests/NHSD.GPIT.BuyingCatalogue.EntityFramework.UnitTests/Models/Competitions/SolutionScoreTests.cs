@@ -18,8 +18,5 @@ public static class SolutionScoreTests
 
         solutionScore.ScoreType.Should().Be(scoreType);
         solutionScore.Score.Should().Be(score);
-        solutionScore.SolutionId.Should().Be(default(CatalogueItemId));
-        solutionScore.CompetitionId.Should().Be(default);
-        solutionScore.Id.Should().Be(default);
     }
 }

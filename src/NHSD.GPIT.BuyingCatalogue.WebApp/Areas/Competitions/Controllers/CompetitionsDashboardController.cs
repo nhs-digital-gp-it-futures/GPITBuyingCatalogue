@@ -211,7 +211,7 @@ public class CompetitionsDashboardController : Controller
         var competitionSolutions = solutionsAndServices
             .Where(x => x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId))
             .Select(
-            x => new CompetitionSolution(x.Solution.CatalogueItemId)
+            x => new CompetitionSolution(competitionId, x.Solution.CatalogueItemId)
             {
                 Services = x.Solution.AdditionalServices.Select(
                         y => new CompetitionAdditionalService(competitionId, y.CatalogueItemId, true)).Cast<CompetitionCatalogueItem>()

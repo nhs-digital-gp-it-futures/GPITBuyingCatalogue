@@ -9,10 +9,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
 public class CompetitionSolution : CompetitionCatalogueItem
 {
-    public CompetitionSolution(
-        CatalogueItemId catalogueItemId)
+    public CompetitionSolution()
     {
-        CatalogueItemId = catalogueItemId;
+    }
+
+    public CompetitionSolution(
+        int competitionId,
+        CatalogueItemId catalogueItemId)
+        : base(competitionId, catalogueItemId)
+    {
     }
 
     public bool IsShortlisted { get; set; }
