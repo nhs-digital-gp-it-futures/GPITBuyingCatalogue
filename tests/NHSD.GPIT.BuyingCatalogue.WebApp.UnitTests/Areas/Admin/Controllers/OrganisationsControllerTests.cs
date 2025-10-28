@@ -543,9 +543,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] ICreateUserService mockCreateBuyerService,
             OrganisationsController controller)
         {
-            model.OrganisationId = 2;
             model.EmailAddress = "a@b.com";
-            model.SelectedAccountType = accountType;
+            model.SelectedAccountType = "AccountManager";
             model.IsDefaultAccountType = isDefaultAccountType;
             model.IsActive = true;
 

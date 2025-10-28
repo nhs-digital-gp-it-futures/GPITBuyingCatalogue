@@ -264,6 +264,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ThenBy(o => o.ServiceRecipientName)
                 .ToList();
 
+            for (int i = 0; i < distinctItems.Count; i++)
+            {
+                distinctItems[i].ServiceRecipientItemId =
+                    $"{distinctItems[i].CallOffId}-{distinctItems[i].ServiceRecipientId}-{i}";
+            }
+
             return distinctItems;
         }
 
@@ -288,11 +294,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
                         SubIcbCode = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
-                            ? string.Empty
-                            : or.ParentSublocation.SublocationOdsCode,
+                                ? string.Empty
+                                : or.ParentSublocation.SublocationOdsCode,
                         SubIcbName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
-                            ? string.Empty
-                            : or.ParentSublocation.SublocationOrganisation.Name,
+                                ? string.Empty
+                                : or.ParentSublocation.SublocationOrganisation.Name,
                         CommencementDate = or.Order.CommencementDate,
                         ServiceRecipientId = or.RecipientOdsCode,
                         ServiceRecipientName = or.RecipientOdsOrganisation.Name,
@@ -350,6 +356,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ThenBy(o => o.ServiceRecipientName)
                 .ToList();
 
+            for (int i = 0; i < ordered.Count; i++)
+                ordered[i].ServiceRecipientItemId = $"{ordered[i].CallOffId}-{ordered[i].ServiceRecipientId}-{i}";
+
             return ordered;
         }
 
@@ -374,13 +383,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
                         SubIcbCode = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
-                            ? string.Empty
-                            : or.ParentSublocation.SublocationOdsCode,
+                                ? string.Empty
+                                : or.ParentSublocation.SublocationOdsCode,
                         SubIcbName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
-                            ? string.Empty
-                            : or.ParentSublocation.SublocationOrganisation.Name,
+                                ? string.Empty
+                                : or.ParentSublocation.SublocationOrganisation.Name,
                         CommencementDate = or.Order.CommencementDate,
-                        ServiceRecipientId = or.RecipientOdsCode,
+                        ServiceRecipientId = or.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode,
                         ServiceRecipientName = or.RecipientOdsOrganisation.Name,
                         ServiceRecipientToRetain = $"{or.RecipientOdsOrganisation.Name} ({or.RecipientOdsCode})",
                         ServiceRecipientToSplit =
@@ -434,6 +443,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var ordered = items
                 .OrderBy(o => o.ServiceRecipientName)
                 .ToList();
+
+            for (int i = 0; i < ordered.Count; i++)
+                ordered[i].ServiceRecipientItemId = $"{ordered[i].CallOffId}-{ordered[i].ServiceRecipientId}-{i}";
 
             return ordered;
         }

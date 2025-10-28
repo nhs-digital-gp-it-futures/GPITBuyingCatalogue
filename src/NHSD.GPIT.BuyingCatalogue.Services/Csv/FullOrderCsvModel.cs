@@ -7,8 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
     [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     public class FullOrderCsvModel
     {
-        private string serviceRecipientItemId;
-
         public CallOffId CallOffId { get; set; }
 
         public string OdsCode { get; set; }
@@ -21,11 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
         public string ServiceRecipientName { get; set; }
 
-        public string ServiceRecipientItemId
-        {
-            get => serviceRecipientItemId ??= $"{CallOffId}-{ServiceRecipientId}-{ProductId}";
-            set => serviceRecipientItemId = value;
-        }
+        public string ServiceRecipientItemId { get; set; }
 
         public string SupplierId { get; set; }
 

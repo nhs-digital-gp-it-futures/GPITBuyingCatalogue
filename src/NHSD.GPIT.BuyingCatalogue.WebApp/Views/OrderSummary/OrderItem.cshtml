@@ -78,7 +78,7 @@ else
                     @($"{recipient.RecipientOdsOrganisation?.Name} ({recipient.RecipientOdsCode})")
                 </td>
                 <td>
-                    @($"{Model.CallOffId}-{recipient.RecipientOdsCode}-{Model.CatalogueItem.Id}")
+                    @($"{Model.CallOffId}-{recipient.RecipientOdsCode}-{ViewContext.HttpContext.NextLineId()}")
                 </td>
                 <td>
                     @deliveryDateText
