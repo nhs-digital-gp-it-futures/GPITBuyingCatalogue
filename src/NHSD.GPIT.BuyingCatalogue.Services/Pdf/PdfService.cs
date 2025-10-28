@@ -13,13 +13,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
     [ExcludeFromCodeCoverage(Justification = "Can't be tested as it stands up an instance of Google Chrome")]
     public sealed class PdfService : IPdfService
     {
-        private const string ChromeArgs =
-            "--no-sandbox -headless --disable-dev-shm-usage --disable-gpu --disable-software-rasterizer --ignore-certificate-errors --no-pdf-header-footer";
-
+        private const string ChromeArgs = "--no-sandbox --headless --disable-dev-shm-usage --disable-gpu --disable-software-rasterizer --ignore-certificate-errors --no-pdf-header-footer";
         private const string ChromeWindows32BitPath = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
         private const string ChromeWindows64BitPath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
         private const string ChromeLinuxPath = "/usr/bin/chromium-browser";
-        private const string ChromeMacPath = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
         private readonly IActionContextAccessor actionContextAccessor;
         private readonly PdfSettings pdfSettings;
 
@@ -32,22 +29,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
 
         public Uri BaseUri()
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                var httpContext = actionContextAccessor.ActionContext!.HttpContext!;
+                return new Uri($"{httpContext.Request.Scheme}://{httpContext.Request.Host}");
+            }
+            else
             {
                 return pdfSettings.UseSslForPdf
                     ? new Uri($"https://localhost")
                     : new Uri($"http://localhost");
             }
-
-            var httpContext = actionContextAccessor.ActionContext!.HttpContext!;
-            return new Uri($"{httpContext.Request.Scheme}://{httpContext.Request.Host}");
         }
 
-        [SuppressMessage(
-            "Reliability",
-            "CA2000:Dispose objects before losing scope",
-            Justification = "Process is disposed of via the Exited event handler")]
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Process is disposed of via the Exited event handler")]
         public Task<byte[]> Convert(Uri url)
         {
             string filePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
@@ -84,9 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
                 return File.Exists(ChromeWindows64BitPath) ? ChromeWindows64BitPath : ChromeWindows32BitPath;
             }
 
-            return RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
-                ? ChromeMacPath
-                : ChromeLinuxPath;
+            return ChromeLinuxPath;
         }
     }
 }
