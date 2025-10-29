@@ -39,19 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         private readonly IOrganisationsService organisationsService =
             organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
 
-        [HttpGet("")]
-        [HttpGet("start")]
-        public async Task<IActionResult> Start(string internalOrgId, CallOffId callOffId)
-        {
-            var order = (await orderService.GetOrderThin(callOffId, internalOrgId))?.Order;
-            if (order is null) return NotFound();
-
-            if (order.OrderType.MergerOrSplit)
-                return RedirectToAction(nameof(SelectSublocations), new { internalOrgId, callOffId });
-
-            return RedirectToAction(nameof(UploadOrSelectServiceRecipients), new { internalOrgId, callOffId });
-        }
-
         [HttpGet("upload-or-select-service-recipients")]
         public IActionResult UploadOrSelectServiceRecipients(
             string internalOrgId,
@@ -110,15 +97,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             IEnumerable<OdsOrganisation> possibleSublocations =
                 await odsService.GetSublocationsByParentOdsCode(wrapper.Order.OrderingParty.ExternalIdentifier);
 
-            var backLink = wrapper.Order.OrderType.MergerOrSplit
-                ? Url.Action(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
-                    new { internalOrgId, callOffId })
-                : Url.Action(
-                    nameof(UploadOrSelectServiceRecipients),
-                    typeof(ServiceRecipientsController).ControllerName(),
-                    new { internalOrgId, callOffId });
+            var backLink = Url.Action(
+                nameof(UploadOrSelectServiceRecipients),
+                typeof(ServiceRecipientsController).ControllerName(),
+                new { internalOrgId, callOffId });
 
             var model = new SelectSublocationsModel(
                 wrapper,

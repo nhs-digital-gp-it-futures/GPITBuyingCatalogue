@@ -11,7 +11,7 @@
     ViewBag.Title = Model.Title;
 
     var serviceRecipientUrl = Url.Action(
-        nameof(ServiceRecipientsController.Start),
+        nameof(ServiceRecipientsController.UploadOrSelectServiceRecipients),
         typeof(ServiceRecipientsController).ControllerName(),
         new { Model.InternalOrgId, Model.CallOffId });
 }
