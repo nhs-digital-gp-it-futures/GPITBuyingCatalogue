@@ -298,6 +298,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             List<ServiceRecipientModel> possibleRecipients =
                 await GetServiceRecipientModelsBySublocation(sublocationOdsCode);
 
+            var retainedOrgId = orderSublocation?.Order?.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode;
+
+            if (!string.IsNullOrWhiteSpace(retainedOrgId))
+            {
+                var retained = possibleRecipients
+                    .FirstOrDefault(r => string.Equals(r.OdsCode, retainedOrgId, StringComparison.OrdinalIgnoreCase));
+
+                if (retained is not null)
+                {
+                    retained.Selected = true;
+                }
+
+                ViewData["RetainedOrgId"] = retainedOrgId;
+            }
+
             var backLink = isMerger
                 ? Url.Action(
                     nameof(AddSublocations),
@@ -407,6 +422,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 .Where(x => x.Selected)
                 .Select(y => y.Value)
                 .ToHashSet();
+
+            var retainedOrgId = sublocation.Order?.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode;
+            if (!string.IsNullOrWhiteSpace(retainedOrgId))
+                pageSelections.Add(retainedOrgId);
 
             await orderSublocationService.SetSublocationRecipients(
                 externalOrganisationId,
@@ -518,14 +537,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 BackLink = Url.Action(nameof(AddSublocations), new { internalOrgId, callOffId }),
             };
 
-            return View("~/Areas/Orders/Views/MergerOrSplitServiceRecipients/SelectRecipientForPracticeReorganisation.cshtml", model);
+            return View("MergerOrSplit/SelectRecipientForPracticeReorganisation", model);
         }
 
         [HttpPost("select-recipient-for-practice-reorganisation")]
         public IActionResult SelectRecipientForPracticeReorganisation(
             string internalOrgId, CallOffId callOffId, string recipientIds, RecipientForPracticeReorganisationModel model)
         {
-            if (!ModelState.IsValid) return View("~/Areas/Orders/Views/MergerOrSplitServiceRecipients/SelectRecipientForPracticeReorganisation.cshtml", model);
+            if (!ModelState.IsValid) return View("MergerOrSplit/SelectRecipientForPracticeReorganisation", model);
 
             var selectedRecipientId = model.SelectedOdsCode;
 
@@ -560,7 +579,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 AddRemoveRecipientsLink = Url.Action(nameof(AddSublocations), new { internalOrgId, callOffId }),
             };
 
-            return View("~/Areas/Orders/Views/MergerOrSplitServiceRecipients/ConfirmChanges.cshtml", model);
+            return View("MergerOrSplit/ConfirmChanges", model);
         }
 
         [HttpPost("confirm-recipients")]
@@ -652,6 +671,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var sublocations = new List<SublocationModel>();
 
+            string retainedRecipientOds_Current = wrapper.Order.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode;
+            string retainedRecipientSublocationOds_Current = null;
+
+            if (!string.IsNullOrWhiteSpace(retainedRecipientOds_Current))
+            {
+                var retainedList = await odsService
+                    .GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(internalOrgId, new[] { retainedRecipientOds_Current });
+                retainedRecipientSublocationOds_Current = retainedList.FirstOrDefault()?.LocationOrgId;
+            }
+
+            string retainedRecipientOds_Previous = wrapper.IsAmendment
+                ? wrapper.PreviousOrders[^1].AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode
+                : null;
+
+            string retainedRecipientSublocationOds_Previous = null;
+
+            if (!string.IsNullOrWhiteSpace(retainedRecipientOds_Previous))
+            {
+                var retainedPrevList = await odsService
+                    .GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(internalOrgId, new[] { retainedRecipientOds_Previous });
+                retainedRecipientSublocationOds_Previous = retainedPrevList.FirstOrDefault()?.LocationOrgId;
+            }
+
             foreach (OrderSublocation s in wrapper.Order.OrderSublocations)
             {
                 await MapSublocationToSublocationModel(s);
@@ -702,6 +744,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                         wrapper.Order.OrderingParty.ExternalIdentifier,
                         previousRevisionOrderId,
                         orderSublocation.SublocationOdsCode);
+                }
+
+                if (!string.IsNullOrWhiteSpace(retainedRecipientSublocationOds_Current) &&
+                    string.Equals(retainedRecipientSublocationOds_Current, orderSublocation.SublocationOdsCode, StringComparison.OrdinalIgnoreCase))
+                {
+                    serviceRecipientCount += 1;
+                }
+
+                if (wrapper.IsAmendment &&
+                    !string.IsNullOrWhiteSpace(retainedRecipientSublocationOds_Previous) &&
+                    string.Equals(retainedRecipientSublocationOds_Previous, orderSublocation.SublocationOdsCode, StringComparison.OrdinalIgnoreCase))
+                {
+                    previousRecipientCount += 1;
                 }
 
                 TaskProgress taskProgress = serviceRecipientCount switch

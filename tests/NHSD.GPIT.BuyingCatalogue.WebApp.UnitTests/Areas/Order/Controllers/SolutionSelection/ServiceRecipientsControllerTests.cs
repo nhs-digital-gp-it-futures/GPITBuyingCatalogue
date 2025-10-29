@@ -1620,10 +1620,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     Sublocations = [new SublocationModel { ServiceRecipientCount = 0 }],
                 };
 
-            //var result =
-            //    controller.ConfirmSublocations(callingModel, internalOrganisationId, orderId)
-            //        .As<RedirectToActionResult>();
-
             var result = (await controller.ConfirmSublocations(callingModel, internalOrganisationId, orderId))
                             .As<RedirectToActionResult>();
 
