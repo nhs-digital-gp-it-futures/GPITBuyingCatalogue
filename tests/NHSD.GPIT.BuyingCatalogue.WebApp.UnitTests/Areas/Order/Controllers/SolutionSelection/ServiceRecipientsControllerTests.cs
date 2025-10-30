@@ -21,6 +21,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NSubstitute.ReturnsExtensions;
 using Xunit;
@@ -161,6 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             return
             [
+
                 // 2 Existing sublocations that should be ticked, and a new one that shouldn't
                 [
                     CommonOrganisationFactory(),
@@ -310,6 +312,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             return
             [
+
                 // 2 existing, 1 unticked and 2 ticked resulting in 2 sublocations and 1 remove
                 [
                     CommonOrganisationFactory(),
@@ -411,6 +414,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             return
             [
+
                 // No removes
                 [
                     "AAAA,AAAB,AAAC",
@@ -718,6 +722,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             return
             [
+
                 // Repo + all mode = 3 selected
                 [
                     CommonOrganisationFactory(), CommonOrderFactory(),
@@ -913,6 +918,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             return
             [
+
                 // 1 existing + repo = 3 rendered with 1 existing selected
                 [
                     CommonOrganisationFactory(), CommonOrderFactory(),
@@ -1050,6 +1056,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             return
             [
+
                 // Current logic will copy previous recipients to the current order so they need to be included in both
                 // 1 in previous order = 2 visible for selection
                 [
@@ -1371,6 +1378,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             return
             [
+
                 // no existing sublocation recipients + 2 new selected = 2 adds
                 [
                     CommonOrganisationFactory(), CommonOrderFactory(), "XXXX",
@@ -1753,6 +1761,259 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                         .Excluding(m => m.Caption)
                         .Excluding(m => m.Advice));
             result.ViewName.Should().Be("ServiceRecipients/ConfirmSublocationRecipients");
+        }
+
+        [Theory]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task Get_SelectRecipientForPracticeReorganisation_Returns_Model_With_Selected_And_Preselected(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            string selectedOdsCode,
+            Organisation organisation,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            List<ServiceRecipient> serviceRecipients,
+            [Frozen] IOrderService orderService,
+            [Frozen] IOdsService odsService,
+            [Frozen] IOrganisationsService organisationsService,
+            ServiceRecipientsController controller)
+        {
+            order.OrderType = orderType;
+            orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(internalOrgId, Arg.Any<IEnumerable<string>>())
+                      .Returns(serviceRecipients);
+            organisationsService.GetOrganisationByInternalIdentifier(internalOrgId).Returns(organisation);
+
+            var result = await controller.SelectRecipientForPracticeReorganisation(internalOrgId, callOffId, string.Empty, selectedOdsCode);
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var model = viewResult.Model.Should().BeAssignableTo<RecipientForPracticeReorganisationModel>().Subject;
+            model.OrganisationName.Should().Be(organisation.Name);
+            model.SelectedOdsCode.Should().Be(selectedOdsCode);
+
+            model.SubLocations.SelectMany(s => s.ServiceRecipients)
+                .Select(s => new { s.Name, s.OdsCode, s.Location })
+                .Should().BeEquivalentTo(serviceRecipients.Select(s => new { s.Name, OdsCode = s.OrgId, s.Location }));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Post_SelectRecipientForPracticeReorganisation_Redirects_To_ConfirmChanges(
+            string internalOrgId,
+            CallOffId callOffId,
+            RecipientForPracticeReorganisationModel model,
+            ServiceRecipientsController controller)
+        {
+            var recipientIds = "1,2";
+            var result = controller.SelectRecipientForPracticeReorganisation(internalOrgId, callOffId, recipientIds, model)
+                         .As<RedirectToActionResult>();
+
+            result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmChanges));
+            result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+                { "recipientIds", recipientIds },
+                { "selectedRecipientId", model.SelectedOdsCode },
+            });
+        }
+
+        [Theory]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task Get_ConfirmChanges_Returns_Model_With_Selected_And_Retained(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            List<ServiceRecipient> serviceRecipients,
+            [Frozen] IOrderService orderService,
+            [Frozen] IOdsService odsService,
+            ServiceRecipientsController controller)
+        {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+            order.OrderType = orderType;
+
+            orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
+            var ids = serviceRecipients.Select(r => r.OrgId).ToList();
+            var retained = ids.First();
+
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(internalOrgId, Arg.Is<IEnumerable<string>>(x => x.ToHashSet().SetEquals(ids)))
+                      .Returns(serviceRecipients);
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(internalOrgId, Arg.Is<IEnumerable<string>>(x => !x.Any()))
+                      .Returns(new List<ServiceRecipient>());
+
+            var result = await controller.ConfirmChanges(internalOrgId, callOffId, ids.ToRecipientsString(), retained);
+            var viewResult = result.As<ViewResult>();
+
+            var expected = new ConfirmChangesModel
+            {
+                Title = "Confirm service recipients",
+                Caption = $"Order {callOffId}",
+                Selected = serviceRecipients.Where(r => r.OrgId != retained)
+                    .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).ToList(),
+                PracticeReorganisationRecipient = serviceRecipients.Where(r => r.OrgId == retained)
+                    .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).First(),
+                OrderType = orderType,
+            };
+
+            viewResult.Model.Should().BeEquivalentTo(
+                expected,
+                o => o.Excluding(m => m.Advice).Excluding(m => m.BackLink).Excluding(m => m.AddRemoveRecipientsLink));
+        }
+
+        [Theory]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task Get_ConfirmChanges_With_Retained_Not_In_List_Returns_BadRequest(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            string notInList,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            List<ServiceRecipient> serviceRecipients,
+            [Frozen] IOrderService orderService,
+            [Frozen] IOdsService odsService,
+            ServiceRecipientsController controller)
+        {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+            order.OrderType = orderType;
+
+            orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
+            var ids = serviceRecipients.Select(r => r.OrgId).ToList();
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(internalOrgId, Arg.Any<IEnumerable<string>>())
+                      .Returns(serviceRecipients);
+
+            var result = await controller.ConfirmChanges(internalOrgId, callOffId, ids.ToRecipientsString(), notInList);
+            result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Theory]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task Post_ConfirmChanges_Redirects_To_TaskList(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            ConfirmChangesModel model,
+            CallOffId callOffId,
+            ServiceRecipientsController controller)
+        {
+            model.OrderType = orderType;
+
+            var result = (await controller.ConfirmChanges(internalOrgId, callOffId, model))
+                            .As<RedirectToActionResult>();
+
+            result.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            result.ActionName.Should().Be(nameof(OrderController.Order));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task SelectSublocationsOverview_Merger_Redirects_To_SelectRecipientForPracticeReorganisation(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService orderService,
+            ServiceRecipientsController controller)
+        {
+            order.OrderType = OrderTypeEnum.AssociatedServiceMerger;
+
+            var subLocation = new OrderSublocation { SublocationOdsCode = "SUB1", OwnerOdsCode = "PARENT" };
+            subLocation.SublocationRecipients = [new OrderSublocationRecipient { RecipientOdsCode = "A" },
+                                 new OrderSublocationRecipient { RecipientOdsCode = "B" }];
+            order.OrderSublocations = [subLocation];
+
+            orderService.GetOrderWithSublocationsAndSublocationRecipients(callOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
+
+            var model = new SelectSublocationsOverviewModel { Sublocations = [new SublocationModel { ServiceRecipientCount = 1 }] };
+
+            var result = (await controller.AddSublocations(model, internalOrgId, callOffId))
+                         .As<RedirectToActionResult>();
+
+            result.ActionName.Should().Be(nameof(ServiceRecipientsController.SelectRecipientForPracticeReorganisation));
+            result.RouteValues["internalOrgId"].Should().Be(internalOrgId);
+            result.RouteValues["callOffId"].Should().Be(callOffId);
+            result.RouteValues["recipientIds"].Should().Be("A,B");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task SelectSublocationRecipients_Get_Marks_Retained_As_Selected(
+            Organisation organisation,
+            EntityFramework.Ordering.Models.Order order,
+            OrderSublocation workingSublocation,
+            [Frozen] IOrderSublocationService orderSublocationService,
+            [Frozen] IOrganisationsService organisationsService,
+            [Frozen] IOdsService odsService,
+            [Frozen] IOrderService orderService,
+            ServiceRecipientsController controller)
+        {
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+            order.AssociatedServicesOnlyDetails = new AssociatedServicesOnlyDetails { PracticeReorganisationOdsCode = "RET" };
+            workingSublocation.Order = order;
+
+            organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(organisation.InternalIdentifier)
+                .Returns(organisation.ExternalIdentifier);
+            orderService.GetOrderId(order.CallOffId).Returns(order.Id);
+
+            orderSublocationService.GetOrderSublocationWithRecipients(
+                organisation.ExternalIdentifier, order.Id, workingSublocation.SublocationOdsCode)
+                .Returns(workingSublocation);
+
+            odsService.GetServiceRecipientsBySublocation(workingSublocation.SublocationOdsCode)
+                .Returns(new List<ServiceRecipient>
+                {
+                    new() { OrgId = "RET", LocationOrgId = workingSublocation.SublocationOdsCode },
+                    new() { OrgId = "X", LocationOrgId = workingSublocation.SublocationOdsCode },
+                });
+
+            var viewResult = (await controller.SelectSublocationRecipients(
+                organisation.InternalIdentifier, order.CallOffId, workingSublocation.SublocationOdsCode)).As<ViewResult>();
+
+            var rendered = viewResult.Model.As<SelectSublocationRecipientsModel>().RenderedServiceRecipients;
+            rendered.Single(x => x.Value == "RET").Selected.Should().BeTrue();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task SelectSublocationsOverview_Count_Includes_Retained(
+            Organisation organisation,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService orderService,
+            [Frozen] IOrderSublocationService subService,
+            [Frozen] IOdsService odsService,
+            ServiceRecipientsController controller)
+        {
+            order.OrderingParty = organisation;
+            order.AssociatedServicesOnlyDetails = new AssociatedServicesOnlyDetails { PracticeReorganisationOdsCode = "RET" };
+            var subLocation = new OrderSublocation
+            {
+                SublocationOdsCode = "SUB1",
+                OwnerOdsCode = organisation.ExternalIdentifier,
+                Order = order,
+                SublocationOrganisation = new EntityFramework.OdsOrganisations.Models.OdsOrganisation
+                {
+                    Id = "SUB1",
+                    Name = "Sub1",
+                    IsActive = true,
+                },
+            };
+            order.OrderSublocations = [subLocation];
+
+            subService.GetCountForOrderSublocationRecipients(organisation.ExternalIdentifier, Arg.Any<int>(), "SUB1").Returns(1);
+
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(organisation.InternalIdentifier, Arg.Is<IEnumerable<string>>(x => x.Single() == "RET"))
+                      .Returns(new List<ServiceRecipient> { new() { OrgId = "RET", LocationOrgId = "SUB1" } });
+
+            orderService.GetOrderWithSublocations(order.CallOffId, organisation.InternalIdentifier).Returns(new OrderWrapper(order));
+
+            var viewResult = await controller.AddSublocations(organisation.InternalIdentifier, order.CallOffId) as ViewResult;
+            var model = viewResult!.Model.As<SelectSublocationsOverviewModel>();
+
+            model.Sublocations.Single().ServiceRecipientCount.Should().Be(2);
         }
 
         private static Organisation CommonOrganisationFactory(int customId = 0)
