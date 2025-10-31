@@ -9,6 +9,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
     public sealed class SelectSublocationRecipientsModel : NavBaseModel
     {
+        public const string DefaultTitle = "Add service recipients";
+        public const string DefaultAdvice = "Select all the organisations that will be receiving this order.";
+        public const string MergerTitle = "Add merging service recipients";
+        public const string MergerAdvice = "Select all the practices that will be involved in the merger. They must all be using the same Catalogue Solution.";
+
         public SelectSublocationRecipientsModel()
         {
         }
@@ -24,9 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 backLink,
                 selectionMode)
         {
-            Title = null;
-            Advice = null;
-
             Caption = competition.Name;
             RenderedServiceRecipients = GetRenderedSublocations(
                 possibleServiceRecipients,
@@ -46,6 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 selectionMode)
         {
             Caption = order.CallOffId.ToString();
+            SetDisplayContent(order.OrderType?.MergerOrSplit == true);
+
             RenderedServiceRecipients = GetRenderedSublocations(
                 possibleServiceRecipients,
                 selectedSublocation.ServiceRecipients);
@@ -67,6 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         {
             IsAmendment = true;
             Caption = order.CallOffId.ToString();
+            SetDisplayContent(order.OrderType?.MergerOrSplit == true);
 
             RenderedServiceRecipients = GetRenderedSublocations(
                 possibleServiceRecipients,
@@ -89,14 +94,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
             SublocationName = selectedSublocation.Name;
         }
-
-        public string CustomTitle { get; init; }
-
-        public string CustomAdvice { get; init; }
-
-        public string EffectiveTitle => CustomTitle ?? Title;
-
-        public string EffectiveAdvice => CustomAdvice ?? Advice;
 
         public string SublocationName { get; init; }
 
@@ -148,6 +145,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                     x.OdsCode,
                     x.Selected))
                 .ToList();
+        }
+
+        private void SetDisplayContent(bool isMerger)
+        {
+            Title = isMerger ? MergerTitle : DefaultTitle;
+            Advice = isMerger ? MergerAdvice : DefaultAdvice;
         }
 
         private void SelectServiceRecipients(

@@ -316,11 +316,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     sublocationAsSublocationModel,
                     possibleRecipients,
                     backLink,
-                    selectionMode)
-                {
-                    CustomTitle = isMerger ? "Add merging service recipients" : "Add service recipients",
-                    CustomAdvice = isMerger ? "Select all the practices that will be involved in the merger. They must all be using the same Catalogue Solution." : "Select all the organisations that will be receiving this order.",
-                };
+                    selectionMode);
 
                 return View("ServiceRecipients/SelectSublocationRecipients", amendmentModel);
             }
@@ -330,11 +326,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 sublocationAsSublocationModel,
                 possibleRecipients,
                 backLink,
-                selectionMode)
-            {
-                CustomTitle = isMerger ? "Add merging service recipients" : "Add service recipients",
-                CustomAdvice = isMerger ? "Select all the practices that will be involved in the merger. They must all be using the same Catalogue Solution." : "Select all the organisations that will be receiving this order.",
-            };
+                selectionMode);
 
             return View("ServiceRecipients/SelectSublocationRecipients", model);
         }

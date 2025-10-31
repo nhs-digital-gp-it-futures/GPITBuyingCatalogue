@@ -788,10 +788,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                         .Excluding(m => m.Advice)
                         .Excluding(m => m.BackLink)
                         .Excluding(m => m.RenderedServiceRecipients)
-                        .Excluding(m => m.EffectiveTitle)
-                        .Excluding(m => m.EffectiveAdvice)
-                        .Excluding(m => m.CustomTitle)
-                        .Excluding(m => m.CustomAdvice));
+                        .Excluding(m => m.Title)
+                        .Excluding(m => m.Advice));
 
             IReadOnlyList<SelectOption<string>> renderedRecipientsForFurtherEvaluation =
                 result.Model.As<SelectSublocationRecipientsModel>().RenderedServiceRecipients;
@@ -1085,8 +1083,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 SublocationName = workingSublocation.SublocationOrganisation?.Name,
                 RenderedServiceRecipients = expectedRendered,
                 SelectionMode = selectionMode,
-                CustomTitle = "Add service recipients",
-                CustomAdvice = "Select all the organisations that will be receiving this order.",
             };
 
             var result =
