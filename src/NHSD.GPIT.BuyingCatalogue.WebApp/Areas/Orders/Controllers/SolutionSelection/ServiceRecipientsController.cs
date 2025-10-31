@@ -155,26 +155,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new { callOffId, internalOrgId });
         }
 
-        [HttpGet("add-sublocations")]
-        public async Task<IActionResult> AddSublocations(string internalOrgId, CallOffId callOffId)
-        {
-            var backLink = Url.Action(
-                nameof(SelectSublocations),
-                typeof(ServiceRecipientsController).ControllerName(),
-                new { callOffId, internalOrgId });
-
-            return await SelectSublocationsOverview(callOffId, internalOrgId, false, backLink);
-        }
-
-        [HttpPost("add-sublocations")]
-        public async Task<IActionResult> AddSublocations(
-            SelectSublocationsOverviewModel model,
-            string internalOrgId,
-            CallOffId callOffId)
-        {
-            return await SelectSublocationsOverviewDynamicRedirect(model, internalOrgId, callOffId);
-        }
-
         [HttpGet("remove-sublocations")]
         public async Task<IActionResult> RemoveSublocations(
             string internalOrgId,
@@ -295,11 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 ViewData["RetainedOrgId"] = retainedOrgId;
             }
 
-            var backLink = isMerger
-                ? Url.Action(
-                    nameof(AddSublocations),
-                    new { internalOrgId, callOffId })
-                : Url.Action(
+            var backLink = Url.Action(
                     nameof(ConfirmSublocations),
                     typeof(ServiceRecipientsController).ControllerName(),
                     new { internalOrgId, callOffId });
@@ -321,14 +297,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
                 if (allPossibleRecipientsAlreadySelectedInPrevious)
                 {
-                    var backAndContinueLink = isMerger
-                        ? Url.Action(
-                            nameof(AddSublocations),
-                            new { internalOrgId, callOffId })
-                        : Url.Action(
-                            nameof(ConfirmSublocations),
-                            typeof(ServiceRecipientsController).ControllerName(),
-                            new { internalOrgId, callOffId });
+                    var backAndContinueLink = Url.Action(
+                        nameof(ConfirmSublocations),
+                        typeof(ServiceRecipientsController).ControllerName(),
+                        new { callOffId, internalOrgId });
 
                     var noNewModel = new NoNewRecipientsForSublocationAmendmentModel(
                         orderHistory.Order,
@@ -516,7 +488,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var model = new RecipientForPracticeReorganisationModel(organisation, callOffId, orderType, serviceRecipients)
             {
                 SelectedOdsCode = selectedRecipientId,
-                BackLink = Url.Action(nameof(AddSublocations), new { internalOrgId, callOffId }),
+                BackLink = Url.Action(nameof(ConfirmSublocations), new { internalOrgId, callOffId }),
             };
 
             return View("MergerOrSplit/SelectRecipientForPracticeReorganisation", model);
@@ -558,7 +530,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 BackLink = Url.Action(
                     nameof(SelectRecipientForPracticeReorganisation),
                     new { internalOrgId, callOffId, recipientIds, selectedRecipientId }),
-                AddRemoveRecipientsLink = Url.Action(nameof(AddSublocations), new { internalOrgId, callOffId }),
+                AddRemoveRecipientsLink = Url.Action(nameof(ConfirmSublocations), new { internalOrgId, callOffId }),
             };
 
             return View("MergerOrSplit/ConfirmChanges", model);
