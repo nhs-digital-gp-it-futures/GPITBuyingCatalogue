@@ -282,12 +282,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     opt => opt.Excluding(m => m.BackLink)
                         .Excluding(m => m.Title)
                         .Excluding(m => m.Caption)
-                        .Excluding(m => m.Advice)
-                        .Excluding(m => m.FormLabelText)
-                        .Excluding(m => m.EffectiveTitle)
-                        .Excluding(m => m.EffectiveAdvice)
-                        .Excluding(m => m.CustomTitle)
-                        .Excluding(m => m.CustomAdvice));
+                        .Excluding(m => m.Advice));
         }
 
         [Theory]

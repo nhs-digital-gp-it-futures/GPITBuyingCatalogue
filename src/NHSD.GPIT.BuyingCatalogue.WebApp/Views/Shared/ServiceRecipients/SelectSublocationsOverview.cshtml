@@ -6,7 +6,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectSublocationsOverviewModel;
 
 @{
-    ViewBag.Title = Model.EffectiveTitle;
+    ViewBag.Title = Model.Title;
 
     var isChangeSublocations = Model.Sublocations.Count > 0;
 }
@@ -15,7 +15,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="@Model.EffectiveTitle" caption="@Model.Caption" advice="@Model.EffectiveAdvice" />
+        <nhs-page-title title="@Model.Title" caption="@Model.Caption" advice="@Model.Advice" />
         <nhs-card-v2>
             <nhs-card-content title="Sublocations for @Model.ParentName">
                 <nhs-table>

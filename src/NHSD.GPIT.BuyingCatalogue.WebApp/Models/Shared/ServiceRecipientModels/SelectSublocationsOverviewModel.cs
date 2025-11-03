@@ -22,7 +22,7 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         ProcessType = "competition";
         ParentName = competition.Organisation.Name;
         Caption = competition.Name;
-        SetConditionalTitleAndAdvice(isConfirm);
+        SetDisplayContent(isConfirm, isMerger: false);
     }
 
     public SelectSublocationsOverviewModel(
@@ -36,7 +36,8 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         ProcessType = "order";
         ParentName = order.OrderingParty.Name;
         Caption = order.CallOffId.ToString();
-        SetConditionalTitleAndAdvice(isConfirm);
+        var isMerger = order.OrderType.MergerOrSplit;
+        SetDisplayContent(isConfirm, isMerger);
     }
 
     private SelectSublocationsOverviewModel(
@@ -50,14 +51,6 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         BackLink = backLink;
     }
 
-    public string CustomTitle { get; init; }
-
-    public string CustomAdvice { get; init; }
-
-    public string EffectiveTitle => CustomTitle ?? Title;
-
-    public string EffectiveAdvice => CustomAdvice ?? Advice;
-
     public string ProcessType { get; init; }
 
     public string AddOrChangeSublocationsLink { get; init; }
@@ -66,11 +59,19 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
 
     public List<SublocationModel> Sublocations { get; init; } = [];
 
-    private void SetConditionalTitleAndAdvice(bool isConfirm)
+    private void SetDisplayContent(bool isConfirm, bool isMerger)
     {
-        Title = isConfirm ? "Confirm sublocations" : "Add sublocations";
-        Advice = isConfirm
-            ? $"Select a sublocation to amend the organisations in this {ProcessType}"
-            : $"Select a sublocation to add organisations to this {ProcessType}";
+        if (isMerger)
+        {
+            Title = "Add organisations";
+            Advice = "Select a sublocation to add organisations to this merger.";
+        }
+        else
+        {
+            Title = isConfirm ? "Confirm sublocations" : "Add sublocations";
+            Advice = isConfirm
+                ? $"Select a sublocation to amend the organisations in this {ProcessType}"
+                : $"Select a sublocation to add organisations to this {ProcessType}";
+        }
     }
 }

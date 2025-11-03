@@ -655,15 +655,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 wrapper.Order,
                 sublocations,
                 addOrChangeSublocationsLink,
-                backLink)
-            {
-                CustomTitle = wrapper.Order.OrderType.MergerOrSplit
-                    ? "Add organisations"
-                    : null,
-                CustomAdvice = wrapper.Order.OrderType.MergerOrSplit
-                    ? "Select a sublocation to add organisations to this merger."
-                    : null,
-            };
+                backLink);
 
             return View("ServiceRecipients/SelectSublocationsOverview", model);
 

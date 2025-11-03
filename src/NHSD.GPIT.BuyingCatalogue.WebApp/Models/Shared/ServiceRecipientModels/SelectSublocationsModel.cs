@@ -9,6 +9,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
     public sealed class SelectSublocationsModel : NavBaseModel
     {
+        public const string DefaultTitle = "Select sublocations for this order";
+        public const string DefaultAdvice = "Select all the {0} sublocations that will receive this order.";
+        public const string MergerTitle = "Select sublocations for this merger";
+        public const string MergerAdvice = "Select all the {0} sublocations that will be involved in the merger. They must all be using the same catalogue solution.";
+
         public SelectSublocationsModel()
         {
         }
@@ -21,8 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Caption = competition.Name;
             BackLink = backLink;
 
-            FormLabelText =
-                $"Select all the {competition.Organisation.Name} sublocations that will be part of this competition";
+            Advice = string.Format(DefaultAdvice, competition.Organisation.Name);
 
             List<SublocationModel> existingSublocations =
                 competition.CompetitionSublocations.Select(x => new SublocationModel(x, true)).ToList();
@@ -36,14 +40,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
             string backLink)
         {
-            Title = "Select sublocations for this order";
+            Title = DefaultTitle;
             Caption = wrapper.Order.CallOffId.ToString();
             BackLink = backLink;
 
             IsAmendment = wrapper.IsAmendment;
 
-            FormLabelText =
-                $"Select all the {wrapper.Order.OrderingParty.Name} sublocations that will receive this order";
+            SetDisplayContent(
+                isMerger: wrapper.Order.OrderType?.MergerOrSplit == true,
+                organisationName: wrapper.Order.OrderingParty?.Name ?? "organisation");
 
             // Current and previous order sublocations
             List<SublocationModel> existingSublocations =
@@ -58,19 +63,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 : GetRenderedSublocations(possibleSublocations, existingSublocations);
         }
 
-        public string CustomTitle { get; init; }
-
-        public string CustomAdvice { get; init; }
-
-        public string EffectiveTitle => CustomTitle ?? Title;
-
-        public string EffectiveAdvice => CustomAdvice ?? Advice;
-
         public IReadOnlyList<SelectOption<string>> RenderedSublocations { get; init; }
 
         public bool? IsAmendment { get; init; }
-
-        public string FormLabelText { get; init; }
 
         private static List<SelectOption<string>> GetRenderedSublocations(
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
@@ -107,6 +102,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 })
                 .OrderBy(x => x.Text)
                 .ToList();
+        }
+
+        private void SetDisplayContent(bool isMerger, string organisationName)
+        {
+            if (isMerger)
+            {
+                Title = MergerTitle;
+                Advice = string.Format(MergerAdvice, organisationName);
+            }
+            else
+            {
+                Title = DefaultTitle;
+                Advice = string.Format(DefaultAdvice, organisationName);
+            }
         }
     }
 }

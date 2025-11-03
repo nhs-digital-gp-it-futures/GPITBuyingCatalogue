@@ -8,7 +8,7 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="@Model.EffectiveTitle" caption="@Model.Caption" advice="@Model.EffectiveAdvice" />
+        <nhs-page-title title="@Model.Title" caption="@Model.Caption" advice="@Model.Advice" />
         
         @if (Model.IsAmendment is true)
         {
@@ -32,11 +32,10 @@
         }
 
         <form method="post">
-            <hidden-inputs title="@Model.EffectiveTitle" caption="@Model.Caption" />
+            <hidden-inputs title="@Model.Title" caption="@Model.Caption" />
             <input type="hidden" asp-for="@Model.BackLink" />
-            <input type="hidden" asp-for="@Model.FormLabelText" />
 
-            <nhs-fieldset-form-label asp-for="@Model" label-text="@Model.FormLabelText" size="Small">
+            <nhs-fieldset-form-label asp-for="@Model">
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.RenderedSublocations.Count; i++)
                     {

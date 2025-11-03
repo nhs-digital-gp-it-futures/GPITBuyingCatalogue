@@ -86,8 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             string backLink,
             SelectionMode? selectionMode = null)
         {
-            Title = "Add service recipients";
-            Advice = "Select all the organisations that will be receiving this order";
+            Title = DefaultTitle;
+            Advice = DefaultAdvice;
             BackLink = backLink;
 
             SelectionMode = selectionMode;
