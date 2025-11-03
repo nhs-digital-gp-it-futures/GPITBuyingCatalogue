@@ -388,9 +388,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         [HttpGet("confirm-sublocations")]
         public async Task<IActionResult> ConfirmSublocations(string internalOrgId, CallOffId callOffId)
         {
-            var wrapper = await orderService.GetOrderWithSublocations(callOffId, internalOrgId);
-            if (wrapper is null) return NotFound();
-
             var backLink = Url.Action(
                     nameof(UploadOrSelectServiceRecipients),
                     typeof(ServiceRecipientsController).ControllerName(),
