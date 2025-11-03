@@ -391,12 +391,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var wrapper = await orderService.GetOrderWithSublocations(callOffId, internalOrgId);
             if (wrapper is null) return NotFound();
 
-            var backLink = wrapper.Order.OrderType.MergerOrSplit
-                ? Url.Action(
-                    nameof(SelectSublocations),
-                    typeof(ServiceRecipientsController).ControllerName(),
-                    new { internalOrgId, callOffId })
-                : Url.Action(
+            var backLink = Url.Action(
                     nameof(UploadOrSelectServiceRecipients),
                     typeof(ServiceRecipientsController).ControllerName(),
                     new { internalOrgId, callOffId });
