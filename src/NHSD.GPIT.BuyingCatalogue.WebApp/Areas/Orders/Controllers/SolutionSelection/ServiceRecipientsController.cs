@@ -609,29 +609,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var sublocations = new List<SublocationModel>();
 
-            string retainedRecipientOds_Current = wrapper.Order.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode;
-            string retainedRecipientSublocationOds_Current = null;
-
-            if (!string.IsNullOrWhiteSpace(retainedRecipientOds_Current))
-            {
-                var retainedList = await odsService
-                    .GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(internalOrgId, new[] { retainedRecipientOds_Current });
-                retainedRecipientSublocationOds_Current = retainedList.FirstOrDefault()?.LocationOrgId;
-            }
-
-            string retainedRecipientOds_Previous = wrapper.IsAmendment
-                ? wrapper.PreviousOrders[^1].AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode
-                : null;
-
-            string retainedRecipientSublocationOds_Previous = null;
-
-            if (!string.IsNullOrWhiteSpace(retainedRecipientOds_Previous))
-            {
-                var retainedPrevList = await odsService
-                    .GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(internalOrgId, new[] { retainedRecipientOds_Previous });
-                retainedRecipientSublocationOds_Previous = retainedPrevList.FirstOrDefault()?.LocationOrgId;
-            }
-
             foreach (OrderSublocation s in wrapper.Order.OrderSublocations)
             {
                 await MapSublocationToSublocationModel(s);
@@ -674,19 +651,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                         wrapper.Order.OrderingParty.ExternalIdentifier,
                         previousRevisionOrderId,
                         orderSublocation.SublocationOdsCode);
-                }
-
-                if (!string.IsNullOrWhiteSpace(retainedRecipientSublocationOds_Current) &&
-                    string.Equals(retainedRecipientSublocationOds_Current, orderSublocation.SublocationOdsCode, StringComparison.OrdinalIgnoreCase))
-                {
-                    serviceRecipientCount += 1;
-                }
-
-                if (wrapper.IsAmendment &&
-                    !string.IsNullOrWhiteSpace(retainedRecipientSublocationOds_Previous) &&
-                    string.Equals(retainedRecipientSublocationOds_Previous, orderSublocation.SublocationOdsCode, StringComparison.OrdinalIgnoreCase))
-                {
-                    previousRecipientCount += 1;
                 }
 
                 TaskProgress taskProgress = serviceRecipientCount switch
