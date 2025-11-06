@@ -253,27 +253,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return NotFound();
             }
 
-            var isMerger = orderSublocation.Order.OrderType.MergerOrSplit;
-
             var sublocationAsSublocationModel = new SublocationModel(orderSublocation, true);
 
             List<ServiceRecipientModel> possibleRecipients =
                 await GetServiceRecipientModelsBySublocation(sublocationOdsCode);
-
-            var retainedOrgId = orderSublocation?.Order?.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode;
-
-            if (!string.IsNullOrWhiteSpace(retainedOrgId))
-            {
-                var retained = possibleRecipients
-                    .FirstOrDefault(r => string.Equals(r.OdsCode, retainedOrgId, StringComparison.OrdinalIgnoreCase));
-
-                if (retained is not null)
-                {
-                    retained.Selected = true;
-                }
-
-                ViewData["RetainedOrgId"] = retainedOrgId;
-            }
 
             var backLink = Url.Action(
                     nameof(ConfirmSublocations),

@@ -43,8 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         {
             SublocationOdsCodes = sublocations;
             Removes = removes;
-            var plural = (removes?.Count == 1) ? "sublocation" : "sublocations";
-            Title = $"Remove {plural}";
+            Pluralisation = Removes.Count == 1 ? "sublocation" : "sublocations";
+            Title = $"Remove {Pluralisation}";
             BackLink = backLink;
         }
 
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public string ListHeaderText { get; init; }
 
-        public string Pluralisation => (Removes?.Count == 1) ? "sublocation" : "sublocations";
+        public string Pluralisation { get; init; }
 
         public IReadOnlyList<string> SublocationOdsCodes { get; init; }
 
