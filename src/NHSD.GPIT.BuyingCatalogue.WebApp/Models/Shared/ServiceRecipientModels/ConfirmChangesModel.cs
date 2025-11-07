@@ -18,13 +18,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             CallOffId callOffId,
             OrderType orderType,
             List<ServiceRecipientModel> selectedRecipients,
-            ServiceRecipientModel practiceReorganisationRecipient)
+            ServiceRecipientModel practiceReorganisationRecipient,
+            string backlink,
+            string addRemoveRecipientsLink)
         {
             GetTitleAndAdviceFromOrderType(orderType);
             Caption = $"Order {callOffId}";
+            BackLink = backlink;
+            AddRemoveRecipientsLink = addRemoveRecipientsLink;
 
             OrderType = orderType;
-            Selected = selectedRecipients;
+            SelectedRecipients = selectedRecipients;
             PracticeReorganisationRecipient = practiceReorganisationRecipient;
         }
 
@@ -52,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public ServiceRecipientModel PracticeReorganisationRecipient { get; set; }
 
-        public List<ServiceRecipientModel> Selected { get; set; } = [];
+        public List<ServiceRecipientModel> SelectedRecipients { get; set; } = [];
 
         private void GetTitleAndAdviceFromOrderType(OrderType orderType)
         {

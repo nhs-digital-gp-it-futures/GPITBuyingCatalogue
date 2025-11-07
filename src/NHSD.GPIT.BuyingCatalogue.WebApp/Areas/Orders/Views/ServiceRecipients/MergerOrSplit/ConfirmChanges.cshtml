@@ -47,10 +47,10 @@
                         <nhs-table>
                             <nhs-table-column>Organisation</nhs-table-column>
                             <nhs-table-column>ODS code</nhs-table-column>
-                            @foreach (var (item, index) in Model.Selected.Select((v, i) => (v, i)))
+                            @foreach (var (item, index) in Model.SelectedRecipients.Select((v, i) => (v, i)))
                             {
-                                <input type="hidden" asp-for="@Model.Selected[index].Name" />
-                                <input type="hidden" asp-for="@Model.Selected[index].OdsCode" />
+                            <input type="hidden" asp-for="@Model.SelectedRecipients[index].Name" />
+                            <input type="hidden" asp-for="@Model.SelectedRecipients[index].OdsCode" />
                                 <nhs-table-row-container>
                                     <nhs-table-cell>
                                         @item.Name

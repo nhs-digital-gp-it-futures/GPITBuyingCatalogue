@@ -352,10 +352,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 .Select(y => y.Value)
                 .ToHashSet();
 
-            var retainedOrgId = sublocation.Order?.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode;
-            if (!string.IsNullOrWhiteSpace(retainedOrgId))
-                pageSelections.Add(retainedOrgId);
-
             await orderSublocationService.SetSublocationRecipients(
                 externalOrganisationId,
                 orderId,
@@ -448,15 +444,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
             var orderType = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order.OrderType;
 
-            var selectedOds = UrlStringToValues(recipientIds);
-            var serviceRecipients = MapToModel(
-                await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(internalOrgId, selectedOds), false);
+            var selectedOdsCodes = UrlStringToValues(recipientIds);
+            var serviceRecipientsList = MapToModel(
+                await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(internalOrgId, selectedOdsCodes), false);
 
-            var model = new RecipientForPracticeReorganisationModel(organisation, callOffId, orderType, serviceRecipients)
-            {
-                SelectedOdsCode = selectedRecipientId,
-                BackLink = Url.Action(nameof(ConfirmSublocations), new { internalOrgId, callOffId }),
-            };
+            var backLink = Url.Action(nameof(ConfirmSublocations), new { internalOrgId, callOffId });
+
+            var model = new RecipientForPracticeReorganisationModel(
+                organisation,
+                callOffId,
+                orderType,
+                serviceRecipientsList,
+                selectedRecipientId,
+                backLink);
 
             return View("MergerOrSplit/SelectRecipientForPracticeReorganisation", model);
         }
@@ -467,7 +467,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             if (!ModelState.IsValid) return View("MergerOrSplit/SelectRecipientForPracticeReorganisation", model);
 
-            var selectedRecipientId = model.SelectedOdsCode;
+            var selectedRecipientId = model.SelectedRecipientId;
 
             return RedirectToAction(
                 nameof(ConfirmChanges),
@@ -481,24 +481,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var orderType = wrapper.Order.OrderType;
 
-            var selected = MapToModel(
-                await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                    internalOrgId, UrlStringToValues(recipientIds)),
-                false);
+            var selectedOdsCodes = UrlStringToValues(recipientIds);
+            var serviceRecipientsList = MapToModel(
+                await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(internalOrgId, selectedOdsCodes), false);
 
-            var retained = selected.FirstOrDefault(r => r.OdsCode == selectedRecipientId);
-            if (retained is null)
+            var retainedRecipient = serviceRecipientsList.FirstOrDefault(r => r.OdsCode == selectedRecipientId);
+            if (retainedRecipient is null)
                 return BadRequest($"The selected merger or split recipient {selectedRecipientId} isn't in the list of recipients");
 
-            selected.Remove(retained);
+            serviceRecipientsList.Remove(retainedRecipient);
 
-            var model = new ConfirmChangesModel(callOffId, orderType, selected, retained)
-            {
-                BackLink = Url.Action(
+            var backLink = Url.Action(
                     nameof(SelectRecipientForPracticeReorganisation),
-                    new { internalOrgId, callOffId, recipientIds, selectedRecipientId }),
-                AddRemoveRecipientsLink = Url.Action(nameof(ConfirmSublocations), new { internalOrgId, callOffId }),
-            };
+                    new { internalOrgId, callOffId, recipientIds, selectedRecipientId });
+
+            var addRemoveRecipientsLink = Url.Action(
+                nameof(ConfirmSublocations),
+                new { internalOrgId, callOffId });
+
+            var model = new ConfirmChangesModel(
+                callOffId,
+                orderType,
+                serviceRecipientsList,
+                retainedRecipient,
+                backLink,
+                addRemoveRecipientsLink);
 
             return View("MergerOrSplit/ConfirmChanges", model);
         }
@@ -513,10 +520,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             await orderService.SetOrderPracticeReorganisationRecipient(
                 internalOrgId, callOffId, model.PracticeReorganisationRecipient.OdsCode);
 
-            var selectedAsServiceRecipient = await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                internalOrgId, model.Selected.Select(x => x.OdsCode));
+            var selectedRecipients = await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId, model.SelectedRecipients.Select(x => x.OdsCode));
 
-            var recipientsAsSublocationModel = selectedAsServiceRecipient
+            var recipientsAsSublocationModel = selectedRecipients
                 .GroupBy(x => x.LocationOrgId)
                 .Select(x => new SublocationModel
                 {
@@ -652,6 +659,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     recipientLink,
                     serviceRecipientCount,
                     taskProgress);
+
                 sublocations.Add(sublocationModel);
             }
         }
