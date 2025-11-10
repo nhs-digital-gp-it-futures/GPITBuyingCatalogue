@@ -13,11 +13,11 @@ public static class RecipientForPracticeReorganisationModelValidatorTests
         RecipientForPracticeReorganisationModel model,
         RecipientForPracticeReorganisationModelValidator validator)
     {
-        model.SelectedOdsCode = null;
+        model.SelectedRecipientOdsCode = null;
 
         var result = validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(m => m.SelectedOdsCode)
+        result.ShouldHaveValidationErrorFor(m => m.SelectedRecipientOdsCode)
             .WithErrorMessage(RecipientForPracticeReorganisationModelValidator.ErrorMessage);
     }
 

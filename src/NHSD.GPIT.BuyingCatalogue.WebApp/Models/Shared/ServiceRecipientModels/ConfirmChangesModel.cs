@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         private void GetTitleAndAdviceFromOrderType(OrderType orderType)
         {
-            Title = "Confirm service recipients";
+            Title = TitleText;
             Advice = orderType.Value switch
             {
                 OrderTypeEnum.AssociatedServiceSplit => "Review the practices involved in the split you’re ordering.",

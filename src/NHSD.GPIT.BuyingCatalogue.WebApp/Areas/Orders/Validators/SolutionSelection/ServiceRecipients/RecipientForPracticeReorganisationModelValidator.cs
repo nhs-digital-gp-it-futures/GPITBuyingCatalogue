@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
 
         public RecipientForPracticeReorganisationModelValidator()
         {
-            RuleFor(m => m.SelectedRecipientId)
+            RuleFor(m => m.SelectedRecipientOdsCode)
                 .NotNull()
                 .WithMessage(ErrorMessage);
         }

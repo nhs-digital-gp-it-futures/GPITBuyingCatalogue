@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using CompetitionEntityModels = NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -48,11 +49,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             BackLink = backLink;
 
             IsAmendment = wrapper.IsAmendment;
-
-            SetDisplayContent(
-                isMerger: wrapper.Order.OrderType?.IsMerger == true,
-                isSplit: wrapper.Order.OrderType?.IsSplit == true,
-                organisationName: wrapper.Order.OrderingParty?.Name ?? "organisation");
+            var isMergerOrSplit = wrapper.Order.OrderType.MergerOrSplit;
+            var isMerger = wrapper.Order.OrderType.ToPracticeReorganisationType == PracticeReorganisationTypeEnum.Merger;
+            var organisationName = wrapper.Order.OrderingParty?.Name ?? "organisation";
+            SetDisplayContent(isMergerOrSplit, isMerger, organisationName);
 
             // Current and previous order sublocations
             List<SublocationModel> existingSublocations =
@@ -108,17 +108,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 .ToList();
         }
 
-        private void SetDisplayContent(bool isMerger, bool isSplit, string organisationName)
+        private void SetDisplayContent(bool isMergerOrSplit, bool isMerger, string organisationName)
         {
-            if (isMerger)
+            if (isMergerOrSplit)
             {
-                Title = MergerTitle;
-                Advice = string.Format(MergerAdvice, organisationName);
-            }
-            else if (isSplit)
-            {
-                Title = SplitTitle;
-                Advice = string.Format(SplitAdvice, organisationName);
+                Title = isMerger
+                    ? MergerTitle
+                    : SplitTitle;
+                Advice = isMerger
+                    ? string.Format(MergerAdvice, organisationName)
+                    : string.Format(SplitAdvice, organisationName);
             }
             else
             {

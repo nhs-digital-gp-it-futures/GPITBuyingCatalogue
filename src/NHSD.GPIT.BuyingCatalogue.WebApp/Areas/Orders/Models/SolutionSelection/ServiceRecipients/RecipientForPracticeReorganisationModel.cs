@@ -19,13 +19,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             CallOffId callOffId,
             OrderType orderType,
             List<ServiceRecipientModel> recipients,
-            string selectedRecipientId,
+            string selectedRecipientOdsCode,
             string backLink)
         {
             GetTitleAndAdviceFromOrderType(orderType);
             Caption = $"Order {callOffId}";
             BackLink = backLink;
-            SelectedRecipientId = selectedRecipientId;
+            SelectedRecipientOdsCode = selectedRecipientOdsCode;
 
             OrganisationName = organisation.Name;
             OrganisationType = organisation.OrganisationType.GetValueOrDefault();
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public string OrganisationName { get; set; }
 
-        public string SelectedRecipientId { get; set; }
+        public string SelectedRecipientOdsCode { get; set; }
 
         public OrganisationType OrganisationType { get; set; }
 

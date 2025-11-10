@@ -1674,7 +1674,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var model = viewResult.Model.Should().BeAssignableTo<RecipientForPracticeReorganisationModel>().Subject;
             model.OrganisationName.Should().Be(organisation.Name);
-            model.SelectedOdsCode.Should().Be(selectedOdsCode);
+            model.SelectedRecipientOdsCode.Should().Be(selectedOdsCode);
 
             model.SubLocations.SelectMany(s => s.ServiceRecipients)
                 .Select(s => new { s.Name, s.OdsCode, s.Location })
@@ -1699,7 +1699,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
                 { "recipientIds", recipientIds },
-                { "selectedRecipientId", model.SelectedOdsCode },
+                { "selectedRecipientId", model.SelectedRecipientOdsCode },
             });
         }
 
@@ -1735,7 +1735,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 Title = "Confirm service recipients",
                 Caption = $"Order {callOffId}",
-                Selected = serviceRecipients.Where(r => r.OrgId != retained)
+                SelectedRecipients = serviceRecipients.Where(r => r.OrgId != retained)
                     .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).ToList(),
                 PracticeReorganisationRecipient = serviceRecipients.Where(r => r.OrgId == retained)
                     .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).First(),

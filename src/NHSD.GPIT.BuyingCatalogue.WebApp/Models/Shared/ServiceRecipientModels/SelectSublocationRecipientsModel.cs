@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
@@ -13,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         public const string DefaultAdvice = "Select all the organisations that will be receiving this order.";
         public const string MergerTitle = "Add merging service recipients";
         public const string MergerAdvice = "Select all the practices that will be involved in the merger. They must all be using the same Catalogue Solution.";
+        public const string SplitTitle = "Service recipients splitting";
+        public const string SplitAdvice = "Select all the organisations that will be involved in this split. Theyt must all be using the same catalogue solution.";
 
         public SelectSublocationRecipientsModel()
         {
@@ -48,7 +51,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 selectionMode)
         {
             Caption = order.CallOffId.ToString();
-            SetDisplayContent(order.OrderType?.MergerOrSplit == true);
+            var isMergerOrSplit = order.OrderType.MergerOrSplit;
+            var isMerger = order.OrderType.ToPracticeReorganisationType == PracticeReorganisationTypeEnum.Merger;
+            SetDisplayContent(isMergerOrSplit, isMerger);
 
             RenderedServiceRecipients = GetRenderedSublocations(
                 possibleServiceRecipients,
@@ -71,7 +76,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         {
             IsAmendment = true;
             Caption = order.CallOffId.ToString();
-            SetDisplayContent(order.OrderType?.MergerOrSplit == true);
+            var isMergerOrSplit = order.OrderType.MergerOrSplit;
+            var isMerger = order.OrderType.ToPracticeReorganisationType == PracticeReorganisationTypeEnum.Merger;
+            SetDisplayContent(isMergerOrSplit, isMerger);
 
             RenderedServiceRecipients = GetRenderedSublocations(
                 possibleServiceRecipients,
@@ -147,10 +154,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 .ToList();
         }
 
-        private void SetDisplayContent(bool isMerger)
+        private void SetDisplayContent(bool isMergerOrSplit, bool isMerger)
         {
-            Title = isMerger ? MergerTitle : DefaultTitle;
-            Advice = isMerger ? MergerAdvice : DefaultAdvice;
+            if (isMergerOrSplit)
+            {
+                Title = isMerger ? MergerTitle : SplitTitle;
+                Advice = isMerger ? MergerAdvice : SplitAdvice;
+            }
+            else
+            {
+                Title = DefaultTitle;
+                Advice = DefaultAdvice;
+            }
         }
 
         private void SelectServiceRecipients(

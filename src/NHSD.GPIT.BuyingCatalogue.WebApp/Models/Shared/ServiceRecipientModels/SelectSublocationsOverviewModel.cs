@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -7,6 +8,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
 public sealed class SelectSublocationsOverviewModel : NavBaseModel
 {
+    public const string MergerOrSplitTitle = "Add organisations";
+    public const string MergerAdvice = "Select a sublocation to add organisations to this merger.";
+    public const string SplitAdvice = "Select a sublocation to add organisations to this split.";
+
     public SelectSublocationsOverviewModel()
     {
     }
@@ -22,7 +27,7 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         ProcessType = "competition";
         ParentName = competition.Organisation.Name;
         Caption = competition.Name;
-        SetDisplayContent(isConfirm, isMerger: false, isSplit: false);
+        SetDisplayContent(isConfirm, isMergerOrSplit: false, isMerger: false);
     }
 
     public SelectSublocationsOverviewModel(
@@ -36,9 +41,9 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         ProcessType = "order";
         ParentName = order.OrderingParty.Name;
         Caption = order.CallOffId.ToString();
-        var isMerger = order.OrderType.IsMerger;
-        var isSplit = order.OrderType.IsSplit;
-        SetDisplayContent(isConfirm, isMerger, isSplit);
+        var isMergerOrSplit = order.OrderType.MergerOrSplit;
+        var isMerger = order.OrderType.ToPracticeReorganisationType == PracticeReorganisationTypeEnum.Merger;
+        SetDisplayContent(isConfirm, isMergerOrSplit, isMerger);
     }
 
     private SelectSublocationsOverviewModel(
@@ -60,17 +65,14 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
 
     public List<SublocationModel> Sublocations { get; init; } = [];
 
-    private void SetDisplayContent(bool isConfirm, bool isMerger, bool isSplit)
+    private void SetDisplayContent(bool isConfirm, bool isMergerOrSplit, bool isMerger)
     {
-        if (isMerger)
+        if (isMergerOrSplit)
         {
-            Title = "Add organisations";
-            Advice = "Select a sublocation to add organisations to this merger.";
-        }
-        else if (isSplit)
-        {
-            Title = "Add organisations";
-            Advice = "Select a sublocation to add organisations to this split.";
+            Title = MergerOrSplitTitle;
+            Advice = isMerger
+                ? MergerAdvice
+                : SplitAdvice;
         }
         else
         {

@@ -158,8 +158,7 @@ public static class CompetitionRecipientsControllerTests
                 opt => opt.Excluding(m => m.BackLink)
                     .Excluding(m => m.Title)
                     .Excluding(m => m.Caption)
-                    .Excluding(m => m.Advice)
-                    .Excluding(m => m.FormLabelText));
+                    .Excluding(m => m.Advice));
     }
 
     [Theory]
