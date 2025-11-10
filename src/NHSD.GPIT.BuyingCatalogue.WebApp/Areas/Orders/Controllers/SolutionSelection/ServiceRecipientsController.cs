@@ -520,8 +520,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             await orderService.SetOrderPracticeReorganisationRecipient(
                 internalOrgId, callOffId, model.PracticeReorganisationRecipient.OdsCode);
 
+            var allRecipients = model.SelectedRecipients
+                                    .Select(x => x.OdsCode)
+                                    .Append(model.PracticeReorganisationRecipient.OdsCode);
+
             var selectedRecipients = await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                internalOrgId, model.SelectedRecipients.Select(x => x.OdsCode));
+                internalOrgId, allRecipients);
 
             var recipientsAsSublocationModel = selectedRecipients
                 .GroupBy(x => x.LocationOrgId)

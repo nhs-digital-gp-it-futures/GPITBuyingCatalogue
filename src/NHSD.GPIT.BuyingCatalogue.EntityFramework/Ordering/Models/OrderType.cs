@@ -69,13 +69,25 @@ public record OrderType(OrderTypeEnum Value) : IParsable<OrderType>
         }
     }
 
-    public bool MergerOrSplit
+    public bool IsMerger
     {
         get
         {
             return Value switch
             {
-                OrderTypeEnum.AssociatedServiceMerger or OrderTypeEnum.AssociatedServiceSplit => true,
+                OrderTypeEnum.AssociatedServiceMerger => true,
+                _ => false,
+            };
+        }
+    }
+
+    public bool IsSplit
+    {
+        get
+        {
+            return Value switch
+            {
+                OrderTypeEnum.AssociatedServiceSplit => true,
                 _ => false,
             };
         }

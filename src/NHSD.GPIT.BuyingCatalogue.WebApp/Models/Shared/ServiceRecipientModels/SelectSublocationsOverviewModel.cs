@@ -22,7 +22,7 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         ProcessType = "competition";
         ParentName = competition.Organisation.Name;
         Caption = competition.Name;
-        SetDisplayContent(isConfirm, isMerger: false);
+        SetDisplayContent(isConfirm, isMerger: false, isSplit: false);
     }
 
     public SelectSublocationsOverviewModel(
@@ -36,8 +36,9 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         ProcessType = "order";
         ParentName = order.OrderingParty.Name;
         Caption = order.CallOffId.ToString();
-        var isMerger = order.OrderType.MergerOrSplit;
-        SetDisplayContent(isConfirm, isMerger);
+        var isMerger = order.OrderType.IsMerger;
+        var isSplit = order.OrderType.IsSplit;
+        SetDisplayContent(isConfirm, isMerger, isSplit);
     }
 
     private SelectSublocationsOverviewModel(
@@ -59,12 +60,17 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
 
     public List<SublocationModel> Sublocations { get; init; } = [];
 
-    private void SetDisplayContent(bool isConfirm, bool isMerger)
+    private void SetDisplayContent(bool isConfirm, bool isMerger, bool isSplit)
     {
         if (isMerger)
         {
             Title = "Add organisations";
             Advice = "Select a sublocation to add organisations to this merger.";
+        }
+        else if (isSplit)
+        {
+            Title = "Add organisations";
+            Advice = "Select a sublocation to add organisations to this split.";
         }
         else
         {
