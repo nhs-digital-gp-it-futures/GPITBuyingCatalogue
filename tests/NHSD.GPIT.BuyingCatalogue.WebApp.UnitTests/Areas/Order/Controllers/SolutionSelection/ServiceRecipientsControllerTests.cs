@@ -1248,8 +1248,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 sublocationOdsCode);
 
             await organisationsService.DidNotReceiveWithAnyArgs()
-                    .GetOrganisationExternalIdentifierByInternalIdentifier(null)
-                ;
+                    .GetOrganisationExternalIdentifierByInternalIdentifier(null);
 
             ViewResult viewResult = result.Should().BeOfType<ViewResult>().Subject;
             SelectSublocationRecipientsModel returnedModel =
@@ -1650,7 +1649,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [Theory]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        public static async Task Get_SelectRecipientForPracticeReorganisation_Returns_Model_With_Selected_And_Preselected(
+        public static async Task SelectRecipientForPracticeReorganisation_Get_ReturnsModel_WithSelectedAndPreselected(
             OrderTypeEnum orderType,
             string internalOrgId,
             string selectedOdsCode,
@@ -1683,7 +1682,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static void Post_SelectRecipientForPracticeReorganisation_Redirects_To_ConfirmChanges(
+        public static void SelectRecipientForPracticeReorganisation_Post_RedirectsToConfirmChanges(
             string internalOrgId,
             CallOffId callOffId,
             RecipientForPracticeReorganisationModel model,
@@ -1699,14 +1698,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
                 { "recipientIds", recipientIds },
-                { "selectedRecipientId", model.SelectedRecipientOdsCode },
+                { "selectedRecipientOdsCode", model.SelectedRecipientOdsCode },
             });
         }
 
         [Theory]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        public static async Task Get_ConfirmChanges_Returns_Model_With_Selected_And_Retained(
+        public static async Task ConfirmChanges_Get_ReturnsModelWithSelectedAndRetained(
             OrderTypeEnum orderType,
             string internalOrgId,
             CallOffId callOffId,
@@ -1750,7 +1749,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [Theory]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        public static async Task Get_ConfirmChanges_With_Retained_Not_In_List_Returns_BadRequest(
+        public static async Task ConfirmChanges_Get_ReturnsBadRequest_WithRetainedNotInList(
             OrderTypeEnum orderType,
             string internalOrgId,
             string notInList,
@@ -1776,7 +1775,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [Theory]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        public static async Task Post_ConfirmChanges_Redirects_To_TaskList(
+        public static async Task ConfirmChanges_Post_RedirectsToTaskList(
             OrderTypeEnum orderType,
             string internalOrgId,
             ConfirmChangesModel model,
@@ -1793,15 +1792,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [MockAutoData]
-        public static async Task SelectSublocationsOverview_Merger_Redirects_To_SelectRecipientForPracticeReorganisation(
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task SelectSublocationsOverview_Post_RedirectsToSelectRecipientForPracticeReorganisation(
+            OrderTypeEnum orderType,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderService orderService,
             ServiceRecipientsController controller)
         {
-            order.OrderType = OrderTypeEnum.AssociatedServiceMerger;
+            order.OrderType = orderType;
 
             var subLocation = new OrderSublocation { SublocationOdsCode = "SUB1", OwnerOdsCode = "PARENT" };
             subLocation.SublocationRecipients = [new OrderSublocationRecipient { RecipientOdsCode = "A" },
@@ -1824,7 +1825,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static async Task SelectSublocationRecipients_Get_Marks_Retained_As_Selected(
+        public static async Task SelectSublocationRecipients_Get_MarksRetainedAsSelected(
             Organisation organisation,
             EntityFramework.Ordering.Models.Order order,
             OrderSublocation workingSublocation,
@@ -1841,7 +1842,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(organisation.InternalIdentifier)
                 .Returns(organisation.ExternalIdentifier);
-            orderService.GetOrderId(order.CallOffId).Returns(order.Id);
+            orderService.GetOrderId(order.CallOffId)
+                .Returns(order.Id);
 
             orderSublocationService.GetOrderSublocationWithRecipients(
                 organisation.ExternalIdentifier, order.Id, workingSublocation.SublocationOdsCode)
@@ -1863,11 +1865,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static async Task SelectSublocationsOverview_Count_Includes_Retained(
+        public static async Task SelectSublocationsOverview_CountIncludesRetained(
             Organisation organisation,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderService orderService,
-            [Frozen] IOrderSublocationService subService,
+            [Frozen] IOrderSublocationService sublocationService,
             [Frozen] IOdsService odsService,
             ServiceRecipientsController controller)
         {
@@ -1878,7 +1880,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 SublocationOdsCode = "SUB1",
                 OwnerOdsCode = organisation.ExternalIdentifier,
                 Order = order,
-                SublocationOrganisation = new EntityFramework.OdsOrganisations.Models.OdsOrganisation
+                SublocationOrganisation = new EntityOdsOrganisation
                 {
                     Id = "SUB1",
                     Name = "Sub1",
@@ -1887,7 +1889,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             };
             order.OrderSublocations = [subLocation];
 
-            subService.GetCountForOrderSublocationRecipients(organisation.ExternalIdentifier, Arg.Any<int>(), "SUB1").Returns(1);
+            sublocationService.GetCountForOrderSublocationRecipients(organisation.ExternalIdentifier, Arg.Any<int>(), "SUB1").Returns(1);
 
             odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(organisation.InternalIdentifier, Arg.Is<IEnumerable<string>>(x => x.Single() == "RET"))
                       .Returns(new List<ServiceRecipient> { new() { OrgId = "RET", LocationOrgId = "SUB1" } });

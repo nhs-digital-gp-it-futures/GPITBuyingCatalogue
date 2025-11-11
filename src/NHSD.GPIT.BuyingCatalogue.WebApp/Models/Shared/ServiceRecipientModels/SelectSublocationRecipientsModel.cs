@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         public const string MergerTitle = "Add merging service recipients";
         public const string MergerAdvice = "Select all the practices that will be involved in the merger. They must all be using the same Catalogue Solution.";
         public const string SplitTitle = "Service recipients splitting";
-        public const string SplitAdvice = "Select all the organisations that will be involved in this split. Theyt must all be using the same catalogue solution.";
+        public const string SplitAdvice = "Select all the organisations that will be involved in this split. They must all be using the same catalogue solution.";
 
         public SelectSublocationRecipientsModel()
         {
