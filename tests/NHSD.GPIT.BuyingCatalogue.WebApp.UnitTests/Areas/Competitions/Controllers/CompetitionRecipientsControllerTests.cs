@@ -976,6 +976,7 @@ public static class CompetitionRecipientsControllerTests
                 {
                     SublocationOdsCodes = ["AAAA", "AAAB", "AAAC"],
                     Removes = [],
+                    Pluralisation = "sublocations",
                     Title = "Remove sublocations",
                     Advice = "Confirm you want to remove sublocations from this competition",
                 },
@@ -991,6 +992,7 @@ public static class CompetitionRecipientsControllerTests
                 {
                     SublocationOdsCodes = ["AAAA", "AAAB"],
                     Removes = ["AAAC"],
+                    Pluralisation = "sublocation",
                     Title = "Remove sublocation",
                     Advice = "Confirm you want to remove sublocations from this competition",
                 },
@@ -1006,6 +1008,7 @@ public static class CompetitionRecipientsControllerTests
                 {
                     SublocationOdsCodes = ["AAAA"],
                     Removes = ["AAAB", "AAAC"],
+                    Pluralisation = "sublocations",
                     Title = "Remove sublocations",
                     Advice = "Confirm you want to remove sublocations from this competition",
                 },
