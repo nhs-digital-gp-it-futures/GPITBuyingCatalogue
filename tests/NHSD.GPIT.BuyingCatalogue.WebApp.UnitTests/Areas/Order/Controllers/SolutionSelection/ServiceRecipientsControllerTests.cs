@@ -418,6 +418,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     {
                         SublocationOdsCodes = ["AAAA", "AAAB", "AAAC"],
                         Removes = [],
+                        Pluralisation = "sublocations",
                         Title = "Remove sublocations",
                         Advice = "Confirm you want to remove sublocations from this order",
                     },
@@ -433,6 +434,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     {
                         SublocationOdsCodes = ["AAAA", "AAAB"],
                         Removes = ["AAAC"],
+                        Pluralisation = "sublocation",
                         Title = "Remove sublocation",
                         Advice = "Confirm you want to remove sublocations from this order",
                     },
@@ -448,6 +450,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     {
                         SublocationOdsCodes = ["AAAA"],
                         Removes = ["AAAB", "AAAC"],
+                        Pluralisation = "sublocations",
                         Title = "Remove sublocations",
                         Advice = "Confirm you want to remove sublocations from this order",
                     },
