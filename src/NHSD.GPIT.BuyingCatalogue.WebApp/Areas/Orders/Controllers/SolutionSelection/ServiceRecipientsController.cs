@@ -347,7 +347,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return BadRequest();
             }
 
-            HashSet<string> pageSelections = selectSublocationRecipientsModel.RenderedServiceRecipients
+            HashSet<string> recipientOdsCodeList = selectSublocationRecipientsModel.RenderedServiceRecipients
                 .Where(x => x.Selected)
                 .Select(y => y.Value)
                 .ToHashSet();
@@ -356,7 +356,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 externalOrganisationId,
                 orderId,
                 sublocationOdsCode,
-                pageSelections);
+                recipientOdsCodeList);
 
             return RedirectToAction(
                 nameof(ConfirmSublocations),
@@ -678,9 +678,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             }
 
             var wrapper = await orderService.GetOrderWithSublocationsAndSublocationRecipients(callOffId, internalOrgId);
-            var isMerger = wrapper?.Order?.OrderType.MergerOrSplit == true;
+            var isMergerOrSplit = wrapper?.Order?.OrderType.MergerOrSplit == true;
 
-            if (isMerger)
+            if (isMergerOrSplit)
             {
                 var allRecipientOds = wrapper.Order.OrderSublocations
                     .SelectMany(s => s.SublocationRecipients)
