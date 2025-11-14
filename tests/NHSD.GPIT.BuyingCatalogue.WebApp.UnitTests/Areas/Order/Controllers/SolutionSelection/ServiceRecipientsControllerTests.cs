@@ -1652,6 +1652,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [Theory]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task SelectSublocationsOverview_Post_RedirectsToSelectRecipientForPracticeReorganisation(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService orderService,
+            ServiceRecipientsController controller)
+        {
+            order.OrderType = orderType;
+
+            var subLocation = new OrderSublocation { SublocationOdsCode = "SUB1", OwnerOdsCode = "PARENT" };
+            subLocation.SublocationRecipients = [new OrderSublocationRecipient { RecipientOdsCode = "A" },
+                                 new OrderSublocationRecipient { RecipientOdsCode = "B" }];
+            order.OrderSublocations = [subLocation];
+
+            orderService.GetOrderWithSublocationsAndSublocationRecipients(callOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
+
+            var model = new SelectSublocationsOverviewModel { Sublocations = [new SublocationModel { ServiceRecipientCount = 1 }] };
+
+            var result = (await controller.ConfirmSublocations(model, internalOrgId, callOffId))
+                         .As<RedirectToActionResult>();
+
+            result.ActionName.Should().Be(nameof(ServiceRecipientsController.SelectRecipientForPracticeReorganisation));
+            result.RouteValues["internalOrgId"].Should().Be(internalOrgId);
+            result.RouteValues["callOffId"].Should().Be(callOffId);
+            result.RouteValues["recipientIds"].Should().Be("A,B");
+        }
+
+        [Theory]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
         public static async Task SelectRecipientForPracticeReorganisation_Get_ReturnsModel_WithSelectedAndPreselected(
             OrderTypeEnum orderType,
             string internalOrgId,
@@ -1792,38 +1824,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             result.ControllerName.Should().Be(typeof(OrderController).ControllerName());
             result.ActionName.Should().Be(nameof(OrderController.Order));
-        }
-
-        [Theory]
-        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        public static async Task SelectSublocationsOverview_Post_RedirectsToSelectRecipientForPracticeReorganisation(
-            OrderTypeEnum orderType,
-            string internalOrgId,
-            CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] IOrderService orderService,
-            ServiceRecipientsController controller)
-        {
-            order.OrderType = orderType;
-
-            var subLocation = new OrderSublocation { SublocationOdsCode = "SUB1", OwnerOdsCode = "PARENT" };
-            subLocation.SublocationRecipients = [new OrderSublocationRecipient { RecipientOdsCode = "A" },
-                                 new OrderSublocationRecipient { RecipientOdsCode = "B" }];
-            order.OrderSublocations = [subLocation];
-
-            orderService.GetOrderWithSublocationsAndSublocationRecipients(callOffId, internalOrgId)
-                .Returns(new OrderWrapper(order));
-
-            var model = new SelectSublocationsOverviewModel { Sublocations = [new SublocationModel { ServiceRecipientCount = 1 }] };
-
-            var result = (await controller.ConfirmSublocations(model, internalOrgId, callOffId))
-                         .As<RedirectToActionResult>();
-
-            result.ActionName.Should().Be(nameof(ServiceRecipientsController.SelectRecipientForPracticeReorganisation));
-            result.RouteValues["internalOrgId"].Should().Be(internalOrgId);
-            result.RouteValues["callOffId"].Should().Be(callOffId);
-            result.RouteValues["recipientIds"].Should().Be("A,B");
         }
 
         private static Organisation CommonOrganisationFactory(int customId = 0)
