@@ -16,7 +16,7 @@ public static class SolutionModelTests
         Solution solution,
         Supplier supplier,
         AdditionalService requiredService,
-        List<SolutionService> requiredServices,
+        List<CompetitionAdditionalService> requiredServices,
         CompetitionSolution competitionSolution)
     {
         solution.CatalogueItem.Supplier = supplier;
@@ -24,18 +24,19 @@ public static class SolutionModelTests
             x =>
             {
                 x.IsRequired = true;
-                x.Service = requiredService.CatalogueItem;
+                x.CatalogueItem = requiredService.CatalogueItem;
             });
 
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionServices = requiredServices;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = requiredServices.Cast<CompetitionCatalogueItem>().ToList();
 
         var model = new SolutionModel(competitionSolution);
 
         model.SolutionId.Should().Be(solution.CatalogueItemId);
         model.SolutionName.Should().Be(solution.CatalogueItem.Name);
         model.SupplierName.Should().Be(supplier.Name);
-        model.RequiredServices.Should().BeEquivalentTo(requiredServices.Select(x => x.Service.Name));
+        model.RequiredServices.Should().BeEquivalentTo(requiredServices.Select(x => x.CatalogueItem.Name));
         model.Selected.Should().Be(competitionSolution.IsShortlisted);
     }
 

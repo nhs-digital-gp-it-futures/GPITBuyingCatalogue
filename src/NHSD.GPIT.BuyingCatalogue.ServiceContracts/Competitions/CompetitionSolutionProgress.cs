@@ -21,12 +21,12 @@ public readonly struct CompetitionSolutionProgress(
     {
         get
         {
-            if (competitionSolution.Price == null && (!competitionSolution.SolutionServices.Any()
-                    || competitionSolution.SolutionServices.All(x => x.Price == null)))
+            if (competitionSolution.Price == null && (!competitionSolution.Services.Any()
+                    || competitionSolution.Services.All(x => x.Price == null)))
                 return TaskProgress.NotStarted;
 
-            return (competitionSolution.Price != null && (!competitionSolution.SolutionServices.Any()
-                || competitionSolution.SolutionServices.All(x => x.Price != null)))
+            return (competitionSolution.Price != null && (!competitionSolution.Services.Any()
+                || competitionSolution.Services.All(x => x.Price != null)))
                 ? TaskProgress.Completed
                 : TaskProgress.InProgress;
         }
@@ -42,8 +42,8 @@ public readonly struct CompetitionSolutionProgress(
             {
                 return (solution.Quantity.HasValue || (solution.Quantities.Any()
                         && recipients.All(x => solution.Quantities.Any(y => y.RecipientOdsCode == x.RecipientOdsCode))))
-                    && (!solution.SolutionServices.Any()
-                        || solution.SolutionServices.All(x => x.Quantity.HasValue || (x.Quantities.Any()
+                    && (!solution.Services.Any()
+                        || solution.Services.All(x => x.Quantity.HasValue || (x.Quantities.Any()
                             && recipients.All(y => x.Quantities.Any(z => z.RecipientOdsCode == y.RecipientOdsCode)))));
             }
 

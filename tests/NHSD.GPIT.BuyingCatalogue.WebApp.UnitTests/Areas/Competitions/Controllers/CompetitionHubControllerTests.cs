@@ -72,13 +72,13 @@ public static class CompetitionHubControllerTests
         [Frozen] IAssociatedServicesService associatedServicesService,
         CompetitionHubController controller)
     {
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition)
         {
@@ -106,8 +106,8 @@ public static class CompetitionHubControllerTests
         [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
@@ -129,19 +129,21 @@ public static class CompetitionHubControllerTests
         [Frozen] IAssociatedServicesService associatedServicesService,
         CompetitionHubController controller)
     {
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-        competitionSolution.SolutionServices = associatedServices.Select(
-                x => new SolutionService(competition.Id, solution.CatalogueItemId, x.CatalogueItemId, false)
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = associatedServices
+            .Select(x =>
+                new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
                 {
-                    Service = x.CatalogueItem,
+                    CatalogueItem = x.CatalogueItem,
                 })
+            .Cast<CompetitionCatalogueItem>()
             .ToList();
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition)
         {
@@ -171,7 +173,7 @@ public static class CompetitionHubControllerTests
         [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
-        competitionSolution.SolutionId = catalogueItem.Id;
+        competitionSolution.CatalogueItemId = catalogueItem.Id;
         competitionSolution.Price = competitionPrice;
 
         catalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
@@ -198,7 +200,7 @@ public static class CompetitionHubControllerTests
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
-        SolutionService solutionService,
+        CompetitionAdditionalService solutionService,
         CompetitionCatalogueItemPrice competitionPrice,
         CompetitionCatalogueItemPrice servicePrice,
         Solution solution,
@@ -208,13 +210,12 @@ public static class CompetitionHubControllerTests
         [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
-        solutionService.SolutionId = solution.CatalogueItemId;
-        solutionService.ServiceId = service.CatalogueItemId;
+        solutionService.CatalogueItemId = service.CatalogueItemId;
         solutionService.Price = servicePrice;
 
-        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
         competitionSolution.Price = competitionPrice;
-        competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
+        competitionSolution.Services = [solutionService];
 
         solution.CatalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
@@ -248,7 +249,7 @@ public static class CompetitionHubControllerTests
         [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
-        competitionSolution.SolutionId = catalogueItem.Id;
+        competitionSolution.CatalogueItemId = catalogueItem.Id;
         competitionSolution.Price = competitionPrice;
 
         catalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
@@ -282,7 +283,7 @@ public static class CompetitionHubControllerTests
         [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
-        competitionSolution.SolutionId = catalogueItem.Id;
+        competitionSolution.CatalogueItemId = catalogueItem.Id;
         competitionSolution.Price = competitionPrice;
 
         catalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
@@ -421,7 +422,7 @@ public static class CompetitionHubControllerTests
         [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
-        competitionSolution.SolutionId = catalogueItem.Id;
+        competitionSolution.CatalogueItemId = catalogueItem.Id;
         competitionSolution.Price = competitionPrice;
 
         catalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
@@ -449,7 +450,7 @@ public static class CompetitionHubControllerTests
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
-        SolutionService solutionService,
+        CompetitionAdditionalService solutionService,
         CompetitionCatalogueItemPrice competitionPrice,
         CompetitionCatalogueItemPrice servicePrice,
         Solution solution,
@@ -460,13 +461,12 @@ public static class CompetitionHubControllerTests
         [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
-        solutionService.SolutionId = solution.CatalogueItemId;
-        solutionService.ServiceId = service.CatalogueItemId;
+        solutionService.CatalogueItemId = service.CatalogueItemId;
         solutionService.Price = servicePrice;
 
-        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
         competitionSolution.Price = competitionPrice;
-        competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
+        competitionSolution.Services = [solutionService];
 
         service.CatalogueItem.CataloguePrices = new List<CataloguePrice> { additionalServicePrice };
         solution.CatalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
@@ -607,8 +607,8 @@ public static class CompetitionHubControllerTests
     {
         competitionPrice.CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient;
 
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
         competitionSolution.Price = competitionPrice;
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
@@ -637,7 +637,7 @@ public static class CompetitionHubControllerTests
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
-        SolutionService solutionService,
+        CompetitionAdditionalService solutionService,
         CompetitionCatalogueItemPrice competitionPrice,
         Solution solution,
         AdditionalService service,
@@ -646,13 +646,13 @@ public static class CompetitionHubControllerTests
     {
         competitionPrice.CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient;
 
-        solutionService.Service = service.CatalogueItem;
-        solutionService.ServiceId = service.CatalogueItemId;
+        solutionService.CatalogueItem = service.CatalogueItem;
+        solutionService.CatalogueItemId = service.CatalogueItemId;
         solutionService.Price = competitionPrice;
 
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-        competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = [solutionService];
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
@@ -687,8 +687,8 @@ public static class CompetitionHubControllerTests
     {
         competitionPrice.ProvisioningType = ProvisioningType.Declarative;
 
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
         competitionSolution.Price = competitionPrice;
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
@@ -713,7 +713,7 @@ public static class CompetitionHubControllerTests
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
-        SolutionService solutionService,
+        CompetitionAdditionalService solutionService,
         CompetitionCatalogueItemPrice competitionPrice,
         Solution solution,
         AdditionalService service,
@@ -722,13 +722,13 @@ public static class CompetitionHubControllerTests
     {
         competitionPrice.ProvisioningType = ProvisioningType.Declarative;
 
-        solutionService.Service = service.CatalogueItem;
-        solutionService.ServiceId = service.CatalogueItemId;
+        solutionService.CatalogueItem = service.CatalogueItem;
+        solutionService.CatalogueItemId = service.CatalogueItemId;
         solutionService.Price = competitionPrice;
 
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-        competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = [solutionService];
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
@@ -808,7 +808,7 @@ public static class CompetitionHubControllerTests
         Competition competition,
         CompetitionSolution competitionSolution,
         CompetitionCatalogueItemPrice competitionPrice,
-        List<SolutionQuantitySublocationRecipient> solutionQuantities,
+        List<CompetitionItemQuantity> solutionQuantities,
         List<ServiceRecipientQuantityDto> recipientQuantities,
         Solution solution,
         [Frozen] ICompetitionsService competitionsService,
@@ -816,8 +816,8 @@ public static class CompetitionHubControllerTests
     {
         competitionPrice.ProvisioningType = ProvisioningType.Declarative;
 
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
         competitionSolution.Price = competitionPrice;
         competitionSolution.Quantities = solutionQuantities;
 
@@ -845,9 +845,9 @@ public static class CompetitionHubControllerTests
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
-        SolutionService solutionService,
+        CompetitionAdditionalService solutionService,
         CompetitionCatalogueItemPrice competitionPrice,
-        List<ServiceQuantitySublocationRecipient> solutionQuantities,
+        List<CompetitionItemQuantity> solutionQuantities,
         List<ServiceRecipientQuantityDto> recipientQuantities,
         Solution solution,
         AdditionalService service,
@@ -856,14 +856,14 @@ public static class CompetitionHubControllerTests
     {
         competitionPrice.ProvisioningType = ProvisioningType.Declarative;
 
-        solutionService.Service = service.CatalogueItem;
-        solutionService.ServiceId = service.CatalogueItemId;
+        solutionService.CatalogueItem = service.CatalogueItem;
+        solutionService.CatalogueItemId = service.CatalogueItemId;
         solutionService.Price = competitionPrice;
         solutionService.Quantities = solutionQuantities;
 
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-        competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = [solutionService];
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
@@ -940,7 +940,7 @@ public static class CompetitionHubControllerTests
     {
         serviceRecipients.ForEach(x => x.InputQuantity = x.Quantity.ToString());
 
-        model.SubLocations = new SubLocationModel[] { new SubLocationModel("Location One", serviceRecipients), };
+        model.SubLocations = [new SubLocationModel("Location One", serviceRecipients)];
 
         _ = await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, solutionId, model, serviceId);
 
@@ -980,27 +980,27 @@ public static class CompetitionHubControllerTests
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
-        List<SolutionService> solutionServices,
+        List<CompetitionAssociatedService> solutionServices,
         Solution solution,
         List<AssociatedService> associatedServices,
         [Frozen] ICompetitionsService competitionsService,
         [Frozen] IAssociatedServicesService associatedServicesService,
         CompetitionHubController controller)
     {
-        solutionServices.ForEach(x => x.Service = associatedServices.First().CatalogueItem);
+        solutionServices.ForEach(x => x.CatalogueItem = associatedServices.First().CatalogueItem);
 
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-        competitionSolution.SolutionServices = solutionServices;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = solutionServices.Cast<CompetitionCatalogueItem>().ToList();
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var expectedModel = new SelectServicesModel(
-            solutionServices.Select(x => x.Service).ToList(),
+            solutionServices.Select(x => x.CatalogueItem).ToList(),
             associatedServices.Select(x => x.CatalogueItem).ToList())
         {
             EntityType = "Competition",
@@ -1012,7 +1012,7 @@ public static class CompetitionHubControllerTests
         var result = (await controller.SelectAssociatedServices(
             internalOrgId,
             competition.Id,
-            competitionSolution.SolutionId)).As<ViewResult>();
+            competitionSolution.CatalogueItemId)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -1024,7 +1024,7 @@ public static class CompetitionHubControllerTests
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
-        List<SolutionService> solutionServices,
+        List<CompetitionAssociatedService> solutionServices,
         Solution solution,
         List<AssociatedService> associatedServices,
         [Frozen] ICompetitionsService competitionsService,
@@ -1036,22 +1036,21 @@ public static class CompetitionHubControllerTests
         solutionServices.ForEach(
             x =>
             {
-                x.IsRequired = false;
-                x.Service = associatedServices.First().CatalogueItem;
+                x.CatalogueItem = associatedServices.First().CatalogueItem;
             });
 
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-        competitionSolution.SolutionServices = solutionServices;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = solutionServices.Cast<CompetitionCatalogueItem>().ToList();
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var model = new SelectServicesModel(
-            solutionServices.Select(x => x.Service).ToList(),
+            solutionServices.Select(x => x.CatalogueItem).ToList(),
             associatedServices.Select(x => x.CatalogueItem).ToList())
         {
             EntityType = "Competition",
@@ -1073,7 +1072,7 @@ public static class CompetitionHubControllerTests
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
-        List<SolutionService> solutionServices,
+        List<CompetitionAssociatedService> solutionServices,
         Solution solution,
         List<AssociatedService> associatedServices,
         [Frozen] ICompetitionsService competitionsService,
@@ -1083,23 +1082,22 @@ public static class CompetitionHubControllerTests
         solutionServices.ForEach(
             x =>
             {
-                x.IsRequired = false;
-                x.Service = associatedServices.First().CatalogueItem;
-                x.ServiceId = associatedServices.First().CatalogueItemId;
+                x.CatalogueItem = associatedServices.First().CatalogueItem;
+                x.CatalogueItemId = associatedServices.First().CatalogueItemId;
             });
 
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-        competitionSolution.SolutionServices = solutionServices;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = solutionServices.Cast<CompetitionCatalogueItem>().ToList();
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var model = new SelectServicesModel(
-            solutionServices.Select(x => x.Service).ToList(),
+            solutionServices.Select(x => x.CatalogueItem).ToList(),
             associatedServices.Select(x => x.CatalogueItem).ToList())
         {
             EntityType = "Competition",
@@ -1162,7 +1160,7 @@ public static class CompetitionHubControllerTests
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        var result = await controller.RemoveAssociatedService(internalOrgId, competition.Id, competitionSolution.SolutionId, serviceId);
+        var result = await controller.RemoveAssociatedService(internalOrgId, competition.Id, competitionSolution.CatalogueItemId, serviceId);
 
         result.Should().BeOfType<BadRequestResult>();
     }
@@ -1173,23 +1171,22 @@ public static class CompetitionHubControllerTests
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
-        SolutionService solutionService,
+        CompetitionAssociatedService solutionService,
         AssociatedService associatedService,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
-        solutionService.IsRequired = false;
-        solutionService.ServiceId = associatedService.CatalogueItemId;
-        solutionService.Service = associatedService.CatalogueItem;
+        solutionService.CatalogueItemId = associatedService.CatalogueItemId;
+        solutionService.CatalogueItem = associatedService.CatalogueItem;
 
-        competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
+        competitionSolution.Services = [solutionService];
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        var expectedModel = new RemoveServiceModel(solutionService.Service) { EntityType = "Competition" };
+        var expectedModel = new RemoveServiceModel(solutionService.CatalogueItem) { EntityType = "Competition" };
 
-        var result = await controller.RemoveAssociatedService(internalOrgId, competition.Id, competitionSolution.SolutionId, solutionService.ServiceId);
+        var result = await controller.RemoveAssociatedService(internalOrgId, competition.Id, competitionSolution.CatalogueItemId, solutionService.CatalogueItemId);
 
         var viewResult = result.Should().BeOfType<ViewResult>();
         viewResult.Subject.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -1261,7 +1258,7 @@ public static class CompetitionHubControllerTests
         string internalOrgId,
         string odsCode,
         CompetitionSublocationRecipient competitionRecipient,
-        RecipientQuantityBase recipientQuantity,
+        CompetitionItemQuantity recipientQuantity,
         ServiceRecipient serviceRecipient,
         GpPracticeSize gpPracticeSize,
         [Frozen] IOdsService odsService,
@@ -1271,7 +1268,7 @@ public static class CompetitionHubControllerTests
         recipientQuantity.RecipientOdsCode = competitionRecipient.RecipientOdsCode = serviceRecipient.OrgId = odsCode;
 
         var competitionRecipients = new List<CompetitionSublocationRecipient> { competitionRecipient };
-        var recipientQuantities = new List<RecipientQuantityBase> { recipientQuantity };
+        var recipientQuantities = new List<CompetitionItemQuantity> { recipientQuantity };
 
         odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                 internalOrgId,
@@ -1308,7 +1305,7 @@ public static class CompetitionHubControllerTests
         gpPractice.OdsCode = competitionRecipient.RecipientOdsCode = serviceRecipient.OrgId = odsCode;
 
         var competitionRecipients = new List<CompetitionSublocationRecipient> { competitionRecipient };
-        var recipientQuantities = Enumerable.Empty<RecipientQuantityBase>().ToList();
+        var recipientQuantities = Enumerable.Empty<CompetitionItemQuantity>().ToList();
 
         odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                 internalOrgId,

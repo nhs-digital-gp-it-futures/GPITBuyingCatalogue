@@ -178,7 +178,7 @@ public class CompetitionResultsController : Controller
         bool WinningSolutionSelector(CompetitionSolution competitionSolution)
         {
             return solutionId is not null
-                ? competitionSolution.SolutionId == solutionId
+                ? competitionSolution.CatalogueItemId == solutionId
                 : competitionSolution.IsWinningSolution;
         }
 

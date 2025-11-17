@@ -12,8 +12,6 @@ public class CompetitionCatalogueItemPriceTierEntityTypeConfiguration : IEntityT
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.CompetitionId).IsRequired();
-
         builder.Property(x => x.CompetitionItemPriceId).IsRequired();
 
         builder.Property(x => x.Price)

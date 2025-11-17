@@ -28,13 +28,13 @@ public class OrderingInformationModel : NavBaseModel
 
         CompetitionSolution = competitionSolution;
         SolutionDisplay = new(
-            competitionSolution.Solution.CatalogueItem,
+            competitionSolution.CatalogueItem,
             competitionSolution.Price,
             competitionSolution.Quantity ?? competitionSolution.Quantities.Sum(y => y.Quantity));
 
-        Items = competitionSolution.SolutionServices.Select(
+        Items = competitionSolution.Services.Select(
                 x => new OrderingInformationItem(
-                    x.Service,
+                    x.CatalogueItem,
                     x.Price,
                     x.Quantity ?? x.Quantities.Sum(y => y.Quantity)))
             .ToList();

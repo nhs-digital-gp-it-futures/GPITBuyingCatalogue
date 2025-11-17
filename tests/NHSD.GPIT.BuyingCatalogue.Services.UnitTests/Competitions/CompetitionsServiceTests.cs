@@ -649,9 +649,9 @@ public static class CompetitionsServiceTests
             .Include(x => x.CompetitionSolutions)
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
-        updatedCompetition.CompetitionSolutions.Select(x => x.SolutionId)
+        updatedCompetition.CompetitionSolutions.Select(x => x.CatalogueItemId)
             .Should()
-            .BeEquivalentTo(competitionSolutions.Select(x => x.SolutionId));
+            .BeEquivalentTo(competitionSolutions.Select(x => x.CatalogueItemId));
     }
 
     [Theory]
@@ -685,9 +685,9 @@ public static class CompetitionsServiceTests
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
         var actualShortlistedSolutions = updatedCompetition.CompetitionSolutions.Where(x => x.IsShortlisted)
-            .Select(x => x.SolutionId);
+            .Select(x => x.CatalogueItemId);
         var actualNonShortlistedSolutions = updatedCompetition.CompetitionSolutions.Where(x => !x.IsShortlisted)
-            .Select(x => x.SolutionId);
+            .Select(x => x.CatalogueItemId);
 
         actualShortlistedSolutions.Should().BeEquivalentTo(shortlisted);
         actualNonShortlistedSolutions.Should().BeEquivalentTo(nonShortlisted);
@@ -727,9 +727,9 @@ public static class CompetitionsServiceTests
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
         var actualShortlistedSolutions = updatedCompetition.CompetitionSolutions.Where(x => x.IsShortlisted)
-            .Select(x => x.SolutionId);
+            .Select(x => x.CatalogueItemId);
         var actualNonShortlistedSolutions = updatedCompetition.CompetitionSolutions.Where(x => !x.IsShortlisted)
-            .Select(x => x.SolutionId);
+            .Select(x => x.CatalogueItemId);
 
         actualShortlistedSolutions.Should().BeEquivalentTo(shortlisted);
         actualNonShortlistedSolutions.Should().Contain(x => x == previouslyShortlistedSolution);
@@ -769,7 +769,7 @@ public static class CompetitionsServiceTests
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
         updatedCompetition.CompetitionSolutions.Should()
-            .Contain(x => x.Justification == solutionIdsJustifications[x.SolutionId]);
+            .Contain(x => x.Justification == solutionIdsJustifications[x.CatalogueItemId]);
     }
 
     [Theory]
@@ -813,7 +813,7 @@ public static class CompetitionsServiceTests
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
         updatedCompetition.CompetitionSolutions.Should()
-            .Contain(x => x.SolutionId == previouslyJustified.CatalogueItemId && string.IsNullOrEmpty(x.Justification));
+            .Contain(x => x.CatalogueItemId == previouslyJustified.CatalogueItemId && string.IsNullOrEmpty(x.Justification));
     }
 
     [Theory]
@@ -2390,12 +2390,12 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsImplementationScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.CatalogueItemId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
         var updatedSolution =
-            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == competitionSolution.SolutionId);
+            updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == competitionSolution.CatalogueItemId);
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
@@ -2434,12 +2434,12 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsImplementationScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.CatalogueItemId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
         var updatedSolution =
-            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == competitionSolution.SolutionId);
+            updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == competitionSolution.CatalogueItemId);
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
@@ -2490,12 +2490,12 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsInteroperabilityScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.CatalogueItemId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
         var updatedSolution =
-            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == competitionSolution.SolutionId);
+            updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == competitionSolution.CatalogueItemId);
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
@@ -2534,12 +2534,12 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsInteroperabilityScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.CatalogueItemId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
         var updatedSolution =
-            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == competitionSolution.SolutionId);
+            updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == competitionSolution.CatalogueItemId);
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
@@ -2590,12 +2590,12 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsServiceLevelScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.CatalogueItemId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
         var updatedSolution =
-            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == competitionSolution.SolutionId);
+            updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == competitionSolution.CatalogueItemId);
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
@@ -2634,12 +2634,12 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsServiceLevelScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.CatalogueItemId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
         var updatedSolution =
-            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == competitionSolution.SolutionId);
+            updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == competitionSolution.CatalogueItemId);
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
@@ -2690,12 +2690,12 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsFeaturesScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.CatalogueItemId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
         var updatedSolution =
-            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == competitionSolution.SolutionId);
+            updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == competitionSolution.CatalogueItemId);
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
@@ -2734,12 +2734,12 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsFeaturesScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.CatalogueItemId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
         var updatedSolution =
-            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == competitionSolution.SolutionId);
+            updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == competitionSolution.CatalogueItemId);
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
@@ -2788,52 +2788,6 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task RemoveNonPriceElements_RemovesNonPriceElementScores(
-        Organisation organisation,
-        Competition competition,
-        Solution solution,
-        [Frozen] BuyingCatalogueDbContext context,
-        CompetitionsService service)
-    {
-        competition.CompetitionSolutions = new List<CompetitionSolution>
-        {
-            new(competition.Id, solution.CatalogueItemId)
-            {
-                Scores = new List<SolutionScore>
-                {
-                    new(ScoreType.Implementation, 5),
-                    new(ScoreType.Interoperability, 5),
-                    new(ScoreType.ServiceLevel, 5),
-                    new(ScoreType.Price, 5),
-                },
-                IsShortlisted = true,
-            },
-        };
-        competition.OrganisationId = organisation.Id;
-
-        context.Solutions.Add(solution);
-        context.Organisations.Add(organisation);
-        context.Competitions.Add(competition);
-
-        await context.SaveChangesAsync();
-        context.ChangeTracker.Clear();
-
-        competition.CompetitionSolutions.Should().ContainSingle();
-        competition.CompetitionSolutions.First().Scores.Should().HaveCount(4);
-
-        await service.RemoveNonPriceElements(organisation.InternalIdentifier, competition.Id);
-
-        var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
-            .FirstOrDefaultAsync(x => x.Id == competition.Id);
-
-        updatedCompetition.CompetitionSolutions.Should().ContainSingle();
-        updatedCompetition.CompetitionSolutions.First()
-            .Scores.Should()
-            .OnlyContain(x => x.ScoreType == ScoreType.Price);
-    }
-
-    [Theory]
-    [MockInMemoryDbAutoData]
     public static async Task AddAssociatedServices_NoExistingServices_AddsAssociatedServices(
         Organisation organisation,
         Supplier supplier,
@@ -2864,8 +2818,8 @@ public static class CompetitionsServiceTests
 
         competitionSolution.IsShortlisted = true;
         competitionSolution.CompetitionId = competition.Id;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-        competitionSolution.SolutionServices = new List<SolutionService>();
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = new List<CompetitionCatalogueItem>();
 
         var serviceIds = associatedServices.Select(x => x.CatalogueItemId).ToList();
 
@@ -2887,14 +2841,14 @@ public static class CompetitionsServiceTests
             serviceIds);
 
         var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
-            .ThenInclude(x => x.Service)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.CatalogueItem)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == organisation.InternalIdentifier && x.Id == competition.Id);
 
         var updatedCompetitionSolution =
-            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+            updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        var solutionServices = updatedCompetitionSolution.SolutionServices.ToList();
+        var solutionServices = updatedCompetitionSolution.Services.ToList();
 
         solutionServices.Should().HaveCount(associatedServices.Count);
     }
@@ -2933,10 +2887,10 @@ public static class CompetitionsServiceTests
 
         competitionSolution.IsShortlisted = true;
         competitionSolution.CompetitionId = competition.Id;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-        competitionSolution.SolutionServices = new List<SolutionService>
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = new List<CompetitionCatalogueItem>
         {
-            new(competition.Id, solution.CatalogueItemId, existingService.CatalogueItemId, false),
+            new CompetitionAdditionalService(competition.Id, existingService.CatalogueItemId),
         };
 
         var serviceIds = associatedServices.Skip(1).Select(x => x.CatalogueItemId).ToList();
@@ -2959,17 +2913,17 @@ public static class CompetitionsServiceTests
             serviceIds);
 
         var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
-            .ThenInclude(x => x.Service)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.CatalogueItem)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == organisation.InternalIdentifier && x.Id == competition.Id);
 
         var updatedCompetitionSolution =
-            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+            updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        var solutionServices = updatedCompetitionSolution.SolutionServices.ToList();
+        var solutionServices = updatedCompetitionSolution.Services.ToList();
 
         solutionServices.Should().HaveCount(associatedServices.Count);
-        solutionServices.Should().Contain(x => x.ServiceId == existingService.CatalogueItemId);
+        solutionServices.Should().Contain(x => x.CatalogueItemId == existingService.CatalogueItemId);
     }
 
     [Theory]
@@ -3006,10 +2960,10 @@ public static class CompetitionsServiceTests
 
         competitionSolution.IsShortlisted = true;
         competitionSolution.CompetitionId = competition.Id;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-        competitionSolution.SolutionServices = new List<SolutionService>
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = new List<CompetitionCatalogueItem>
         {
-            new(competition.Id, solution.CatalogueItemId, existingService.CatalogueItemId, false),
+            new CompetitionAssociatedService(competition.Id, existingService.CatalogueItemId),
         };
 
         context.Organisations.Add(organisation);
@@ -3030,17 +2984,17 @@ public static class CompetitionsServiceTests
             existingService.CatalogueItemId);
 
         var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
-            .ThenInclude(x => x.Service)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.CatalogueItem)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == organisation.InternalIdentifier && x.Id == competition.Id);
 
         var updatedCompetitionSolution =
-            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+            updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        var solutionServices = updatedCompetitionSolution.SolutionServices.ToList();
+        var solutionServices = updatedCompetitionSolution.Services.ToList();
 
         solutionServices.Should().BeEmpty();
-        solutionServices.Should().NotContain(x => x.ServiceId == existingService.CatalogueItemId);
+        solutionServices.Should().NotContain(x => x.CatalogueItemId == existingService.CatalogueItemId);
     }
 
     [Theory]
@@ -3250,8 +3204,8 @@ public static class CompetitionsServiceTests
                 expectedNonShortlistedSolutions,
                 opt => opt
                     .Excluding(m => m.Competition)
-                    .Excluding(m => m.Solution)
-                    .Excluding(m => m.SolutionServices));
+                    .Excluding(m => m.CatalogueItem)
+                    .Excluding(m => m.Services));
     }
 
     private static Organisation CommonOrganisationFactory(int customId = 0)

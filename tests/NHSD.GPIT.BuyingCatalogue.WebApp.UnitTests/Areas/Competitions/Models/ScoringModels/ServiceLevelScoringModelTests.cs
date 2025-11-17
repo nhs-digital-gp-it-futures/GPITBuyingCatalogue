@@ -17,7 +17,7 @@ public static class ServiceLevelScoringModelTests
         ServiceLevelCriteria serviceLevelCriteria)
     {
         competition.CompetitionSolutions =
-            new List<CompetitionSolution> { new(competition.Id, solution.CatalogueItemId) { Solution = solution } };
+            new List<CompetitionSolution> { new(competition.Id, solution.CatalogueItemId) { CatalogueItem = solution.CatalogueItem } };
         competition.NonPriceElements = new() { ServiceLevel = serviceLevelCriteria };
 
         var model = new ServiceLevelScoringModel(competition);

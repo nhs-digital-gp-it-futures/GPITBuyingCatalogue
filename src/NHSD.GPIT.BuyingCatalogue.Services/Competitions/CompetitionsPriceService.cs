@@ -39,7 +39,6 @@ public class CompetitionsPriceService : ICompetitionsPriceService
             return;
 
         await SetPrice(
-            competitionId,
             competitionSolution,
             competitionSolution.Price?.CataloguePriceId,
             cataloguePrice,
@@ -61,7 +60,6 @@ public class CompetitionsPriceService : ICompetitionsPriceService
         if (service == null) return;
 
         await SetPrice(
-            competitionId,
             service,
             service.Price?.CataloguePriceId,
             cataloguePrice,
@@ -70,8 +68,7 @@ public class CompetitionsPriceService : ICompetitionsPriceService
     }
 
     private async Task SetPrice(
-        int competitionId,
-        ICompetitionPriceEntity entity,
+        CompetitionCatalogueItem entity,
         int? cataloguePriceId,
         CataloguePrice cataloguePrice,
         Func<Task> resetDelegate,
@@ -90,7 +87,7 @@ public class CompetitionsPriceService : ICompetitionsPriceService
             dbContext.Remove(entity.Price);
         }
 
-        entity.Price = new(cataloguePrice, competitionId);
+        entity.Price = new(cataloguePrice);
 
         foreach (var agreedPrice in agreedPrices)
         {
@@ -115,26 +112,26 @@ public class CompetitionsPriceService : ICompetitionsPriceService
             .ThenInclude(x => x.Tiers)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
-        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
 
         return solution;
     }
 
-    private async Task<SolutionService> GetSolutionService(
+    private async Task<CompetitionCatalogueItem> GetSolutionService(
         string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
         CatalogueItemId serviceId)
     {
         var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Price)
             .ThenInclude(x => x.Tiers)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
-        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
 
-        var service = solution?.SolutionServices.FirstOrDefault(x => x.ServiceId == serviceId);
+        var service = solution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
 
         return service;
     }

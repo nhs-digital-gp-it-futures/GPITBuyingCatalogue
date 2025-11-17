@@ -211,10 +211,10 @@ public class CompetitionsDashboardController : Controller
         var competitionSolutions = solutionsAndServices
             .Where(x => x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId))
             .Select(
-            x => new CompetitionSolution(competition.Id, x.Solution.CatalogueItemId)
+            x => new CompetitionSolution(competitionId, x.Solution.CatalogueItemId)
             {
-                SolutionServices = x.Solution.AdditionalServices.Select(
-                        y => new SolutionService(competition.Id, x.Solution.CatalogueItemId, y.CatalogueItemId, true))
+                Services = x.Solution.AdditionalServices.Select(
+                        y => new CompetitionAdditionalService(competitionId, y.CatalogueItemId, true)).Cast<CompetitionCatalogueItem>()
                     .ToList(),
             });
 

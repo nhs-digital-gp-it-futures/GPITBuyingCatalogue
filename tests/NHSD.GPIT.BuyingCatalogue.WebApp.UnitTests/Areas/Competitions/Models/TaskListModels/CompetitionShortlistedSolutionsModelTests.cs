@@ -19,19 +19,18 @@ public static class CompetitionShortlistedSolutionsModelTests
         string frameworkName,
         AdditionalService requiredService,
         List<CompetitionSolution> competitionSolutions,
-        List<SolutionService> requiredServices)
+        List<CompetitionAdditionalService> requiredServices)
     {
         requiredServices.ForEach(x =>
         {
-            x.IsRequired = true;
-            x.Service = requiredService.CatalogueItem;
+            x.CatalogueItem = requiredService.CatalogueItem;
         });
 
         competitionSolutions.ForEach(
             x =>
             {
-                x.Solution = solution;
-                x.SolutionServices = requiredServices;
+                x.CatalogueItem = solution.CatalogueItem;
+                x.Services = requiredServices.Cast<CompetitionCatalogueItem>().ToList();
             });
 
         competition.CompetitionSolutions = competitionSolutions;

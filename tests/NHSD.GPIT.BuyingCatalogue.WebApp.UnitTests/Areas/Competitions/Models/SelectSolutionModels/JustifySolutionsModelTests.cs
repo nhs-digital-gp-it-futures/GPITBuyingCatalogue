@@ -20,13 +20,13 @@ public static class JustifySolutionsModelTests
     {
         solution.CatalogueItem = catalogueItem;
 
-        nonShortlistedSolutions.ForEach(x => x.Solution = solution);
+        nonShortlistedSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
 
         var model = new JustifySolutionsModel(competitionName, nonShortlistedSolutions);
 
         model.CompetitionName.Should().Be(competitionName);
         model.Solutions.Should()
             .BeEquivalentTo(
-                nonShortlistedSolutions.Select(x => new SolutionJustificationModel(x.Solution.CatalogueItem, x.Justification)));
+                nonShortlistedSolutions.Select(x => new SolutionJustificationModel(x.CatalogueItem, x.Justification)));
     }
 }

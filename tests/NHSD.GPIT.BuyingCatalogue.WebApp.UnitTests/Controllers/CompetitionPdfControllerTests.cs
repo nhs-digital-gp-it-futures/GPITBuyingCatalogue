@@ -88,7 +88,7 @@ public static class CompetitionPdfControllerTests
         [Frozen] ICompetitionsService competitionsService,
         CompetitionPdfController controller)
     {
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
         competition.CompetitionSolutions = competitionSolutions;
 
         competitionsService.GetCompetitionWithSolutions(internalOrgId, competition.Id).Returns(competition);
@@ -109,7 +109,7 @@ public static class CompetitionPdfControllerTests
         [Frozen] ICompetitionsService competitionsService,
         CompetitionPdfController controller)
     {
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
         competition.CompetitionSolutions = competitionSolutions;
         competition.NonPriceElements = new() { Implementation = new() };
 
@@ -136,7 +136,7 @@ public static class CompetitionPdfControllerTests
         CompetitionPdfController controller,
         List<Integration> integrations)
     {
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
         competition.CompetitionSolutions = competitionSolutions;
         competition.NonPriceElements = new() { IntegrationTypes = Enumerable.Empty<IntegrationType>().ToList() };
 
@@ -163,7 +163,7 @@ public static class CompetitionPdfControllerTests
         [Frozen] ICompetitionsService competitionsService,
         CompetitionPdfController controller)
     {
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
         competition.CompetitionSolutions = competitionSolutions;
         competition.NonPriceElements = new() { ServiceLevel = new() { ApplicableDays = Enum.GetValues<Iso8601DayOfWeek>() } };
 
@@ -188,7 +188,7 @@ public static class CompetitionPdfControllerTests
         [Frozen] ICompetitionsService competitionsService,
         CompetitionPdfController controller)
     {
-        competitionSolutions.ForEach(x => x.Solution = solution);
+        competitionSolutions.ForEach(x => x.CatalogueItem = solution.CatalogueItem);
         competition.CompetitionSolutions = competitionSolutions;
         competition.NonPriceElements = new() { Features = new List<FeaturesCriteria>(), };
 

@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.CompetitionToOrder;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
@@ -291,9 +292,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             var solutions = dbContext.Competitions
                 .SelectMany(x => x.CompetitionSolutions).Where(y => y.CompetitionId == competitionId & y.IsShortlisted == true).ToList();
 
-            var competitionsolutions = solutions.Select(x => x.SolutionId).ToList();
+            var competitionSolutions = solutions.Select(x => x.CatalogueItemId).ToList();
 
-            return competitionsolutions;
+            return competitionSolutions;
         }
 
         private CatalogueItemId WinningResult(int competitionId)
@@ -304,7 +305,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 .SelectMany(x => x.CompetitionSolutions)
                 .Where(y => y.CompetitionId == competitionId && y.IsWinningSolution && y.IsShortlisted);
 
-            var winningSolution = solutions.Select(x => x.SolutionId).ToList();
+            var winningSolution = solutions.Select(x => x.CatalogueItemId).ToList();
 
             if (winningSolution.Any())
             {
@@ -321,19 +322,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         {
             using var dbContext = Factory.DbContext;
 
-            var competitionservices = dbContext.CompetitionSolutions
-                .SelectMany(x => x.SolutionServices).Where(y => y.CompetitionId == competitionId && y.SolutionId == solutionId).ToList();
+            var competitionServices = dbContext.CompetitionSolutions.Where(x => x.CatalogueItemId == solutionId)
+                .SelectMany(x => x.Services).ToList();
 
-            return competitionservices.Select(x => x.ServiceId).ToList();
+            return competitionServices.Select(x => x.CatalogueItemId).ToList();
         }
 
         private bool HasAdditionalService(int competitionId, CatalogueItemId solutionId)
         {
             using var dbContext = Factory.DbContext;
 
-            var competitionservices = dbContext.CompetitionSolutions
-                .SelectMany(x => x.SolutionServices).Where(y => y.CompetitionId == competitionId && y.SolutionId == solutionId).ToList();
-            return competitionservices.Count() > 0;
+            var competitionServices = dbContext.CompetitionSolutions.Where(x => x.CatalogueItemId == solutionId)
+                .SelectMany(x => x.Services)
+                .Where(x => x is CompetitionAdditionalService)
+                .ToList();
+
+            return competitionServices.Count > 0;
         }
 
         private bool HasTieredPrice(CatalogueItemId competitionservice)
