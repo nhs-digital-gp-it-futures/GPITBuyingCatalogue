@@ -85,7 +85,7 @@ public record OrderType(OrderTypeEnum Value) : IParsable<OrderType>
 
     public string GetPracticeReorganisationRecipientTitle() => Value switch
     {
-        OrderTypeEnum.AssociatedServiceSplit => "Service recipients to be split",
+        OrderTypeEnum.AssociatedServiceSplit => "Service recipient to be split",
         OrderTypeEnum.AssociatedServiceMerger => "Service recipient to be retained",
         _ => throw new InvalidOperationException($"Unsupported orderType {Value}"),
     };
