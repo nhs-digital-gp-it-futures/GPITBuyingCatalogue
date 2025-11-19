@@ -160,26 +160,6 @@ public class CompetitionRecipientsController(
             new { internalOrgId, competitionId });
     }
 
-    [HttpGet("add-sublocations")]
-    public async Task<IActionResult> AddSublocations(string internalOrgId, int competitionId)
-    {
-        var backLink = Url.Action(
-            nameof(SelectSublocations),
-            typeof(CompetitionRecipientsController).ControllerName(),
-            new { internalOrgId, competitionId });
-
-        return await SelectSublocationsOverview(internalOrgId, competitionId, false, backLink);
-    }
-
-    [HttpPost("add-sublocations")]
-    public IActionResult AddSublocations(
-        SelectSublocationsOverviewModel model,
-        string internalOrgId,
-        int competitionId)
-    {
-        return SelectSublocationsOverviewDynamicRedirect(model, internalOrgId, competitionId);
-    }
-
     [HttpGet("remove-sublocations")]
     public async Task<IActionResult> RemoveSublocations(
         string internalOrgId,

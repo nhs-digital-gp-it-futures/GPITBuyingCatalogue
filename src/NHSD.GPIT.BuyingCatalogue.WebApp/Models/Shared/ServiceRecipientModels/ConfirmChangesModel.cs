@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
@@ -17,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         public ConfirmChangesModel(
             CallOffId callOffId,
             OrderType orderType,
-            List<ServiceRecipientModel> selectedRecipients,
-            ServiceRecipientModel practiceReorganisationRecipient)
+            List<OrderSublocationRecipient> selectedRecipients,
+            OrderSublocationRecipient practiceReorganisationRecipient)
         {
             GetTitleAndAdviceFromOrderType(orderType);
             Caption = $"Order {callOffId}";
@@ -50,9 +51,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public OrderType OrderType { get; set; }
 
-        public ServiceRecipientModel PracticeReorganisationRecipient { get; set; }
+        public OrderSublocationRecipient PracticeReorganisationRecipient { get; set; }
 
-        public List<ServiceRecipientModel> Selected { get; set; } = [];
+        public List<OrderSublocationRecipient> Selected { get; set; } = [];
 
         private void GetTitleAndAdviceFromOrderType(OrderType orderType)
         {

@@ -581,115 +581,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static async Task AddSublocations_ReturnsSublocationsView(
-            Organisation organisation,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] IOrderService ordersService,
-            [Frozen] IOrderSublocationService orderSublocationService,
-            ServiceRecipientsController controller)
-        {
-            order.OrderingPartyId = organisation.Id;
-            order.OrderingParty = organisation;
-
-            ICollection<OrderSublocation> orderSublocations = order.OrderSublocations;
-
-            ordersService.GetOrderWithSublocations(order.CallOffId, organisation.InternalIdentifier)
-                .Returns(new OrderWrapper(order));
-            orderSublocationService.GetCountForOrderSublocationRecipients(
-                    organisation.ExternalIdentifier,
-                    order.Id,
-                    Arg.Any<string>())
-                .Returns(call => orderSublocations.First(x => x.SublocationOdsCode == call.ArgAt<string>(2))
-                    .SublocationRecipients.Count);
-
-            var expectedModel = new SelectSublocationsOverviewModel
-            {
-                Title = "Add sublocations",
-                Caption = order.CallOffId.ToString(),
-                Advice = "Select a sublocation to add organisations to this order",
-                ProcessType = "order",
-                Sublocations = orderSublocations.Select(x => new SublocationModel
-                    {
-                        Name = x.SublocationOrganisation.Name,
-                        ServiceRecipientCount = x.SublocationRecipients.Count,
-                        OdsCode = x.SublocationOdsCode,
-                    })
-                    .ToList(),
-                ParentName = organisation.Name,
-            };
-
-            var result =
-                (await controller.AddSublocations(organisation.InternalIdentifier, order.CallOffId))
-                .As<ViewResult>();
-
-            result.Should().NotBeNull();
-            result.Model.Should()
-                .BeEquivalentTo(
-                    expectedModel,
-                    opt => opt.Excluding(model => model.BackLink)
-                        .Excluding(model => model.AddOrChangeSublocationsLink)
-                        .Excluding(model => model.Sublocations));
-
-            IReadOnlyList<SublocationModel> sublocations =
-                result.Model.As<SelectSublocationsOverviewModel>().Sublocations;
-
-            sublocations.Should()
-                .BeEquivalentTo(
-                    expectedModel.Sublocations,
-                    opt => opt.Excluding(slModel => slModel.RecipientLink).Excluding(slModel => slModel.TaskProgress));
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void AddSublocations_Post_ConditionalRedirect_RedirectToTasklistIfIncomplete(
-            string internalOrganisationId,
-            CallOffId orderId,
-            ServiceRecipientsController controller)
-        {
-            var callingModel =
-                new SelectSublocationsOverviewModel
-                {
-                    Sublocations = [new SublocationModel { ServiceRecipientCount = 0 }],
-                };
-
-            var result =
-                controller.AddSublocations(callingModel, internalOrganisationId, orderId)
-                    .As<RedirectToActionResult>();
-
-            result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderController.Order));
-            result.ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            result.RouteValues.Should()
-                .BeEquivalentTo(
-                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", orderId } });
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void AddSublocations_Post_ConditionalRedirect_RedirectToConfirmScreenIfComplete(
-            string internalOrganisationId,
-            CallOffId orderId,
-            ServiceRecipientsController controller)
-        {
-            var callingModel =
-                new SelectSublocationsOverviewModel
-                {
-                    Sublocations = [new SublocationModel { ServiceRecipientCount = 1 }],
-                };
-
-            var result =
-                controller.AddSublocations(callingModel, internalOrganisationId, orderId)
-                    .As<RedirectToActionResult>();
-
-            result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(controller.ConfirmSublocationRecipients));
-            result.RouteValues.Should()
-                .BeEquivalentTo(
-                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", orderId } });
-        }
-
-        [Theory]
-        [MockAutoData]
         public static async Task SelectSublocationRecipients_SelectionMode_ReturnsNotFound(
             string internalOrgId,
             CallOffId orderId,
@@ -1604,51 +1495,92 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static void ConfirmSublocations_Post_ConditionalRedirect_RedirectToTasklistIfIncomplete(
+        public static async Task ConfirmSublocations_Post_ConditionalRedirect_RedirectToTasklistIfIncomplete(
             string internalOrganisationId,
-            CallOffId orderId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService orderService,
             ServiceRecipientsController controller)
         {
+            order.OrderType = OrderTypeEnum.Solution;
+
             var callingModel =
                 new SelectSublocationsOverviewModel
                 {
                     Sublocations = [new SublocationModel { ServiceRecipientCount = 0 }],
                 };
 
+            orderService.GetOrderThin(order.CallOffId, internalOrganisationId).Returns(new OrderWrapper(order));
+
             var result =
-                controller.ConfirmSublocations(callingModel, internalOrganisationId, orderId)
-                    .As<RedirectToActionResult>();
+                (await controller.ConfirmSublocations(callingModel, internalOrganisationId, order.CallOffId))
+                .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(OrderController.Order));
             result.ControllerName.Should().Be(typeof(OrderController).ControllerName());
             result.RouteValues.Should()
                 .BeEquivalentTo(
-                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", orderId } });
+                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", order.CallOffId } });
         }
 
         [Theory]
         [MockAutoData]
-        public static void ConfirmSublocations_Post_ConditionalRedirect_RedirectToConfirmScreenIfComplete(
+        public static async Task ConfirmSublocations_Post_ConditionalRedirect_RedirectToConfirmScreenIfComplete(
             string internalOrganisationId,
-            CallOffId orderId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService orderService,
             ServiceRecipientsController controller)
         {
+            order.OrderType = OrderTypeEnum.Solution;
+
             var callingModel =
                 new SelectSublocationsOverviewModel
                 {
                     Sublocations = [new SublocationModel { ServiceRecipientCount = 1 }],
                 };
 
+            orderService.GetOrderThin(order.CallOffId, internalOrganisationId).Returns(new OrderWrapper(order));
+
             var result =
-                controller.ConfirmSublocations(callingModel, internalOrganisationId, orderId)
-                    .As<RedirectToActionResult>();
+                (await controller.ConfirmSublocations(callingModel, internalOrganisationId, order.CallOffId))
+                .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.ConfirmSublocationRecipients));
             result.RouteValues.Should()
                 .BeEquivalentTo(
-                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", orderId } });
+                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", order.CallOffId } });
+        }
+
+        [Theory]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task ConfirmSublocations_Post_MergerOrSplit_RedirectToPracticeReorganisationSelection(
+            OrderTypeEnum orderType,
+            string internalOrganisationId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService orderService,
+            ServiceRecipientsController controller)
+        {
+            order.OrderType = orderType;
+
+            var callingModel =
+                new SelectSublocationsOverviewModel
+                {
+                    Sublocations = [new SublocationModel { ServiceRecipientCount = 1 }],
+                };
+
+            orderService.GetOrderThin(order.CallOffId, internalOrganisationId).Returns(new OrderWrapper(order));
+
+            var result =
+                (await controller.ConfirmSublocations(callingModel, internalOrganisationId, order.CallOffId))
+                .As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.SelectRecipientForPracticeReorganisation));
+            result.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", order.CallOffId } });
         }
 
         [Theory]

@@ -327,7 +327,6 @@
                     var itemModel = Model.BuildAmendOrderItemModel(associatedService);
                     if (Model.Order.OrderType.MergerOrSplit)
                     {
-                        itemModel.PracticeReorganisationName = Model.Order.AssociatedServicesOnlyDetails.PracticeReorganisationNameAndCode;
                         if (associatedServices.Count == 1)
                         {
                             totalDisplayed = true;

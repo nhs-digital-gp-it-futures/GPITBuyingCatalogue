@@ -71,13 +71,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             return new AmendOrderItemModel(
                 CallOffId,
                 Order.OrderType,
-                RolledUp.FlattenedRecipients.ToList(),
-                Previous?.FlattenedRecipients.ToList(),
+                RolledUp.GetOrderRecipients().ToList(),
+                Previous?.GetOrderRecipients().ToList(),
                 item,
                 Previous?.OrderItem(item.CatalogueItemId),
                 new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(item.CatalogueItemId)))
             {
-                InternalOrgId = InternalOrgId, CanEdit = Order.OrderStatus == OrderStatus.InProgress,
+                InternalOrgId = InternalOrgId,
+                CanEdit = Order.OrderStatus == OrderStatus.InProgress,
+                PracticeReorganisationName = Order.AssociatedServicesOnlyDetails.PracticeReorganisationNameAndCode,
             };
         }
 

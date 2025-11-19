@@ -15,7 +15,7 @@ public class ServiceRecipientsStatusProvider : ITaskProgressProvider
             return TaskProgress.CannotStart;
         }
 
-        if (wrapper.Order.HasSublocationsWithNoRecipients())
+        if (wrapper.Order.HasSublocationsWithNoRecipients() || (wrapper.Order.OrderType.MergerOrSplit && string.IsNullOrWhiteSpace(wrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode)))
         {
             return TaskProgress.InProgress;
         }

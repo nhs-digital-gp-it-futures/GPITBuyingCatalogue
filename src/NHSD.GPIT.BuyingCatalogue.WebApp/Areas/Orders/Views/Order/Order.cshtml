@@ -10,14 +10,10 @@
 @{
     ViewBag.Title = Model.Title;
 
-    var serviceRecipientUrl = Model.IsMergerOrSplit ? Url.Action(
-        nameof(MergerOrSplitServiceRecipientsController.SelectServiceRecipients),
-        typeof(MergerOrSplitServiceRecipientsController).ControllerName(),
-        new { Model.InternalOrgId, Model.CallOffId }) : Url.Action(
-        nameof(ServiceRecipientsController.UploadOrSelectServiceRecipients),
-        typeof(ServiceRecipientsController).ControllerName(),
-        new { Model.InternalOrgId, Model.CallOffId }) ;
-
+    var serviceRecipientUrl = Url.Action(
+            nameof(ServiceRecipientsController.UploadOrSelectServiceRecipients),
+            typeof(ServiceRecipientsController).ControllerName(),
+            new { Model.InternalOrgId, Model.CallOffId });
 }
 
 <div data-test-id="@Model.CallOffId-page">

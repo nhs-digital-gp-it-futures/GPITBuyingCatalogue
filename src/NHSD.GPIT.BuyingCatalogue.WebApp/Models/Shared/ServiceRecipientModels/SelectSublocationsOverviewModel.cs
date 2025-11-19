@@ -33,7 +33,13 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         string backLink)
         : this(sublocations, addOrChangeSublocationsLink, backLink)
     {
-        ProcessType = "order";
+        ProcessType = order.OrderType.Value switch
+        {
+            OrderTypeEnum.AssociatedServiceMerger => "merger",
+            OrderTypeEnum.AssociatedServiceSplit => "split",
+            _ => "order",
+        };
+
         ParentName = order.OrderingParty.Name;
         Caption = order.CallOffId.ToString();
         SetConditionalTitleAndAdvice(isConfirm);
