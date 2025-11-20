@@ -16,22 +16,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public RecipientForPracticeReorganisationModel(
             Organisation organisation,
-            CallOffId callOffId,
-            OrderType orderType,
-            List<ServiceRecipientModel> recipients)
+            Order order)
         {
-            GetTitleAndAdviceFromOrderType(orderType);
-            Caption = $"Order {callOffId}";
+            GetTitleAndAdviceFromOrderType(order.OrderType);
+            Caption = $"Order {order.CallOffId}";
 
             OrganisationName = organisation.Name;
             OrganisationType = organisation.OrganisationType.GetValueOrDefault();
 
-            SubLocations = recipients
-                .GroupBy(x => x.Location)
+            SubLocations = order.OrderSublocations
                 .Select(
                     x => new SublocationModel(
-                        x.Key,
-                        x.ToList()))
+                        x, false))
                 .OrderBy(x => x.Name)
                 .ToArray();
         }

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -370,18 +369,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
             var orderWrapper = await orderService.GetOrderWithSublocationsAndSublocationRecipients(callOffId, internalOrgId);
-            var orderType = orderWrapper.Order.OrderType;
-            var selectedRecipientId = orderWrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode;
-
-            List<ServiceRecipientModel> serviceRecipients = MapToModel(
-                orderWrapper.Order.FlattenedRecipients,
-                false);
 
             var model = new RecipientForPracticeReorganisationModel(
                 organisation,
-                callOffId,
-                orderType,
-                serviceRecipients) { SelectedOdsCode = selectedRecipientId };
+                orderWrapper.Order)
+            {
+                BackLink = Url.Action(nameof(ConfirmSublocations), new { callOffId, internalOrgId }),
+            };
 
             return View(model);
         }
@@ -409,7 +403,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> ConfirmPracticeReorganisationChanges(
             string internalOrgId,
             CallOffId callOffId,
-            string recipientIds,
             string selectedRecipientId)
         {
             OrderWrapper wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
@@ -436,7 +429,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             {
                 BackLink = Url.Action(
                     nameof(SelectRecipientForPracticeReorganisation),
-                    new { internalOrgId, callOffId, recipientIds, selectedRecipientId }),
+                    new { internalOrgId, callOffId }),
                 AddRemoveRecipientsLink = string.Empty,
             };
 
@@ -492,6 +485,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return RedirectToAction(
                     nameof(ConfirmSublocationRecipients),
                     typeof(ServiceRecipientsController).ControllerName(),
+                    new { callOffId, internalOrgId });
+            }
+
+            const int requiredNumberOfRecipients = 2;
+
+            var recipientsCount = model.Sublocations.Sum(s => s.ServiceRecipientCount);
+            if (recipientsCount < requiredNumberOfRecipients)
+            {
+                return RedirectToAction(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
                     new { callOffId, internalOrgId });
             }
 
@@ -560,25 +564,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             return sublocationsToRemove?.Split(
                 ',',
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
-        }
-
-        private static List<ServiceRecipientModel> MapToModel(
-            IEnumerable<OrderSublocationRecipient> recipients,
-            bool orderByName)
-        {
-            if (orderByName)
-            {
-                recipients = recipients.OrderBy(x => x.RecipientOdsOrganisation.Name);
-            }
-
-            return recipients
-                .Select(x => new ServiceRecipientModel
-                {
-                    Name = x.RecipientOdsOrganisation.Name,
-                    OdsCode = x.RecipientOdsCode,
-                    Location = x.ParentSublocationOdsCode,
-                })
-                .ToList();
         }
 
         private async Task<IActionResult> SelectSublocationsOverview(

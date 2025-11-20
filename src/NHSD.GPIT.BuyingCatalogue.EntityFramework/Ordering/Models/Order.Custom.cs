@@ -172,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool HasSublocationsWithNoRecipients()
         {
-            return OrderSublocations is { Count: > 1 }
+            return OrderSublocations is { Count: > 0 }
                 && OrderSublocations.Any(x => x.SublocationRecipients.Count == 0);
         }
 

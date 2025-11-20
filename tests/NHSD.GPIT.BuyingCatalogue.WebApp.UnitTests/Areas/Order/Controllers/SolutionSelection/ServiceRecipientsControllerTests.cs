@@ -1555,7 +1555,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [Theory]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        public static async Task ConfirmSublocations_Post_MergerOrSplit_RedirectToPracticeReorganisationSelection(
+        public static async Task ConfirmSublocations_Post_MergerOrSplit_RedirectToTaskListIfIncomplete(
             OrderTypeEnum orderType,
             string internalOrganisationId,
             EntityFramework.Ordering.Models.Order order,
@@ -1568,6 +1568,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 new SelectSublocationsOverviewModel
                 {
                     Sublocations = [new SublocationModel { ServiceRecipientCount = 1 }],
+                };
+
+            orderService.GetOrderThin(order.CallOffId, internalOrganisationId).Returns(new OrderWrapper(order));
+
+            var result =
+                (await controller.ConfirmSublocations(callingModel, internalOrganisationId, order.CallOffId))
+                .As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrderController.Order));
+            result.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            result.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", order.CallOffId } });
+        }
+
+        [Theory]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task ConfirmSublocations_Post_MergerOrSplit_RedirectToPracticeReorganisationSelection(
+            OrderTypeEnum orderType,
+            string internalOrganisationId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService orderService,
+            ServiceRecipientsController controller)
+        {
+            order.OrderType = orderType;
+
+            var callingModel =
+                new SelectSublocationsOverviewModel
+                {
+                    Sublocations = [new SublocationModel { ServiceRecipientCount = 2 }],
                 };
 
             orderService.GetOrderThin(order.CallOffId, internalOrganisationId).Returns(new OrderWrapper(order));
