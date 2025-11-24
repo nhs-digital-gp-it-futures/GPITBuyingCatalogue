@@ -57,14 +57,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         private void GetTitleAndAdviceFromOrderType(OrderType orderType)
         {
-            Title = "Confirm service recipients";
-            Advice = orderType.Value switch
+            Title = TitleText;
+
+            var processType = orderType.Value switch
             {
-                OrderTypeEnum.AssociatedServiceSplit => "Review the practices involved in the split you’re ordering.",
-                OrderTypeEnum.AssociatedServiceMerger =>
-                    Advice = "Review the practices involved in the merger you’re ordering.",
+                OrderTypeEnum.AssociatedServiceSplit => "split",
+                OrderTypeEnum.AssociatedServiceMerger => "merger",
                 _ => throw new ArgumentOutOfRangeException(nameof(orderType)),
             };
+            Advice = $"Review the practices involved in the {processType} you're ordering.";
         }
     }
 }

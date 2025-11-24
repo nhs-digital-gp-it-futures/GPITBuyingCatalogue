@@ -21,6 +21,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NSubstitute.ReturnsExtensions;
 using Xunit;
@@ -1714,6 +1715,159 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                         .Excluding(m => m.Caption)
                         .Excluding(m => m.Advice));
             result.ViewName.Should().Be("ServiceRecipients/ConfirmSublocationRecipients");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task SelectRecipientForPracticeReorganisation_ReturnsViewWithModel(
+            Organisation organisation,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrganisationsService organisationsService,
+            [Frozen] IOrderService ordersService,
+            ServiceRecipientsController controller)
+        {
+            order.OrderType = OrderTypeEnum.AssociatedServiceMerger;
+
+            organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
+                .Returns(organisation);
+
+            ordersService
+                .GetOrderWithSublocationsAndSublocationRecipients(order.CallOffId, organisation.InternalIdentifier)
+                .Returns(new OrderWrapper(order));
+
+            var expectedModel = new RecipientForPracticeReorganisationModel(organisation, order);
+
+            var result =
+                (await controller.SelectRecipientForPracticeReorganisation(
+                    organisation.InternalIdentifier,
+                    order.CallOffId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Post_SelectRecipientForPracticeReorganisation_InvalidModel_ReturnsView(
+            string internalOrgId,
+            CallOffId callOffId,
+            string recipientIds,
+            RecipientForPracticeReorganisationModel model,
+            ServiceRecipientsController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result =
+                controller.SelectRecipientForPracticeReorganisation(
+                        internalOrgId,
+                        callOffId,
+                        recipientIds,
+                        model)
+                    .As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().Be(model);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Post_SelectRecipientForPracticeReorganisation_Valid_Redirects(
+            string internalOrgId,
+            CallOffId callOffId,
+            string recipientIds,
+            RecipientForPracticeReorganisationModel model,
+            ServiceRecipientsController controller)
+        {
+            var result = controller.SelectRecipientForPracticeReorganisation(
+                    internalOrgId,
+                    callOffId,
+                    recipientIds,
+                    model)
+                .As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.ConfirmPracticeReorganisationChanges));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task ConfirmPracticeReorganisationChanges_InvalidPracticeSelection_ReturnsBadRequest(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            string selectedRecipientId,
+            [Frozen] IOrderService ordersService,
+            ServiceRecipientsController controller)
+        {
+            ordersService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
+
+            var result =
+                (await controller.ConfirmPracticeReorganisationChanges(
+                    internalOrgId,
+                    order.CallOffId,
+                    selectedRecipientId)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
+            result.Value.Should()
+                .Be($"The selected merger or split recipient {selectedRecipientId} isn't in the list of recipients");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task ConfirmPracticeReorganisationChanges_Valid_ReturnsViewWithModel(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            List<OrderSublocation> orderSublocations,
+            [Frozen] IOrderService ordersService,
+            ServiceRecipientsController controller)
+        {
+            order.OrderType = OrderTypeEnum.AssociatedServiceMerger;
+            order.OrderSublocations = orderSublocations;
+
+            var selectedRecipientSublocation = orderSublocations.First();
+            var selectedRecipient = selectedRecipientSublocation.SublocationRecipients.First();
+
+            var orderFlattenedRecipients = order.FlattenedRecipients.Where(x => x != selectedRecipient).ToList();
+
+            ordersService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
+
+            var expectedModel = new ConfirmChangesModel(
+                order.CallOffId,
+                order.OrderType,
+                orderFlattenedRecipients,
+                selectedRecipient);
+
+            var result = (await controller.ConfirmPracticeReorganisationChanges(
+                internalOrgId,
+                order.CallOffId,
+                selectedRecipient.RecipientOdsCode)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should()
+                .BeEquivalentTo(
+                    expectedModel,
+                    opt => opt.Excluding(m => m.BackLink).Excluding(m => m.AddRemoveRecipientsLink));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_ConfirmPracticeReorganisationChanges_Redirects(
+            string internalOrgId,
+            CallOffId callOffId,
+            ConfirmChangesModel model,
+            [Frozen] IOrderService ordersService,
+            ServiceRecipientsController controller)
+        {
+            var result = (await controller.ConfirmPracticeReorganisationChanges(internalOrgId, callOffId, model))
+                .As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrderController.Order));
+
+            await ordersService.Received()
+                .SetOrderPracticeReorganisationRecipient(
+                    internalOrgId,
+                    callOffId,
+                    model.PracticeReorganisationRecipient.RecipientOdsCode);
         }
 
         private static Organisation CommonOrganisationFactory(int customId = 0)

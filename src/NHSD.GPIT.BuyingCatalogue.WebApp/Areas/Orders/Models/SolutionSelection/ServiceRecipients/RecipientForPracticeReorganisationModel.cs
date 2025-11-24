@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -18,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             Organisation organisation,
             Order order)
         {
-            GetTitleAndAdviceFromOrderType(order.OrderType);
+            SetTitleAndAdviceForOrderType(order.OrderType);
             Caption = $"Order {order.CallOffId}";
 
             OrganisationName = organisation.Name;
@@ -40,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public string SelectedOdsCode { get; set; }
 
-        private void GetTitleAndAdviceFromOrderType(OrderType orderType)
+        private void SetTitleAndAdviceForOrderType(OrderType orderType)
         {
             Title = orderType.GetPracticeReorganisationRecipientTitle();
             Advice = orderType.Value switch
