@@ -33,7 +33,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             CatalogueItemType = orderItem.CatalogueItem.CatalogueItemType;
             Description = orderItem.CatalogueItem.Name;
 
-            ICollection<OrderSublocationRecipient> recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId);
+            ICollection<OrderSublocationRecipient> recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId)
+                .Where(x => !string.Equals(
+                    x.RecipientOdsCode,
+                    order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode))
+                .ToList();
 
             RecipientDateModel[] recipientDates = recipients
                 .Select(x => new RecipientDateModel(

@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             });
 
             exception.Should().NotBeNull();
-            exception!.GetType().Should().Be(typeof(ArgumentException));
+            exception!.GetType().Should().Be(typeof(ArgumentNullException));
         }
 
         [Theory]
@@ -59,19 +59,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(recipients, catalogueItemId)
                 .Should()
                 .BeFalse();
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void NoDeliveryDatesEntered_Rejects_Null(CatalogueItemId catalogueItemId)
-        {
-            Exception exception = Record.Exception(() =>
-            {
-                OrderRecipientCollection.CollectionExtensions.NoDeliveryDatesEntered(null, catalogueItemId);
-            });
-
-            exception.Should().NotBeNull();
-            exception!.GetType().Should().Be(typeof(ArgumentException));
         }
 
         [Fact]

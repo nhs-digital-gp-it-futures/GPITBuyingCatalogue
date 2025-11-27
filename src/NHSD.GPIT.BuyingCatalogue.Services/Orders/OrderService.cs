@@ -385,7 +385,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             }
 
             var hasSubsequentRevisions = await HasSubsequentRevisions(callOffId);
-
             if (hasSubsequentRevisions)
             {
                 throw new InvalidOperationException(
@@ -405,7 +404,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 await odsService.GetSublocationsByParentOdsCode(order.OrderingParty.ExternalIdentifier);
 
             var allIdsValid = sublocationOdsCodes.All(x => validSublocations.Any(y => y.OdsCode == x));
-
             if (!allIdsValid)
             {
                 throw new InvalidOperationException(
@@ -416,7 +414,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 order.OrderSublocations.Select(x => x.SublocationOdsCode).ToList();
 
             IEnumerable<string> removes = orderSublocations.Except(sublocationOdsCodes);
-
             IEnumerable<string> adds = sublocationOdsCodes.Except(orderSublocations);
 
             IEnumerable<OrderSublocation> locationsToAdd = adds.Select(x => new OrderSublocation
@@ -429,9 +426,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             List<OrderSublocation> locationsToRemove =
                 order.OrderSublocations.Where(x => removes.Contains(x.SublocationOdsCode)).ToList();
 
+            if (order.OrderType.MergerOrSplit)
+            {
+                HandlePracticeReorganisationOdsCode();
+            }
+
             order.OrderSublocations.RemoveRange(locationsToRemove);
 
             await dbContext.SaveChangesAsync();
+
+            return;
+
+            void HandlePracticeReorganisationOdsCode()
+            {
+                var subLocationContainsPracticeReorg = locationsToRemove.Any(x => x.SublocationRecipients.Any(y =>
+                    string.Equals(
+                        order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode,
+                        y.RecipientOdsCode,
+                        StringComparison.OrdinalIgnoreCase)));
+
+                if (subLocationContainsPracticeReorg)
+                    order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode = null;
+            }
         }
 
         public async Task SetSublocationsAndRecipients(

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using Xunit;
 
@@ -10,15 +12,18 @@ public static class SublocationModelTests
     [Theory]
     [MockAutoData]
     public static void Constructor_SetsPropertiesAsExpected(
-        string name,
-        List<ServiceRecipientModel> serviceRecipients)
+        OrderSublocation orderSublocation)
     {
-        var model = new SublocationModel(
-            name,
-            serviceRecipients);
+        const bool isSelected = false;
 
-        model.Name.Should().Be(name);
-        model.ServiceRecipients.Should().BeEquivalentTo(serviceRecipients);
+        var model = new SublocationModel(
+            orderSublocation, isSelected);
+
+        var expectedRecipients =
+            orderSublocation.SublocationRecipients.Select(x => new ServiceRecipientModel(x, isSelected));
+
+        model.Name.Should().Be(orderSublocation.SublocationOrganisation.Name);
+        model.ServiceRecipients.Should().BeEquivalentTo(expectedRecipients);
     }
 
     [Theory]
@@ -26,16 +31,13 @@ public static class SublocationModelTests
     [MockInlineAutoData(false)]
     public static void AllRecipientsSelected_SetsPropertiesAsExpected(
         bool selected,
-        string name,
-        List<ServiceRecipientModel> serviceRecipients)
+        OrderSublocation orderSublocation)
     {
-        serviceRecipients.ForEach(x => x.Selected = selected);
         var model = new SublocationModel(
-            name,
-            serviceRecipients);
+            orderSublocation,
+            selected);
 
-        model.Name.Should().Be(name);
-        model.ServiceRecipients.Should().BeEquivalentTo(serviceRecipients);
+        model.Name.Should().Be(orderSublocation.SublocationOrganisation.Name);
         model.AllRecipientsSelected.Should().Be(selected);
     }
 }

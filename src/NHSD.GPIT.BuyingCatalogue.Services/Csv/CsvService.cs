@@ -275,6 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             List<MergerOrderCsvModel> items = await dbContext.OrderSublocationRecipients
+                .Where(x => !string.Equals(x.RecipientOdsCode, x.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode))
                 .Include(x => x.OrderItemSublocationRecipients)
                 .ThenInclude(x => x.OrderItem)
                 .ThenInclude(x => x.OrderItemFunding)
@@ -361,6 +362,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             List<SplitOrderCsvModel> items = await dbContext.OrderSublocationRecipients
+                .Where(x => !string.Equals(x.RecipientOdsCode, x.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode))
                 .Include(x => x.OrderItemSublocationRecipients)
                 .ThenInclude(x => x.OrderItem)
                 .ThenInclude(x => x.OrderItemFunding)

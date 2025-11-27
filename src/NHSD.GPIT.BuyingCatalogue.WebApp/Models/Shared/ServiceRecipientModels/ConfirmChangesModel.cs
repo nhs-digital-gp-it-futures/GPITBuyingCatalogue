@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
@@ -17,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         public ConfirmChangesModel(
             CallOffId callOffId,
             OrderType orderType,
-            List<ServiceRecipientModel> selectedRecipients,
-            ServiceRecipientModel practiceReorganisationRecipient)
+            List<OrderSublocationRecipient> selectedRecipients,
+            OrderSublocationRecipient practiceReorganisationRecipient)
         {
             GetTitleAndAdviceFromOrderType(orderType);
             Caption = $"Order {callOffId}";
@@ -50,20 +51,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public OrderType OrderType { get; set; }
 
-        public ServiceRecipientModel PracticeReorganisationRecipient { get; set; }
+        public OrderSublocationRecipient PracticeReorganisationRecipient { get; set; }
 
-        public List<ServiceRecipientModel> Selected { get; set; } = [];
+        public List<OrderSublocationRecipient> Selected { get; set; } = [];
 
         private void GetTitleAndAdviceFromOrderType(OrderType orderType)
         {
-            Title = "Confirm service recipients";
-            Advice = orderType.Value switch
+            Title = TitleText;
+
+            var processType = orderType.Value switch
             {
-                OrderTypeEnum.AssociatedServiceSplit => "Review the practices involved in the split you’re ordering.",
-                OrderTypeEnum.AssociatedServiceMerger =>
-                    Advice = "Review the practices involved in the merger you’re ordering.",
+                OrderTypeEnum.AssociatedServiceSplit => "split",
+                OrderTypeEnum.AssociatedServiceMerger => "merger",
                 _ => throw new ArgumentOutOfRangeException(nameof(orderType)),
             };
+            Advice = $"Review the practices involved in the {processType} you're ordering.";
         }
     }
 }

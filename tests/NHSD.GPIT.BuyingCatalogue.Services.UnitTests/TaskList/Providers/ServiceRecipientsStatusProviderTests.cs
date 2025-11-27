@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -85,6 +86,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             ServiceRecipientsStatusProvider service)
         {
             order.OrderSublocations.ForEach(x => x.SublocationRecipients = []);
+
+            TaskProgress actual = service.Get(new OrderWrapper(order), ValidOrderState);
+
+            actual.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static void SublocationsAndRecipients_But_No_PracticeOrganisation_Returns_InProgress(
+            OrderTypeEnum orderType,
+            Order order,
+            List<OrderSublocationRecipient> sublocationRecipients,
+            ServiceRecipientsStatusProvider service)
+        {
+            order.OrderSublocations.ForEach(x => x.SublocationRecipients = sublocationRecipients);
+
+            order.OrderType = orderType;
+            order.AssociatedServicesOnlyDetails = new AssociatedServicesOnlyDetails();
 
             TaskProgress actual = service.Get(new OrderWrapper(order), ValidOrderState);
 

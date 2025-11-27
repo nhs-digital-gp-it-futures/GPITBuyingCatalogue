@@ -20,27 +20,12 @@ public static class CollectionExtensions
     }
 
     public static bool AllDeliveryDatesEntered(
-        this ICollection<OrderSublocationRecipient> recipients,
+        this IEnumerable<OrderSublocationRecipient> recipients,
         CatalogueItemId catalogueItemId)
     {
-        if (recipients is not { Count: > 0 })
-        {
-            throw new ArgumentException("Recipients cannot be null or empty");
-        }
+        ArgumentNullException.ThrowIfNull(recipients);
 
         return recipients.All(r => r.GetDeliveryDateForItem(catalogueItemId).HasValue);
-    }
-
-    public static bool NoDeliveryDatesEntered(
-        this ICollection<OrderSublocationRecipient> recipients,
-        CatalogueItemId catalogueItemId)
-    {
-        if (recipients is not { Count: > 0 })
-        {
-            throw new ArgumentException("Recipients cannot be null or empty");
-        }
-
-        return recipients.All(r => r.GetDeliveryDateForItem(catalogueItemId).HasValue == false);
     }
 
     public static bool AllQuantitiesEntered(this ICollection<OrderSublocationRecipient> recipients, OrderItem orderItem)

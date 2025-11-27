@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using CompetitionEntityModels = NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -37,14 +38,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
             string backLink)
         {
-            Title = "Select sublocations for this order";
+            Title = GetTitleForOrder(wrapper.Order);
+            FormLabelText = GetLabelTextForOrder(wrapper.Order);
             Caption = wrapper.Order.CallOffId.ToString();
             BackLink = backLink;
 
             IsAmendment = wrapper.IsAmendment;
-
-            FormLabelText =
-                $"Select all the {wrapper.Order.OrderingParty.Name} sublocations that will receive this order";
 
             // Current and previous order sublocations
             List<SublocationModel> existingSublocations =
@@ -100,6 +99,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 })
                 .OrderBy(x => x.Text)
                 .ToList();
+        }
+
+        private static string GetTitleForOrder(Order order)
+        {
+            return order.OrderType.Value switch
+            {
+                OrderTypeEnum.AssociatedServiceMerger => "Select sublocations for this merger",
+                OrderTypeEnum.AssociatedServiceSplit => "Select sublocations for this split",
+                _ => "Select sublocations for this order",
+            };
+        }
+
+        private static string GetLabelTextForOrder(Order order)
+        {
+            var processTypeContent = order.OrderType.Value switch
+            {
+                OrderTypeEnum.AssociatedServiceMerger => "be involved in this merger",
+                OrderTypeEnum.AssociatedServiceSplit => "be involved in this split",
+                _ => "receive this order",
+            };
+
+            var content = $"Select all the {order.OrderingParty.Name} sublocations that will {processTypeContent}";
+
+            return order.OrderType.MergerOrSplit
+                ? $"{content}. They must all be using the same catalogue solution."
+                : content;
         }
     }
 }

@@ -172,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool HasSublocationsWithNoRecipients()
         {
-            return OrderSublocations is { Count: > 1 }
+            return OrderSublocations is { Count: > 0 }
                 && OrderSublocations.Any(x => x.SublocationRecipients.Count == 0);
         }
 
@@ -331,23 +331,24 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             Order previous,
             CatalogueItemId catalogueItemId)
         {
-            if (Exists(catalogueItemId))
+            if (!Exists(catalogueItemId))
             {
-                if (previous == null || !previous.Exists(catalogueItemId))
-                {
-                    // No previous order or this order item is new, all recipients apply
-                    return FlattenedRecipients.ToList();
-                }
-
-                // only the new recipients or recipients from previous orders with missing values
-                // which might happen if we amend migrated order that wasn't global recipient compatible
-                return FlattenedRecipients
-                    .Where(PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(previous, catalogueItemId))
-                    .ToList();
+                return [];
             }
 
+            if (previous == null || !previous.Exists(catalogueItemId))
+            {
+                // No previous order or this order item is new, all recipients apply
+                return GetOrderRecipients().ToList();
+            }
+
+            // only the new recipients or recipients from previous orders with missing values
+            // which might happen if we amend migrated order that wasn't global recipient compatible
+            return GetOrderRecipients()
+                .Where(PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(previous, catalogueItemId))
+                .ToList();
+
             // it doesn't exist on this order so no recipients apply
-            return [];
         }
 
         public bool Exists(CatalogueItemId catalogueItemId)
@@ -386,7 +387,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         private bool HaveAllQuantities(ICollection<OrderSublocationRecipient> orderRecipients)
         {
-            return OrderItems.All(orderRecipients.AllQuantitiesEntered);
+            var recipients = orderRecipients.ToList();
+
+            return OrderItems.All(recipients.AllQuantitiesEntered);
         }
     }
 }
