@@ -76,7 +76,7 @@ public static class CompetitionOrderServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         CompetitionOrderService service)
     {
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
 
         competition.OrganisationId = organisation.Id;
         competition.Organisation = organisation;
@@ -104,7 +104,7 @@ public static class CompetitionOrderServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         CompetitionOrderService service)
     {
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
 
         competition.OrganisationId = organisation.Id;
         competition.Organisation = organisation;
@@ -138,14 +138,14 @@ public static class CompetitionOrderServiceTests
         Solution solution,
         CompetitionSolution competitionSolution,
         AdditionalService additionalService,
-        SolutionService solutionService,
+        CompetitionAdditionalService solutionService,
         [Frozen] BuyingCatalogueDbContext dbContext,
         CompetitionOrderService service)
     {
-        solutionService.Service = additionalService.CatalogueItem;
+        solutionService.CatalogueItem = additionalService.CatalogueItem;
 
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionServices = [solutionService];
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.Services = [solutionService];
 
         competition.OrganisationId = organisation.Id;
         competition.Organisation = organisation;
@@ -209,7 +209,7 @@ public static class CompetitionOrderServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         CompetitionOrderService service)
     {
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.IsShortlisted = true;
         competitionSolution.IsWinningSolution = false;
 
@@ -244,7 +244,7 @@ public static class CompetitionOrderServiceTests
         price.Tiers = new List<CompetitionCatalogueItemPriceTier> { priceTier };
 
         competitionSolution.Price = price;
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.IsShortlisted = true;
         competitionSolution.IsWinningSolution = true;
 
@@ -279,7 +279,7 @@ public static class CompetitionOrderServiceTests
         price.Tiers = new List<CompetitionCatalogueItemPriceTier> { priceTier };
 
         competitionSolution.Price = price;
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.IsShortlisted = true;
         competitionSolution.IsWinningSolution = true;
 
@@ -314,7 +314,7 @@ public static class CompetitionOrderServiceTests
         price.Tiers = new List<CompetitionCatalogueItemPriceTier> { priceTier };
 
         competitionSolution.Price = price;
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.IsShortlisted = true;
         competitionSolution.IsWinningSolution = true;
 
@@ -362,7 +362,7 @@ public static class CompetitionOrderServiceTests
         CompetitionCatalogueItemPrice price,
         CompetitionCatalogueItemPriceTier priceTier,
         AdditionalService additionalService,
-        SolutionService solutionService,
+        CompetitionAdditionalService solutionService,
         CompetitionCatalogueItemPrice servicePrice,
         CompetitionCatalogueItemPriceTier servicePriceTier,
         [Frozen] BuyingCatalogueDbContext dbContext,
@@ -373,13 +373,13 @@ public static class CompetitionOrderServiceTests
 
         solutionService.IsRequired = false;
         solutionService.Price = servicePrice;
-        solutionService.Service = additionalService.CatalogueItem;
+        solutionService.CatalogueItem = additionalService.CatalogueItem;
 
         competitionSolution.Price = price;
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.IsShortlisted = true;
         competitionSolution.IsWinningSolution = true;
-        competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
+        competitionSolution.Services = [solutionService];
 
         competition.OrganisationId = organisation.Id;
         competition.Organisation = organisation;
@@ -410,7 +410,7 @@ public static class CompetitionOrderServiceTests
         CompetitionCatalogueItemPrice price,
         CompetitionCatalogueItemPriceTier priceTier,
         AdditionalService additionalService,
-        SolutionService solutionService,
+        CompetitionAdditionalService solutionService,
         CompetitionCatalogueItemPrice servicePrice,
         CompetitionCatalogueItemPriceTier servicePriceTier,
         [Frozen] BuyingCatalogueDbContext dbContext,
@@ -425,31 +425,31 @@ public static class CompetitionOrderServiceTests
 
         solutionService.IsRequired = false;
         solutionService.Price = servicePrice;
-        solutionService.Service = additionalService.CatalogueItem;
+        solutionService.CatalogueItem = additionalService.CatalogueItem;
 
         solutionService.Quantities = competition.FlattenedRecipients.Select(x =>
-                new ServiceQuantitySublocationRecipient
+                new CompetitionItemQuantity
                 {
+                    CompetitionId = competition.Id,
                     ParentSublocationOdsCode = x.ParentSublocationOdsCode,
                     RecipientOdsCode = x.RecipientOdsCode,
                     Quantity = 5,
-                    ServiceId = additionalService.CatalogueItemId,
                 })
             .ToList();
 
         competitionSolution.Price = price;
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.IsShortlisted = true;
         competitionSolution.IsWinningSolution = true;
-        competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
+        competitionSolution.Services = [solutionService];
 
         competitionSolution.Quantities = competition.FlattenedRecipients
-            .Select(x => new SolutionQuantitySublocationRecipient
+            .Select(x => new CompetitionItemQuantity()
             {
+                CompetitionId = competition.Id,
                 ParentSublocationOdsCode = x.ParentSublocationOdsCode,
                 RecipientOdsCode = x.RecipientOdsCode,
                 Quantity = 5,
-                SolutionId = solution.CatalogueItemId,
             })
             .ToList();
 

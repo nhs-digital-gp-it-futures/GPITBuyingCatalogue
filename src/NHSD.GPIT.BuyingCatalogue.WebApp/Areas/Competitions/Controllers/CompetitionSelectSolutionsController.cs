@@ -57,8 +57,8 @@ public class CompetitionSelectSolutionsController : Controller
         var availableSolutions = framework.IsExpired
             ? []
             : competition.CompetitionSolutions.Where(x =>
-                allowedPublicationStatuses.Contains(x.Solution.CatalogueItem.PublishedStatus)
-                && x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId));
+                allowedPublicationStatuses.Contains(x.CatalogueItem.PublishedStatus)
+                && x.CatalogueItem.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId));
         var filterDetails = await filtersService.GetFilterDetails(competition.OrganisationId, competition.FilterId);
 
         var model = new SelectSolutionsModel(competition.Name, availableSolutions, framework.ShortName, filterDetails)
@@ -108,7 +108,7 @@ public class CompetitionSelectSolutionsController : Controller
         var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId);
 
         var availableSolutions = competition.CompetitionSolutions
-            .Where(x => allowedPublicationStatuses.Contains(x.Solution.CatalogueItem.PublishedStatus));
+            .Where(x => allowedPublicationStatuses.Contains(x.CatalogueItem.PublishedStatus));
 
         if (availableSolutions.All(x => x.IsShortlisted))
             return RedirectToAction(nameof(ConfirmSolutions), new { internalOrgId, competitionId });

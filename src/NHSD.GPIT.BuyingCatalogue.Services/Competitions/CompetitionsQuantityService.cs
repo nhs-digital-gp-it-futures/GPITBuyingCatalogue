@@ -25,7 +25,7 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
         var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
-        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
         if (solution is null) return;
 
         solution.Quantity = quantity;
@@ -41,12 +41,12 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
         int quantity)
     {
         var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Services)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
-        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
 
-        var service = solution?.SolutionServices.FirstOrDefault(x => x.ServiceId == serviceId);
+        var service = solution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
         if (service is null) return;
 
         service.Quantity = quantity;
@@ -65,8 +65,9 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
 
         solution.Quantities = serviceRecipients
             .Select(x =>
-                new SolutionQuantitySublocationRecipient
+                new CompetitionItemQuantity
                 {
+                    CompetitionId = competitionId,
                     ParentSublocationOdsCode = x.ParentSublocationOdsCode,
                     RecipientOdsCode = x.RecipientOdsCode,
                     Quantity = x.Quantity!.Value,
@@ -89,8 +90,9 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
 
         service.Quantities = serviceRecipients
             .Select(x =>
-                new ServiceQuantitySublocationRecipient
+                new CompetitionItemQuantity
                 {
+                    CompetitionId = competitionId,
                     ParentSublocationOdsCode = x.ParentSublocationOdsCode,
                     RecipientOdsCode = x.RecipientOdsCode,
                     Quantity = x.Quantity!.Value,
@@ -135,25 +137,25 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
             .ThenInclude(x => x.Quantities)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
-        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
 
         return solution;
     }
 
-    private async Task<SolutionService> GetSolutionService(
+    private async Task<CompetitionCatalogueItem> GetSolutionService(
         string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
         CatalogueItemId serviceId)
     {
         var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Quantities)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
-        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
 
-        var service = solution?.SolutionServices.FirstOrDefault(x => x.ServiceId == serviceId);
+        var service = solution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
 
         return service;
     }

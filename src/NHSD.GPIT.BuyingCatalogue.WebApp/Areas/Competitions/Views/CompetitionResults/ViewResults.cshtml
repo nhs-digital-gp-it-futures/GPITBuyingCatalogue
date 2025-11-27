@@ -93,14 +93,14 @@
                     <nhs-table-column>Additional services required</nhs-table-column>
                     <nhs-table-column>Justification</nhs-table-column>
 
-                    @foreach (var nonShortlistedSolution in Model.NonShortlistedSolutions.OrderBy(x => x.Solution.CatalogueItem.Name))
+                    @foreach (var nonShortlistedSolution in Model.NonShortlistedSolutions.OrderBy(x => x.CatalogueItem.Name))
                     {
-                        var requiredCompetitionServices = nonShortlistedSolution.SolutionServices.Where(x => x.IsRequired).OrderBy(x => x.Service.Name).ToList();
+                        var requiredCompetitionServices = nonShortlistedSolution.AdditionalServices.Where(x => x.IsRequired).OrderBy(x => x.CatalogueItem.Name).ToList();
                         <nhs-table-row-container>
                             <nhs-table-cell style="width:30%">
-                                @nonShortlistedSolution.Solution.CatalogueItem.Name
+                                @nonShortlistedSolution.CatalogueItem.Name
                                 <span class="nhsuk-caption-m">
-                                    @nonShortlistedSolution.Solution.CatalogueItem.Supplier.Name
+                                    @nonShortlistedSolution.CatalogueItem.Supplier.Name
                                 </span>
                             </nhs-table-cell>
                             <nhs-table-cell style="width:20%">
@@ -109,7 +109,7 @@
                                     <ul>
                                         @foreach (var competitionService in requiredCompetitionServices)
                                         {
-                                            <li>@competitionService.Service.Name</li>
+                                            <li>@competitionService.CatalogueItem.Name</li>
                                         }
                                     </ul>
                                 }

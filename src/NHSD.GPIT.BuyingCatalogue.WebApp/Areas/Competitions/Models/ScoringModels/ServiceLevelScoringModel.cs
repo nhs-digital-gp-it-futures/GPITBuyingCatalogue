@@ -38,14 +38,14 @@ public class ServiceLevelScoringModel : NavBaseModel
 
     public void WithSolutions(IEnumerable<CompetitionSolution> solutions, bool setScores = true)
     {
-        SolutionScores = solutions.OrderBy(x => x.Solution.CatalogueItem.Name)
+        SolutionScores = solutions.OrderBy(x => x.CatalogueItem.Name)
             .Select(
                 x =>
                 {
                     var score = x.GetScoreByType(ScoreType.ServiceLevel);
 
                     return new SolutionScoreModel(
-                        x.Solution,
+                        x.CatalogueItem.Solution,
                         setScores ? score?.Score : null,
                         score?.Justification);
                 })

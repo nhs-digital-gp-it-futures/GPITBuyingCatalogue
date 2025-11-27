@@ -10,7 +10,6 @@ public class CompetitionCatalogueItemPriceCustomization : ICustomization
     public void Customize(IFixture fixture)
     {
         static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<CompetitionCatalogueItemPrice> composer) => composer
-            .Without(x => x.Competition)
             .Without(x => x.Tiers);
 
         fixture.Customize<CompetitionCatalogueItemPrice>(ComposerTransformation);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
@@ -6,55 +7,37 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
-public class CompetitionSolution : ICompetitionPriceEntity
+public class CompetitionSolution : CompetitionCatalogueItem
 {
-    public CompetitionSolution(int competitionId, CatalogueItemId solutionId)
+    public CompetitionSolution()
     {
-        CompetitionId = competitionId;
-        SolutionId = solutionId;
     }
 
-    public int CompetitionId { get; set; }
-
-    public CatalogueItemId SolutionId { get; set; }
-
-    public int? CompetitionItemPriceId { get; set; }
+    public CompetitionSolution(
+        int competitionId,
+        CatalogueItemId catalogueItemId)
+        : base(competitionId, catalogueItemId)
+    {
+    }
 
     public bool IsShortlisted { get; set; }
 
-    public bool IsWinningSolution { get; set; }
-
+    [MaxLength(1000)]
     public string Justification { get; set; }
 
-    /// <summary>
-    /// Gets or sets the global quantity when the <see cref="Price"/> is a global pricing model.
-    /// </summary>
-    public int? Quantity { get; set; }
+    public bool IsWinningSolution { get; set; }
 
-    public Competition Competition { get; set; }
+    public ICollection<CompetitionCatalogueItem> Services { get; set; } = new HashSet<CompetitionCatalogueItem>();
 
-    public Solution Solution { get; set; }
+    public ICollection<CompetitionAdditionalService> AdditionalServices => Services.OfType<CompetitionAdditionalService>().ToList();
 
-    public CompetitionCatalogueItemPrice Price { get; set; }
-
-    public ICollection<SolutionService> SolutionServices { get; set; } = new HashSet<SolutionService>();
+    public ICollection<CompetitionAssociatedService> AssociatedServices => Services.OfType<CompetitionAssociatedService>().ToList();
 
     public ICollection<SolutionScore> Scores { get; set; } = new HashSet<SolutionScore>();
-
-    /// <summary>
-    ///     Gets or sets the quantities for each service recipient, when the <see cref="Price" /> is based on the practice list
-    ///     size.
-    /// </summary>
-    public ICollection<SolutionQuantitySublocationRecipient> Quantities { get; set; } =
-        new HashSet<SolutionQuantitySublocationRecipient>();
 
     public bool HasScoreType(ScoreType type) => Scores.Any(x => x.ScoreType == type);
 
     public SolutionScore GetScoreByType(ScoreType type) => Scores?.FirstOrDefault(x => x.ScoreType == type);
-
-    public ICollection<SolutionService> GetAssociatedServices() => SolutionServices.Where(
-            x => !x.IsRequired && x.Service.CatalogueItemType is CatalogueItemType.AssociatedService)
-        .ToList();
 
     public decimal? CalculateTotalPrice(int contractLength)
     {
@@ -62,9 +45,9 @@ public class CompetitionSolution : ICompetitionPriceEntity
 
         var solutionMonthlyCost =
             price?.CalculateCostPerMonth(Quantity ?? Quantities.Sum(x => x.Quantity));
-        var servicesMonthlyCost = SolutionServices?.Sum(
-            x => ((IPrice)x.Price)?.CalculateCostPerMonth(x.Quantity ?? x.Quantities.Sum(y => y.Quantity)));
-        var oneOffCost = GetAssociatedServices()
+        var servicesMonthlyCost = Services?.Sum(x =>
+            ((IPrice)x.Price)?.CalculateCostPerMonth(x.Quantity ?? x.Quantities.Sum(y => y.Quantity)));
+        var oneOffCost = AssociatedServices
             .Sum(x => ((IPrice)x.Price)?.CalculateOneOffCost(x.Quantity ?? x.Quantities.Sum(y => y.Quantity)));
 
         return oneOffCost + ((solutionMonthlyCost + servicesMonthlyCost) * contractLength);

@@ -15,9 +15,9 @@ public class CompetitionSolutionResult
         CompetitionId = competition.Id;
         InternalOrgId = competition.Organisation.InternalIdentifier;
 
-        SolutionId = competitionSolution.SolutionId;
-        SolutionName = competitionSolution.Solution.CatalogueItem.Name;
-        SupplierName = competitionSolution.Solution.CatalogueItem.Supplier.LegalName;
+        SolutionId = competitionSolution.CatalogueItemId;
+        SolutionName = competitionSolution.CatalogueItem.Name;
+        SupplierName = competitionSolution.CatalogueItem.Supplier.LegalName;
         IncludesNonPriceElements = competition.IncludesNonPrice.GetValueOrDefault();
         Weightings = competition.Weightings;
         IsWinningSolution = competitionSolution.IsWinningSolution;

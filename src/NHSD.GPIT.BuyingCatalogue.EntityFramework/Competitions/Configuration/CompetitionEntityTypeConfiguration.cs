@@ -73,5 +73,11 @@ internal sealed class CompetitionEntityTypeConfiguration : IEntityTypeConfigurat
             .WithOne(y => y.Competition)
             .HasForeignKey(y => y.CompetitionId)
             .HasConstraintName("FK_CompetitionSublocations_Competition");
+
+        builder.HasMany(x => x.CompetitionSolutions)
+            .WithOne(x => x.Competition)
+            .HasForeignKey(x => x.CompetitionId)
+            .HasConstraintName("FK_CompetitionCatalogueItems_Competition")
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

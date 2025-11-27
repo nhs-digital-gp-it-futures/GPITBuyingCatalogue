@@ -18,7 +18,7 @@ public static class SolutionPriceModelTests
         CompetitionSolution competitionSolution)
     {
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
 
         var model = new SolutionPriceModel(competitionSolution, competition);
 
@@ -42,7 +42,7 @@ public static class SolutionPriceModelTests
 
         price.Tiers = new List<CompetitionCatalogueItemPriceTier> { tier };
 
-        competitionSolution.Solution = solution;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.Quantity = quantity;
         competitionSolution.Price = price;
 

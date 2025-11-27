@@ -124,15 +124,15 @@
                     {
                         <h2>Review your non-price scoring</h2>
 
-                        var orderedSolutions = Model.CompetitionSolutions.OrderBy(x => x.Solution.CatalogueItem.Name).ToList();
+                        var orderedSolutions = Model.CompetitionSolutions.OrderBy(x => x.CatalogueItem.Name).ToList();
                         @for (var i = 0; i < orderedSolutions.Count; i++)
                         {
                             var competitionSolution = orderedSolutions[i];
                             <br/>
                             <h3>
-                                @competitionSolution.Solution.CatalogueItem.Name
+                                @competitionSolution.CatalogueItem.Name
                                 <span class="nhsuk-caption-m nhsuk-caption--bottom">
-                                    @competitionSolution.Solution.CatalogueItem.Supplier.Name
+                                    @competitionSolution.CatalogueItem.Supplier.Name
                                 </span>
                             </h3>
 

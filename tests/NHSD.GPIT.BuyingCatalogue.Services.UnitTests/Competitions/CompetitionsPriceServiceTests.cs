@@ -100,7 +100,7 @@ public static class CompetitionsPriceServiceTests
             .ThenInclude(x => x.Tiers)
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
-        var competitionSolution = updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+        var competitionSolution = updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
         competitionSolution.Price.Should().NotBeNull();
         competitionSolution.Price.Tiers.Should().HaveCount(tiers.Count);
@@ -161,7 +161,7 @@ public static class CompetitionsPriceServiceTests
             .ThenInclude(x => x.Tiers)
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
-        var competitionSolution = updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+        var competitionSolution = updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
         competitionSolution.Price.Should().NotBeNull();
     }
@@ -185,7 +185,6 @@ public static class CompetitionsPriceServiceTests
 
         price.CataloguePriceTiers = tiers;
 
-        additionalService.SolutionId = solution.CatalogueItemId;
         additionalService.CatalogueItem.CataloguePrices = new List<CataloguePrice> { price, };
 
         competition.OrganisationId = organisation.Id;
@@ -193,9 +192,9 @@ public static class CompetitionsPriceServiceTests
             new CompetitionSolution(competition.Id, solution.CatalogueItemId)
             {
                 IsShortlisted = true,
-                SolutionServices = new List<SolutionService>
+                Services = new List<CompetitionCatalogueItem>
                 {
-                    new(competition.Id, solution.CatalogueItemId, additionalService.CatalogueItemId, true),
+                    new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId, true),
                 },
             });
 
@@ -218,14 +217,14 @@ public static class CompetitionsPriceServiceTests
                 x => new PricingTierDto { LowerRange = x.LowerRange, UpperRange = x.UpperRange, Price = x.Price, }));
 
         var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Price)
             .ThenInclude(x => x.Tiers)
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
-        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        var updatedService = updatedSolution.SolutionServices.First(x => x.ServiceId == additionalService.CatalogueItemId);
+        var updatedService = updatedSolution.Services.First(x => x.CatalogueItemId == additionalService.CatalogueItemId);
 
         updatedService.Price.Should().NotBeNull();
         updatedService.Price.Tiers.Should().HaveCount(tiers.Count);
@@ -255,7 +254,6 @@ public static class CompetitionsPriceServiceTests
         oldPrice.CataloguePriceTiers = oldTiers;
         price.CataloguePriceTiers = tiers;
 
-        additionalService.SolutionId = solution.CatalogueItemId;
         additionalService.CatalogueItem.CataloguePrices = new List<CataloguePrice> { oldPrice, price, };
 
         competitionPrice.CataloguePriceId = oldPrice.CataloguePriceId;
@@ -267,9 +265,9 @@ public static class CompetitionsPriceServiceTests
             {
                 IsShortlisted = true,
                 Price = competitionPrice,
-                SolutionServices = new List<SolutionService>
+                Services = new List<CompetitionCatalogueItem>
                 {
-                    new(competition.Id, solution.CatalogueItemId, additionalService.CatalogueItemId, true),
+                    new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId, true),
                 },
             });
 
@@ -292,14 +290,14 @@ public static class CompetitionsPriceServiceTests
                 x => new PricingTierDto { LowerRange = x.LowerRange, UpperRange = x.UpperRange, Price = x.Price, }));
 
         var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Price)
             .ThenInclude(x => x.Tiers)
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 
-        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        var updatedService = updatedSolution.SolutionServices.First(x => x.ServiceId == additionalService.CatalogueItemId);
+        var updatedService = updatedSolution.Services.First(x => x.CatalogueItemId == additionalService.CatalogueItemId);
 
         updatedService.Price.Should().NotBeNull();
         updatedService.Price.Tiers.Should().HaveCount(tiers.Count);

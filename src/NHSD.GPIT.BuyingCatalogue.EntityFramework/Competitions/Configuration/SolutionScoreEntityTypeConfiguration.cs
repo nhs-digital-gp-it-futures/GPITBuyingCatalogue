@@ -13,9 +13,6 @@ public sealed class SolutionScoreEntityTypeConfiguration : IEntityTypeConfigurat
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.SolutionId)
-            .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
         builder.Property(x => x.ScoreType)
             .HasConversion<int>();
     }

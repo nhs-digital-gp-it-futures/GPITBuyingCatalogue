@@ -36,9 +36,7 @@ public class SolutionScore
 
     public int Id { get; set; }
 
-    public int CompetitionId { get; set; }
-
-    public CatalogueItemId SolutionId { get; set; }
+    public int CompetitionSolutionId { get; set; }
 
     public ScoreType ScoreType { get; set; }
 

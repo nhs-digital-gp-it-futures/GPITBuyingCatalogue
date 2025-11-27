@@ -19,14 +19,14 @@
         {
             <h2>Review your non-price scoring</h2>
 
-            @foreach (var competitionSolution in Model.CompetitionSolutions.OrderBy(x => x.Solution.CatalogueItem.Name))
+            @foreach (var competitionSolution in Model.CompetitionSolutions.OrderBy(x => x.CatalogueItem.Name))
             {
                 <nhs-card-v2>
                     <nhs-card-content>
                         <h3>
-                            @competitionSolution.Solution.CatalogueItem.Name
+                            @competitionSolution.CatalogueItem.Name
                             <span class="nhsuk-caption-m nhsuk-caption--bottom">
-                                @competitionSolution.Solution.CatalogueItem.Supplier.Name
+                                @competitionSolution.CatalogueItem.Supplier.Name
                             </span>
                         </h3>
 
