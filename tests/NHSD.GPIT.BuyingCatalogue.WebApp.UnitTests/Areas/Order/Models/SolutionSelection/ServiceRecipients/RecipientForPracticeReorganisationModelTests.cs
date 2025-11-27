@@ -24,6 +24,7 @@ public static class RecipientForPracticeReorganisationModelTests
         model.Caption.Should().Be($"Order {order.CallOffId}");
         model.OrganisationName.Should().Be(organisation.Name);
         model.OrganisationType.Should().Be(organisation.OrganisationType.GetValueOrDefault());
+        model.SelectedOdsCode.Should().Be(order.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode);
         model.SubLocations.Should()
             .BeEquivalentTo(
                 order.OrderSublocations

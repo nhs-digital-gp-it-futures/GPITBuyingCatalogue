@@ -23,6 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             OrganisationName = organisation.Name;
             OrganisationType = organisation.OrganisationType.GetValueOrDefault();
 
+            SelectedOdsCode = order.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode;
+
             SubLocations = order.OrderSublocations
                 .Select(
                     x => new SublocationModel(

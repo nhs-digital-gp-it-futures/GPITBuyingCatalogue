@@ -15,14 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class OrderSublocationService(
         BuyingCatalogueDbContext dbContext,
-        IOdsService odsService,
         IOrderService orderService)
         : IOrderSublocationService
     {
         private readonly BuyingCatalogueDbContext dbContext =
             dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-
-        private readonly IOdsService odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
 
         private readonly IOrderService orderService =
             orderService ?? throw new ArgumentNullException(nameof(orderService));
@@ -78,43 +75,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.SublocationRecipients)
                 .FirstAsync();
 
-            var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(sublocation.Order.CallOffId);
-
-            if (hasSubsequentRevisions)
-            {
-                throw new InvalidOperationException(
-                    "Can only set sublocation recipients on the most recent order.");
-            }
-
-            var sublocationsAreEditable =
-                sublocation.Order.OrderStatus == OrderStatus.InProgress;
-
-            if (!sublocationsAreEditable)
-            {
-                throw new InvalidOperationException(
-                    "Sublocations cannot be edited for this order.");
-            }
-
-            IEnumerable<ServiceRecipient> validRecipientsForSublocation =
-                await odsService.GetServiceRecipientsBySublocation(sublocationOdsCode);
-
             HashSet<string> currentRecipientsOdsCodes =
                 sublocation.SublocationRecipients.Select(x => x.RecipientOdsCode).ToHashSet();
-
-            var allIdsValid = newRecipientOdsCodes.All(x => validRecipientsForSublocation.Any(y => y.OrgId == x));
-
-            if (!allIdsValid)
-            {
-                throw new InvalidOperationException(
-                    "One or more requested Ids not found or not valid for this sublocation.");
-            }
 
             OrderWrapper wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(
                 sublocation.Order.CallOffId,
                 sublocation.Order.OrderingParty.InternalIdentifier);
 
             HashSet<string> removes = currentRecipientsOdsCodes.Except(newRecipientOdsCodes).ToHashSet();
-
             HashSet<string> adds = newRecipientOdsCodes.Except(currentRecipientsOdsCodes).ToHashSet();
 
             List<OrderSublocationRecipient> sublocationRecipientsToAdd = adds
@@ -126,6 +94,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             List<OrderSublocationRecipient> sublocationRecipientsToRemove =
                 sublocation.SublocationRecipients.Where(x => removes.Contains(x.RecipientOdsCode)).ToList();
+
+            if (wrapper.Order.OrderType.MergerOrSplit && sublocationRecipientsToRemove.Any(x => string.Equals(
+                    x.RecipientOdsCode,
+                    wrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode,
+                    StringComparison.OrdinalIgnoreCase)))
+            {
+                wrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode = null;
+            }
 
             sublocation.SublocationRecipients.RemoveRange(sublocationRecipientsToRemove);
 
