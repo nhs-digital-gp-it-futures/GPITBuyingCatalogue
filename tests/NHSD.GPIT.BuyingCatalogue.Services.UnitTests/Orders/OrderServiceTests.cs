@@ -742,6 +742,62 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task SetSublocations_RemoveSublocationContainingPracticeReorg_RemovesPracticeReorgOdsCode(
+            Organisation organisation,
+            Order order,
+            List<OrderSublocation> orderSublocations,
+            [Frozen] IOdsService odsService,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            var retainedRecipientSublocation = orderSublocations.First();
+            var retainedRecipient = retainedRecipientSublocation.SublocationRecipients.First();
+
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+            order.OrderSublocations = orderSublocations;
+            order.OrderType = OrderTypeEnum.AssociatedServiceMerger;
+
+            context.Organisations.Add(organisation);
+            context.Orders.Add(order);
+
+            order.AssociatedServicesOnlyDetails = new()
+            {
+                PracticeReorganisationOdsCode = retainedRecipient.RecipientOdsCode,
+            };
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var odsOrganisations =
+                orderSublocations.Select(x => new ServiceContractOdsOrganisation { OdsCode = x.SublocationOdsCode })
+                    .ToList();
+
+            var sublocationOdsCodes = orderSublocations.Where(x => !string.Equals(
+                    x.SublocationOdsCode,
+                    retainedRecipientSublocation.SublocationOdsCode,
+                    StringComparison.OrdinalIgnoreCase))
+                .Select(x => x.SublocationOdsCode)
+                .ToHashSet();
+
+            odsService
+                .GetSublocationsByParentOdsCode(organisation.ExternalIdentifier)
+                .Returns(odsOrganisations);
+
+            await service.SetSublocations(
+                order.CallOffId,
+                organisation.InternalIdentifier,
+                sublocationOdsCodes);
+
+            var updatedOrder = await context.Orders.Include(x => x.AssociatedServicesOnlyDetails)
+                .FirstOrDefaultAsync(x => x.Id == order.Id);
+
+            updatedOrder.Should().NotBeNull();
+            updatedOrder.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode.Should().BeNull();
+        }
+
+        [Theory]
         [MockInMemoryDbInlineAutoData("", true, typeof(ArgumentException))]
         [MockInMemoryDbInlineAutoData(null, true, typeof(ArgumentNullException))]
         [MockInMemoryDbInlineAutoData("MY-ORG-ID", false, typeof(ArgumentException))]

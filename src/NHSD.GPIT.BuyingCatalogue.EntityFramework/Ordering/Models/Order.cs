@@ -122,6 +122,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             ?.Where(x => x.SublocationRecipients is { Count: > 0 })
             .SelectMany(x => x.SublocationRecipients);
 
+        public IEnumerable<OrderSublocationRecipient> GetOrderRecipients()
+        {
+            return OrderType.Value switch
+            {
+                OrderTypeEnum.AssociatedServiceMerger or OrderTypeEnum.AssociatedServiceSplit =>
+                    FlattenedRecipients.Where(x => !string.Equals(
+                        x.RecipientOdsCode,
+                        AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode)),
+                _ => FlattenedRecipients,
+            };
+        }
+
         public IEnumerable<CatalogueItem> GetServices(CatalogueItemType catalogueItemType)
         {
             return catalogueItemType switch

@@ -132,18 +132,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
-            List<ServiceRecipientQuantityDto> recipientDtos = [];
+            var practiceReorganisation = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient;
 
-            foreach (OrderSublocationRecipient orderRecipient in orderRecipients)
-            {
-                recipientDtos.Add(
+            List<ServiceRecipientQuantityDto> recipientDtos = orderRecipients
+                .Where(x => !string.Equals(
+                    x.RecipientOdsCode,
+                    practiceReorganisation.Id,
+                    StringComparison.OrdinalIgnoreCase))
+                .Select(orderRecipient =>
                     new ServiceRecipientQuantityDto(
                         orderRecipient.ParentSublocationOdsCode,
                         orderRecipient.RecipientOdsCode,
                         orderRecipient.RecipientOdsOrganisation?.Name,
                         orderRecipient.GetQuantityForItem(orderItem.CatalogueItemId),
-                        orderRecipient.ParentSublocation.SublocationOrganisation?.Name));
-            }
+                        orderRecipient.ParentSublocation.SublocationOrganisation?.Name))
+                .ToList();
 
             IEnumerable<ServiceRecipientQuantityDto> previousRecipients =
                 wrapper.Previous?.FlattenedRecipients
@@ -154,8 +157,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                         x.RecipientOdsCode,
                         x.RecipientOdsOrganisation?.Name,
                         x.GetQuantityForItem(orderItem.CatalogueItemId)));
-
-            var practiceReorganisation = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient;
 
             var model = new SelectServiceRecipientQuantityModel(
                 order.OrderType,

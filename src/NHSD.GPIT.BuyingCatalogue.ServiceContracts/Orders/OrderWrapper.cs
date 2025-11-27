@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public bool CanComplete()
         {
-            return Order.CanComplete(RolledUp.FlattenedRecipients.ToList(), OrderItems);
+            return Order.CanComplete(RolledUp.GetOrderRecipients().ToList(), OrderItems);
         }
 
         public OrderSublocationRecipient CreateRecipientWithExistingOrderContext(

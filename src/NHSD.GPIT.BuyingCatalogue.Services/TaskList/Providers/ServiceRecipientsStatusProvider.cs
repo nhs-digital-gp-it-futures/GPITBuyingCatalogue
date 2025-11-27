@@ -15,14 +15,16 @@ public class ServiceRecipientsStatusProvider : ITaskProgressProvider
             return TaskProgress.CannotStart;
         }
 
-        if (wrapper.Order.HasSublocationsWithNoRecipients())
-        {
-            return TaskProgress.InProgress;
-        }
-
-        if (!wrapper.Order.FlattenedRecipients.Any())
+        if (wrapper.Order.OrderSublocations.Count == 0)
         {
             return TaskProgress.NotStarted;
+        }
+
+        if (wrapper.Order.HasSublocationsWithNoRecipients() || (wrapper.Order.OrderType.MergerOrSplit
+                && string.IsNullOrWhiteSpace(
+                    wrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode)))
+        {
+            return TaskProgress.InProgress;
         }
 
         if (wrapper.HasNewOrderRecipients && wrapper.IsAmendment)

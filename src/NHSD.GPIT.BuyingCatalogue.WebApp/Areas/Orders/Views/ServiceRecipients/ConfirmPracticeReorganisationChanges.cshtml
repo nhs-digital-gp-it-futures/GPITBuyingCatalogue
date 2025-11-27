@@ -20,8 +20,8 @@
                 var recipientsTitle = Model.OrderType.GetServiceRecipientsTitle();
             }
 
-            <input type="hidden" asp-for="PracticeReorganisationRecipient.Name" />
-                <input type="hidden" asp-for="PracticeReorganisationRecipient.OdsCode" />
+            <input type="hidden" asp-for="PracticeReorganisationRecipient.RecipientOdsOrganisation.Name" />
+                <input type="hidden" asp-for="PracticeReorganisationRecipient.RecipientOdsCode" />
                 <div id="selected-service-recipients-practice-reorganisation">
 
                     <h3 style="white-space:nowrap">@recipientTitle</h3>
@@ -32,10 +32,10 @@
                             <nhs-table-column>ODS code</nhs-table-column>
                             <nhs-table-row-container>
                                 <nhs-table-cell>
-                                    @Model.PracticeReorganisationRecipient.Name
+                                    @Model.PracticeReorganisationRecipient.RecipientOdsOrganisation.Name
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    @Model.PracticeReorganisationRecipient.OdsCode
+                                    @Model.PracticeReorganisationRecipient.RecipientOdsCode
                                 </nhs-table-cell>
                             </nhs-table-row-container>
                         </nhs-table>
@@ -49,14 +49,14 @@
                             <nhs-table-column>ODS code</nhs-table-column>
                             @foreach (var (item, index) in Model.Selected.Select((v, i) => (v, i)))
                             {
-                                <input type="hidden" asp-for="@Model.Selected[index].Name" />
-                                <input type="hidden" asp-for="@Model.Selected[index].OdsCode" />
+                                <input type="hidden" asp-for="@Model.Selected[index].RecipientOdsOrganisation.Name" />
+                                <input type="hidden" asp-for="@Model.Selected[index].RecipientOdsCode" />
                                 <nhs-table-row-container>
                                     <nhs-table-cell>
-                                        @item.Name
+                                        @item.RecipientOdsOrganisation.Name
                                     </nhs-table-cell>
                                     <nhs-table-cell>
-                                        @item.OdsCode
+                                        @item.RecipientOdsCode
                                     </nhs-table-cell>
                                 </nhs-table-row-container>
                             }

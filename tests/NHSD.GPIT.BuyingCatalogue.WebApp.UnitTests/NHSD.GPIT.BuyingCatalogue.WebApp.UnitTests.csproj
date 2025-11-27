@@ -44,9 +44,4 @@
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Areas\Order\Models\SolutionSelection\ServiceRecipients\" />
-    <Folder Include="Areas\Order\Validators\SolutionSelection\RemoveService\" />
-  </ItemGroup>
-
 </Project>

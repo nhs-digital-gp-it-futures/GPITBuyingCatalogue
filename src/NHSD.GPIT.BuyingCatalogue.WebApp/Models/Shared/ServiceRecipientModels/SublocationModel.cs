@@ -12,12 +12,6 @@ public record SublocationModel
     {
     }
 
-    public SublocationModel(string name, List<ServiceRecipientModel> serviceRecipients)
-    {
-        Name = name;
-        ServiceRecipients = serviceRecipients;
-    }
-
     public SublocationModel(CompetitionSublocation competitionSublocation, bool presenceDeterminesSelected)
     {
         Name = competitionSublocation.SublocationOrganisation?.Name;

@@ -43,20 +43,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.CannotStart;
             }
 
-            var allDeliveryDatesSet = order.HaveAllDeliveryDates(wrapper.RolledUp.FlattenedRecipients.ToList());
+            var allDeliveryDatesSet = order.HaveAllDeliveryDates(wrapper.RolledUp.GetOrderRecipients().ToList());
 
             if (allDeliveryDatesSet && (wrapper.HasNewOrderRecipients || wrapper.HasNewOrderItems))
             {
                 return order.IsAmendment ? TaskProgress.Amended : TaskProgress.Completed;
             }
-            else if ((anyDeliveryDatesEntered || defaultDeliveryDateEntered) && wrapper.HasNewOrderRecipients)
+
+            if ((anyDeliveryDatesEntered || defaultDeliveryDateEntered) && wrapper.HasNewOrderRecipients)
             {
                 return TaskProgress.InProgress;
             }
-            else
-            {
-                return TaskProgress.NotStarted;
-            }
+
+            return TaskProgress.NotStarted;
         }
     }
 }

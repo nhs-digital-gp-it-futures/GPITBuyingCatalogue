@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
             var model = new AmendOrderItemModel(
                 CallOffId,
                 Order.OrderType,
-                RolledUp.FlattenedRecipients.ToList(),
+                RolledUp.GetOrderRecipients().ToList(),
                 Previous?.FlattenedRecipients.ToList(),
                 solution,
                 Previous?.OrderItem(solution.CatalogueItemId),
@@ -54,7 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
             if (Order.OrderType.MergerOrSplit)
             {
-                model.PracticeReorganisationName = Order.AssociatedServicesOnlyDetails.PracticeReorganisationNameAndCode;
+                model.PracticeReorganisationName =
+                    Order.AssociatedServicesOnlyDetails.PracticeReorganisationNameAndCode;
             }
 
             return model;

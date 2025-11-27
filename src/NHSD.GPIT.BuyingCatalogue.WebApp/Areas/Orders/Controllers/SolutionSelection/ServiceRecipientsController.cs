@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
@@ -150,26 +151,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 nameof(ConfirmSublocations),
                 typeof(ServiceRecipientsController).ControllerName(),
                 new { callOffId, internalOrgId });
-        }
-
-        [HttpGet("add-sublocations")]
-        public async Task<IActionResult> AddSublocations(string internalOrgId, CallOffId callOffId)
-        {
-            var backLink = Url.Action(
-                nameof(SelectSublocations),
-                typeof(ServiceRecipientsController).ControllerName(),
-                new { callOffId, internalOrgId });
-
-            return await SelectSublocationsOverview(callOffId, internalOrgId, false, backLink);
-        }
-
-        [HttpPost("add-sublocations")]
-        public IActionResult AddSublocations(
-            SelectSublocationsOverviewModel model,
-            string internalOrgId,
-            CallOffId callOffId)
-        {
-            return SelectSublocationsOverviewDynamicRedirect(model, internalOrgId, callOffId);
         }
 
         [HttpGet("remove-sublocations")]
@@ -381,6 +362,97 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new { callOffId, internalOrgId });
         }
 
+        [HttpGet("select-recipient-for-practice-reorganisation")]
+        public async Task<IActionResult> SelectRecipientForPracticeReorganisation(
+            string internalOrgId,
+            CallOffId callOffId)
+        {
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+            var orderWrapper = await orderService.GetOrderWithSublocationsAndSublocationRecipients(callOffId, internalOrgId);
+
+            var model = new RecipientForPracticeReorganisationModel(
+                organisation,
+                orderWrapper.Order)
+            {
+                BackLink = Url.Action(nameof(ConfirmSublocations), new { callOffId, internalOrgId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("select-recipient-for-practice-reorganisation")]
+        public IActionResult SelectRecipientForPracticeReorganisation(
+            string internalOrgId,
+            CallOffId callOffId,
+            string recipientIds,
+            RecipientForPracticeReorganisationModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var selectedRecipientId = model.SelectedOdsCode;
+
+            return RedirectToAction(
+                nameof(ConfirmPracticeReorganisationChanges),
+                new { internalOrgId, callOffId, recipientIds, selectedRecipientId });
+        }
+
+        [HttpGet("confirm-recipients")]
+        public async Task<IActionResult> ConfirmPracticeReorganisationChanges(
+            string internalOrgId,
+            CallOffId callOffId,
+            string selectedRecipientId)
+        {
+            OrderWrapper wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            OrderType orderType = wrapper.Order.OrderType;
+
+            var orderRecipients = wrapper.Order.FlattenedRecipients.ToList();
+
+            var practiceReorganisation =
+                orderRecipients.FirstOrDefault(r => r.RecipientOdsCode == selectedRecipientId);
+
+            if (practiceReorganisation is null)
+            {
+                return BadRequest(
+                    $"The selected merger or split recipient {selectedRecipientId} isn't in the list of recipients");
+            }
+
+            orderRecipients.Remove(practiceReorganisation);
+
+            var model = new ConfirmChangesModel(
+                callOffId,
+                orderType,
+                orderRecipients,
+                practiceReorganisation)
+            {
+                BackLink = Url.Action(
+                    nameof(SelectRecipientForPracticeReorganisation),
+                    new { internalOrgId, callOffId }),
+                AddRemoveRecipientsLink = string.Empty,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("confirm-recipients")]
+        public async Task<IActionResult> ConfirmPracticeReorganisationChanges(
+            string internalOrgId,
+            CallOffId callOffId,
+            ConfirmChangesModel model)
+        {
+            await orderService.SetOrderPracticeReorganisationRecipient(
+                internalOrgId,
+                callOffId,
+                model.PracticeReorganisationRecipient.RecipientOdsCode);
+
+            return RedirectToAction(
+                nameof(OrderController.Order),
+                typeof(OrderController).ControllerName(),
+                new { internalOrgId, callOffId });
+        }
+
         [HttpGet("confirm-sublocations")]
         public async Task<IActionResult> ConfirmSublocations(string internalOrgId, CallOffId callOffId)
         {
@@ -393,12 +465,43 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("confirm-sublocations")]
-        public IActionResult ConfirmSublocations(
+        public async Task<IActionResult> ConfirmSublocations(
             SelectSublocationsOverviewModel model,
             string internalOrgId,
             CallOffId callOffId)
         {
-            return SelectSublocationsOverviewDynamicRedirect(model, internalOrgId, callOffId);
+            var sublocationToComplete = model.Sublocations.Any(x => x.ServiceRecipientCount == 0);
+            if (sublocationToComplete)
+            {
+                return RedirectToAction(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { callOffId, internalOrgId });
+            }
+
+            var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
+            if (!wrapper.Order.OrderType.MergerOrSplit)
+            {
+                return RedirectToAction(
+                    nameof(ConfirmSublocationRecipients),
+                    typeof(ServiceRecipientsController).ControllerName(),
+                    new { callOffId, internalOrgId });
+            }
+
+            const int requiredNumberOfRecipients = 2;
+
+            var recipientsCount = model.Sublocations.Sum(s => s.ServiceRecipientCount);
+            if (recipientsCount < requiredNumberOfRecipients)
+            {
+                return RedirectToAction(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { callOffId, internalOrgId });
+            }
+
+            return RedirectToAction(
+                nameof(SelectRecipientForPracticeReorganisation),
+                new { callOffId, internalOrgId });
         }
 
         [HttpGet("confirm-sublocation-recipients")]
@@ -426,24 +529,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 typeof(OrderController).ControllerName(),
                 new { callOffId, internalOrgId });
 
-            if (wrapper.IsAmendment && !wrapper.HasNewOrderRecipients)
-            {
-                var amendModel = new NoNewRecipientsForAmendmentModel(
-                    wrapper.Order,
-                    backLinkUrl,
-                    continueLinkUrl);
-
-                return View("ServiceRecipients/NoNewRecipientsForAmendment", amendModel);
-            }
-
             if (wrapper.IsAmendment)
             {
-                var amendWithNewRecipientsModel = new ConfirmSublocationRecipientsModel(
-                    wrapper,
-                    backLinkUrl,
-                    continueLinkUrl);
-
-                return View("ServiceRecipients/ConfirmSublocationRecipients", amendWithNewRecipientsModel);
+                return !wrapper.HasNewOrderRecipients
+                    ? View(
+                        "ServiceRecipients/NoNewRecipientsForAmendment",
+                        new NoNewRecipientsForAmendmentModel(
+                            wrapper.Order,
+                            backLinkUrl,
+                            continueLinkUrl))
+                    : View(
+                        "ServiceRecipients/ConfirmSublocationRecipients",
+                        new ConfirmSublocationRecipientsModel(
+                            wrapper,
+                            backLinkUrl,
+                            continueLinkUrl));
             }
 
             var model = new ConfirmSublocationRecipientsModel(
@@ -545,27 +645,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     taskProgress);
                 sublocations.Add(sublocationModel);
             }
-        }
-
-        private RedirectToActionResult SelectSublocationsOverviewDynamicRedirect(
-            SelectSublocationsOverviewModel model,
-            string internalOrgId,
-            CallOffId callOffId)
-        {
-            var sublocationToComplete = model.Sublocations.Any(x => x.ServiceRecipientCount == 0);
-
-            if (sublocationToComplete)
-            {
-                return RedirectToAction(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
-                    new { callOffId, internalOrgId });
-            }
-
-            return RedirectToAction(
-                nameof(ConfirmSublocationRecipients),
-                typeof(ServiceRecipientsController).ControllerName(),
-                new { callOffId, internalOrgId });
         }
 
         private async Task<List<ServiceRecipientModel>> GetServiceRecipientModelsBySublocation(

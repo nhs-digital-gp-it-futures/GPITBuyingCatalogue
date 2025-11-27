@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -16,22 +15,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public RecipientForPracticeReorganisationModel(
             Organisation organisation,
-            CallOffId callOffId,
-            OrderType orderType,
-            List<ServiceRecipientModel> recipients)
+            Order order)
         {
-            GetTitleAndAdviceFromOrderType(orderType);
-            Caption = $"Order {callOffId}";
+            SetTitleAndAdviceForOrderType(order.OrderType);
+            Caption = $"Order {order.CallOffId}";
 
             OrganisationName = organisation.Name;
             OrganisationType = organisation.OrganisationType.GetValueOrDefault();
 
-            SubLocations = recipients
-                .GroupBy(x => x.Location)
+            SelectedOdsCode = order.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode;
+
+            SubLocations = order.OrderSublocations
                 .Select(
                     x => new SublocationModel(
-                        x.Key,
-                        x.ToList()))
+                        x, false))
                 .OrderBy(x => x.Name)
                 .ToArray();
         }
@@ -44,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public string SelectedOdsCode { get; set; }
 
-        private void GetTitleAndAdviceFromOrderType(OrderType orderType)
+        private void SetTitleAndAdviceForOrderType(OrderType orderType)
         {
             Title = orderType.GetPracticeReorganisationRecipientTitle();
             Advice = orderType.Value switch
