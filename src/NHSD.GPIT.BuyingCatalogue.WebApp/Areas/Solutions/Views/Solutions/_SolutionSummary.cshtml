@@ -17,4 +17,9 @@
             <partial name="DisplayTemplates/TableListCell" model="((IEnumerable<Framework>)Model.Frameworks).Select(x => x.ShortName).ToArray()" />
         </p>
     </nhs-summary-list-row>
+    @if (Model.ShouldShowStandardsCategory) {
+    <nhs-summary-list-row label-text="Solution category">
+        <p>@Model.SolutionStandardCategory!.Value.ToString()</p>
+    </nhs-summary-list-row>
+    }
 </nhs-summary-list>

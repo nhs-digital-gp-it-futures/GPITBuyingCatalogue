@@ -30,8 +30,19 @@
         otherStandards, Model.StandardsWithWorkOffPlans, Model.SolutionId, shouldShowOtherStandardsAction);
 }
 <partial name="_solutionSummary" model="Model" />
+
+<h2>Standards and solution categories</h2>
 <p>
-    Standards describe the technical specifications or operating conditions required for a catalogue solution to be published on the Buying Catalogue. This is how @Model.SolutionName has performed against the relevant Standards:
+    Standards describe the technical specifications or operating conditions required for a solution to be published on the Buying Catalogue.
+</p>
+<p>
+    Solution categories are assigned to supplier solutions based on risk and determine the level of assurance that suppliers complete.
+</p>
+<p>
+    <a href="https://nhse-dsic.atlassian.net/wiki/spaces/DOFME/pages/14071988302/Baseline+Assurance+Standard+and+Solution+Categories+for+Assurance+in+DSIC+-+Guidanc" target="_blank">More information about solution categories (opens in a new tab)</a>
+</p>
+<p>
+     This is how @Model.SolutionName has performed against the relevant Standards:
 </p>
 
 <nhs-details label-text="Standards not fully met">

@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
         [Theory]
         [MockAutoData]
-        public static void Constructor_PropertiesCorrectlySet(
+        public static void Construct_PropertiesCorrectlySet(
             CatalogueItem catalogueItem,
             Solution solution,
             CatalogueItemContentStatus contentStatus,
@@ -38,14 +38,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             model.IsPilotSolution.Should().Be(solution.IsPilotSolution);
             model.Sections.Any().Should().BeTrue();
             model.BreadcrumbItems.Any().Should().BeTrue();
+            model.ShouldShowStandardsCategory.Should().BeFalse();
         }
 
-        private sealed class SolutionDisplayStub(
-            CatalogueItem catalogueItem,
-            CatalogueItemContentStatus contentStatus,
-            bool isSubPage = false)
-            : SolutionDisplayBaseModel(catalogueItem, contentStatus, isSubPage)
+        [Theory]
+        [MockInlineAutoData(null, false)]
+        [MockInlineAutoData(SolutionCategory.A, true)]
+        [MockInlineAutoData(SolutionCategory.B, true)]
+        [MockInlineAutoData(SolutionCategory.C, true)]
+        public static void ShouldShowStandardsCategory_ReturnsExpected(
+            SolutionCategory? category,
+            bool expected,
+            Solution solution,
+            CatalogueItemContentStatus contentStatus)
         {
+            solution.Category = category;
+
+            var model = new SolutionDisplayStub(solution.CatalogueItem, contentStatus, true, false);
+
+            model.ShouldShowStandardsCategory.Should().Be(expected);
+        }
+
+        private sealed class SolutionDisplayStub
+            : SolutionDisplayBaseModel
+        {
+            public SolutionDisplayStub(
+                CatalogueItem catalogueItem,
+                CatalogueItemContentStatus contentStatus,
+                bool isSubPage = false)
+                : base(catalogueItem, contentStatus, isSubPage)
+            {
+            }
+
+            public SolutionDisplayStub(
+                CatalogueItem catalogueItem,
+                CatalogueItemContentStatus contentStatus,
+                bool shouldShowStandardsCategory,
+                bool isSubPage = false)
+                : base(catalogueItem, contentStatus, shouldShowStandardsCategory, isSubPage)
+            {
+            }
+
             public override int Index => 0;
         }
     }
