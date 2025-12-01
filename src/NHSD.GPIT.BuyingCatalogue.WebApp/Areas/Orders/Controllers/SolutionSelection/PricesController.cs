@@ -190,7 +190,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var orderItem = order.OrderItem(catalogueItemId);
             var price = orderItem.OrderItemPrice;
 
-            var model = new ConfirmPriceModel(price, catalogueItem)
+            var catalogueItemPrice =
+                catalogueItem.CataloguePrices.FirstOrDefault(x => x.CataloguePriceId == price.CataloguePriceId);
+
+            var model = new ConfirmPriceModel(catalogueItem, catalogueItemPrice, price)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 Source = source,
