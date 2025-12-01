@@ -135,10 +135,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var practiceReorganisation = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient;
 
             List<ServiceRecipientQuantityDto> recipientDtos = orderRecipients
-                .Where(x => !string.Equals(
-                    x.RecipientOdsCode,
-                    practiceReorganisation.Id,
-                    StringComparison.OrdinalIgnoreCase))
                 .Select(orderRecipient =>
                     new ServiceRecipientQuantityDto(
                         orderRecipient.ParentSublocationOdsCode,
