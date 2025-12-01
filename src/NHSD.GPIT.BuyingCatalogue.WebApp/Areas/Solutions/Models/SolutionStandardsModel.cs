@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             IEnumerable<StandardComplianceModel> standards,
             IEnumerable<string> standardsWithWorkOffPlans,
             CatalogueItemContentStatus contentStatus)
-            : base(catalogueItem, contentStatus)
+            : base(catalogueItem, contentStatus, true, false)
         {
             Standards = standards.ToList();
             StandardsWithWorkOffPlans = standardsWithWorkOffPlans;

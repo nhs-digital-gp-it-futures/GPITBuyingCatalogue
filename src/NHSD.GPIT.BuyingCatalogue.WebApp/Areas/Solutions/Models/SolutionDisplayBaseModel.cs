@@ -17,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private static readonly string ControllerName = typeof(SolutionsController).ControllerName();
 
+        private readonly bool shouldShowStandardsCategory;
         private string title;
         private string caption;
 
@@ -36,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             SolutionId = catalogueItem.Id;
             SolutionName = catalogueItem.Name;
             PublicationStatus = catalogueItem.PublishedStatus;
+            SolutionStandardCategory = catalogueItem.Solution.Category;
 
             IsPilotSolution = catalogueItem.Solution.IsPilotSolution;
             LastReviewed = catalogueItem.Solution.LastUpdated;
@@ -51,6 +53,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             ShowPagination = !IsSuspended() && !IsSubPage;
         }
 
+        protected SolutionDisplayBaseModel(
+            CatalogueItem catalogueItem,
+            CatalogueItemContentStatus contentStatus,
+            bool shouldShowStandardsCategory,
+            bool isSubPage = false)
+            : this(catalogueItem, contentStatus, isSubPage)
+        {
+            this.shouldShowStandardsCategory = shouldShowStandardsCategory;
+        }
+
         public bool IsSubPage { get; set; }
 
         public DateTime LastReviewed { get; set; }
@@ -58,6 +70,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public CatalogueItemId SolutionId { get; set; }
 
         public string SolutionName { get; set; }
+
+        public SolutionCategory? SolutionStandardCategory { get; set; }
 
         public PublicationStatus PublicationStatus { get; }
 
@@ -92,6 +106,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 caption = value;
             }
         }
+
+        public bool ShouldShowStandardsCategory => SolutionStandardCategory.HasValue && shouldShowStandardsCategory;
 
         public bool HasExpiredFrameworks => Frameworks.Any(x => x.IsExpired);
 
