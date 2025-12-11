@@ -75,5 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         public string SubIcbCode { get; set; }
 
         public string SubIcbName { get; set; }
+
+        public bool HasBespokeMilestones { get; set; }
     }
 }
