@@ -20,9 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             ? string.Format(TitleText, " amendment")
             : string.Format(TitleText, string.Empty);
 
-        public override string Advice => Order.IsAmendment
-            ? string.Format(AdviceText, " amendments")
-            : string.Format(AdviceText, string.Empty);
+        public override string Advice => AdviceText;
 
         public string InternalOrgId { get; set; }
 
