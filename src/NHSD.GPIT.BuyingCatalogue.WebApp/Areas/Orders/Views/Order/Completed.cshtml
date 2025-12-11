@@ -24,46 +24,54 @@
 
         <h2 class="nhsuk-u-margin-bottom-5">Next steps</h2>
         <nhs-step-list>
-            <nhs-step-list-item label-text="Get your order signed">
-                Send a copy of your completed order form to the supplier for signature.
+            <nhs-step-list-item label-text="download your order summary using the button at the bottom of this page"/>
+            <nhs-step-list-item label-text="contact the NHS England finance team">
+                email england.dsicfinance@nhs.net to get a call off order form completed
             </nhs-step-list-item>
-            @if (!Model.Order.OrderType.AssociatedServicesOnly)
-            {
-                <nhs-step-list-item label-text="Include the Data Processing Template">
-                    <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12207980954/Order+form+template+Data+processing+information" target="_blank">Download the Data Processing Template (opens in a new tab)</a> and send it to the supplier along with your order for them to complete.
-                </nhs-step-list-item>
-            }
-            <nhs-step-list-item label-text="Let us know about your order">
-                Return a signed copy of your order form to gpitf.commercial1@nhs.net and dsicfinance@nhs.net.
+            <nhs-step-list-item label-text="contact the supplier and send them a copy of the following:">
+                <ul>
+                    <li>your completed call off order form for them to sign</li>
+                    @if (!Model.Order.OrderType.AssociatedServicesOnly)
+                    {
+                        <li>
+                            the <a href="https://nhse-dsic.atlassian.net/wiki/spaces/BG/pages/12207980954/Order+form+template+Data+processing+information">data processing template</a> for completion
+                        </li>
+                    }
+                </ul>
             </nhs-step-list-item>
-            <nhs-step-list-item label-text="Centrally funded payments">
-                For the items on your order using your central allocation, the NHS finance team will process the payments for you.
+            <nhs-step-list-item label-text="sign your call off order form">
+                ensure the integrated care board (ICB) signature is completed
             </nhs-step-list-item>
-            <nhs-step-list-item label-text="Locally funded payments">
-                For the items on your order using local funding, you’ll need to contact the supplier to arrange payment.
+            <nhs-step-list-item label-text="send a signed copy of your call off order form to all of the following:">
+                <ul>
+                    <li>gpitf.commercial1@nhs.net</li>
+                    <li>england.dsicfinance@nhs.net</li>
+                    <li>gpit.techinnovation@nhs.net</li>
+                    <li>commercial.procurementhub@nhs.net</li>
+                </ul>
             </nhs-step-list-item>
-            <nhs-step-list-item label-text="Preparing for data migration">
-                If you’ve ordered a migration, read information on how to <a href="https://digital.nhs.uk/services/gp-it-futures-systems/clinical-system-migration-guide" target="_blank">prepare and plan for the transfer of data to your new solution (opens in a new tab)</a>.
+            <nhs-step-list-item label-text="if your order includes a data migration">
+                read our <a href="https://digital.nhs.uk/services/digital-services-for-integrated-care/clinical-system-migration-guide">clinical system migration guide</a>
             </nhs-step-list-item>
-            @if (Model.Order.OrderType.AssociatedServicesOnly)
-            {
-                <nhs-step-list-item label-text="Once associated services are in use">
-                    After associated services, such as training, migration or practice mergers and splits have been provided, inform dsicfinance@nhs.net so the NHS finance team can start paying the supplier.
-                </nhs-step-list-item>
-            }
-            else
-            {
-                <nhs-step-list-item label-text="Once solutions and services are in use">
-                    Enter the activation dates on the order tracker so we can start paying for centrally funded orders.
-                </nhs-step-list-item>
-            }
+            <nhs-step-list-item label-text="once your solution is in use">
+                enter the actual delivery dates on the order tracker via your teams channel for all orders. If you require any help contact england.dsicfinance@nhs.net
+            </nhs-step-list-item>
+            <nhs-step-list-item label-text="if your order includes associated services, e.g training, migration or practice mergers and splits">
+                inform england.dsicfinance@nhs.net of the actual date
+            </nhs-step-list-item>
+            <nhs-step-list-item label-text="for items using centrally funded payments">
+                the NHS England finance team will process the payments for you once you have confirmed successful delivery on the order tracker
+            </nhs-step-list-item>
+            <nhs-step-list-item label-text="for items using locally funded payments">
+                you'll need to contact the supplier to arrange payment
+            </nhs-step-list-item>
         </nhs-step-list>
 
         <nhs-button-group>
             <vc:nhs-anchor-button text="Return to orders dashboard"
                                      type="Primary"
                                      url="@Model.BackLink" />
-            <vc:nhs-anchor-button text="Download order (PDF)"
+            <vc:nhs-anchor-button text="Download Order Summary (PDF)"
                                      type="Secondary"
                                      url="@Url.Action(
                                               nameof(OrderController.Download),
