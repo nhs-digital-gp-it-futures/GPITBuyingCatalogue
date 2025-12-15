@@ -248,7 +248,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         Framework = or.Order.SelectedFrameworkId,
                         InitialTerm = or.Order.InitialPeriod,
                         MaximumTerm = or.Order.MaximumTerm,
-                        CeaseDate = or.Order.IsTerminated ? or.Order.OrderTermination.DateOfTermination : null,
+                        CallOffExpiryDate = or.Order.IsTerminated ? or.Order.OrderTermination.DateOfTermination : null,
                         PricingType =
                             oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
                                 ? $"{oir.OrderItem.OrderItemPrice.CataloguePriceType} {oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType}"
@@ -340,7 +340,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         Framework = or.Order.SelectedFrameworkId,
                         InitialTerm = or.Order.InitialPeriod,
                         MaximumTerm = or.Order.MaximumTerm,
-                        CeaseDate = or.Order.IsTerminated ? or.Order.OrderTermination.DateOfTermination : null,
+                        CallOffExpiryDate = or.Order.IsTerminated ? or.Order.OrderTermination.DateOfTermination : null,
                         PricingType =
                             oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
                                 ? $"{oir.OrderItem.OrderItemPrice.CataloguePriceType} {oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType}"
@@ -427,7 +427,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         Framework = or.Order.SelectedFrameworkId,
                         InitialTerm = or.Order.InitialPeriod,
                         MaximumTerm = or.Order.MaximumTerm,
-                        CeaseDate = or.Order.IsTerminated ? or.Order.OrderTermination.DateOfTermination : null,
+                        CallOffExpiryDate = or.Order.IsTerminated ? or.Order.OrderTermination.DateOfTermination : null,
                         PricingType =
                             oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
                                 ? $"{oir.OrderItem.OrderItemPrice.CataloguePriceType} {oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType}"
