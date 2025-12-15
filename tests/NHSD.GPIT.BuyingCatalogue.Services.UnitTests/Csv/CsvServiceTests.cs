@@ -56,6 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             "Tiered Array",
             "Initial Term",
             "Contract Length (Months)",
+            "Bespoke Milestones",
         ];
 
         private static IEnumerable<string> MergerFields =>
@@ -249,7 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, [orderItem]);
             await SaveOrderWithRecipients(
                 order,
-                orderItem,
+                [orderItem],
                 [recipient],
                 dbContext);
 
@@ -265,6 +266,125 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             record.ServiceRecipientId.Should().Be(recipient.RecipientOdsCode);
             record.ServiceRecipientName.Should().Be(recipient.RecipientOdsOrganisation.Name);
             record.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{orderItem.CatalogueItemId}");
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Patient)]
+        public static async Task CreateFullOrderCsv_WithImplementationPlan_SetsBespokeMilestones(
+            ProvisioningType provisioningType,
+            Order order,
+            CsvService service,
+            Solution solution,
+            AssociatedService associatedService,
+            ImplementationPlan implementationPlan,
+            List<ImplementationPlanMilestone> implementationPlanMilestones,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            IFixture fixture)
+        {
+            implementationPlan.Milestones = implementationPlanMilestones;
+
+            order.OrderType = OrderTypeEnum.Solution;
+            order.Contract = new() { ImplementationPlan = implementationPlan, };
+
+            var solutionOrderItem = BuildOrderItem(
+                fixture,
+                solution.CatalogueItem,
+                OrderItemFundingType.LocalFunding,
+                provisioningType,
+                CataloguePriceQuantityCalculationType.PerServiceRecipient);
+
+            var associatedServiceOrderItem = BuildOrderItem(
+                fixture,
+                associatedService.CatalogueItem,
+                OrderItemFundingType.LocalFunding,
+                provisioningType,
+                CataloguePriceQuantityCalculationType.PerServiceRecipient);
+
+            OrderSublocationRecipient recipient = BuildOrderRecipient(
+                fixture,
+                [solutionOrderItem, associatedServiceOrderItem]);
+            await SaveOrderWithRecipients(
+                order,
+                [solutionOrderItem, associatedServiceOrderItem],
+                [recipient],
+                dbContext);
+
+            await using var fullOrderStream = new MemoryStream();
+            await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
+            fullOrderStream.Position = 0;
+
+            List<FullOrderCsvModel> records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap());
+
+            records.Count.Should().Be(2);
+
+            var solutionRecord = records.First(x => x.ProductId == solutionOrderItem.CatalogueItemId.ToString());
+            var associatedServiceRecord =
+                records.First(x => x.ProductId == associatedServiceOrderItem.CatalogueItemId.ToString());
+
+            solutionRecord.HasBespokeMilestones.Should().BeTrue();
+            associatedServiceRecord.HasBespokeMilestones.Should().BeFalse();
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Patient)]
+        public static async Task CreateFullOrderCsv_WithAssociatedServiceMilestones_SetsBespokeMilestones(
+            ProvisioningType provisioningType,
+            Order order,
+            CsvService service,
+            Solution solution,
+            AssociatedService associatedService,
+            ContractBilling contractBilling,
+            List<ContractBillingItem> contractBillingItems,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            IFixture fixture)
+        {
+            contractBillingItems.ForEach(x => x.CatalogueItemId = associatedService.CatalogueItemId);
+            contractBilling.ContractBillingItems = contractBillingItems;
+
+            order.OrderType = OrderTypeEnum.Solution;
+            order.Contract = new() { ContractBilling = contractBilling, };
+
+            var solutionOrderItem = BuildOrderItem(
+                fixture,
+                solution.CatalogueItem,
+                OrderItemFundingType.LocalFunding,
+                provisioningType,
+                CataloguePriceQuantityCalculationType.PerServiceRecipient);
+
+            var associatedServiceOrderItem = BuildOrderItem(
+                fixture,
+                associatedService.CatalogueItem,
+                OrderItemFundingType.LocalFunding,
+                provisioningType,
+                CataloguePriceQuantityCalculationType.PerServiceRecipient);
+
+            OrderSublocationRecipient recipient = BuildOrderRecipient(
+                fixture,
+                [solutionOrderItem, associatedServiceOrderItem]);
+            await SaveOrderWithRecipients(
+                order,
+                [solutionOrderItem, associatedServiceOrderItem],
+                [recipient],
+                dbContext);
+
+            await using var fullOrderStream = new MemoryStream();
+            await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
+            fullOrderStream.Position = 0;
+
+            List<FullOrderCsvModel> records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap());
+
+            records.Count.Should().Be(2);
+
+            var solutionRecord = records.First(x => x.ProductId == solutionOrderItem.CatalogueItemId.ToString());
+            var associatedServiceRecord =
+                records.First(x => x.ProductId == associatedServiceOrderItem.CatalogueItemId.ToString());
+
+            solutionRecord.HasBespokeMilestones.Should().BeFalse();
+            associatedServiceRecord.HasBespokeMilestones.Should().BeTrue();
         }
 
         [Theory]
@@ -293,7 +413,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, [orderItem]);
             await SaveOrderWithRecipients(
                 order,
-                orderItem,
+                [orderItem],
                 [recipient],
                 dbContext);
 
@@ -340,7 +460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, [orderItem]);
             await SaveOrderWithRecipients(
                 order,
-                orderItem,
+                [orderItem],
                 [recipient],
                 dbContext);
 
@@ -388,7 +508,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             OrderSublocationRecipient recipient2 = BuildOrderRecipient(fixture, [orderItem]);
             await SaveOrderWithRecipients(
                 order,
-                orderItem,
+                [orderItem],
                 [recipient1, recipient2],
                 dbContext);
 
@@ -440,7 +560,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             OrderSublocationRecipient recipient2 = BuildOrderRecipient(fixture, [orderItem]);
             await SaveOrderWithRecipients(
                 order,
-                orderItem,
+                [orderItem],
                 [recipient1, recipient2],
                 dbContext);
 
@@ -677,11 +797,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
 
         private static async Task SaveOrderWithRecipients(
             Order order,
-            OrderItem orderItem,
+            ICollection<OrderItem> orderItems,
             ICollection<OrderSublocationRecipient> recipients,
             BuyingCatalogueDbContext dbContext)
         {
-            order.OrderItems = new HashSet<OrderItem> { orderItem };
+            order.OrderItems = orderItems.ToHashSet();
 
             order.OrderSublocations = order.OrderSublocations.Take(1).ToList();
 

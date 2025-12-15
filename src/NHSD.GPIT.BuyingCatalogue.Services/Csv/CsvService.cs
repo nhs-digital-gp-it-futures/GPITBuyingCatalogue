@@ -186,6 +186,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .Include(x => x.OrderItemSublocationRecipients)
                 .ThenInclude(x => x.OrderItem)
                 .ThenInclude(x => x.OrderItemFunding)
+                .Include(x => x.OrderItemSublocationRecipients)
+                .ThenInclude(x => x.OrderItem)
+                .ThenInclude(x => x.Order)
                 .AsNoTracking()
                 .Where(or => or.OrderId == orderId)
                 .SelectMany(
@@ -198,11 +201,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
                         SubIcbCode = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
-                                ? string.Empty
-                                : or.ParentSublocation.SublocationOdsCode,
+                            ? string.Empty
+                            : or.ParentSublocation.SublocationOdsCode,
                         SubIcbName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
-                                ? string.Empty
-                                : or.ParentSublocation.SublocationOrganisation.Name,
+                            ? string.Empty
+                            : or.ParentSublocation.SublocationOrganisation.Name,
                         CommencementDate = or.Order.CommencementDate,
                         ServiceRecipientId =
                             !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
@@ -229,7 +232,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                         Price = (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
-                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative)
+                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType
+                            == CataloguePriceCalculationType.Cumulative)
                             ? null
                             : prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
@@ -255,6 +259,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                             == CataloguePriceCalculationType.Cumulative
                                 ? GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers)
                                 : string.Empty,
+                        HasBespokeMilestones = or.Order.Contract.ContractBilling.ContractBillingItems.Any(x =>
+                                x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
+                            || (oir.OrderItem.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService
+                                && or.Order.Contract.ImplementationPlan.Milestones.Count > 0),
                     })
                 .ToListAsync();
 

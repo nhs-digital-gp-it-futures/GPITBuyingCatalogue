@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using CsvHelper;
+using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 {
@@ -36,6 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             new(nameof(FullOrderCsvModel.TieredArray), "Tiered Array"),
             new(nameof(FullOrderCsvModel.InitialTerm), "Initial Term"),
             new(nameof(FullOrderCsvModel.MaximumTerm), "Contract Length (Months)"),
+            new(nameof(FullOrderCsvModel.HasBespokeMilestones), "Bespoke Milestones"),
         };
 
         public FullOrderCsvModelMap()
@@ -71,6 +77,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             Map(o => o.TieredArray).Index(27).Name(GetName(nameof(FullOrderCsvModel.TieredArray)));
             Map(o => o.InitialTerm).Index(28).Name(GetName(nameof(FullOrderCsvModel.InitialTerm)));
             Map(o => o.MaximumTerm).Index(29).Name(GetName(nameof(FullOrderCsvModel.MaximumTerm)));
+            Map(o => o.HasBespokeMilestones)
+                .Index(30)
+                .Name(GetName(nameof(FullOrderCsvModel.HasBespokeMilestones)))
+                .TypeConverter<YesNoTypeConverter>();
         }
     }
 }
