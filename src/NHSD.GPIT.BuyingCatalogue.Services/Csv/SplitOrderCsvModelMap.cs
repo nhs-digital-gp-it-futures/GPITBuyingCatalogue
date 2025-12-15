@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             Map(o => o.M1Planned).Index(21).Name(GetName(nameof(SplitOrderCsvModel.M1Planned)));
             Map(o => o.ActualM1Date).Index(22).Name(GetName(nameof(SplitOrderCsvModel.ActualM1Date)));
             Map(o => o.VerficationDate).Index(23).Name(GetName(nameof(SplitOrderCsvModel.VerficationDate)));
-            Map(o => o.CeaseDate).Index(24).Name(GetName(nameof(SplitOrderCsvModel.CeaseDate)));
+            Map(o => o.CallOffExpiryDate).Index(24).Name(GetName(nameof(SplitOrderCsvModel.CallOffExpiryDate)));
             Map(o => o.Framework).Index(25).Name(GetName(nameof(SplitOrderCsvModel.Framework)));
             Map(o => o.PricingType).Index(26).Name(GetName(nameof(SplitOrderCsvModel.PricingType)));
             Map(o => o.TieredArray).Index(27).Name(GetName(nameof(SplitOrderCsvModel.TieredArray)));
