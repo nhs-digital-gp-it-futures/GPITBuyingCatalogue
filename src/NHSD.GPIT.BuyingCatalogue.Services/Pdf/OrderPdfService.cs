@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
+#pragma warning disable ASPDEPR006
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf;
 

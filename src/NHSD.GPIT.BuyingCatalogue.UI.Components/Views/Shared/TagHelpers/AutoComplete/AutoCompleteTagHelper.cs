@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+#pragma warning disable ASPDEPR006
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {

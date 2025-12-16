@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
+#pragma warning disable ASPDEPR006
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
 {

@@ -134,7 +134,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddHttpClient();
 
+#pragma warning disable ASPDEPR006
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+#pragma warning restore ASPDEPR006
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -147,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
             };
 
-            forwardingOptions.KnownNetworks.Clear();
+            forwardingOptions.KnownIPNetworks.Clear();
             forwardingOptions.KnownProxies.Clear();
             app.UseForwardedHeaders(forwardingOptions);
 
