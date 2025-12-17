@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             return contract;
         }
 
-        public async Task AddBespokeContractBillingItem(int orderId, int contractId, CatalogueItemId catalogueItemId, string name, string paymentTrigger, int quantity)
+        public async Task AddBespokeContractBillingItem(int orderId, int contractId, CatalogueItemId catalogueItemId, string name, string paymentTrigger)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
@@ -51,7 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             {
                 OrderItem = associatedService,
                 Milestone = new ImplementationPlanMilestone() { Title = name, PaymentTrigger = paymentTrigger, },
-                Quantity = quantity,
             });
             await dbContext.SaveChangesAsync();
         }
@@ -65,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 .FirstOrDefaultAsync(x => x.Id == itemId && x.OrderId == orderId);
         }
 
-        public async Task EditContractBillingItem(int orderId, int itemId, CatalogueItemId catalogueItemId, string name, string paymentTrigger, int quantity)
+        public async Task EditContractBillingItem(int orderId, int itemId, CatalogueItemId catalogueItemId, string name, string paymentTrigger)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
@@ -85,7 +84,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             item.OrderItem = associatedService;
             item.Milestone.Title = name;
             item.Milestone.PaymentTrigger = paymentTrigger;
-            item.Quantity = quantity;
 
             await dbContext.SaveChangesAsync();
         }

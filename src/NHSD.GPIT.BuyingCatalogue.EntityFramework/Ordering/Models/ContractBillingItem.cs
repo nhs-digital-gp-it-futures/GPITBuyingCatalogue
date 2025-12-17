@@ -10,8 +10,6 @@
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
-        public int Quantity { get; set; }
-
         public ContractBilling ContractBilling { get; set; }
 
         public OrderItem OrderItem { get; set; }

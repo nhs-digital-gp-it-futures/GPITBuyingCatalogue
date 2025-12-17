@@ -13,8 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
             int contractId,
             CatalogueItemId catalogueItemId,
             string name,
-            string paymentTrigger,
-            int quantity);
+            string paymentTrigger);
 
         Task<ContractBillingItem> GetContractBillingItem(int orderId, int itemId);
 
@@ -23,8 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
             int itemId,
             CatalogueItemId catalogueItemId,
             string name,
-            string paymentTrigger,
-            int quantity);
+            string paymentTrigger);
 
         Task DeleteContractBillingItem(int orderId, int itemId);
 
