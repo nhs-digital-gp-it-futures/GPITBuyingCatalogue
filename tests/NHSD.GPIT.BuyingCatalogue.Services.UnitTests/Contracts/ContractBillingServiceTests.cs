@@ -94,7 +94,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             int contractId,
             CatalogueItemId catalogueItemId,
             string paymentTrigger,
-            int quantity,
             ContractBillingService service)
         {
             FluentActions
@@ -119,7 +118,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             int contractId,
             CatalogueItemId catalogueItemId,
             string name,
-            int quantity,
             ContractBillingService service)
         {
             FluentActions
@@ -141,7 +139,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             CatalogueItemId catalogueItemId,
             string paymentTrigger,
             string name,
-            int quantity,
             Contract contract,
             Order order,
             ContractBillingService service)
@@ -185,7 +182,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             CatalogueItemId catalogueItemId,
             string paymentTrigger,
             string name,
-            int quantity,
             Order order,
             Contract contract,
             ContractBillingService service)
@@ -271,7 +267,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
            int itemId,
            CatalogueItemId catalogueItemId,
            string paymentTrigger,
-           int quantity,
            ContractBillingService service)
         {
             FluentActions
@@ -296,7 +291,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             int itemId,
             CatalogueItemId catalogueItemId,
             string name,
-            int quantity,
             ContractBillingService service)
         {
             FluentActions
@@ -318,7 +312,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             string paymentTrigger,
             CatalogueItemId catalogueItemId,
             string name,
-            int quantity,
             OrderItem orderItem,
             ContractBillingItem item,
             Order order,
