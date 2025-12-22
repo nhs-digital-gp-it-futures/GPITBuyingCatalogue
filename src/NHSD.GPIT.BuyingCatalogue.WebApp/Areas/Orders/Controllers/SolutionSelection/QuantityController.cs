@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
-
+            
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantityBackLink,
                 wrapper,
@@ -163,39 +163,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 previousRecipients)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues), Source = source,
+                Caption = $"Order {callOffId}",
+                OrderingPartyName = order.OrderingParty.Name,
             };
-
-            if (orderItem.OrderItemPrice.ProvisioningType != ProvisioningType.Patient)
-            {
-                return View(ServiceRecipientViewName, model);
-            }
-
-            var solution = order.GetSolutionOrderItem();
-
-            if (solution?.OrderItemPrice?.ProvisioningType is ProvisioningType.Patient
-                && solution.CatalogueItemId != catalogueItemId)
-            {
-                await SetPracticeSizes(model, solution, wrapper.DetermineOrderRecipients(solution.CatalogueItemId));
-            }
-            else
-            {
-                await SetPracticeSizes(model);
-            }
+            
+            ViewBag.CatalogueItemId = catalogueItemId;
+            ViewBag.InternalOrgId = internalOrgId;
+            ViewBag.CallOffId = callOffId;
 
             return View(ServiceRecipientViewName, model);
         }
 
-        [HttpPost("quantity/{catalogueItemId}/service-recipient/select")]
+        [HttpPost("quantity/{catalogueItemId}/service-recipient/{parentOdsCode}/select")]
         [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
-        public async Task<IActionResult> SelectServiceRecipientQuantity(
+        public async Task<IActionResult> SelectServiceSublocationRecipientQuantity(
             string internalOrgId,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
+            string parentOdsCode,
             SelectServiceRecipientQuantityModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(ServiceRecipientViewName, model);
+                return View(model);
             }
 
             var orderWrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
@@ -220,7 +210,90 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
 
+            if (!quantities.All(quantity => quantity.Quantity > 0))
+            {
+                return RedirectToAction(
+                    nameof(SelectServiceRecipientQuantity),
+                    typeof(QuantityController).ControllerName(),
+                    new { internalOrgId, callOffId, catalogueItemId });
+            }
+
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
+        }
+        
+        [HttpGet("quantity/{catalogueItemId}/service-recipient/{parentOdsCode}/select")]
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
+        public async Task<IActionResult> SelectServiceSublocationRecipientQuantity(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            string parentOdsCode,
+            RoutingSource? source = null)
+        {
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
+            var orderItem = order.OrderItem(catalogueItemId);
+
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+
+            var practiceReorganisation = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient;
+
+            List<ServiceRecipientQuantityDto> recipientDtos = orderRecipients
+                .Where(orderRecipient => orderRecipient.ParentSublocationOdsCode == parentOdsCode)
+                .Select(orderRecipient =>
+                    new ServiceRecipientQuantityDto(
+                        orderRecipient.ParentSublocationOdsCode,
+                        orderRecipient.RecipientOdsCode,
+                        orderRecipient.RecipientOdsOrganisation?.Name,
+                        orderRecipient.GetQuantityForItem(orderItem.CatalogueItemId),
+                        orderRecipient.ParentSublocation.SublocationOrganisation?.Name))
+                .ToList();
+
+            IEnumerable<ServiceRecipientQuantityDto> previousRecipients =
+                wrapper.Previous?.FlattenedRecipients
+                    ?.Where(x =>
+                        x.OrderItemSublocationRecipients.Any(y => y.CatalogueItemId == orderItem.CatalogueItemId) &&
+                        x.ParentSublocationOdsCode == parentOdsCode)
+                    .Select(x => new ServiceRecipientQuantityDto(
+                        x.ParentSublocationOdsCode,
+                        x.RecipientOdsCode,
+                        x.RecipientOdsOrganisation?.Name,
+                        x.GetQuantityForItem(orderItem.CatalogueItemId)));
+
+            var model = new SelectServiceRecipientQuantityModel(
+                order.OrderType,
+                practiceReorganisation,
+                orderItem.CatalogueItem,
+                orderItem.OrderItemPrice,
+                recipientDtos,
+                previousRecipients)
+            {
+                BackLink = Url.Action(
+                    nameof(SelectServiceRecipientQuantity),
+                    typeof(QuantityController).ControllerName(),
+                    new { internalOrgId, callOffId, catalogueItemId }),
+                Source = source,
+                Title = "Review patient list sizes",
+            };
+
+            if (orderItem.OrderItemPrice.ProvisioningType != ProvisioningType.Patient)
+            {
+                return View(model);
+            }
+            
+            var solution = order.GetSolutionOrderItem();
+
+            if (solution?.OrderItemPrice?.ProvisioningType is ProvisioningType.Patient
+                && solution.CatalogueItemId != catalogueItemId)
+            {
+                await SetPracticeSizes(model, parentOdsCode, solution, wrapper.DetermineOrderRecipients(solution.CatalogueItemId));
+            }
+            else
+            {
+                await SetPracticeSizes(model, parentOdsCode);
+            }
+
+            return View(model);
         }
 
         [HttpGet("quantity/{catalogueItemId}/view")]
@@ -278,10 +351,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
         private async Task SetPracticeSizes(
             SelectServiceRecipientQuantityModel model,
+            string parentOdsCode = null,
             OrderItem solution = null,
             ICollection<OrderSublocationRecipient> recipients = null)
         {
             var odsCodes = model.SubLocations.SelectMany(x => x.ServiceRecipients)
+                .Where(x => parentOdsCode != null && x.ParentSublocationOdsCode == parentOdsCode)
                 .Where(x => x.Quantity == 0)
                 .Select(x => x.RecipientOdsCode)
                 .ToArray();
