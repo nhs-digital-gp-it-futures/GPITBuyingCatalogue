@@ -133,26 +133,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
             var practiceReorganisation = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient;
-
-            List<ServiceRecipientQuantityDto> recipientDtos = orderRecipients
-                .Select(orderRecipient =>
-                    new ServiceRecipientQuantityDto(
-                        orderRecipient.ParentSublocationOdsCode,
-                        orderRecipient.RecipientOdsCode,
-                        orderRecipient.RecipientOdsOrganisation?.Name,
-                        orderRecipient.GetQuantityForItem(orderItem.CatalogueItemId),
-                        orderRecipient.ParentSublocation.SublocationOrganisation?.Name))
-                .ToList();
-
-            IEnumerable<ServiceRecipientQuantityDto> previousRecipients =
-                wrapper.Previous?.FlattenedRecipients
-                    ?.Where(x =>
-                        x.OrderItemSublocationRecipients.Any(y => y.CatalogueItemId == orderItem.CatalogueItemId))
-                    .Select(x => new ServiceRecipientQuantityDto(
-                        x.ParentSublocationOdsCode,
-                        x.RecipientOdsCode,
-                        x.RecipientOdsOrganisation?.Name,
-                        x.GetQuantityForItem(orderItem.CatalogueItemId)));
+            
+            List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem);
+            
+            IEnumerable<ServiceRecipientQuantityDto> previousRecipients = GetPreviousRecipients(wrapper, orderItem);
 
             var model = new SelectServiceRecipientQuantityModel(
                 order.OrderType,
@@ -165,11 +149,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues), Source = source,
                 Caption = $"Order {callOffId}",
                 OrderingPartyName = order.OrderingParty.Name,
+                RoutingFields = new RoutingFields()
+                {
+                    CatalogueItem = catalogueItemId,
+                    InternalOrgId = internalOrgId,
+                    CallOffId = callOffId,
+                },
             };
-            
-            ViewBag.CatalogueItemId = catalogueItemId;
-            ViewBag.InternalOrgId = internalOrgId;
-            ViewBag.CallOffId = callOffId;
 
             return View(ServiceRecipientViewName, model);
         }
@@ -190,10 +176,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var orderWrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
             var order = orderWrapper.Order;
-            List<OrderItemRecipientQuantityDto> quantities = model.SubLocations.SelectMany(x => x.ServiceRecipients)
+            var orderItem = order.OrderItem(catalogueItemId);
+            var orderRecipients = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            
+            List<OrderItemRecipientQuantityDto> quantities = model.SubLocations.First().ServiceRecipients
                 .Select(x => new OrderItemRecipientQuantityDto
                 {
-                    ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                    ParentSublocationOdsCode = parentOdsCode,
                     RecipientOdsCode = x.RecipientOdsCode,
                     Quantity = string.IsNullOrWhiteSpace(x.InputQuantity)
                         ? x.Quantity
@@ -209,8 +198,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 RoutingPoint.SelectQuantity,
                 orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
+            
+            var isAllQuantitiesSelected = orderRecipients
+                .Select(recipient => new { quantity = recipient.GetQuantityForItem(orderItem.CatalogueItemId) })
+                .All(quantityObj => quantityObj.quantity > 0);
 
-            if (!quantities.All(quantity => quantity.Quantity > 0))
+            if (!isAllQuantitiesSelected)
             {
                 return RedirectToAction(
                     nameof(SelectServiceRecipientQuantity),
@@ -238,27 +231,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var practiceReorganisation = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient;
 
-            List<ServiceRecipientQuantityDto> recipientDtos = orderRecipients
-                .Where(orderRecipient => orderRecipient.ParentSublocationOdsCode == parentOdsCode)
-                .Select(orderRecipient =>
-                    new ServiceRecipientQuantityDto(
-                        orderRecipient.ParentSublocationOdsCode,
-                        orderRecipient.RecipientOdsCode,
-                        orderRecipient.RecipientOdsOrganisation?.Name,
-                        orderRecipient.GetQuantityForItem(orderItem.CatalogueItemId),
-                        orderRecipient.ParentSublocation.SublocationOrganisation?.Name))
-                .ToList();
+            List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem, parentOdsCode);
 
             IEnumerable<ServiceRecipientQuantityDto> previousRecipients =
-                wrapper.Previous?.FlattenedRecipients
-                    ?.Where(x =>
-                        x.OrderItemSublocationRecipients.Any(y => y.CatalogueItemId == orderItem.CatalogueItemId) &&
-                        x.ParentSublocationOdsCode == parentOdsCode)
-                    .Select(x => new ServiceRecipientQuantityDto(
-                        x.ParentSublocationOdsCode,
-                        x.RecipientOdsCode,
-                        x.RecipientOdsOrganisation?.Name,
-                        x.GetQuantityForItem(orderItem.CatalogueItemId)));
+                GetPreviousRecipients(wrapper, orderItem, parentOdsCode);
 
             var model = new SelectServiceRecipientQuantityModel(
                 order.OrderType,
@@ -348,6 +324,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             return View(model);
         }
+        
+        private static IEnumerable<ServiceRecipientQuantityDto> GetPreviousRecipients(
+            OrderWrapper wrapper,
+            OrderItem orderItem,
+            string parentOdsCode = null)
+        {
+            return wrapper.Previous?.FlattenedRecipients
+                ?.Where(x =>
+                    x.OrderItemSublocationRecipients.Any(y => y.CatalogueItemId == orderItem.CatalogueItemId) &&
+                    (parentOdsCode is null || x.ParentSublocationOdsCode == parentOdsCode))
+                .Select(x => new ServiceRecipientQuantityDto(
+                    x.ParentSublocationOdsCode,
+                    x.RecipientOdsCode,
+                    x.RecipientOdsOrganisation?.Name,
+                    x.GetQuantityForItem(orderItem.CatalogueItemId)));
+        }
+
+        private static List<ServiceRecipientQuantityDto> GetRecipientDtos(
+            ICollection<OrderSublocationRecipient> orderRecipients,
+            OrderItem orderItem,
+            string parentOdsCode = null)
+        {
+            return orderRecipients
+                .Where(orderRecipient => parentOdsCode is null || orderRecipient.ParentSublocationOdsCode == parentOdsCode)
+                .Select(orderRecipient =>
+                    new ServiceRecipientQuantityDto(
+                        orderRecipient.ParentSublocationOdsCode,
+                        orderRecipient.RecipientOdsCode,
+                        orderRecipient.RecipientOdsOrganisation?.Name,
+                        orderRecipient.GetQuantityForItem(orderItem.CatalogueItemId),
+                        orderRecipient.ParentSublocation.SublocationOrganisation?.Name))
+                .ToList();
+        }
 
         private async Task SetPracticeSizes(
             SelectServiceRecipientQuantityModel model,
@@ -356,8 +365,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             ICollection<OrderSublocationRecipient> recipients = null)
         {
             var odsCodes = model.SubLocations.SelectMany(x => x.ServiceRecipients)
-                .Where(x => parentOdsCode != null && x.ParentSublocationOdsCode == parentOdsCode)
-                .Where(x => x.Quantity == 0)
+                .Where(x => x.Quantity == 0 && (parentOdsCode is null || x.ParentSublocationOdsCode == parentOdsCode))
                 .Select(x => x.RecipientOdsCode)
                 .ToArray();
             var practiceSizes =

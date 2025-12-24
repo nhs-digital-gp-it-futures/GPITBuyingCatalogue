@@ -192,13 +192,71 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
+        [MockAutoData]
+        public static async Task Get_SelectServiceRecipientQuantity(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            RoutingResult routingResult,
+            [Frozen] IRoutingService routingService,
+            [Frozen] IOrderService mockOrderService,
+            QuantityController controller)
+        {
+            var orderItem = order.OrderItems.ElementAt(1);
+            
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
+            
+            routingService.GetRoute(
+                    RoutingPoint.SelectQuantityBackLink,
+                    Arg.Any<OrderWrapper>(),
+                    Arg.Any<RouteValues>())
+                .Returns(routingResult);
+
+            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
+            
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
+            
+            IEnumerable<ServiceRecipientQuantityDto> recipients = order.FlattenedRecipients
+                .Select(x =>
+                    new ServiceRecipientQuantityDto(
+                        x.ParentSublocationOdsCode,
+                        x.RecipientOdsCode,
+                        x.RecipientOdsOrganisation?.Name,
+                        x.GetQuantityForItem(orderItem.CatalogueItemId),
+                        x.ParentSublocation.SublocationOrganisation.Name));
+
+            var expected = new SelectServiceRecipientQuantityModel(
+                order.OrderType,
+                order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient,
+                orderItem.CatalogueItem,
+                orderItem.OrderItemPrice,
+                recipients,
+                null)
+            {
+                Caption = $"Order {callOffId}",
+                OrderingPartyName = order.OrderingParty.Name,
+                RoutingFields = new RoutingFields()
+                {
+                    CatalogueItem = orderItem.CatalogueItemId,
+                    InternalOrgId = internalOrgId,
+                    CallOffId = callOffId,
+                },
+            };
+            
+            model.Should().BeEquivalentTo(expected, x => x
+                .Excluding(m => m.BackLink));
+        }
+
+        [Theory]
         [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
         [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
-        public static async Task Get_SelectServiceRecipientQuantity_ProvisioningType_Not_Patient(
+        public static async Task Get_SelectServiceSublocationRecipientQuantity_ProvisioningType_Not_Patient(
             ProvisioningType provisioningType,
             CataloguePriceQuantityCalculationType? cataloguePriceQuantityCalculationType,
             string internalOrgId,
             CallOffId callOffId,
+            string parentOdsCode,
             EntityFramework.Ordering.Models.Order order,
             RoutingResult routingResult,
             [Frozen] IRoutingService routingService,
@@ -220,12 +278,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     Arg.Any<RouteValues>())
                 .Returns(routingResult);
 
-            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
+            var result = await controller.SelectServiceSublocationRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId, parentOdsCode);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
-            IEnumerable<ServiceRecipientQuantityDto> recipients = order.FlattenedRecipients.Select(x =>
+            IEnumerable<ServiceRecipientQuantityDto> recipients = order.FlattenedRecipients
+                .Where(recipient => recipient.ParentSublocationOdsCode == parentOdsCode)
+                .Select(x =>
                 new ServiceRecipientQuantityDto(
                     x.ParentSublocationOdsCode,
                     x.RecipientOdsCode,
@@ -242,14 +302,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 null);
             expected.SubLocations.ForEach(x => x.ServiceRecipients.ForEach(y => y.InputQuantity = string.Empty));
 
-            model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+            model.Should().BeEquivalentTo(expected, x => x
+                .Excluding(m => m.BackLink)
+                .Excluding(m => m.Title));
         }
 
         [Theory]
         [MockAutoData]
-        public static async Task Get_SelectServiceRecipientQuantity_ExpectedResult(
+        public static async Task Get_SelectServiceSublocationRecipientQuantity_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
+            string parentOdsCode,
             EntityFramework.Ordering.Models.Order order,
             RoutingResult routingResult,
             [Frozen] IRoutingService routingService,
@@ -277,12 +340,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     Arg.Any<RouteValues>())
                 .Returns(routingResult);
 
-            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
+            var result = await controller.SelectServiceSublocationRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId, parentOdsCode);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
-            IEnumerable<ServiceRecipientQuantityDto> recipients = order.FlattenedRecipients.Select(x =>
+            IEnumerable<ServiceRecipientQuantityDto> recipients = order.FlattenedRecipients
+                .Where(x => x.ParentSublocationOdsCode == parentOdsCode)
+                .Select(x =>
                 new ServiceRecipientQuantityDto(
                     x.ParentSublocationOdsCode,
                     x.RecipientOdsCode,
@@ -299,14 +364,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 null);
             expected.SubLocations.ForEach(x => x.ServiceRecipients.ForEach(y => y.InputQuantity = $"{NumberOfPatients}"));
 
-            model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+            model.Should().BeEquivalentTo(expected, x => x
+                .Excluding(m => m.BackLink)
+                .Excluding(m => m.Title));
         }
 
         [Theory]
         [MockAutoData]
-        public static async Task Get_SelectServiceRecipientQuantity_WithPrePopulatedSolutionRecipients_ExpectedResult(
+        public static async Task Get_SelectServiceSublocationRecipientQuantity_WithPrePopulatedSolutionRecipients_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
+            string parentOdsCode,
             EntityFramework.Ordering.Models.Order order,
             RoutingResult routingResult,
             [Frozen] IRoutingService routingService,
@@ -336,18 +404,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     Arg.Any<RouteValues>())
                 .Returns(routingResult);
 
-            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
+            var result = await controller.SelectServiceSublocationRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId, parentOdsCode);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
-            IEnumerable<ServiceRecipientQuantityDto> recipients = order.FlattenedRecipients.Select(x =>
-                new ServiceRecipientQuantityDto(
-                    x.ParentSublocationOdsCode,
-                    x.RecipientOdsCode,
-                    x.RecipientOdsOrganisation?.Name,
-                    x.GetQuantityForItem(orderItem.CatalogueItemId),
-                    x.ParentSublocation.SublocationOrganisation.Name));
+            IEnumerable<ServiceRecipientQuantityDto> recipients = order.FlattenedRecipients
+                .Where(recipient => recipient.ParentSublocationOdsCode == parentOdsCode)
+                .Select(recipient =>
+                    new ServiceRecipientQuantityDto(
+                    recipient.ParentSublocationOdsCode,
+                    recipient.RecipientOdsCode,
+                    recipient.RecipientOdsOrganisation?.Name,
+                    recipient.GetQuantityForItem(orderItem.CatalogueItemId),
+                    recipient.ParentSublocation.SublocationOrganisation.Name));
 
             var expected = new SelectServiceRecipientQuantityModel(
                 order.OrderType,
@@ -359,21 +429,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             expected.SubLocations.ForEach(x => x.ServiceRecipients.ForEach(y => y.InputQuantity = $"{NumberOfPatients}"));
 
-            model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+            model.Should().BeEquivalentTo(expected, x => x
+                .Excluding(m => m.BackLink)
+                .Excluding(m => m.Title));
         }
 
         [Theory]
         [MockAutoData]
-        public static async Task Post_SelectServiceRecipientQuantity_ModelError_ReturnsModel(
+        public static async Task Post_SelectServiceSublocationRecipientQuantity_ModelError_ReturnsModel(
             string internalOrgId,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
+            string parentOdsCode,
             SelectServiceRecipientQuantityModel model,
             QuantityController controller)
         {
             controller.ModelState.AddModelError("key", "message");
 
-            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, catalogueItemId, model);
+            var result = await controller.SelectServiceSublocationRecipientQuantity(internalOrgId, callOffId, catalogueItemId, parentOdsCode, model);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -382,9 +455,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static async Task Post_SelectServiceRecipientQuantity_ExpectedResult(
+        public static async Task Post_SelectServiceSublocationRecipientQuantity_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
+            string parentOdsCode,
             EntityFramework.Ordering.Models.Order order,
             SelectServiceRecipientQuantityModel model,
             [Frozen] IOrderService mockOrderService,
@@ -411,19 +485,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             model.SubLocations.ForEach(x => x.ServiceRecipients.ForEach(y => y.InputQuantity = y.Quantity > 0 ? string.Empty : "1"));
 
-            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId, model);
-
+            var result = await controller.SelectServiceSublocationRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId, parentOdsCode, model);
+            
             foreach (OrderItemRecipientQuantityDto dto in actual)
             {
-                model.SubLocations.SelectMany(x => x.ServiceRecipients)
+                model.SubLocations.First().ServiceRecipients
                     .First(x => x.RecipientOdsCode == dto.RecipientOdsCode
-                        && x.ParentSublocationOdsCode == dto.ParentSublocationOdsCode)
+                        && dto.ParentSublocationOdsCode == parentOdsCode)
                     .Quantity.Should()
                     .Be(dto.Quantity == 0 ? 1 : dto.Quantity);
             }
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
+            
             actualResult.ControllerName.Should().Be(typeof(AssociatedServicesController).ControllerName());
             actualResult.ActionName.Should().Be(nameof(AssociatedServicesController.SelectAssociatedServices));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary

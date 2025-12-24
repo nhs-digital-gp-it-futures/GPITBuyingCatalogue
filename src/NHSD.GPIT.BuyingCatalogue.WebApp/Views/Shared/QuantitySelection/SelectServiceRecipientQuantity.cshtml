@@ -47,10 +47,10 @@
                                     <a class="nhsuk-link"
                                        asp-controller="@(typeof(QuantityController).ControllerName())"
                                        asp-action="@(nameof(QuantityController.SelectServiceSublocationRecipientQuantity))"
-                                       asp-route-catalogueItemId="@ViewBag.CatalogueItemId"
+                                       asp-route-catalogueItemId="@Model.RoutingFields.CatalogueItem"
                                        asp-route-parentOdsCode="@(sublocationData.ServiceRecipients.First().ParentSublocationOdsCode)"
-                                       asp-route-internalOrgId="@ViewBag.InternalOrgId"
-                                       asp-route-callOffId="@ViewBag.CallOffId"
+                                       asp-route-internalOrgId="@Model.RoutingFields.InternalOrgId"
+                                       asp-route-callOffId="@Model.RoutingFields.CallOffId"
                                        >Select</a>
                                 </nhs-table-cell>
                             </nhs-table-row-container>
