@@ -180,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var orderItem = order.OrderItem(catalogueItemId);
             var orderRecipients = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
-            List<OrderItemRecipientQuantityDto> quantities = model.SubLocations.First().ServiceRecipients
+            List<OrderItemRecipientQuantityDto> quantities = model.SubLocations[0].ServiceRecipients
                 .Select(x => new OrderItemRecipientQuantityDto
                 {
                     ParentSublocationOdsCode = parentOdsCode,
