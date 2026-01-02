@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
-            
+
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantityBackLink,
                 wrapper,
@@ -133,9 +133,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
             var practiceReorganisation = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient;
-            
+
             List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem);
-            
+
             IEnumerable<ServiceRecipientQuantityDto> previousRecipients = GetPreviousRecipients(wrapper, orderItem);
 
             var model = new SelectServiceRecipientQuantityModel(
@@ -146,7 +146,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 recipientDtos,
                 previousRecipients)
             {
-                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues), Source = source,
+                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
+                Source = source,
                 Caption = $"Order {callOffId}",
                 OrderingPartyName = order.OrderingParty.Name,
                 RoutingFields = new RoutingFields()
@@ -178,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = orderWrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
             var orderRecipients = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
-            
+
             List<OrderItemRecipientQuantityDto> quantities = model.SubLocations.First().ServiceRecipients
                 .Select(x => new OrderItemRecipientQuantityDto
                 {
@@ -198,7 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 RoutingPoint.SelectQuantity,
                 orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
-            
+
             var isAllQuantitiesSelected = orderRecipients
                 .Select(recipient => new { quantity = recipient.GetQuantityForItem(orderItem.CatalogueItemId) })
                 .All(quantityObj => quantityObj.quantity > 0);
@@ -213,7 +214,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
         }
-        
+
         [HttpGet("quantity/{catalogueItemId}/service-recipient/{parentOdsCode}/select")]
         [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
         public async Task<IActionResult> SelectServiceSublocationRecipientQuantity(
@@ -256,7 +257,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             {
                 return View(model);
             }
-            
+
             var solution = order.GetSolutionOrderItem();
 
             if (solution?.OrderItemPrice?.ProvisioningType is ProvisioningType.Patient
@@ -324,7 +325,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             return View(model);
         }
-        
+
         private static IEnumerable<ServiceRecipientQuantityDto> GetPreviousRecipients(
             OrderWrapper wrapper,
             OrderItem orderItem,

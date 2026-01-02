@@ -75,9 +75,9 @@ public sealed class SelectServiceRecipientQuantityModel : NavBaseModel
     public SubLocationModel[] SubLocations { get; set; }
 
     public RoutingSource? Source { get; set; }
-    
+
     public RoutingFields RoutingFields { get; init; }
-    
+
     public string OrderingPartyName { get; init; }
 
     public bool ShouldShowInset => ProvisioningType is ProvisioningType.Patient;
