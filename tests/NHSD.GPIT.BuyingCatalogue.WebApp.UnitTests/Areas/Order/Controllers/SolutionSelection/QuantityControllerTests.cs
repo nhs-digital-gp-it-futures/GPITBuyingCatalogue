@@ -499,42 +499,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(AssociatedServicesController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(AssociatedServicesController.SelectAssociatedServices));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            actualResult.ControllerName.Should().Be(typeof(QuantityController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(QuantityController.SelectServiceRecipientQuantity));
+            actualResult.RouteValues.Should().Contain(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
             });
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static async Task Post_SelectServiceSublocationRecipientQuantity_RedirectToSelectServices(
-            string internalOrgId,
-            CallOffId callOffId,
-            string parentOdsCode,
-            EntityFramework.Ordering.Models.Order order,
-            SelectServiceRecipientQuantityModel model,
-            [Frozen] IOrderService mockOrderService,
-            QuantityController controller)
-        {
-            var orderItem = order.OrderItems.First();
-
-            var orderWrapper = new OrderWrapper(order);
-            mockOrderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId).Returns(orderWrapper);
-
-            model.SubLocations.First()
-                .ServiceRecipients.ForEach(recipient =>
-                    recipient.InputQuantity = recipient.Quantity > 0 ? string.Empty : "1");
-            orderWrapper.Order.FlattenedRecipients.First().OrderItemSublocationRecipients.First().Quantity = 0;
-
-            var result = await controller.SelectServiceSublocationRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId, parentOdsCode, model);
-
-            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actualResult.ControllerName.Should().Be(typeof(QuantityController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(QuantityController.SelectServiceRecipientQuantity));
         }
 
         [Theory]

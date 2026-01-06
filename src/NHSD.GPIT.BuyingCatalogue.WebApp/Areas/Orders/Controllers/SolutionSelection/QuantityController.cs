@@ -23,7 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
     public class QuantityController : Controller
     {
         private const string OrderItemViewName = "QuantitySelection/SelectOrderItemQuantity";
-        private const string ServiceRecipientViewName = "QuantitySelection/SelectServiceRecipientQuantity";
 
         private readonly IGpPracticeService gpPracticeService;
         private readonly IOrderService orderService;
@@ -158,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 },
             };
 
-            return View(ServiceRecipientViewName, model);
+            return View(model);
         }
 
         [HttpPost("quantity/{catalogueItemId}/service-recipient/{parentOdsCode}/select")]
@@ -177,8 +176,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var orderWrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
             var order = orderWrapper.Order;
-            var orderItem = order.OrderItem(catalogueItemId);
-            var orderRecipients = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
             List<OrderItemRecipientQuantityDto> quantities = model.SubLocations[0].ServiceRecipients
                 .Select(x => new OrderItemRecipientQuantityDto
@@ -195,24 +192,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             await orderItemService.DetectChangesInFundingAndDelete(callOffId, internalOrgId, catalogueItemId);
 
-            var route = routingService.GetRoute(
-                RoutingPoint.SelectQuantity,
-                orderWrapper,
-                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
-
-            var isAllQuantitiesSelected = orderRecipients
-                .Select(recipient => new { quantity = recipient.GetQuantityForItem(orderItem.CatalogueItemId) })
-                .All(quantityObj => quantityObj.quantity > 0);
-
-            if (!isAllQuantitiesSelected)
-            {
-                return RedirectToAction(
-                    nameof(SelectServiceRecipientQuantity),
-                    typeof(QuantityController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId });
-            }
-
-            return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
+            return RedirectToAction(
+                nameof(SelectServiceRecipientQuantity),
+                typeof(QuantityController).ControllerName(),
+                new { internalOrgId, callOffId, catalogueItemId });
         }
 
         [HttpGet("quantity/{catalogueItemId}/service-recipient/{parentOdsCode}/select")]
@@ -248,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 BackLink = Url.Action(
                     nameof(SelectServiceRecipientQuantity),
                     typeof(QuantityController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId }),
+                    new { internalOrgId, callOffId, catalogueItemId, source }),
                 Source = source,
                 Title = "Review patient list sizes",
             };
