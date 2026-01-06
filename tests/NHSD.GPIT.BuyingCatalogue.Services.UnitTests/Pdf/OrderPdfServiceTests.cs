@@ -5,8 +5,11 @@ using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.Services.Pdf;
@@ -33,12 +36,17 @@ public static class OrderPdfServiceTests
     public static async Task CreateOrderSummaryPdf_CallsPdfService(
         Order order,
         byte[] fileContents,
-        ActionContext actionContext,
+        DefaultHttpContext httpContext,
         [Frozen] IPdfService pdfService,
-        [Frozen] IActionContextAccessor actionContextAccessor,
+        [Frozen] IUrlHelperFactory urlHelperFactory,
+        [Frozen] IServiceProvider serviceProvider,
+        [Frozen] IHttpContextAccessor httpContextAccessor,
         OrderPdfService orderPdfService)
     {
-        actionContextAccessor.ActionContext.Returns(actionContext);
+        serviceProvider.GetService(typeof(IUrlHelperFactory)).Returns(urlHelperFactory);
+        httpContext.RequestServices = serviceProvider;
+
+        httpContextAccessor.HttpContext.Returns(httpContext);
 
         pdfService.Convert(Arg.Any<Uri>()).Returns(fileContents);
 

@@ -4,10 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
-#pragma warning disable ASPDEPR006
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
 {
@@ -21,13 +20,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
         private const string ChromeWindows64BitPath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
         private const string ChromeLinuxPath = "/usr/bin/chromium-browser";
         private const string ChromeMacPath = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-        private readonly IActionContextAccessor actionContextAccessor;
+        private readonly IHttpContextAccessor httpContextAccessor;
         private readonly PdfSettings pdfSettings;
 
-        public PdfService(IActionContextAccessor actionContextAccessor, PdfSettings pdfSettings)
+        public PdfService(IHttpContextAccessor httpContextAccessor, PdfSettings pdfSettings)
         {
-            this.actionContextAccessor =
-                actionContextAccessor ?? throw new ArgumentNullException(nameof(actionContextAccessor));
+            this.httpContextAccessor =
+                httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
         }
 
@@ -41,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
                     : new Uri($"http://localhost");
             }
 
-            var httpContext = actionContextAccessor.ActionContext!.HttpContext!;
+            var httpContext = httpContextAccessor.HttpContext!;
             return new Uri($"{httpContext.Request.Scheme}://{httpContext.Request.Host}");
         }
 
