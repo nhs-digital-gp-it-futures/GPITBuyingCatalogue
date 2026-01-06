@@ -32,7 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Contrac
             SelectedOrderItemId = item.OrderItem.CatalogueItemId;
             Name = item.Milestone?.Title;
             PaymentTrigger = item.Milestone?.PaymentTrigger;
-            Quantity = item.Quantity;
         }
 
         public bool IsEdit => ItemId != 0;
@@ -50,10 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Contrac
 
         [StringLength(500)]
         public string PaymentTrigger { get; set; }
-
-        [Description("Quantity")]
-        [ModelBinder(typeof(NumberModelBinder))]
-        public int? Quantity { get; set; }
 
         public override string Advice => IsEdit ? "Edit this associated service milestone." : "Add an associated service milestone.";
 

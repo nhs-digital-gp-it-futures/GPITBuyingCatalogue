@@ -94,7 +94,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             int contractId,
             CatalogueItemId catalogueItemId,
             string paymentTrigger,
-            int quantity,
             ContractBillingService service)
         {
             FluentActions
@@ -104,8 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                         contractId,
                         catalogueItemId,
                         name,
-                        paymentTrigger,
-                        quantity))
+                        paymentTrigger))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(name));
         }
@@ -120,7 +118,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             int contractId,
             CatalogueItemId catalogueItemId,
             string name,
-            int quantity,
             ContractBillingService service)
         {
             FluentActions
@@ -130,8 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                         contractId,
                         catalogueItemId,
                         name,
-                        paymentTrigger,
-                        quantity))
+                        paymentTrigger))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(paymentTrigger));
         }
@@ -143,7 +139,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             CatalogueItemId catalogueItemId,
             string paymentTrigger,
             string name,
-            int quantity,
             Contract contract,
             Order order,
             ContractBillingService service)
@@ -167,8 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                 contract.Id,
                 catalogueItemId,
                 name,
-                paymentTrigger,
-                quantity);
+                paymentTrigger);
 
             var actual = await context.Contracts.FirstAsync(f => f.Id == contract.Id);
             actual.ContractBilling.Should().NotBeNull();
@@ -179,7 +173,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             newMilestone.CatalogueItemId.Should().Be(catalogueItemId);
             newMilestone.Milestone.Title.Should().Be(name);
             newMilestone.Milestone.PaymentTrigger.Should().Be(paymentTrigger);
-            newMilestone.Quantity.Should().Be(quantity);
         }
 
         [Theory]
@@ -189,7 +182,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             CatalogueItemId catalogueItemId,
             string paymentTrigger,
             string name,
-            int quantity,
             Order order,
             Contract contract,
             ContractBillingService service)
@@ -215,8 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                 contract.Id,
                 catalogueItemId,
                 name,
-                paymentTrigger,
-                quantity);
+                paymentTrigger);
 
             var actual = await context.Contracts.FirstAsync(f => f.Id == contract.Id);
             actual.ContractBilling.Should().NotBeNull();
@@ -264,7 +255,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             output.CatalogueItemId.Should().Be(contractBillingItem.CatalogueItemId);
             output.Milestone.Title.Should().Be(contractBillingItem.Milestone.Title);
             output.Milestone.PaymentTrigger.Should().Be(contractBillingItem.Milestone.PaymentTrigger);
-            output.Quantity.Should().Be(contractBillingItem.Quantity);
         }
 
         [Theory]
@@ -277,7 +267,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
            int itemId,
            CatalogueItemId catalogueItemId,
            string paymentTrigger,
-           int quantity,
            ContractBillingService service)
         {
             FluentActions
@@ -287,8 +276,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                         itemId,
                         catalogueItemId,
                         name,
-                        paymentTrigger,
-                        quantity))
+                        paymentTrigger))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(name));
         }
@@ -303,7 +291,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             int itemId,
             CatalogueItemId catalogueItemId,
             string name,
-            int quantity,
             ContractBillingService service)
         {
             FluentActions
@@ -313,8 +300,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                         itemId,
                         catalogueItemId,
                         name,
-                        paymentTrigger,
-                        quantity))
+                        paymentTrigger))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(paymentTrigger));
         }
@@ -326,7 +312,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             string paymentTrigger,
             CatalogueItemId catalogueItemId,
             string name,
-            int quantity,
             OrderItem orderItem,
             ContractBillingItem item,
             Order order,
@@ -355,21 +340,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             before.CatalogueItemId.Should().Be(item.CatalogueItemId);
             before.Milestone.Title.Should().Be(item.Milestone.Title);
             before.Milestone.PaymentTrigger.Should().Be(item.Milestone.PaymentTrigger);
-            before.Quantity.Should().Be(item.Quantity);
 
             await service.EditContractBillingItem(
                 order.Id,
                 item.Id,
                 catalogueItemId,
                 name,
-                paymentTrigger,
-                quantity);
+                paymentTrigger);
 
             var after = await context.ContractBillingItems.Include(x => x.Milestone).FirstAsync(f => f.Id == item.Id);
             after.CatalogueItemId.Should().Be(catalogueItemId);
             after.Milestone.Title.Should().Be(name);
             after.Milestone.PaymentTrigger.Should().Be(paymentTrigger);
-            after.Quantity.Should().Be(quantity);
         }
 
         [Theory]

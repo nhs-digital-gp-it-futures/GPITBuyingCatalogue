@@ -15,7 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(x => x.ContractBillingId).IsRequired();
             builder.Property(x => x.OrderId).IsRequired();
             builder.Property(x => x.CatalogueItemId).IsRequired();
-            builder.Property(x => x.Quantity).IsRequired();
 
             builder.HasOne(x => x.ContractBilling)
                 .WithMany(x => x.ContractBillingItems)
