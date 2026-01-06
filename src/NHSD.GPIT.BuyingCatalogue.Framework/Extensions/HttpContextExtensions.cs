@@ -11,6 +11,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 public static class HttpContextExtensions
 {
+    public static IUrlHelper GetUrlHelper(this HttpContext httpContext)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext, nameof(httpContext));
+
+        var factory = httpContext.RequestServices.GetRequiredService<IUrlHelperFactory>();
+
+        return factory.GetUrlHelper(httpContext.GetActionContext());
+    }
+
     private static ActionContext GetActionContext(this HttpContext httpContext)
     {
         var endpoint = httpContext.GetEndpoint();
@@ -21,16 +30,6 @@ public static class HttpContextExtensions
         return new ActionContext(
             httpContext,
             httpContext.GetRouteData(),
-            actionDescriptor
-        );
-    }
-
-    public static IUrlHelper GetUrlHelper(this HttpContext httpContext)
-    {
-        ArgumentNullException.ThrowIfNull(httpContext, nameof(httpContext));
-
-        var factory = httpContext.RequestServices.GetRequiredService<IUrlHelperFactory>();
-
-        return factory.GetUrlHelper(httpContext.GetActionContext());
+            actionDescriptor);
     }
 }
