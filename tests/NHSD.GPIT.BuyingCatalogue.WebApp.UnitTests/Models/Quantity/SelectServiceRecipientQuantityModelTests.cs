@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
 
             model.Title.Should().Be(string.Format(SelectServiceRecipientQuantityModel.TitleText, item.CatalogueItem.CatalogueItemType.Description()));
             model.Caption.Should().Be(item.CatalogueItem.Name);
-            model.Advice.Should().Be(SelectServiceRecipientQuantityModel.AdviceTextPatient);
+            model.Advice.Should().Be(SelectServiceRecipientQuantityModel.AdviceTextQuantitySelect);
             model.OrderType.Should().Be(orderType);
             model.SubLocations.SelectMany(x => x.ServiceRecipients).Count().Should().Be(serviceRecipients.Count);
 
