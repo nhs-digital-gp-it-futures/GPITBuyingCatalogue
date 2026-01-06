@@ -13,7 +13,7 @@ public static class HttpContextExtensions
 {
     public static IUrlHelper GetUrlHelper(this HttpContext httpContext)
     {
-        ArgumentNullException.ThrowIfNull(httpContext, nameof(httpContext));
+        ArgumentNullException.ThrowIfNull(httpContext);
 
         var factory = httpContext.RequestServices.GetRequiredService<IUrlHelperFactory>();
 
