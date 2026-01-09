@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
+@model OrderItemRecipientRowModel
+
+@{
+    var quantity = Model.ServiceRecipient.GetQuantityForItem(Model.CatalogueItemId);
+    var deliveryDate = Model.ServiceRecipient.GetDeliveryDateForItem(Model.CatalogueItemId);
+    var deliveryDateText = deliveryDate.HasValue
+        ? $"{deliveryDate.Value:d MMM yyyy}"
+        : "No date entered";
+}
+
+<nhs-table-row-container>
+    @if (Model.IsAmendment)
+    {
+        <nhs-table-cell style="width: 50px;">
+            @if (Model.IsServiceRecipientAdded)
+            {
+                <div class="bc-c-task-list__task-status">
+                    <strong class="nhsuk-tag nhsuk-tag--blue">Added</strong>
+                </div>
+            }
+            else
+            {
+                <span aria-label="Existing"></span>
+            }
+        </nhs-table-cell>
+    }
+    <nhs-table-cell>@Model.ServiceRecipient.RecipientOdsOrganisation?.Name (@Model.ServiceRecipient.RecipientOdsCode)</nhs-table-cell>
+    <nhs-table-cell>@($"{Model.CallOffId}-{Model.ServiceRecipient.RecipientOdsCode}-{Model.CatalogueItemId}")</nhs-table-cell>
+    <nhs-table-cell>@deliveryDateText</nhs-table-cell>
+    <nhs-table-cell>
+        @if (Model.HasServiceRecipientQuantities)
+        {
+            @(quantity.HasValue ? $"{quantity:N0}" : "-")
+        }
+        else
+        {
+            @("N/A")
+        }
+    </nhs-table-cell>
+</nhs-table-row-container>

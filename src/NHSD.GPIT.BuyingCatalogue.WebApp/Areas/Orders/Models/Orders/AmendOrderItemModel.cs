@@ -4,6 +4,7 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 {
@@ -43,6 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public CallOffId CallOffId { get; }
 
+        public OrderWrapper OrderWrapper { get; init; }
+
         public OrderType OrderType { get; }
 
         public bool IsAmendment => CallOffId.IsAmendment;
@@ -56,6 +59,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public CatalogueItem CatalogueItem => OrderItem.CatalogueItem;
 
         public ICollection<OrderSublocationRecipient> RolledUpRecipientsForItem => rolledUpRecipients.Values;
+
+        public ICollection<OrderSublocationRecipient> PreviousRecipientsForItem => previousRecipients.Values;
 
         public int RolledUpTotalQuantity => OrderItem.TotalQuantity(RolledUpRecipientsForItem);
 
@@ -83,5 +88,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public bool IsServiceRecipientAdded(string odsCode) =>
             (rolledUpRecipients.ContainsKey(odsCode) && !previousRecipients.ContainsKey(odsCode))
             || IsOrderItemAdded;
+
+        public string GetCallOffIdForRecipient(OrderSublocationRecipient recipient)
+        {
+            return OrderWrapper.PreviousOrders.First(order => order.Id == recipient.OrderId).CallOffId.ToString();
+        }
     }
 }

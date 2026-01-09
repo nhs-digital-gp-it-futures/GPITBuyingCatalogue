@@ -1,0 +1,39 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
+
+public class OrderItemRecipientRowModel
+{
+    public OrderItemRecipientRowModel()
+    {
+    }
+
+    public OrderItemRecipientRowModel(
+        OrderSublocationRecipient recipient,
+        AmendOrderItemModel amendOrderItemModel,
+        string callOffId,
+        bool hasServiceRecipientQuantities)
+    {
+        ServiceRecipient = recipient;
+        IsAmendment = amendOrderItemModel.IsAmendment;
+        CallOffId = callOffId;
+        CatalogueItemId = amendOrderItemModel.CatalogueItem.Id;
+        HasServiceRecipientQuantities = hasServiceRecipientQuantities;
+        IsServiceRecipientAdded = amendOrderItemModel.IsServiceRecipientAdded(recipient.RecipientOdsCode);
+    }
+
+    public OrderSublocationRecipient ServiceRecipient { get; init; }
+
+    public bool IsAmendment { get; init; }
+
+    public string CallOffId { get; init; }
+
+    public CatalogueItemId CatalogueItemId { get; init; }
+
+    public bool HasServiceRecipientQuantities { get; init; }
+
+    public bool IsServiceRecipientAdded { get; init; }
+}

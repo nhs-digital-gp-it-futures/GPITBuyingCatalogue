@@ -80,6 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 InternalOrgId = InternalOrgId,
                 CanEdit = Order.OrderStatus == OrderStatus.InProgress,
                 PracticeReorganisationName = Order.AssociatedServicesOnlyDetails.PracticeReorganisationNameAndCode,
+                OrderWrapper = OrderWrapper,
             };
         }
 
