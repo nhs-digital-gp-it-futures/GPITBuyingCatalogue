@@ -47,9 +47,9 @@
 
                 @if (Model.IsAmendment)
                 {
-                    @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient => Model.GetCallOffIdForRecipient(recipient)))
+                    @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient => Model.OrderWrapper.GetCallOffIdForRecipient(recipient)))
                     {
-                        var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, Model.GetCallOffIdForRecipient(serviceRecipient), hasServiceRecipientQuantities);
+                        var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, Model.OrderWrapper.GetCallOffIdForRecipient(serviceRecipient), hasServiceRecipientQuantities);
                         <nhs-table-row-container>
                             <partial name="_OrderItemRecipientRow" model="itemRecipientRowModel" />
                         </nhs-table-row-container>

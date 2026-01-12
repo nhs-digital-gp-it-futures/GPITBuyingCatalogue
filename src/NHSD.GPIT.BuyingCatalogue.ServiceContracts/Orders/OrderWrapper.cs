@@ -156,5 +156,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             fundingTypes.AddRange(Order.OrderItems.Where(oi => oi.CatalogueItemId == catalogueItemId).Select(oi => oi.FundingType));
             return fundingTypes.Distinct();
         }
+        
+        public string GetCallOffIdForRecipient(OrderSublocationRecipient recipient)
+        {
+            return PreviousOrders.First(order => order.Id == recipient.OrderId).CallOffId.ToString();
+        }
     }
 }

@@ -88,10 +88,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public bool IsServiceRecipientAdded(string odsCode) =>
             (rolledUpRecipients.ContainsKey(odsCode) && !previousRecipients.ContainsKey(odsCode))
             || IsOrderItemAdded;
-
-        public string GetCallOffIdForRecipient(OrderSublocationRecipient recipient)
-        {
-            return OrderWrapper.PreviousOrders.First(order => order.Id == recipient.OrderId).CallOffId.ToString();
-        }
     }
 }
