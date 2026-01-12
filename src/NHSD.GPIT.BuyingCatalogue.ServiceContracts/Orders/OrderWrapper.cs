@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
                 foreach (OrderSublocationRecipient recipient in output.FlattenedRecipients)
                 {
-                    recipient.OrderId = previous.First().Id;
+                    recipient.OrderId = previous[0].Id;
                 }
 
                 foreach (Order amendment in previous.Skip(1))
@@ -156,10 +156,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             fundingTypes.AddRange(Order.OrderItems.Where(oi => oi.CatalogueItemId == catalogueItemId).Select(oi => oi.FundingType));
             return fundingTypes.Distinct();
         }
-        
-        public string GetCallOffIdForRecipient(OrderSublocationRecipient recipient)
+
+        public string GetCallOffIdForRecipient(Dictionary<int, Order> previousOrders, OrderSublocationRecipient recipient)
         {
-            return PreviousOrders.First(order => order.Id == recipient.OrderId).CallOffId.ToString();
+            return previousOrders[recipient.OrderId].CallOffId.ToString();
         }
     }
 }
