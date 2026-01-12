@@ -287,7 +287,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                     "XXXX",
                     [sublocationRecipient]),
             ];
-            
+
             var orderWrapper = new OrderWrapper(amendedOrder, [order]);
 
             orderWrapper.GetCallOffIdForRecipient(sublocationRecipient).Should().Be(order.CallOffId.ToString());
