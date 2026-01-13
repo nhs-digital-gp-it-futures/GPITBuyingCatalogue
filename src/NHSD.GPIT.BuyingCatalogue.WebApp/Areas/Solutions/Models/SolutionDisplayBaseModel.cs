@@ -112,8 +112,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public bool HasExpiredFrameworks => Frameworks.Any(x => x.IsExpired);
 
         public string FrameworkTitle() => Frameworks is not null && Frameworks.Any() && Frameworks.Count > 1
-            ? "Frameworks"
-            : "Framework";
+            ? "Contracting vehicles"
+            : "Contracting vehicle";
 
         public bool IsInRemediation() => PublicationStatus == PublicationStatus.InRemediation;
 

@@ -2,7 +2,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels.FrameworksDashboardModel;
 
 @{
-    ViewBag.Title = "Manage frameworks";
+    ViewBag.Title = "Manage contracting vehicles";
 }
 
 @section Breadcrumbs {
@@ -27,18 +27,18 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="@ViewBag.Title" advice="Add new frameworks or mark existing ones as expired."/>
+        <nhs-page-title title="@ViewBag.Title" advice="Add new contracting vehicles or mark existing ones as expired."/>
 
-        <vc:nhs-action-link text="Add a new framework"
+        <vc:nhs-action-link text="Add a new contracting vehicle"
                             url="@Url.Action(nameof(FrameworksController.Add), typeof(FrameworksController).ControllerName())"/>
 
         @if (!Model.Frameworks.Any())
         {
-            <p data-test-id="no-frameworks-text">No frameworks have been added yet.</p>
+            <p data-test-id="no-frameworks-text">No contracting vehicles have been added yet.</p>
         }
         else
         {
-            <nhs-table label-text="Frameworks" data-test-id="frameworks-table">
+            <nhs-table label-text="Contracting Vehicles" data-test-id="frameworks-table">
                 <nhs-table-column>Name</nhs-table-column>
                 <nhs-table-column>Funding type</nhs-table-column>
                 <nhs-table-column>Status</nhs-table-column>
