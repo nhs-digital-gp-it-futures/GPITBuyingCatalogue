@@ -31,8 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Validation
                 httpRequestMessage.Headers.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("BuyingCatalogue", "1.0"));
 
                 using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+#pragma warning disable CA2025
                 using var response = httpClient.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationTokenSource.Token)
-                                        .GetAwaiter()
+#pragma warning restore CA2025
+                    .GetAwaiter()
                                         .GetResult();
 
                 return response.IsSuccessStatusCode;

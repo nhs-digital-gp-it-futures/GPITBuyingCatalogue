@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Sdk Name="Microsoft.Build.Sql" Version="1.0.0-rc1" />
+  <Sdk Name="Microsoft.Build.Sql" Version="2.0.0" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -109,7 +109,6 @@
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="**/*.sql" />
     <None Include="PostDeployment/**/*.sql" />
     <Build Remove="obj/**/*.sql" />
     <Build Remove="bin/**/*.sql" />

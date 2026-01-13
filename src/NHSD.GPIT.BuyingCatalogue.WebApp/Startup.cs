@@ -53,11 +53,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddControllersWithViews(options =>
             {
-                options.Filters.Add(typeof(ActionArgumentNullFilter));
-                options.Filters.Add(typeof(OrdersActionFilter));
-                options.Filters.Add(typeof(CookieConsentActionFilter));
-                options.Filters.Add(typeof(TermsOfUseActionFilter));
-                options.Filters.Add(typeof(UpdatePasswordActionFilter));
+                options.Filters.Add<ActionArgumentNullFilter>();
+                options.Filters.Add<OrdersActionFilter>();
+                options.Filters.Add<CookieConsentActionFilter>();
+                options.Filters.Add<TermsOfUseActionFilter>();
+                options.Filters.Add<UpdatePasswordActionFilter>();
                 options.Filters.Add<SerilogMvcLoggingAttribute>();
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                 options.Filters.Add(new BadRequestActionFilter());
@@ -133,8 +133,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddRazorPages();
 
             services.AddHttpClient();
-
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -147,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
             };
 
-            forwardingOptions.KnownNetworks.Clear();
+            forwardingOptions.KnownIPNetworks.Clear();
             forwardingOptions.KnownProxies.Clear();
             app.UseForwardedHeaders(forwardingOptions);
 
@@ -170,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                         {
                             var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
 
-                            if (exceptionHandlerFeature != null)
+                            if (exceptionHandlerFeature != null && logger.IsEnabled(LogLevel.Error))
                             {
                                 logger.LogError("Exception occured {Error}:", exceptionHandlerFeature.Error);
                             }

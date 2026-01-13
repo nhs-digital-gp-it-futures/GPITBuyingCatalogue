@@ -2,10 +2,11 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 
@@ -17,18 +18,15 @@ public class OrderPdfService : IOrderPdfService
     private const string ControllerName = "OrderSummary";
 
     private readonly IPdfService pdfService;
-    private readonly IUrlHelperFactory urlHelper;
-    private readonly IActionContextAccessor actionContextAccessor;
+    private readonly IHttpContextAccessor httpContextAccessor;
 
     public OrderPdfService(
         IPdfService pdfService,
-        IUrlHelperFactory urlHelper,
-        IActionContextAccessor actionContextAccessor)
+        IHttpContextAccessor httpContextAccessor)
     {
         this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
-        this.urlHelper = urlHelper ?? throw new ArgumentNullException(nameof(urlHelper));
-        this.actionContextAccessor =
-            actionContextAccessor ?? throw new ArgumentNullException(nameof(actionContextAccessor));
+        this.httpContextAccessor =
+            httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
     }
 
     public async Task<MemoryStream> CreateOrderSummaryPdf(Order order)
@@ -45,7 +43,7 @@ public class OrderPdfService : IOrderPdfService
     [ExcludeFromCodeCoverage(Justification = "Code paths are OS dependent and can't be reliably tested.")]
     private Uri OrderSummaryUri(string internalOrgId, CallOffId callOffId)
     {
-        var uri = urlHelper.GetUrlHelper(actionContextAccessor.ActionContext!)
+        var uri = httpContextAccessor.HttpContext.GetUrlHelper()
             .Action(
                 ActionName,
                 ControllerName,

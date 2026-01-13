@@ -19,8 +19,8 @@ This application provides a Web Application capable of running on Linux or Windo
 ### Requirements
 
 - [Azure Storage Explorer](https://azure.microsoft.com/en-gb/products/storage/storage-explorer)
-- [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
-- [NodeJS (v17.9.1)](https://nodejs.org/dist/latest-v17.x/node-v17.9.1-x64.msi)
+- [.NET 10](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
+- [NodeJS (v24.12.0)](https://nodejs.org/en/download)
 - [Rancher Desktop](https://rancherdesktop.io/)
 
 **Note**: Docker Desktop can also be used if you'd prefer. However, Docker Desktop frequently has installation or runtime issues that will go un-patched for several versions.
@@ -80,4 +80,3 @@ See [the following PR](https://github.com/nhs-digital-gp-it-futures/GPITBuyingCa
 ### SQL Server is running but there is no database
 
 The `dacpac` deployment takes a few seconds to initialize and complete so it is not unusual for there to be a slight delay between SQL server initializing and the database being ready for use; upon completion `<DB Name> database setup complete` is logged to the console.
-
