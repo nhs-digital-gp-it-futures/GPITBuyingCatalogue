@@ -108,6 +108,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         /// </summary>
         public Order RolledUp => rolledUpLazy.Value;
 
+        public static string GetCallOffIdForRecipient(Dictionary<int, Order> previousOrders, OrderSublocationRecipient recipient)
+        {
+            return previousOrders[recipient.OrderId].CallOffId.ToString();
+        }
+
         public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId)
         {
             return Order.DetermineOrderRecipients(Previous, catalogueItemId);
@@ -155,11 +160,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
             fundingTypes.AddRange(Order.OrderItems.Where(oi => oi.CatalogueItemId == catalogueItemId).Select(oi => oi.FundingType));
             return fundingTypes.Distinct();
-        }
-
-        public string GetCallOffIdForRecipient(Dictionary<int, Order> previousOrders, OrderSublocationRecipient recipient)
-        {
-            return previousOrders[recipient.OrderId].CallOffId.ToString();
         }
     }
 }

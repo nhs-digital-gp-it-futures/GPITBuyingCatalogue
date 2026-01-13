@@ -291,8 +291,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             var orderWrapper = new OrderWrapper(amendedOrder, [order]);
             var previousOrdersDictionary = orderWrapper.PreviousOrders.ToDictionary(o => o.Id);
 
-            orderWrapper.GetCallOffIdForRecipient(previousOrdersDictionary, sublocationRecipient).Should().Be(order.CallOffId.ToString());
-            orderWrapper.GetCallOffIdForRecipient(previousOrdersDictionary, sublocationRecipient).Should().NotBe(amendedOrder.CallOffId.ToString());
+            OrderWrapper.GetCallOffIdForRecipient(previousOrdersDictionary, sublocationRecipient).Should().Be(order.CallOffId.ToString());
+            OrderWrapper.GetCallOffIdForRecipient(previousOrdersDictionary, sublocationRecipient).Should().NotBe(amendedOrder.CallOffId.ToString());
         }
 
         private static OrderSublocation BuildOrderSublocation(
