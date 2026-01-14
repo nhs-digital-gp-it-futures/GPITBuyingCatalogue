@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -253,6 +254,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
+            modelBuilder.Ignore<IdentityPasskeyData>();
+            modelBuilder.Ignore<IdentityUserPasskey<int>>();
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(BuyingCatalogueDbContext).Assembly);
         }
