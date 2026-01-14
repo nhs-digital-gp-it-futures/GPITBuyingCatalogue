@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     ci =>
                         ci.Name.Contains(searchTerm)
                         && ci.CatalogueItemType == CatalogueItemType.Solution
-                        && AllowedPublicationStatuses.Contains(ci.PublishedStatus)
+                        && AllowedPublicationStatuses.Contains(ci.PublishedStatus, null)
                         && ci.Supplier.IsActive)
                 .Select(ci => new SearchFilterModel { Title = ci.Name, Category = "Solution", });
 
@@ -191,7 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(
                     i =>
                         i.CatalogueItemType == CatalogueItemType.Solution
-                        && AllowedPublicationStatuses.Contains(i.PublishedStatus)
+                        && AllowedPublicationStatuses.Contains(i.PublishedStatus, null)
                         && i.Supplier.IsActive), new List<CapabilitiesAndCountModel>());
 
         private static async Task<(IQueryable<CatalogueItem> Query, List<CapabilitiesAndCountModel> Count)>
@@ -226,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .Include(i => i.Solution)
                     .ThenInclude(
                         s => s.AdditionalServices
-                            .Where(adit => AllowedPublicationStatuses.Contains(adit.CatalogueItem.PublishedStatus) && itemPredicate.Invoke(adit.CatalogueItem)))
+                            .Where(adit => AllowedPublicationStatuses.Contains(adit.CatalogueItem.PublishedStatus, null) && itemPredicate.Invoke(adit.CatalogueItem)))
                     .ThenInclude(adit => adit.CatalogueItem)
                     .ThenInclude(ci => ci.CatalogueItemCapabilities)
                     .ThenInclude(cic => cic.Capability)
@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .Where(
                         i =>
                             i.CatalogueItemType == CatalogueItemType.Solution
-                            && AllowedPublicationStatuses.Contains(i.PublishedStatus)
+                            && AllowedPublicationStatuses.Contains(i.PublishedStatus, null)
                             && i.Supplier.IsActive
                             && (itemPredicate.Invoke(i) || i.Solution.AdditionalServices.Any(y => itemPredicate.Invoke(y.CatalogueItem)))),
                 capabilitiesAndCount);

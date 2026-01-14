@@ -141,6 +141,7 @@ public static class OrderTests
         return
         [
             [
+
                 // Catalogue Item did not exist in previous order
                 new Order
                 {
@@ -256,6 +257,7 @@ public static class OrderTests
                 },
             ],
             [
+
                 // Recipient did not exist in previous order
                 new Order
                 {

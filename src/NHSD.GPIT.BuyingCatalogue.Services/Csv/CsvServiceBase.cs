@@ -28,8 +28,7 @@ public abstract class CsvServiceBase
         try
         {
             return await csvReader
-                .GetRecordsAsync<T>()
-                .ToListAsync();
+                .GetRecordsAsync<T>().ToListAsync();
         }
         catch (HeaderValidationException)
         {

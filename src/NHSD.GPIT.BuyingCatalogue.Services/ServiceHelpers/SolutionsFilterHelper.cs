@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
                         FilterConstants.Delimiter,
                         StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
                     .Where(x => Enum.TryParse(typeof(T), x, out var value) && Enum.IsDefined(typeof(T), value))
-                    .Select(t => (T)Enum.Parse(typeof(T), t))
+                    .Select(Enum.Parse<T>)
                     .ToList() ?? new List<T>();
 
         public static ICollection<T> ParseSelectedFilterIds<T>(string selectedFilterIds)

@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -18,12 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         private readonly IUrlHelper urlHelper;
 
         public AutoCompleteTagHelper(
-            IActionContextAccessor actionContextAccessor,
-            IHtmlGenerator htmlGenerator,
-            IUrlHelperFactory urlHelperFactory)
+            IHttpContextAccessor httpContextAccessor,
+            IHtmlGenerator htmlGenerator)
             : base(htmlGenerator)
         {
-            urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
+            urlHelper = httpContextAccessor.HttpContext.GetUrlHelper();
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
