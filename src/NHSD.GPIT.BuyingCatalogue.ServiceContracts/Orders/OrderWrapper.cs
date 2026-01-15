@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
                 Order output = previous.First().Clone();
 
-                foreach (OrderSublocationRecipient recipient in output.FlattenedRecipients)
+                foreach (OrderSublocationRecipient recipient in output.GetOrderRecipients())
                 {
                     recipient.OrderId = previous[0].Id;
                 }
