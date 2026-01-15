@@ -37,6 +37,6 @@ public class OrderItemRecipientRowModel
     public bool HasServiceRecipientQuantities { get; init; }
 
     public bool IsServiceRecipientAdded { get; init; }
-    
+
     public OrderType OrderType { get; init; }
 }
