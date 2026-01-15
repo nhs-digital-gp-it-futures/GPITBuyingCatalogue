@@ -1,0 +1,36 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.OrderItemRecipientRowModel
+@{
+    var quantity = Model.ServiceRecipient.GetQuantityForItem(Model.CatalogueItemId);
+    var deliveryDate = Model.ServiceRecipient.GetDeliveryDateForItem(Model.CatalogueItemId);
+    var deliveryDateText = deliveryDate.HasValue
+        ? $"{deliveryDate.Value:d MMMM yyyy}"
+        : "No date entered";
+}
+
+<tr class="alternating">
+    @if (Model.IsAmendment && !Model.OrderType.MergerOrSplit)
+    {
+        <td>
+            @if (Model.IsServiceRecipientAdded)
+            {
+                @("Added")
+            }
+        </td>
+    }
+    <td>
+        @($"{Model.ServiceRecipient.RecipientOdsOrganisation?.Name} ({Model.ServiceRecipient.RecipientOdsCode})")
+    </td>
+    <td>
+        @($"{Model.CallOffId}-{Model.ServiceRecipient.RecipientOdsCode}-{Model.CatalogueItemId}")
+    </td>
+    <td>
+        @deliveryDateText
+    </td>
+
+    @if (Model.HasServiceRecipientQuantities)
+    {
+        <td class="numeric">
+            @(quantity.HasValue ? $"{quantity:N0}" : "-")
+        </td>
+    }
+</tr>

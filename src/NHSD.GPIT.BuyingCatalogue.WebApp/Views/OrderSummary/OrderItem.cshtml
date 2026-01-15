@@ -2,6 +2,8 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.AmendOrderItemModel;
 @if (Model.IsAmendment && Model.IsOrderItemAdded)
 {
@@ -56,41 +58,20 @@ else
     }
     else
     {
-        @foreach (var recipient in Model.RolledUpRecipientsForItem.OrderBy(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)))
+        var previousOrderDictionary = Model.OrderWrapper.PreviousOrders.ToDictionary(order => order.Id);
+        @if (Model.IsAmendment)
         {
-            var quantity = recipient.GetQuantityForItem(Model.CatalogueItem.Id);
-            var deliveryDate = recipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
-            var deliveryDateText = deliveryDate.HasValue
-            ? $"{deliveryDate.Value:d MMMM yyyy}"
-            : "No date entered";
-
-            <tr class="alternating">
-            @if (Model.IsAmendment && !Model.OrderType.MergerOrSplit)
-                {
-                    <td>
-                        @if (Model.IsServiceRecipientAdded(recipient.RecipientOdsCode))
-                        {
-                            @("Added")
-                        }
-                    </td>
-                }
-                <td>
-                    @($"{recipient.RecipientOdsOrganisation?.Name} ({recipient.RecipientOdsCode})")
-                </td>
-                <td>
-                    @($"{Model.CallOffId}-{recipient.RecipientOdsCode}-{Model.CatalogueItem.Id}")
-                </td>
-                <td>
-                    @deliveryDateText
-                </td>
-
-                @if (hasServiceRecipientQuantities)
-                {
-                    <td class="numeric">
-                        @(quantity.HasValue ? $"{quantity:N0}" : "-")
-                    </td>
-                }
-            </tr>
+            @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient =>
+                          OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, recipient)))
+            {
+                var recipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, serviceRecipient), hasServiceRecipientQuantities);
+                <partial name="ServiceRecipientRow" model="recipientRowModel" />
+            }
+        }
+        @foreach (var recipient in Model.RolledUpRecipientsForItem.Where(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)))
+        {
+            var recipientRowModel = new OrderItemRecipientRowModel(recipient, Model, Model.CallOffId.ToString(), hasServiceRecipientQuantities);
+            <partial name="ServiceRecipientRow" model="recipientRowModel" />
         }
     @if (!Model.OrderType.MergerOrSplit && hasServiceRecipientQuantities
             && Model.RolledUpRecipientsForItem.Count > 1)

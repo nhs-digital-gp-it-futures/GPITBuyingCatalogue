@@ -23,6 +23,7 @@ public class OrderItemRecipientRowModel
         CatalogueItemId = amendOrderItemModel.CatalogueItem.Id;
         HasServiceRecipientQuantities = hasServiceRecipientQuantities;
         IsServiceRecipientAdded = amendOrderItemModel.IsServiceRecipientAdded(recipient.RecipientOdsCode);
+        OrderType = amendOrderItemModel.OrderType;
     }
 
     public OrderSublocationRecipient ServiceRecipient { get; init; }
@@ -36,4 +37,6 @@ public class OrderItemRecipientRowModel
     public bool HasServiceRecipientQuantities { get; init; }
 
     public bool IsServiceRecipientAdded { get; init; }
+    
+    public OrderType OrderType { get; init; }
 }
