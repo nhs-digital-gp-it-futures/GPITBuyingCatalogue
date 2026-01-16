@@ -7,16 +7,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 public class ExpiredFrameworksModel
 {
     internal const string SingleExpiredFramework =
-        "This solution is currently only available from a framework which has expired. It cannot be purchased using the Buying Catalogue at this time.";
+        "This solution is currently only available from a contracting vehicle which has expired. It cannot be purchased using the Buying Catalogue at this time.";
 
     internal const string MultipleExpiredFrameworks =
-        "This solution is currently only available from frameworks which have expired. It cannot be purchased using the Buying Catalogue at this time.";
+        "This solution is currently only available from contracting vehicles which have expired. It cannot be purchased using the Buying Catalogue at this time.";
 
     internal const string SingleExpiredWithActiveFrameworks =
-        "This solution is available from more than 1 framework. The {0} framework has expired, so this solution can no longer be purchased under that framework.";
+        "This solution is available from more than 1 contracting vehicle. The {0} contracting vehicle has expired, so this solution can no longer be purchased under that contracting vehicle.";
 
     internal const string MultipleExpiredWithActiveFrameworks =
-        "This solution is available from more than 1 framework. The {0} frameworks have expired, so this solution can no longer be purchased under those frameworks.";
+        "This solution is available from more than 1 contracting vehicle. The {0} contracting vehicles have expired, so this solution can no longer be purchased under those contracting vehicles.";
 
     public ExpiredFrameworksModel(IList<EntityFramework.Catalogue.Models.Framework> frameworks)
     {

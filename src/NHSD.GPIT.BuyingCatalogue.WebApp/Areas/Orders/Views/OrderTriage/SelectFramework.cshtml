@@ -1,7 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage.SelectFrameworkModel
 @{
-    ViewBag.Title = "Which framework are you buying from?";
+    ViewBag.Title = "Which contracting vehicle are you buying from?";
 }
 
 <div>
@@ -11,7 +11,7 @@
             <nhs-validation-summary RadioId="@nameof(Model.SelectedFrameworkId)"/>
             <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.OrganisationName"
-                            advice="Select the procurement framework that the solution you want to order is available on."/>
+                            advice="Select the contracting vehicle that the solution you want to order is available on."/>
             @if (Model.Frameworks.Any())
             {
                 <form method="post">
