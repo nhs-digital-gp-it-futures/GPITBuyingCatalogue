@@ -12,11 +12,11 @@
     @if (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any())
         advice = Model.Order.IsAmendment
             ? "Provide information on how you'll be paying for the amendments you've made to the previous order."
-            : "Provide information on how you’ll be paying for the items you’ve added to this order. You’ll only be able to use local funding or funding sources related to the framework you’ve selected.";
+            : "Provide information on how you’ll be paying for the items you’ve added to this order. You’ll only be able to use local funding or funding sources related to the contracting vehicle you’ve selected.";
     else if (Model.OrderItemsSingleFundingType != null && Model.OrderItemsSingleFundingType.Any())
         advice = Model.Order.OrderingParty.OrganisationType == OrganisationType.GP
             ? "As you are buying for a single practice, you can only pay for this order using local funding."
-            : $"As you're buying from the {Model.SelectedFramework.ShortName} framework, you can only pay for this order using {Model.SelectedFramework.FundingTypes.First().Description()}.";
+            : $"As you're buying from the {Model.SelectedFramework.ShortName} contracting vehicle, you can only pay for this order using {Model.SelectedFramework.FundingTypes.First().Description()}.";
     else
         advice = "You do not need to pay for the following solutions or services as they’re available free of charge.";
 }

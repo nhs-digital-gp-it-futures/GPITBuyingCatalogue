@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             var actual = model.FrameworkTitle();
 
-            actual.Should().Be("Frameworks");
+            actual.Should().Be("Contracting vehicles");
         }
 
         [Theory]
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             var actual = model.FrameworkTitle();
 
-            actual.Should().Be("Framework");
+            actual.Should().Be("Contracting vehicle");
         }
 
         [Fact]
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             var actual = model.FrameworkTitle();
 
-            actual.Should().Be("Framework");
+            actual.Should().Be("Contracting vehicle");
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             var actual = model.FrameworkTitle();
 
-            actual.Should().Be("Framework");
+            actual.Should().Be("Contracting vehicle");
         }
 
         [Theory]
