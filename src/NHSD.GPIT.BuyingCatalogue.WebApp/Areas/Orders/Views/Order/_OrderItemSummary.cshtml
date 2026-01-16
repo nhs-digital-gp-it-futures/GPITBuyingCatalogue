@@ -3,6 +3,7 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
@@ -45,43 +46,23 @@
                 <nhs-table-column>Planned delivery date</nhs-table-column>
                 <nhs-table-column>Quantity</nhs-table-column>
 
-                @foreach (var serviceRecipient in Model.RolledUpRecipientsForItem.OrderBy(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)))
+                @if (Model.IsAmendment)
                 {
-                    var quantity = serviceRecipient.GetQuantityForItem(Model.CatalogueItem.Id);
-                    var deliveryDate = serviceRecipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
-                    var deliveryDateText = deliveryDate.HasValue
-                        ? $"{deliveryDate.Value:d MMM yyyy}"
-                        : "No date entered";
-
+                    var previousOrderDictionary = Model.OrderWrapper.PreviousOrders.ToDictionary(order =>
+                        order.Id);
+                    @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient => OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, recipient)))
+                    {
+                        var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, serviceRecipient), hasServiceRecipientQuantities);
+                        <nhs-table-row-container>
+                            <partial name="_OrderItemRecipientRow" model="itemRecipientRowModel" />
+                        </nhs-table-row-container>
+                    }
+                }
+                 @foreach (var serviceRecipient in Model.RolledUpRecipientsForItem.Where(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)))
+                {
+                    var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, Model.CallOffId.ToString(), hasServiceRecipientQuantities);
                     <nhs-table-row-container>
-                        @if (Model.IsAmendment)
-                        {
-                            <nhs-table-cell style="width: 50px;">
-                                @if (Model.IsServiceRecipientAdded(serviceRecipient.RecipientOdsCode))
-                                {
-                                    <div class="bc-c-task-list__task-status">
-                                        <strong class="nhsuk-tag nhsuk-tag--blue">Added</strong>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <span aria-label="Existing"></span>
-                                }
-                            </nhs-table-cell>
-                        }
-                        <nhs-table-cell>@serviceRecipient.RecipientOdsOrganisation?.Name (@serviceRecipient.RecipientOdsCode)</nhs-table-cell>
-                        <nhs-table-cell>@($"{Model.CallOffId}-{serviceRecipient.RecipientOdsCode}-{Model.CatalogueItem.Id}")</nhs-table-cell>
-                        <nhs-table-cell>@deliveryDateText</nhs-table-cell>
-                        <nhs-table-cell>
-                            @if (hasServiceRecipientQuantities)
-                            {
-                                @(quantity.HasValue ? $"{quantity:N0}" : "-")
-                            }
-                            else
-                            {
-                                @("N/A")
-                            }
-                        </nhs-table-cell>
+                        <partial name="_OrderItemRecipientRow" model="itemRecipientRowModel" />
                     </nhs-table-row-container>
                 }
             </nhs-table>
