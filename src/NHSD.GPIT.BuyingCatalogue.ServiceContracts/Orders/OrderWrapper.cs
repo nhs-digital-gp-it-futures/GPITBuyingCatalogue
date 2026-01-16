@@ -39,6 +39,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
                 Order output = previous.First().Clone();
 
+                foreach (OrderSublocationRecipient recipient in output.GetOrderRecipients())
+                {
+                    recipient.OrderId = previous[0].Id;
+                }
+
                 foreach (Order amendment in previous.Skip(1))
                 {
                     output.Apply(amendment);
@@ -102,6 +107,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         /// Gets a flattened order that projects the current amendment over the <see cref="Previous"/> order projection.
         /// </summary>
         public Order RolledUp => rolledUpLazy.Value;
+
+        public static string GetCallOffIdForRecipient(Dictionary<int, Order> previousOrders, OrderSublocationRecipient recipient)
+        {
+            return previousOrders[recipient.OrderId].CallOffId.ToString();
+        }
 
         public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId)
         {

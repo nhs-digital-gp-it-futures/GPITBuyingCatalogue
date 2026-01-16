@@ -256,6 +256,45 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             orderWrapper.RolledUp.OrderItems.First().FundingType.Should().Be(OrderItemFundingType.LocalFunding);
         }
 
+        [Theory]
+        [MockAutoData]
+        public static void GetCallOffIdForRecipient_Returns_ExpectedCallOffId(
+            IFixture fixture,
+            CatalogueItem catalogueItem,
+            Organisation organisation)
+        {
+            var sublocationRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id]);
+            OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
+            OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.MixedFunding);
+
+            Order order = BuildOrder(
+                fixture,
+                [orderItem],
+                [
+                    BuildOrderSublocation(
+                        fixture,
+                        "XXXX",
+                        [sublocationRecipient]),
+                ],
+                organisation);
+            Order amendedOrder = order.BuildAmendment(2);
+            amendedOrder.Id = 1;
+            amendedOrder.OrderItems = [amendedOrderItem];
+            amendedOrder.OrderSublocations =
+            [
+                BuildOrderSublocation(
+                    fixture,
+                    "XXXX",
+                    [sublocationRecipient]),
+            ];
+
+            var orderWrapper = new OrderWrapper(amendedOrder, [order]);
+            var previousOrdersDictionary = orderWrapper.PreviousOrders.ToDictionary(o => o.Id);
+
+            OrderWrapper.GetCallOffIdForRecipient(previousOrdersDictionary, sublocationRecipient).Should().Be(order.CallOffId.ToString());
+            OrderWrapper.GetCallOffIdForRecipient(previousOrdersDictionary, sublocationRecipient).Should().NotBe(amendedOrder.CallOffId.ToString());
+        }
+
         private static OrderSublocation BuildOrderSublocation(
             IFixture fixture,
             string sublocationOdsCode,
@@ -272,11 +311,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
         private static OrderSublocationRecipient BuildOrderSublocationRecipient(
             IFixture fixture,
             string sublocationOdsCode,
-            CatalogueItemId[] catalogueItemIds = null)
+            CatalogueItemId[] catalogueItemIds = null,
+            int id = 0)
         {
             OrderSublocationRecipient recipient = fixture.Build<OrderSublocationRecipient>()
                 .Without(r => r.OrderItemSublocationRecipients)
                 .With(r => r.ParentSublocationOdsCode, sublocationOdsCode)
+                .With(r => r.OrderId, id)
                 .Create();
 
             UpdateRecipientToItem(recipient, catalogueItemIds);
@@ -301,7 +342,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             IFixture fixture,
             OrderItem[] orderItems,
             OrderSublocation[] orderSublocations,
-            Organisation organisation)
+            Organisation organisation,
+            int id = 0)
         {
             return fixture.Build<Order>()
                 .With(o => o.OrderingParty, organisation)
@@ -309,6 +351,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                 .With(o => o.Revision, 1)
                 .With(o => o.OrderItems, new HashSet<OrderItem>(orderItems))
                 .With(o => o.OrderNumber, new Random().Next(0, 999999))
+                .With(o => o.Id, 0)
                 .Create();
         }
 
