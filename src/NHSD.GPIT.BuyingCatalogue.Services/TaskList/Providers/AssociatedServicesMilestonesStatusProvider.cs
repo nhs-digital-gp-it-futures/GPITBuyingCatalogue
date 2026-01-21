@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 {
-    public class AssociatedServicesBillingStatusProvider : ITaskProgressProvider
+    public class AssociatedServicesMilestonesStatusProvider : ITaskProgressProvider
     {
         public TaskProgress Get(OrderWrapper wrapper, OrderProgress state)
         {
@@ -26,10 +26,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             var fundingSourceStatus = new[] { TaskProgress.Completed, TaskProgress.Amended };
             var planStatus = new[] { TaskProgress.Completed, TaskProgress.NotApplicable };
             var contractBillingEntered = order.Contract?.ContractBilling is not null;
-            var requirementsEntered = order.Contract?.ContractBilling?.HasConfirmedRequirements ?? false;
 
             if ((!fundingSourceStatus.Contains(state.FundingSource)
-                || !planStatus.Contains(state.ImplementationPlan))
+                    || !planStatus.Contains(state.ImplementationPlan))
                 && contractBillingEntered)
             {
                 return TaskProgress.InProgress;
@@ -40,14 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                     || state.FundingSource != TaskProgress.Completed))
                 return TaskProgress.CannotStart;
 
-            if (contractBillingEntered || requirementsEntered)
-            {
-                return contractBillingEntered && requirementsEntered
-                    ? TaskProgress.Completed
-                    : TaskProgress.InProgress;
-            }
-
-            return TaskProgress.NotStarted;
+            return contractBillingEntered
+                ? TaskProgress.Completed
+                : TaskProgress.NotStarted;
         }
 
         private static bool HasAssociatedServices(Order order) =>

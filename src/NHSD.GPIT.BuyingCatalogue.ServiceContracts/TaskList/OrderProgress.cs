@@ -24,6 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList
 
         public TaskProgress AssociatedServiceBilling { get; set; } = TaskProgress.CannotStart;
 
+        public TaskProgress AssociatedServiceRequirements { get; set; } = TaskProgress.CannotStart;
+
         public TaskProgress DataProcessingInformation { get; set; } = TaskProgress.CannotStart;
 
         public TaskProgress ReviewAndCompleteStatus { get; set; } = TaskProgress.CannotStart;

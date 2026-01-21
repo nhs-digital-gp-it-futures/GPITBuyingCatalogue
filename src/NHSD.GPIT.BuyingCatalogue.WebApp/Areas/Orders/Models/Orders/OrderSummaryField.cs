@@ -11,7 +11,8 @@
         PlannedDeliveryDates,
         FundingSources,
         ImplementationPlan,
-        AssociatedServicesBilling,
+        AssociatedServicesMilestones,
+        AssociatedServicesRequirements,
         DataProcessing,
         ReviewAndComplete,
     }

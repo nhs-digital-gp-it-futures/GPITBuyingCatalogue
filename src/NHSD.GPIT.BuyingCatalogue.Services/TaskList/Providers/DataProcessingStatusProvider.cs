@@ -20,14 +20,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
 
             if ((!okToProgress.Contains(state.FundingSource)
-                || (state.AssociatedServiceBilling != TaskProgress.Completed && state.AssociatedServiceBilling != TaskProgress.NotApplicable))
+                || (state.AssociatedServiceRequirements != TaskProgress.Completed && state.AssociatedServiceRequirements != TaskProgress.NotApplicable))
                 && order.ContractFlags?.UseDefaultDataProcessing == true)
             {
                 return TaskProgress.InProgress;
             }
 
-            if ((state.AssociatedServiceBilling == TaskProgress.Completed)
-                || (state.AssociatedServiceBilling == TaskProgress.NotApplicable && okToProgress.Contains(state.ImplementationPlan)))
+            if ((state.AssociatedServiceRequirements == TaskProgress.Completed)
+                || (state.AssociatedServiceRequirements == TaskProgress.NotApplicable && okToProgress.Contains(state.ImplementationPlan)))
             {
                 return order.ContractFlags?.UseDefaultDataProcessing == true
                     ? TaskProgress.Completed
