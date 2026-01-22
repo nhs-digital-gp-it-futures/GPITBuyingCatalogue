@@ -11,12 +11,12 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 {
-    public static class AssociatedServicesBillingStatusProviderTests
+    public static class AssociatedServicesMilestonesStatusProviderTests
     {
         [Theory]
         [MockAutoData]
         public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
-            AssociatedServicesBillingStatusProvider service)
+            AssociatedServicesMilestonesStatusProvider service)
         {
             var actual = service.Get(null, new OrderProgress());
 
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [Theory]
         [MockAutoData]
         public static void Get_OrderIsNull_ReturnsCannotStart(
-            AssociatedServicesBillingStatusProvider service)
+            AssociatedServicesMilestonesStatusProvider service)
         {
             var actual = service.Get(new OrderWrapper(), new OrderProgress());
 
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void Get_StateIsNull_ReturnsCannotStart(
             Order order,
-            AssociatedServicesBillingStatusProvider service)
+            AssociatedServicesMilestonesStatusProvider service)
         {
             var actual = service.Get(new OrderWrapper(order), null);
 
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void Get_NoAssociatedServices_ReturnsNotApplicable(
             Order order,
-            AssociatedServicesBillingStatusProvider service)
+            AssociatedServicesMilestonesStatusProvider service)
         {
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         public static void Get_FundingSourceIncomplete_ContractBillingEntered_ReturnsInProgress(
             TaskProgress status,
             Order order,
-            AssociatedServicesBillingStatusProvider service)
+            AssociatedServicesMilestonesStatusProvider service)
         {
             var state = new OrderProgress
             {
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         public static void Get_ImplementationPlanIncomplete_ContractBillingEntered_ReturnsInProgress(
             TaskProgress status,
             Order order,
-            AssociatedServicesBillingStatusProvider service)
+            AssociatedServicesMilestonesStatusProvider service)
         {
             var state = new OrderProgress
             {
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         public static void Get_FundingSourceIncomplete_ImplementationPlanNotApplicable_ReturnsCannotStart(
             TaskProgress status,
             Order order,
-            AssociatedServicesBillingStatusProvider service)
+            AssociatedServicesMilestonesStatusProvider service)
         {
             var state = new OrderProgress
             {
@@ -138,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         public static void Get_ImplementationPlanIncomplete_ReturnsCannotStart(
             TaskProgress status,
             Order order,
-            AssociatedServicesBillingStatusProvider service)
+            AssociatedServicesMilestonesStatusProvider service)
         {
             var state = new OrderProgress
             {
@@ -158,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void Get_NoContractInfoEntered_ReturnsNotStarted(
             Order order,
-            AssociatedServicesBillingStatusProvider service)
+            AssociatedServicesMilestonesStatusProvider service)
         {
             var state = new OrderProgress
             {
@@ -177,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void Get_PartialContractInfoEntered_ReturnsNotStarted(
             Order order,
-            AssociatedServicesBillingStatusProvider service)
+            AssociatedServicesMilestonesStatusProvider service)
         {
             var state = new OrderProgress
             {
@@ -194,9 +194,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [MockAutoData]
-        public static void Get_ContractInfoEntered_RequirementsNotCompleted_ReturnsInProgress(
+        public static void Get_ContractInfoEntered_RequirementsNotCompleted_ReturnsCompleted(
             Order order,
-            AssociatedServicesBillingStatusProvider service)
+            AssociatedServicesMilestonesStatusProvider service)
         {
             var state = new OrderProgress
             {
@@ -209,14 +209,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
             var actual = service.Get(new OrderWrapper(order), state);
 
-            actual.Should().Be(TaskProgress.InProgress);
+            actual.Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
         [MockAutoData]
         public static void Get_ContractInfoEntered_RequirementsCompleted_ReturnsInCompleted(
             Order order,
-            AssociatedServicesBillingStatusProvider service)
+            AssociatedServicesMilestonesStatusProvider service)
         {
             var state = new OrderProgress
             {

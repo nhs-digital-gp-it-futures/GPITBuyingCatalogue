@@ -34,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
 
             output.ImplementationPlan = providerService.ProviderFor(OrderTaskListStatus.ImplementationPlan).Get(wrapper, output);
             output.AssociatedServiceBilling = providerService.ProviderFor(OrderTaskListStatus.AssociatedServicesBilling).Get(wrapper, output);
+            output.AssociatedServiceRequirements = providerService.ProviderFor(OrderTaskListStatus.AssociatedServicesRequirements).Get(wrapper, output);
             output.DataProcessingInformation = providerService.ProviderFor(OrderTaskListStatus.DataProcessing).Get(wrapper, output);
 
             output.ReviewAndCompleteStatus = providerService.ProviderFor(OrderTaskListStatus.ReviewAndComplete).Get(wrapper, output);
