@@ -19,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.ItemId.Should().Be(requirement.Id);
             model.AssociatedServiceName.Should().Be(requirement.OrderItem.CatalogueItem.Name);
             model.Requirement.Should().Be(requirement.Details);
+            model.RequiresExplanation.Should().Be(requirement.RequiresExplanation);
         }
 
         [Theory]

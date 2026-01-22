@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             mockContractsService.GetContract(order.Id).Returns(contract);
 
-            mockRequirementsService.AddRequirement(order.Id, contract.Id, model.SelectedOrderItemId, model.Details).Returns(Task.CompletedTask);
+            mockRequirementsService.AddRequirement(order.Id, contract.Id, model.SelectedOrderItemId, model.Details, model.RequiresExplanation.GetValueOrDefault()).Returns(Task.CompletedTask);
 
             var result = await controller.AddRequirement(internalOrgId, order.CallOffId, model);
 
@@ -298,7 +298,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockRequirementsService.EditRequirement(order.Id, model.ItemId, model.SelectedOrderItemId, model.Details).Returns(Task.CompletedTask);
+            mockRequirementsService.EditRequirement(order.Id, model.ItemId, model.SelectedOrderItemId, model.Details, model.RequiresExplanation.GetValueOrDefault()).Returns(Task.CompletedTask);
 
             var result = await controller.EditRequirement(internalOrgId, order.CallOffId, model);
 

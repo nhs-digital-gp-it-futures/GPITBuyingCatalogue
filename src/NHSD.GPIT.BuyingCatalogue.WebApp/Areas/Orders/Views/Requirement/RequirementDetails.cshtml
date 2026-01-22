@@ -6,35 +6,38 @@
 @{
     ViewBag.Title = "Associated service requirement";
 }
-<partial name="Partials/_BackLink" model="Model" />
+<partial name="Partials/_BackLink" model="Model"/>
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary/>
+        <nhs-validation-summary RadioId="@(nameof(Model.RequiresExplanation))"/>
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
                         advice="@Model.Advice"/>
 
         <form method="post">
-            <div class="nhsuk-u-margin-top-9">
+            <input type="hidden" asp-for="BackLink"/>
 
-                <input type="hidden" asp-for="BackLink"/>
+            <nhs-select asp-for="SelectedOrderItemId"
+                        asp-items="@Model.OrderItemOptions"
+                        label-text="Associated service name"
+                        label-hint="Select the associated service this requirement will apply to."/>
 
-                <nhs-select asp-for="SelectedOrderItemId"
-                            asp-items="@Model.OrderItemOptions"
-                            label-text="Associated service name"
-                            label-hint="Select the associated service this requirement will apply to." />
-
-                <nhs-textarea asp-for="Details"
-                              label-text="What specific requirements do you have for this associated service"/>
+            <nhs-textarea asp-for="Details"
+                          label-text="What specific requirements do you have for this associated service"/>
 
 
-                <nhs-button-group>
-                    <nhs-submit-button text="Save and continue"/>
-                </nhs-button-group>
+            <nhs-fieldset-form-label asp-for="@Model" label-text="Do you want the supplier to explain how their service meets your needs?" size="Small">
+                <nhs-radio-buttons asp-for="RequiresExplanation"
+                                   values="@Model.Explanations.Cast<object>()"
+                                   value-name="Value"
+                                   display-name="Text" />
+            </nhs-fieldset-form-label>
 
-            </div>
+            <nhs-button-group>
+                <nhs-submit-button text="Save and continue"/>
+            </nhs-button-group>
         </form>
     </div>
 </div>

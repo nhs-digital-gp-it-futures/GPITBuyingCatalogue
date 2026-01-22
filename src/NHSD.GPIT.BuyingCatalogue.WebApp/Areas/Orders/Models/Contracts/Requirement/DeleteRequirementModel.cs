@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Require
             ItemId = requirement.Id;
             AssociatedServiceName = requirement.OrderItem?.CatalogueItem?.Name;
             Requirement = requirement.Details;
+            RequiresExplanation = requirement.RequiresExplanation;
         }
 
         public int ItemId { get; set; }
@@ -27,5 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Require
         public string AssociatedServiceName { get; set; }
 
         public string Requirement { get; set; }
+
+        public bool RequiresExplanation { get; set; }
     }
 }

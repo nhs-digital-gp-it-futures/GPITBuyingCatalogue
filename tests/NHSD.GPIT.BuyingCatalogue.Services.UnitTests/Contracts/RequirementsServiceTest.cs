@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -93,6 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             string details,
             int orderId,
             int contractId,
+            bool requiresExplanation,
             CatalogueItemId catalogueItemId,
             RequirementsService service)
         {
@@ -102,7 +104,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                         orderId,
                         contractId,
                         catalogueItemId,
-                        details))
+                        details,
+                        requiresExplanation))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(details));
         }
@@ -113,15 +116,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItemId catalogueItemId,
             string details,
+            bool requiresExplanation,
             Order order,
             Contract contract,
             RequirementsService service)
         {
-            order.OrderItems.Add(new OrderItem()
-            {
-                CatalogueItemId = catalogueItemId,
-                CatalogueItem = new CatalogueItem() { Name = "Test", Id = catalogueItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
-            });
+            order.OrderItems.Add(
+                new OrderItem()
+                {
+                    CatalogueItemId = catalogueItemId,
+                    CatalogueItem = new CatalogueItem()
+                    {
+                        Name = "Test",
+                        Id = catalogueItemId,
+                        CatalogueItemType = CatalogueItemType.AssociatedService,
+                    },
+                });
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
@@ -137,12 +147,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                 order.Id,
                 contract.Id,
                 catalogueItemId,
-                details);
+                details,
+                requiresExplanation);
 
             var actual = await context.Contracts.FirstAsync(f => f.Id == contract.Id);
             actual.ContractBilling.Should().NotBeNull();
-            actual.ContractBilling.Requirements.Should().NotBeNull();
-            actual.ContractBilling.Requirements.Count.Should().Be(1);
+            actual.ContractBilling.Requirements.Should().ContainSingle();
+
+            var output = actual.ContractBilling.Requirements.First();
+
+            output.Details.Should().Be(details);
+            output.CatalogueItemId.Should().Be(catalogueItemId);
+            output.RequiresExplanation.Should().Be(requiresExplanation);
         }
 
         [Theory]
@@ -184,6 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             output.Id.Should().Be(requirement.Id);
             output.CatalogueItemId.Should().Be(requirement.CatalogueItemId);
             output.Details.Should().Be(requirement.Details);
+            output.RequiresExplanation.Should().Be(requirement.RequiresExplanation);
         }
 
         [Theory]
@@ -194,6 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
            string details,
            int orderId,
            int itemId,
+           bool requiresExplanation,
            CatalogueItemId catalogueItemId,
            RequirementsService service)
         {
@@ -203,7 +221,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                         orderId,
                         itemId,
                         catalogueItemId,
-                        details))
+                        details,
+                        requiresExplanation))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(details));
         }
@@ -214,6 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItemId catalogueItemId,
             string details,
+            bool requiresExplanation,
             OrderItem orderItem,
             Requirement item,
             Order order,
@@ -246,11 +266,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                 order.Id,
                 item.Id,
                 catalogueItemId,
-                details);
+                details,
+                requiresExplanation);
 
             var after = await context.Requirements.FirstAsync(f => f.Id == item.Id);
             after.CatalogueItemId.Should().Be(catalogueItemId);
             after.Details.Should().Be(details);
+            after.RequiresExplanation.Should().Be(requiresExplanation);
         }
 
         [Theory]
