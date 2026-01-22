@@ -548,6 +548,7 @@
                                             <tr>
                                                 <th>Associated service name</th>
                                                 <th>Requirement</th>
+                                                <th>Explanation needed</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -556,6 +557,7 @@
                                                 <tr>
                                                     <td>@item.OrderItem.CatalogueItem.Name</td>
                                                     <td>@item.Details</td>
+                                                    <td>@item.RequiresExplanation.ToYesNo()</td>
                                                 </tr>
                                             }
                                         </tbody>
