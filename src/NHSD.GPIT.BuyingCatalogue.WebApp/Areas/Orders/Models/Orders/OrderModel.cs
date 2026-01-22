@@ -15,17 +15,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         };
 
         internal static readonly KeyValuePair<OrderSummaryField, string>[] AmendmentSpecificDescriptions =
-        {
+        [
             new(OrderSummaryField.OrderDescription, "Update the description of this order if needed."),
             new(OrderSummaryField.OrderingParty, "Change the primary contact for this order if needed."),
             new(OrderSummaryField.Supplier, "Select a different supplier contact if needed."),
             new(OrderSummaryField.CommencementDate, "Review the commencement date, maximum term and initial period for this contract."),
             new(OrderSummaryField.FundingSources, "Allocate funding sources for items in this order."),
             new(OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete this amended order."),
-        };
+        ];
 
         internal static readonly KeyValuePair<OrderSummaryField, string>[] DefaultDescriptions =
-        {
+        [
             new(OrderSummaryField.OrderDescription, "Provide a description of your order."),
             new(OrderSummaryField.OrderingParty, "Provide information about the primary contact for your order."),
             new(OrderSummaryField.Supplier, "Find the supplier you want to order from and select a contact."),
@@ -35,19 +35,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             new(OrderSummaryField.PlannedDeliveryDates, "Enter the planned delivery dates for the items you're ordering."),
             new(OrderSummaryField.FundingSources, "Review how you’ll be paying for your order."),
             new(OrderSummaryField.ImplementationPlan, "Review the default milestones that will act as payment triggers and create bespoke ones."),
-            new(OrderSummaryField.AssociatedServicesBilling, "Review the default milestones, create bespoke ones and add specific requirements."),
+            new(OrderSummaryField.AssociatedServicesMilestones, "Review the default milestones and create bespoke ones."),
+            new(OrderSummaryField.AssociatedServicesRequirements, "Provide details of any specific requirements for your associated services."),
             new(OrderSummaryField.DataProcessing, "Download the data processing information template for the supplier to complete."),
             new(OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete your order."),
-        };
+        ];
 
         internal static readonly KeyValuePair<OrderSummaryField, string>[] CompetitionOrderDescriptions =
-        {
+        [
             new(OrderSummaryField.OrderDescription, "Edit the description for this order if needed."),
             new(OrderSummaryField.Supplier, "Provide information about the supplier contact for your order."),
             new(OrderSummaryField.CommencementDate, "Review the maximum term of your contract and provide a commencement date and initial period."),
             new(OrderSummaryField.ServiceRecipients, "Review the organisations you’re ordering for."),
             new(OrderSummaryField.SolutionsAndServices, "Review the items you’re ordering and their prices and quantities."),
-        };
+        ];
 
         public OrderModel(
             string internalOrgId,

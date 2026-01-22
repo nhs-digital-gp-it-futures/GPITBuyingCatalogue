@@ -1,4 +1,6 @@
 ﻿using FluentAssertions;
+using MoreLinq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -7,14 +9,14 @@ using NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
+namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers;
+
+public static class AssociatedServicesRequirementsStatusProviderTests
 {
-    public static class DataProcessingStatusProviderTests
-    {
         [Theory]
         [MockAutoData]
         public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
-            DataProcessingStatusProvider service)
+            AssociatedServiceRequirementsStatusProvider service)
         {
             var actual = service.Get(null, new OrderProgress());
 
@@ -24,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [Theory]
         [MockAutoData]
         public static void Get_OrderIsNull_ReturnsCannotStart(
-            DataProcessingStatusProvider service)
+            AssociatedServiceRequirementsStatusProvider service)
         {
             var actual = service.Get(new OrderWrapper(), new OrderProgress());
 
@@ -35,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void Get_StateIsNull_ReturnsCannotStart(
             Order order,
-            DataProcessingStatusProvider service)
+            AssociatedServiceRequirementsStatusProvider service)
         {
             var actual = service.Get(new OrderWrapper(order), null);
 
@@ -44,40 +46,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [MockAutoData]
-        public static void Get_FundingSourceAndAssociatedServiceBillingIncomplete_ReturnsCannotStart(
+        public static void Get_NoAssociatedServices_ReturnsNotApplicable(
             Order order,
-            DataProcessingStatusProvider service)
+            AssociatedServiceRequirementsStatusProvider service)
         {
-            var state = new OrderProgress
-            {
-                FundingSource = TaskProgress.InProgress,
-                AssociatedServiceBilling = TaskProgress.InProgress,
-            };
+            order.OrderType = OrderTypeEnum.Solution;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
-            order.ContractFlags = null;
+            var actual = service.Get(new OrderWrapper(order), new OrderProgress());
 
-            var actual = service.Get(new OrderWrapper(order), state);
-
-            actual.Should().Be(TaskProgress.CannotStart);
+            actual.Should().Be(TaskProgress.NotApplicable);
         }
 
         [Theory]
         [MockInlineAutoData(TaskProgress.CannotStart)]
         [MockInlineAutoData(TaskProgress.InProgress)]
-        [MockInlineAutoData(TaskProgress.NotApplicable)]
         [MockInlineAutoData(TaskProgress.NotStarted)]
         [MockInlineAutoData(TaskProgress.Optional)]
-        public static void Get_FundingSourceIncomplete_ContractInfoEntered_ReturnsInProgress(
+        public static void Get_MilestonesIncomplete_RequirementsEntered_ReturnsInProgress(
             TaskProgress status,
             Order order,
-            DataProcessingStatusProvider service)
+            AssociatedServiceRequirementsStatusProvider service)
         {
             var state = new OrderProgress
             {
-                FundingSource = status,
+                AssociatedServiceBilling = status,
             };
 
-            order.ContractFlags.UseDefaultDataProcessing = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.Contract = new Contract { ContractBilling = new ContractBilling { HasConfirmedRequirements = true }, };
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -89,10 +86,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.InProgress)]
         [MockInlineAutoData(TaskProgress.NotStarted)]
         [MockInlineAutoData(TaskProgress.Optional)]
-        public static void Get_AssociatedServiceBillingIncomplete_ContractInfoEntered_ReturnsInProgress(
+        public static void Get_MilestonesIncomplete_ReturnsCannotStart(
             TaskProgress status,
             Order order,
-            DataProcessingStatusProvider service)
+            AssociatedServiceRequirementsStatusProvider service)
         {
             var state = new OrderProgress
             {
@@ -100,26 +97,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 AssociatedServiceBilling = status,
             };
 
-            order.ContractFlags.UseDefaultDataProcessing = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.Contract = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
-            actual.Should().Be(TaskProgress.InProgress);
+            actual.Should().Be(TaskProgress.CannotStart);
         }
 
         [Theory]
         [MockAutoData]
-        public static void Get_ContractInfoNotEntered_ReturnsNotStarted(
+        public static void Get_NoContractInfoEntered_ReturnsNotStarted(
             Order order,
-            DataProcessingStatusProvider service)
+            AssociatedServiceRequirementsStatusProvider service)
         {
             var state = new OrderProgress
             {
-                FundingSource = TaskProgress.Completed,
-                AssociatedServiceRequirements = TaskProgress.Completed,
+                AssociatedServiceBilling = TaskProgress.Completed,
             };
 
-            order.ContractFlags = null;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.Contract = new Contract { ContractBilling = new ContractBilling { HasConfirmedRequirements = false }, };
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -127,24 +125,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [MockInlineAutoData(true)]
-        public static void Get_ContractInfoEntered_ReturnsCompleted(
-            bool useDefaultDataProcessing,
+        [MockAutoData]
+        public static void Get_RequirementsCompleted_ReturnsInCompleted(
             Order order,
-            DataProcessingStatusProvider service)
+            AssociatedServiceRequirementsStatusProvider service)
         {
             var state = new OrderProgress
             {
-                FundingSource = TaskProgress.Completed,
-                ImplementationPlan = TaskProgress.Completed,
-                AssociatedServiceRequirements = TaskProgress.NotApplicable,
+                AssociatedServiceBilling = TaskProgress.Completed,
             };
 
-            order.ContractFlags.UseDefaultDataProcessing = useDefaultDataProcessing;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.Contract = new Contract() { ContractBilling = new ContractBilling() { HasConfirmedRequirements = true, }, };
 
             var actual = service.Get(new OrderWrapper(order), state);
 
             actual.Should().Be(TaskProgress.Completed);
         }
-    }
 }
