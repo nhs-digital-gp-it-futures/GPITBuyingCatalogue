@@ -31,7 +31,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             return contract;
         }
 
-        public async Task AddRequirement(int orderId, int contractId, CatalogueItemId catalogueItemId, string details)
+        public async Task AddRequirement(
+            int orderId,
+            int contractId,
+            CatalogueItemId catalogueItemId,
+            string details,
+            bool requiresExplanation)
         {
             if (string.IsNullOrEmpty(details))
                 throw new ArgumentNullException(nameof(details));
@@ -49,6 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             {
                 OrderItem = associatedService,
                 Details = details,
+                RequiresExplanation = requiresExplanation,
             });
             await dbContext.SaveChangesAsync();
         }
@@ -61,7 +67,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 .FirstOrDefaultAsync(x => x.Id == requirementId && x.OrderId == orderId);
         }
 
-        public async Task EditRequirement(int orderId, int requirementId, CatalogueItemId catalogueItemId, string details)
+        public async Task EditRequirement(
+            int orderId,
+            int requirementId,
+            CatalogueItemId catalogueItemId,
+            string details,
+            bool requiresExplanation)
         {
             if (string.IsNullOrEmpty(details))
                 throw new ArgumentNullException(nameof(details));
@@ -78,6 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
             requirement.OrderItem = associatedService;
             requirement.Details = details;
+            requirement.RequiresExplanation = requiresExplanation;
 
             await dbContext.SaveChangesAsync();
         }

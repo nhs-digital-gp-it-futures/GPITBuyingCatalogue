@@ -7,6 +7,7 @@
     <nhs-table label-text="@Model.Title">
         <nhs-table-column>Associated service name</nhs-table-column>
         <nhs-table-column>Requirement</nhs-table-column>
+        <nhs-table-column>Explanation needed</nhs-table-column>
         @if (Model.IsAction)
         {
             <nhs-table-column><span class="nhsuk-u-visually-hidden">Change action</span></nhs-table-column>
@@ -17,6 +18,7 @@
             <nhs-table-row-container>
                 <nhs-table-cell style="word-break:break-word">@item.OrderItem.CatalogueItem.Name</nhs-table-cell>
                 <nhs-table-cell style="word-break:break-word">@item.Details</nhs-table-cell>
+                <nhs-table-cell style="word-break:break-word">@item.RequiresExplanation.ToYesNo()</nhs-table-cell>
                 @if (Model.IsAction)
                 {
                     <nhs-table-cell>
@@ -37,4 +39,3 @@
         }
     </nhs-table>
 </div>
-

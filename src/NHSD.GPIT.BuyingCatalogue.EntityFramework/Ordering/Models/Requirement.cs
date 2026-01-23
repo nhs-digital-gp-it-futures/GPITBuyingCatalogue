@@ -12,6 +12,8 @@
 
         public string Details { get; set; }
 
+        public bool RequiresExplanation { get; set; }
+
         public ContractBilling ContractBilling { get; set; }
 
         public OrderItem OrderItem { get; set; }

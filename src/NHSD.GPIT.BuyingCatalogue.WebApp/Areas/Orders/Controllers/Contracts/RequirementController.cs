@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 return NotFound();
 
             var contract = await contractsService.GetContract(order.Id);
-            await requirementsService.AddRequirement(order.Id, contract.Id, model.SelectedOrderItemId, model.Details);
+            await requirementsService.AddRequirement(order.Id, contract.Id, model.SelectedOrderItemId, model.Details, model.RequiresExplanation.GetValueOrDefault());
 
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
         }
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             if (order?.GetAssociatedService(model.SelectedOrderItemId) is null)
                 return NotFound();
 
-            await requirementsService.EditRequirement(order.Id, model.ItemId, model.SelectedOrderItemId, model.Details);
+            await requirementsService.EditRequirement(order.Id, model.ItemId, model.SelectedOrderItemId, model.Details, model.RequiresExplanation.GetValueOrDefault());
 
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
         }

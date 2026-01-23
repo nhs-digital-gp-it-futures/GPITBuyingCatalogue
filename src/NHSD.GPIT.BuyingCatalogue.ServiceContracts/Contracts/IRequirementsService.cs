@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
             int orderId,
             int contractId,
             CatalogueItemId catalogueItemId,
-            string details);
+            string details,
+            bool requiresExplanation);
 
         Task<Requirement> GetRequirement(int orderId, int requirementId);
 
@@ -20,7 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
             int orderId,
             int requirementId,
             CatalogueItemId catalogueItemId,
-            string details);
+            string details,
+            bool requiresExplanation);
 
         Task DeleteRequirement(int orderId, int requirementId);
 

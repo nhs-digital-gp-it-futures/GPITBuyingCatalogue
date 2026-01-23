@@ -48,6 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.SelectedOrderItemId.Should().Be(item.OrderItem.CatalogueItemId);
             model.IsEdit.Should().BeTrue();
             model.Advice.Should().Be("Edit associated service requirement.");
+            model.RequiresExplanation.Should().Be(item.RequiresExplanation);
         }
     }
 }

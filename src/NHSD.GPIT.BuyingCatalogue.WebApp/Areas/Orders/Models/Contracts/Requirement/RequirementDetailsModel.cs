@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -28,6 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Require
             ItemId = item.Id;
             SelectedOrderItemId = item.OrderItem.CatalogueItemId;
             Details = item.Details;
+            RequiresExplanation = item.RequiresExplanation;
         }
 
         public bool IsEdit => ItemId != 0;
@@ -43,11 +45,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Require
         [StringLength(500)]
         public string Details { get; set; }
 
+        public bool? RequiresExplanation { get; set; }
+
         public override string Advice => IsEdit ? "Edit associated service requirement." : "Add associated service requirement.";
 
         public IEnumerable<SelectOption<string>> OrderItemOptions => AssociatedServices.Select(x =>
             new SelectOption<string>(x.CatalogueItem.Name, x.CatalogueItem.Id.ToString())).ToList();
 
         public IEnumerable<OrderItem> AssociatedServices { get; set; }
+
+        public IEnumerable<SelectOption<bool>> Explanations => new List<SelectOption<bool>>
+        {
+            new(true.ToYesNo(), true), new(false.ToYesNo(), false),
+        };
     }
 }

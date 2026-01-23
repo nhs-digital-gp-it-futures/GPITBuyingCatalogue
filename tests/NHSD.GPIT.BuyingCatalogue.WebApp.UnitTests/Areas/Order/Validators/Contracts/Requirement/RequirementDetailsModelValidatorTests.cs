@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
     {
         [Theory]
         [MockAutoData]
-        public static void Validate_Requirement_DetailsNull_SetsModelError(
+        public static void Validate_DetailsNull_SetsModelError(
             RequirementDetailsModel model,
             RequirementDetailsModelValidator validator)
         {
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
 
         [Theory]
         [MockAutoData]
-        public static void Validate_Requirement_SelectedOrderItemIdNull_SetsModelError(
+        public static void Validate_SelectedOrderItemIdNull_SetsModelError(
             RequirementDetailsModel model,
             RequirementDetailsModelValidator validator)
         {
@@ -38,10 +38,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
 
         [Theory]
         [MockAutoData]
-        public static void Validate_Valid_NoModelError(
+        public static void Validate_ExplanationRequiredNull_SetsModelError(
             RequirementDetailsModel model,
             RequirementDetailsModelValidator validator)
         {
+            model.RequiresExplanation = null;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.RequiresExplanation)
+                .WithErrorMessage(RequirementDetailsModelValidator.ExplanationRequiredErrorMessage);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Validate_Valid_NoModelError(
+            CatalogueItemId catalogueItemId,
+            string details,
+            RequirementDetailsModel model,
+            RequirementDetailsModelValidator validator)
+        {
+            model.SelectedOrderItemId = catalogueItemId;
+            model.Details = details;
+            model.RequiresExplanation = true;
+
             var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();

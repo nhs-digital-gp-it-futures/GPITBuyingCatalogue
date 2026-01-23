@@ -19,6 +19,9 @@
             <nhs-summary-list-row label-text="Requirement">
                 @Model.Requirement
             </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Explanation needed">
+                @Model.RequiresExplanation.ToYesNo()
+            </nhs-summary-list-row>
         </nhs-summary-list>
         
         <form method="post">
