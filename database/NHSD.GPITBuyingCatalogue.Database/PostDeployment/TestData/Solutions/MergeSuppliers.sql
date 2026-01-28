@@ -2,7 +2,7 @@
 BEGIN
     MERGE INTO [catalogue].[Suppliers] AS TARGET
     USING (
-    VALUES 
+    VALUES
         (10000, N'EMIS Health', N'EMIS Health', N'We’re the UK leader in connected healthcare software & services. Through innovative IT, we help healthcare professionals access the information they need to provide better, faster and more cost effective patient care.
 
 Our clinical software is used in all major healthcare settings from GP surgeries to pharmacies, communities, hospitals, and specialist services. By providing innovative, integrated solutions, we’re working to break the boundaries of system integration & interoperability. 
@@ -110,16 +110,16 @@ Advanced solutions help care for 65 million patients in the UK, send millions of
 Its EHR product, SystmOne, is used by over 7,000 NHS organisations in over 25 different care settings. This includes significant deployments in Acute Hospitals, Emergency Departments, Mental Health services, Social Care services and General Practice. 
 
 In recent years, TPP has increased its international presence, with live deployments in China and across the Middle East.', N'https://www.tpp-uk.com/', N'{"line1":"TPP House","line2":"Horsforth","town":"Leeds","county":"West Yorkshire","postcode":"LS18 5PX","country":"England"}', 0, CAST(N'2020-05-27T06:26:48.5033333' AS DateTime2), 2, 1),
-       (10053, N'Arissian', N'Arissian Ltd', NULL, NULL, N'{"line1":"Basepoint Centre","line2":"Bromsgrove Technology Park","line3":"Isidore Road","town":"Bromsgrove","county":"Worcestershire","postcode":"B60 3ET","country":"England"}', 0, CAST(N'2019-07-05T14:34:54.0000000' AS DateTime2), 2, 1),
-       (10054, N'Health Intelligence Ltd', N'Health Intelligence Ltd', NULL, NULL, N'{"line1":"Beechwood Hall","line2":"Kingsmead Road","town":"High Wycombe","county":"","postcode":"HP11 1JL","country":"England"}', 0, CAST(N'2019-07-10T13:37:46.0000000' AS DateTime2), 2, 1),
-       (10055, N'Accenda Limited', N'Accenda Limited', NULL, NULL, N'{"line1":"Suite 322","line2":"3rd Floor Broadstone Mill","line3":"Broadstone Road","town":"Stockport","county":"Cheshire","postcode":"SK5 7DL","country":"England"}', 0, CAST(N'2019-07-11T10:07:20.0000000' AS DateTime2), 2, 1),
-       (10056, N'Metabolic Healthcare Ltd', N'Metabolic Healthcare Ltd', NULL, NULL, N'{"line1":"1 Westpoint Trading Estate","line2":"Alliance Road","line3":"Ealing","town":"London","county":"","postcode":"W3 0RA","country":"England"}', 0, CAST(N'2019-07-15T11:55:36.0000000' AS DateTime2), 2, 1),
-       (10057, N'Redwood Technologies Group Limited', N'Redwood Technologies Group Limited', NULL, NULL, N'{"line1":"Radius Court","line2":"Eastern Road","town":"Bracknell","county":"Berkshire","postcode":"RG12 2UP","country":"England"}', 0, CAST(N'2019-07-15T15:44:31.0000000' AS DateTime2), 2, 1),
-       (10058, N'Niche Health', N'Niche Health', NULL, NULL, N'{"line1":"Beasleys Farm","line2":"Upper Gambolds Lane","town":"Bromsgrove","county":"Worcestershire","postcode":"B60 3EZ","country":"England"}', 0, CAST(N'2019-07-16T07:13:10.0000000' AS DateTime2), 2, 1),
-       (10059, N'Prescribing Services', N'Prescribing Services Limited', NULL, NULL, N'{"line1":"2 Regis Place","line2":"North Lynn Industrial Estate","town":"King''s Lynn","county":"Norfolk","postcode":"PE30 2JN","country":"England"}', 0, CAST(N'2019-07-17T09:24:52.0000000' AS DateTime2), 2, 1),
-       (10060, N'Locum''s Nest', N'Locum''s Nest', NULL, NULL, N'{"line1":"12 Hammersmith Grove","line2":"Hammersmith Fulham","town":"London","county":"","postcode":"W6 7AP","country":"England"}', 0, CAST(N'2019-07-17T10:50:45.0000000' AS DateTime2), 2, 1),
-       (10061, N'Microtest Ltd', N'Microtest Ltd', NULL, NULL, N'{"line1":"16-18 Normandy Way","town":"Bodmin","county":"","postcode":"PL31 1EX","country":"England"}', 0, CAST(N'2019-07-18T14:47:34.0000000' AS DateTime2), 2, 1),
-       (10062, N'Silicon Practice', N'Silicon Practice', N'We have rolled out over 540 FootFall sites in the UK across a variety of demographics and different practice structures. Working closely with Practices and CCG’s, we have evolved strategies, processes and video tutorials to ensure FootFall is successfully rolled-out in each area.
+        (10053, N'Arissian', N'Arissian Ltd', NULL, NULL, N'{"line1":"Basepoint Centre","line2":"Bromsgrove Technology Park","line3":"Isidore Road","town":"Bromsgrove","county":"Worcestershire","postcode":"B60 3ET","country":"England"}', 0, CAST(N'2019-07-05T14:34:54.0000000' AS DateTime2), 2, 1),
+        (10054, N'Health Intelligence Ltd', N'Health Intelligence Ltd', NULL, NULL, N'{"line1":"Beechwood Hall","line2":"Kingsmead Road","town":"High Wycombe","county":"","postcode":"HP11 1JL","country":"England"}', 0, CAST(N'2019-07-10T13:37:46.0000000' AS DateTime2), 2, 1),
+        (10055, N'Accenda Limited', N'Accenda Limited', NULL, NULL, N'{"line1":"Suite 322","line2":"3rd Floor Broadstone Mill","line3":"Broadstone Road","town":"Stockport","county":"Cheshire","postcode":"SK5 7DL","country":"England"}', 0, CAST(N'2019-07-11T10:07:20.0000000' AS DateTime2), 2, 1),
+        (10056, N'Metabolic Healthcare Ltd', N'Metabolic Healthcare Ltd', NULL, NULL, N'{"line1":"1 Westpoint Trading Estate","line2":"Alliance Road","line3":"Ealing","town":"London","county":"","postcode":"W3 0RA","country":"England"}', 0, CAST(N'2019-07-15T11:55:36.0000000' AS DateTime2), 2, 1),
+        (10057, N'Redwood Technologies Group Limited', N'Redwood Technologies Group Limited', NULL, NULL, N'{"line1":"Radius Court","line2":"Eastern Road","town":"Bracknell","county":"Berkshire","postcode":"RG12 2UP","country":"England"}', 0, CAST(N'2019-07-15T15:44:31.0000000' AS DateTime2), 2, 1),
+        (10058, N'Niche Health', N'Niche Health', NULL, NULL, N'{"line1":"Beasleys Farm","line2":"Upper Gambolds Lane","town":"Bromsgrove","county":"Worcestershire","postcode":"B60 3EZ","country":"England"}', 0, CAST(N'2019-07-16T07:13:10.0000000' AS DateTime2), 2, 1),
+        (10059, N'Prescribing Services', N'Prescribing Services Limited', NULL, NULL, N'{"line1":"2 Regis Place","line2":"North Lynn Industrial Estate","town":"King''s Lynn","county":"Norfolk","postcode":"PE30 2JN","country":"England"}', 0, CAST(N'2019-07-17T09:24:52.0000000' AS DateTime2), 2, 1),
+        (10060, N'Locum''s Nest', N'Locum''s Nest', NULL, NULL, N'{"line1":"12 Hammersmith Grove","line2":"Hammersmith Fulham","town":"London","county":"","postcode":"W6 7AP","country":"England"}', 0, CAST(N'2019-07-17T10:50:45.0000000' AS DateTime2), 2, 1),
+        (10061, N'Microtest Ltd', N'Microtest Ltd', NULL, NULL, N'{"line1":"16-18 Normandy Way","town":"Bodmin","county":"","postcode":"PL31 1EX","country":"England"}', 0, CAST(N'2019-07-18T14:47:34.0000000' AS DateTime2), 2, 1),
+        (10062, N'Silicon Practice', N'Silicon Practice', N'We have rolled out over 540 FootFall sites in the UK across a variety of demographics and different practice structures. Working closely with Practices and CCG’s, we have evolved strategies, processes and video tutorials to ensure FootFall is successfully rolled-out in each area.
 
 We have a strong track record of developing the product with CCGs. We have recently made extensive changes to the product with Norfolk and Waveney STP, which have enriched and extended our focus on the digital triage features of FootFall.
 
@@ -173,7 +173,8 @@ TRUNCATED FOR DEMO', N'www.emishealth.com', N'{"line1": "NotEmis Tower", "line2"
         (100017, N'Jericho Healthcare', N'Jericho Ltd', N'Jericho Healthcare', NULL, N'{"line1": "Jericho Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', 0, CAST(N'2025-08-18T11:08:02.9000000' AS DateTime2), 2, 1),
         (100018, N'Mana Systems', N'Mana Systems', N'Mana Systems', NULL, N'{"line1": "Mana Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', 0, CAST(N'2025-08-18T11:08:02.9000000' AS DateTime2), 2, 1),
         (100019, N'Sunhealth Nanosystems', N'Sunhealth Nanosystems', N'Sunhealth Nanosystems', NULL, N'{"line1": "Sunhealth Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', 0, CAST(N'2025-08-18T11:08:02.9000000' AS DateTime2), 2, 1),
-        (100020, N'Oakwood', N'Oakwood Ltd', N'Oakwood', NULL, N'{"line1": "Oakwood Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', 0, CAST(N'2025-08-18T11:08:02.9000000' AS DateTime2), 2, 1))
+        (100020, N'Oakwood', N'Oakwood Ltd', N'Oakwood', NULL, N'{"line1": "Oakwood Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', 0, CAST(N'2025-08-18T11:08:02.9000000' AS DateTime2), 2, 1),
+        (100021, N'Dummy supplier', N'Dummy supplier', NULL, NULL, N'{"Line1":"10-12 Example Street","Line2":null,"Line3":null,"Line4":null,"Line5":null,"Town":"Leeds","County":"West Yorkshire","Postcode":"LS1 2AB","Country":"United Kingdom"}', 0, CAST(N'2026-01-27T13:47:04.5678005' AS DateTime2), 2, 1))
     AS SOURCE ([Id], [Name], [LegalName], [Summary], [SupplierUrl], [Address], [Deleted], [LastUpdated], [LastUpdatedBy], [IsActive])
     ON TARGET.[Id] = SOURCE.[Id]
     WHEN MATCHED THEN UPDATE SET
@@ -291,7 +292,8 @@ TRUNCATED FOR DEMO', N'www.emishealth.com', N'{"line1": "NotEmis Tower", "line2"
         (94, 10070, N'Jaxen', N'Joseph', N'jaxenjoseph@test.test', N'01234 567891', NULL, GETUTCDATE(), 2),
         (95, 10071, N'Avah', N'Martin', N'avahmartin@test.test', N'01234 567891', NULL, GETUTCDATE(), 2),
         (96, 10072, N'Junior', N'Bauer', N'juniorbauer@test.test', N'01234 567891', NULL, GETUTCDATE(), 2),
-        (97, 10073, N'Camille', N'Kirk', N'camillekirk@test.test', N'01234 567891', NULL, GETUTCDATE(), 2))
+        (97, 10073, N'Camille', N'Kirk', N'camillekirk@test.test', N'01234 567891', NULL, GETUTCDATE(), 2),
+        (98, 100021, N'Joe', N'Sample', N'joe@email.com', N'1234567', N'Procurement', GETUTCDATE(), 2))
     AS SOURCE ([Id], [SupplierId], [FirstName], [LastName], [Email], [PhoneNumber], [Department], [LastUpdated], [LastUpdatedBy])
     ON TARGET.[Id] = SOURCE.[Id]
     WHEN MATCHED THEN UPDATE SET

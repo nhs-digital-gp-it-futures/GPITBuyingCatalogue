@@ -154,7 +154,29 @@ BEGIN
         (1113, N'10072-S-012', 2, 1, -9, NULL, N'GBP', 3, 0, GETUTCDATE(), NULL, NULL, 1, NULL),
         (1114, N'10072-S-013', 2, 1, -9, NULL, N'GBP', 3, 0, GETUTCDATE(), NULL, NULL, 1, NULL),
         (1115, N'10000-S-042', 2, 1, -27, NULL, N'GBP', 3, 0, GETUTCDATE(), NULL, NULL, 3, 2),
-        (1116, N'10000-S-043', 2, 1, -28, NULL, N'GBP', 3, 0, GETUTCDATE(), NULL, NULL, 3, 2))
+        (1116, N'10000-S-043', 2, 1, -28, NULL, N'GBP', 3, 0, GETUTCDATE(), NULL, NULL, 3, 2),
+        (1117, N'100021-001', 1, 1, 2, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 1, NULL),
+        (1118, N'100021-002', 1, 1, 3, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 3, NULL),
+        (1119, N'100021-003', 2, 1, 4, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 3, 1),
+        (1120, N'100021-004', 2, 1, 5, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 1, 1),
+        (1121, N'100021-005', 2, 1, 6, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 3, 2),
+        (1122, N'100021-006', 2, 1, 7, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 1, 2),
+        (1123, N'100021-007', 3, 1, 8, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 3, 1),
+        (1124, N'100021-008', 3, 1, 9, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 1, 1),
+        (1125, N'100021-009', 3, 1, 10, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 3, 2),
+        (1126, N'100021-010', 3, 1, 11, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 1, 2),
+        (1127, N'100021-011', 1, 2, 12, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 1, NULL),
+        (1128, N'100021-012', 1, 2, 13, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 2, NULL),
+        (1129, N'100021-013', 2, 2, 14, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 1, 1),
+        (1130, N'100021-014', 2, 2, 15, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 2, 1),
+        (1131, N'100021-015', 2, 2, 16, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 1, 2),
+        (1132, N'100021-016', 2, 2, 17, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 2, 2),
+        (1133, N'100021-017', 3, 2, 18, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 1, 1),
+        (1134, N'100021-018', 3, 2, 19, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 2, 1),
+        (1135, N'100021-019', 3, 2, 20, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 1, 2),
+        (1136, N'100021-020', 3, 2, 21, 2, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 2, 2),
+        (1137, N'100021-001A001', 2, 1, 22, NULL, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 3, 1),
+        (1138, N'100021-S-001', 2, 1, 23, NULL, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 1, 1))
     AS SOURCE ([CataloguePriceId], [CatalogueItemId], [ProvisioningTypeId], [CataloguePriceTypeId], [PricingUnitId], [TimeUnitId], [CurrencyCode], [PublishedStatusId], [IsLocked], [LastUpdated], [LastUpdatedBy], [Price], [CataloguePriceCalculationTypeId], [CataloguePriceQuantityCalculationTypeId])
     ON TARGET.[CataloguePriceId] = SOURCE.[CataloguePriceId]
     WHEN MATCHED THEN UPDATE SET
