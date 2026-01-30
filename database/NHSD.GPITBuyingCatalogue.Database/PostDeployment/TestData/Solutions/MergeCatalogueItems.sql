@@ -58,7 +58,7 @@ BEGIN
         (N'10000-S-069', N'Doc Management – Migration', 3, 10000, 2, GETUTCDATE(), GETUTCDATE(), NULL, 2),
         (N'10000-S-141', N'Online and Video Consult – Implementation', 3, 10000, 3, GETUTCDATE(), GETUTCDATE(), NULL, NULL),
         (N'100021-001', N'Dummy Solution 1', 1, 100021, 3, GETUTCDATE(), GETUTCDATE(), GETUTCDATE(), 2),
-        (N'100021-001A001', N'Dummy Additional Serv2', 2, 100021, 3, GETUTCDATE(), GETUTCDATE(), GETUTCDATE(), 2),
+        (N'100021-001A001', N'Dummy Additional Service 1', 2, 100021, 3, GETUTCDATE(), GETUTCDATE(), GETUTCDATE(), 2),
         (N'100021-002', N'Dummy Solution 2', 1, 100021, 3, GETUTCDATE(), GETUTCDATE(), GETUTCDATE(), 2),
         (N'100021-002A002', N'Dummy Additional Service 2', 2, 100021, 3, GETUTCDATE(), GETUTCDATE(), GETUTCDATE(), 2),
         (N'100021-003', N'Dummy Solution 3', 1, 100021, 3, GETUTCDATE(), GETUTCDATE(), GETUTCDATE(), 2),
