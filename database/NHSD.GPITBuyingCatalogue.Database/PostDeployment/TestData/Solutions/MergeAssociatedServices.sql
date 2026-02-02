@@ -2,7 +2,7 @@
 BEGIN
     MERGE INTO [catalogue].[AssociatedServices] AS TARGET
     USING (
-    VALUES 
+    VALUES
         (N'100000-001', N'Additional minutes for video consultations.', N'The typical number of units ordered is one. There is no maximum number that can be ordered.', 0, GETUTCDATE(), 2),
         (N'10000-001', N'Initial configuration and set up of the system. This applies to the implementation phase.', N'Installations will be on an individual basis (one) to overarching organisations, such as Federations, CSGs or PCNs.', 0, GETUTCDATE(), 2),
         (N'10000-002', N'EMIS Health can provide training services for Enterprise Search and Reports which are flexible and can be tailored to meet local requirements. These can be for live operations or used during the implementation phase. The maximum number of attendees is six.', N'A typical amount of training days for a new installation is likely to be six days. Additional training is available and would obviously be dependant on scale and user needs. Training is available on a needs basis. This could be one day or purchased in bulk.', 0, GETUTCDATE(), 2),
@@ -37,6 +37,7 @@ BEGIN
         (N'10000-S-043', N'Our service provides support during practice splits . When two or more practices decide to split or merge clinical information, our service can target either select patients or the full patient list. It makes organising a change in practice simple. This service is applicable to both implementation and live operations.', N'The typical unit of order for practice mergers and splits is likely to be on an individual basis (one). This is a fixed fee per practice regardless of size.', 2, GETUTCDATE(), 2),
         (N'10000-S-069', N'Doc Management – Migration is expected to be on an individual practice migration basis (one).', N'The typical unit of order is expected to be on an individual practice migration basis (one). Migrations could potentially be ordered for a whole CCG if there was a bulk request (up to one hundred).', 0, GETUTCDATE(), 2),
         (N'10000-S-141', N'Online and Video Consult – Implementation DESCRIPTION', N'', 0, GETUTCDATE(), 2),
+        (N'100021-S-001', N'Dummy associated service', N'test', 0, GETUTCDATE(), 2),
         (N'10004-S-001', N'EMIS Health can provide a wide range of training services which are flexible and can be tailored to meet local requirements or goals. Our experienced training team will support you in using your clinical system to its full potential and ensure patient data is captured correctly and effectively. This service is applicable to both the implementation phase and live operations', N'A typical amount of training days for a new installation is likely to be six days. Additional training is available and would obviously be dependant on scale and user needs. Training is available on a needs basis. This could be one day or purchased in bulk.', 0, GETUTCDATE(), 2),
         (N'10004-S-002', N'Customisation importance of minimising the disruption during the data migration. This service applies to the implementation phase.', N'The typical unit of order is expected to be on an individual practice migration basis (one). Migrations could potentially be ordered for a whole CCG if there was a bulk request (up to one hundred).', 0, GETUTCDATE(), 2),
         (N'10004-S-003', N'A group training session for CCG & practice staff on the use of the solution. There is no specific limit on how many staff or practices can attend the training, but 20-30 is a typical number. The commissioning organisation usually makes the venue available at their own cost.', N'A commissioning organisation will usually require a single training seminar to cover all participating practices. Multiple seminar days can be booked to work with fewer numbers of participants, or to assist with geographical outreach.', 0, GETUTCDATE(), 2),
@@ -105,7 +106,7 @@ BEGIN
     -- Add Associated Service Associations
     MERGE INTO [catalogue].[SupplierServiceAssociations] AS TARGET
     USING (
-    VALUES 
+    VALUES
         (N'100000-S-001', N'100000-001', GETUTCDATE(), NULL),
         (N'10000-S-001', N'10000-054', GETUTCDATE(), NULL),
         (N'10000-S-001', N'10000-062', GETUTCDATE(), NULL),
@@ -133,7 +134,27 @@ BEGIN
         (N'10000-S-042', N'10000-054', GETUTCDATE(), NULL),
         (N'10000-S-042', N'10000-062', GETUTCDATE(), NULL),
         (N'10000-S-141', N'10000-054', GETUTCDATE(), NULL),
-        (N'10000-S-141', N'10000-062', GETUTCDATE(), NULL))
+        (N'10000-S-141', N'10000-062', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-001', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-002', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-003', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-004', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-005', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-006', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-007', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-008', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-009', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-010', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-011', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-012', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-013', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-014', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-015', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-016', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-017', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-018', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-019', GETUTCDATE(), NULL),
+        (N'100021-S-001', N'100021-020', GETUTCDATE(), NULL))
     AS SOURCE ([AssociatedServiceId], [CatalogueItemId], [LastUpdated], [LastUpdatedBy])
     ON TARGET.[AssociatedServiceId] = SOURCE.[AssociatedServiceId] AND TARGET.[CatalogueItemId] = SOURCE.[CatalogueItemId]
     WHEN NOT MATCHED BY TARGET THEN

@@ -2,7 +2,7 @@
 BEGIN
     MERGE INTO [catalogue].[AdditionalServices] AS TARGET
     USING (
-    VALUES 
+    VALUES
         (N'100000-001-A01', N'Addition to Write on Time', N'Write on time Addttion Full Description', GETUTCDATE(), 2, N'100000-001'),
         (N'10000-001A001', N'Long Term Conditions Manager', N'Long Term Conditions (LTC) Manager provides easy-to-use, intelligent templates and alerts in EMIS Web, so you can provide fast, efficient and safe LTC management. Stratify patients by complexity and distribute work among clinicians and healthcare assistants with varying skill mix.', GETUTCDATE(), 2, N'10000-001'),
         (N'10000-001A002', N'EMIS Mobile', N'EMIS Mobile supports offline, out-of-practice working for healthcare professionals, providing access to a patient’s care record, updating consultations/encounters with data, booking appointments, tasks and medication. Native apps for iOS, Android and Windows 10 ensure an optimised user experience.', GETUTCDATE(), 2, N'10000-001'),
@@ -19,6 +19,26 @@ BEGIN
         (N'100006-001-A01', N'Addition to Paperlite', N'Paperlite Addition Full Description', GETUTCDATE(), 2, N'100006-001'),
         (N'100007-001-A01', N'Addition to Medsort', N'Medsort Addition Full Description', GETUTCDATE(), 2, N'100007-001'),
         (N'100007-002-A01', N'Addition to Boston Dynamics', N'Boston Dynamics Addition Full Description', GETUTCDATE(), 2, N'100007-002'),
+        (N'100021-001A001', NULL, N'additional service', GETUTCDATE(), 2, N'100021-001'),
+        (N'100021-002A002', NULL, N'additional service', GETUTCDATE(), 2, N'100021-002'),
+        (N'100021-003A003', NULL, N'additional service', GETUTCDATE(), 2, N'100021-003'),
+        (N'100021-004A004', NULL, N'additional service', GETUTCDATE(), 2, N'100021-004'),
+        (N'100021-005A005', NULL, N'additional service', GETUTCDATE(), 2, N'100021-005'),
+        (N'100021-006A006', NULL, N'additional service', GETUTCDATE(), 2, N'100021-006'),
+        (N'100021-007A007', NULL, N'additional service', GETUTCDATE(), 2, N'100021-007'),
+        (N'100021-008A008', NULL, N'additional service', GETUTCDATE(), 2, N'100021-008'),
+        (N'100021-009A009', NULL, N'additional service', GETUTCDATE(), 2, N'100021-009'),
+        (N'100021-010A010', NULL, N'additional service', GETUTCDATE(), 2, N'100021-010'),
+        (N'100021-011A011', NULL, N'additional service', GETUTCDATE(), 2, N'100021-011'),
+        (N'100021-012A012', NULL, N'additional service', GETUTCDATE(), 2, N'100021-012'),
+        (N'100021-013A013', NULL, N'additional service', GETUTCDATE(), 2, N'100021-013'),
+        (N'100021-014A014', NULL, N'additional service', GETUTCDATE(), 2, N'100021-014'),
+        (N'100021-015A015', NULL, N'additional service', GETUTCDATE(), 2, N'100021-015'),
+        (N'100021-016A016', NULL, N'additional service', GETUTCDATE(), 2, N'100021-016'),
+        (N'100021-017A017', NULL, N'additional service', GETUTCDATE(), 2, N'100021-017'),
+        (N'100021-018A018', NULL, N'additional service', GETUTCDATE(), 2, N'100021-018'),
+        (N'100021-019A019', NULL, N'additional service', GETUTCDATE(), 2, N'100021-019'),
+        (N'100021-020A020', NULL, N'additional service', GETUTCDATE(), 2, N'100021-020'),
         (N'10007-002A001', N'Localised Referral Forms', N'Build and maintain a maximum of 100 custom items according to local guidelines for a PCN, GP Federation , CCG or STP as supplied by the client. Saving users time by reducing the burden of customising documentation according to local requirements to drive uniformity in care', GETUTCDATE(), 2, N'10007-002'),
         (N'10007-002A002', N'Localised Supporting Content', N'Build and maintain a maximum of 100 custom items according to local guidelines for a PCN, GP Federation, CCG or STP as supplied by the client. Saving users time by reducing the burden of customising documentation according to local requirements to drive uniformity in care', GETUTCDATE(), 2, N'10007-002'),
         (N'10030-001A001', N'AccuRx Video Consultation', N'The Video Consultation Capability allows Health or Care Professionals to conduct secure live remote video consultations with individual or groups of Patients/Service Users/Proxies ensuring they can receive support relating to healthcare concerns when a Video Consultation is most appropriate', GETUTCDATE(), 2, N'10030-001'),

@@ -2,7 +2,7 @@
 BEGIN
     MERGE INTO [catalogue].[CatalogueItemEpics] AS TARGET
     USING (
-    VALUES 
+    VALUES
         (N'10000-001', 5, N'C5E1', 1, GETUTCDATE(), 2),
         (N'10000-001', 5, N'C5E2', 1, GETUTCDATE(), 2),
         (N'10000-001', 5, N'C5E3', 1, GETUTCDATE(), 2),
@@ -100,6 +100,9 @@ BEGIN
         (N'10000-001', 30, N'C30E7', 2, GETUTCDATE(), 2),
         (N'10000-001', 30, N'C30E8', 2, GETUTCDATE(), 2),
         (N'10000-001', 30, N'C30E9', 2, GETUTCDATE(), 2),
+        (N'100021-001', 6, N'C6E1', 1, GETUTCDATE(), 2),
+        (N'100021-001', 6, N'C6E2', 1, GETUTCDATE(), 2),
+        (N'100021-001', 6, N'C6E3', 1, GETUTCDATE(), 2),
         (N'10004-001', 6, N'C6E1', 1, GETUTCDATE(), 2),
         (N'10004-001', 6, N'C6E2', 1, GETUTCDATE(), 2),
         (N'10004-001', 6, N'C6E3', 1, GETUTCDATE(), 2),

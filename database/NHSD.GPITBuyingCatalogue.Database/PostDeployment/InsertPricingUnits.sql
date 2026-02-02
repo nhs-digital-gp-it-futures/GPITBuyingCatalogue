@@ -44,7 +44,29 @@ BEGIN
         (-26, 'testTrainingEnv'     , 'environments'   , 'per training environment'),
         (-27, 'testUnitMerge'       , 'unit merges'    , 'per unit merge'),
         (-28, 'testUnitSplit'       , 'unit splits'    , 'per unit split'),
-        (-29, 'testUser'            , 'users'          , 'per user');
+        (-29, 'testUser'            , 'users'          , 'per user'),
+        (2, N'dummy1', N'patients', N'per patient'),
+        (3, N'dummy2', N'patients', N'per patient'),
+        (4, N'dummy3', N'patients', N'per patient'),
+        (5, N'dummy4', N'solutions', N'per solution'),
+        (6, N'dummy5', N'recipients', N'per recipient'),
+        (7, N'dummy6', N'recipients', N'per recipient'),
+        (8, N'dummy7', N'solutions', N'per solution'),
+        (9, N'dummy8', N'solutions', N'per solution'),
+        (10, N'dummy9', N'recipients', N'per recipient'),
+        (11, N'dummy10', N'recipients', N'per recipient'),
+        (12, N'dummy11', N'patients', N'per patient'),
+        (13, N'dummy12', N'patients', N'per patient'),
+        (14, N'dummy13', N'solutions', N'per solution'),
+        (15, N'dummy14', N'solutions', N'per solution'),
+        (16, N'dummy15', N'recipients', N'per recipient'),
+        (17, N'dummy16', N'recipients', N'per recipient'),
+        (18, N'dummy17', N'solutions', N'per solution'),
+        (19, N'dummy18', N'solutions', N'per solution'),
+        (20, N'dummy19', N'recipients', N'per recipient'),
+        (21, N'dummy20', N'recipients', N'per recipient'),
+        (22, N'dummy21', N'licenses', N'per license'),
+        (23, N'dummy22', N'licenses', N'per license');
 END;
 
     SET IDENTITY_INSERT catalogue.PricingUnits ON;
