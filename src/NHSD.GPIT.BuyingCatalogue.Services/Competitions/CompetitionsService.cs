@@ -267,6 +267,7 @@ public class CompetitionsService : ICompetitionsService
         => await dbContext.CompetitionSolutions.IgnoreQueryFilters()
             .Include(x => x.CatalogueItem.Supplier)
             .Include(x => x.Services)
+            .ThenInclude(x => x.CatalogueItem)
             .Where(
                 x => x.CompetitionId == competitionId && x.Competition.Organisation.InternalIdentifier == internalOrgId
                     && !x.IsShortlisted)
