@@ -1,12 +1,6 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
-@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
-@using ValidationSummaryTagHelper = NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers.ValidationSummaryTagHelper
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities.SelectServiceRecipientQuantityModel
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities.SublocationQuantityHubModel
 
 @{
     ViewBag.Title = Model.Title;
@@ -61,7 +55,7 @@
             </nhs-card-content>
         </nhs-card-v2>
     </div>
-    
+
     <vc:nhs-anchor-button text="Save and continue"
                           url="@Url.Action(
                                    typeof(TaskListController).ControllerName(),

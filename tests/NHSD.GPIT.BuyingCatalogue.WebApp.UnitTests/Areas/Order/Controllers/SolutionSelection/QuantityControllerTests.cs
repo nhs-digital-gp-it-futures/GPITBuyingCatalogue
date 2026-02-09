@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(QuantityController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(QuantityController.SelectServiceRecipientQuantity));
+            actualResult.ActionName.Should().Be(nameof(QuantityController.SublocationHub));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
@@ -213,7 +213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     Arg.Any<RouteValues>())
                 .Returns(routingResult);
 
-            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
+            var result = await controller.SublocationHub(internalOrgId, callOffId, orderItem.CatalogueItemId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
@@ -500,7 +500,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(QuantityController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(QuantityController.SelectServiceRecipientQuantity));
+            actualResult.ActionName.Should().Be(nameof(QuantityController.SublocationHub));
             actualResult.RouteValues.Should().Contain(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },

@@ -5,8 +5,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Azure.Core;
 using Azure.Identity;
-using Azure.Storage.Blobs;
-using Azure.Storage.Queues;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;

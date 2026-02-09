@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
         {
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(QuantityController),
-             nameof(QuantityController.SelectServiceRecipientQuantity)).Should().BeTrue();
+             nameof(QuantityController.SublocationHub)).Should().BeTrue();
 
             var subLocations = CommonActions.NumberOfElementsDisplayed(QuantityObjects.DetailsQuantity);
 

@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Quantity
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.InputQuantity)
-                .WithErrorMessage(string.Format(ServiceRecipientQuantityModelValidator.ValueNotEnteredErrorMessage, model.Name));
+                .WithErrorMessage(string.Format(ServiceRecipientQuantityModelValidator.PatientValueNotEnteredErrorMessage, model.Name));
         }
 
         [Theory]
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Quantity
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.InputQuantity)
-                .WithErrorMessage(string.Format(ServiceRecipientQuantityModelValidator.ValueNotNumericErrorMessage, model.Name));
+                .WithErrorMessage(string.Format(ServiceRecipientQuantityModelValidator.PatientValueNotNumericErrorMessage, model.Name));
         }
 
         [Theory]
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Quantity
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.InputQuantity)
-                .WithErrorMessage(string.Format(ServiceRecipientQuantityModelValidator.ValueNotAnIntegerErrorMessage, model.Name));
+                .WithErrorMessage(string.Format(ServiceRecipientQuantityModelValidator.PatientValueNotAnIntegerErrorMessage, model.Name));
         }
 
         [Theory]
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Quantity
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.InputQuantity)
-                .WithErrorMessage(string.Format(ServiceRecipientQuantityModelValidator.ValueNegativeErrorMessage, model.Name));
+                .WithErrorMessage(string.Format(ServiceRecipientQuantityModelValidator.PatientValueNegativeErrorMessage, model.Name));
         }
 
         [Theory]
