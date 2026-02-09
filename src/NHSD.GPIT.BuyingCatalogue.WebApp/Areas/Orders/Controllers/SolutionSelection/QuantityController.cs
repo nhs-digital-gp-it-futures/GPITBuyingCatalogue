@@ -162,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     ParentSublocationOdsCode = parentOdsCode,
                     RecipientOdsCode = x.RecipientOdsCode,
                     Quantity = string.IsNullOrWhiteSpace(x.InputQuantity)
-                        ? x.Quantity
+                        ? null
                         : int.Parse(x.InputQuantity),
                 })
                 .ToList();

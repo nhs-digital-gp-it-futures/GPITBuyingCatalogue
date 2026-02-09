@@ -1,4 +1,7 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
+﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
 {
     public class SubLocationModel
     {
@@ -15,5 +18,18 @@
         public string Name { get; set; }
 
         public ServiceRecipientQuantityModel[] ServiceRecipients { get; set; }
+
+        public TaskProgress Status
+        {
+            get
+            {
+                if (ServiceRecipients.All(recipient => !string.IsNullOrWhiteSpace(recipient.InputQuantity)))
+                    return TaskProgress.Completed;
+
+                return ServiceRecipients.Any(recipient => !string.IsNullOrWhiteSpace(recipient.InputQuantity))
+                    ? TaskProgress.InProgress
+                    : TaskProgress.NotStarted;
+            }
+        }
     }
 }

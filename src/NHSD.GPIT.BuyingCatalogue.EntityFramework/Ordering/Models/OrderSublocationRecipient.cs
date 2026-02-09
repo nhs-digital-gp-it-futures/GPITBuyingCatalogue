@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public ICollection<OrderItemSublocationRecipient> OrderItemSublocationRecipients { get; set; } = [];
 
-        public void SetQuantityForItem(CatalogueItemId catalogueItemId, int quantity)
+        public void SetQuantityForItem(CatalogueItemId catalogueItemId, int? quantity)
         {
             OrderItemSublocationRecipient itemRecipient =
                 OrderItemSublocationRecipients.FirstOrDefault(x => x.CatalogueItemId == catalogueItemId);
