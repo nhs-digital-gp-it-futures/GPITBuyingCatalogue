@@ -17,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public const string InProgressTitle = "Catalogue solution and services";
 
         private readonly Dictionary<CatalogueItemId, TaskListOrderItemModel> taskModels = new();
+        private readonly Dictionary<CatalogueItemId, TaskListOrderItemModel> taskModelsForPrevious = new();
 
         public TaskListModel()
         {
@@ -41,7 +42,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             OrderType = rolledUpOrder.OrderType;
             CatalogueSolution = rolledUpOrder.GetSolutionOrderItem();
             AdditionalServices = rolledUpOrder.GetAdditionalServices();
-            AssociatedServices = rolledUpOrder.GetAssociatedServices();
+            AssociatedServices = wrapper.Order.GetAssociatedServices() ?? new List<OrderItem>();
+            PreviousAssociatedServices = Previous?.GetAssociatedServices() ?? new List<OrderItem>();
+            HasNewRecipients = wrapper.HasNewOrderRecipients;
 
             var currentAdditionalServices = wrapper.Order.GetAdditionalServices();
 
@@ -96,18 +99,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     CanBeRemoved = !(IsAmendment && (Previous?.Exists(x.CatalogueItemId) ?? false)),
                 }));
 
-            AssociatedServices.ForEach(x => taskModels.Add(
-                x.CatalogueItemId,
-                new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.FlattenedRecipients, x)
-                {
-                    FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
-                    HasNewRecipients = wrapper.HasNewOrderRecipients,
-                    NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
-                    PriceId = x.CatalogueItem.CataloguePrices.Count == 1
-                        ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
-                        : 0,
-                    CanBeRemoved = !OrderType.MergerOrSplit && !IsAmendment,
-                }));
+            AssociatedServices.ForEach(x => AddTaskModelForAssociatedService(taskModels, internalOrgId, callOffId, x, rolledUpOrder, !OrderType.MergerOrSplit));
+            PreviousAssociatedServices.ForEach(x => AddTaskModelForAssociatedService(taskModelsForPrevious, internalOrgId, callOffId, x, rolledUpOrder, false));
         }
 
         public Order Previous { get; set; }
@@ -117,6 +110,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public CallOffId CallOffId { get; set; }
 
         public bool IsAmendment => CallOffId.IsAmendment;
+
+        public bool HasNewRecipients { get; set; }
 
         public OrderType OrderType { get; set; }
 
@@ -150,6 +145,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public IEnumerable<OrderItem> AssociatedServices { get; set; }
 
+        public IEnumerable<OrderItem> PreviousAssociatedServices { get; set; }
+
         public TaskProgress Progress =>
             taskModels.All(x =>
                 x.Value.PriceStatus is TaskProgress.Completed
@@ -160,5 +157,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public string OnwardLink { get; set; }
 
         public TaskListOrderItemModel OrderItemModel(CatalogueItemId catalogueItemId) => taskModels.TryGetValue(catalogueItemId, out TaskListOrderItemModel value) ? value : null;
+
+        public TaskListOrderItemModel OrderItemModelForPrevious(CatalogueItemId catalogueItemId) => taskModelsForPrevious.TryGetValue(catalogueItemId, out TaskListOrderItemModel value) ? value : null;
+
+        private void AddTaskModelForAssociatedService(
+            Dictionary<CatalogueItemId, TaskListOrderItemModel> models,
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderItem x,
+            Order rolledUpOrder,
+            bool canBeRemoved)
+        {
+            models.Add(
+                x.CatalogueItemId,
+                new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.FlattenedRecipients, x)
+                {
+                    FromPreviousRevision = x.Order.CallOffId.Revision < callOffId.Revision,
+                    HasNewRecipients = HasNewRecipients,
+                    NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
+                    PriceId = x.CatalogueItem.CataloguePrices.Count == 1
+                        ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
+                        : 0,
+                    CanBeRemoved = canBeRemoved,
+                });
+        }
     }
 }

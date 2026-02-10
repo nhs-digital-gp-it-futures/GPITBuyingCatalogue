@@ -65,7 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void WithValidArguments_Amendment_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order)
+            EntityFramework.Ordering.Models.Order order,
+            OrderItem orderItem)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
@@ -91,11 +92,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             additionalService.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
 
+            orderItem.CatalogueItem = new CatalogueItem()
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                Id = associatedService.CatalogueItemId,
+            };
+            orderItem.CatalogueItemId = orderItem.CatalogueItem.Id;
+            orderItem.Order = order;
+
             amendment.OrderItems = new List<OrderItem>()
             {
-                new OrderItem() { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.Solution, Id = solution.CatalogueItemId }, CatalogueItemId = solution.CatalogueItemId },
-                new OrderItem() { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService, Id = associatedService.CatalogueItemId }, CatalogueItemId = additionalService.CatalogueItemId },
-                new OrderItem() { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AssociatedService, Id = associatedService.CatalogueItemId }, CatalogueItemId = associatedService.CatalogueItemId },
+                new OrderItem() { Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.Solution, Id = solution.CatalogueItemId }, CatalogueItemId = solution.CatalogueItemId },
+                new OrderItem() { Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService, Id = associatedService.CatalogueItemId }, CatalogueItemId = additionalService.CatalogueItemId },
+                orderItem,
             };
 
             var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(amendment, [order]));

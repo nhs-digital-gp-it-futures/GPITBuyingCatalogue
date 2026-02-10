@@ -102,57 +102,70 @@
             </nhs-card-v2>
         }
 
-        <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-6">Associated services</h2>
-
-        <nhs-card-v2>
-            @if (Model.IsAmendment && !Model.AssociatedServices.Any())
+            <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-6">Associated services</h2>
+            @if (!Model.AssociatedServicesAvailable)
             {
-                <nhs-card-content>
-                    <vc:inline-information text="You cannot add associated services when amending an order." />
-                </nhs-card-content>
-            }
-            else if (!Model.AssociatedServicesAvailable)
-            {
-                <nhs-card-content>
-                    <vc:inline-information text="There are no associated services available for this catalogue solution." />
-                </nhs-card-content>
+                <nhs-card-v2>
+                    <nhs-card-content>
+                        <vc:inline-information text="There are no associated services available for this catalogue solution." />
+                    </nhs-card-content>
+                </nhs-card-v2>
+                
             }
             else
             {
-                <nhs-card-content>
-                    @if (Model.AssociatedServices.Any())
-                    {
-                        @foreach (var service in Model.AssociatedServices)
+                @if (Model.IsAmendment && Model.PreviousAssociatedServices.Any())
+                {
+                    <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-6">Associated Services from previous order</h3>
+                    <nhs-card-v2>
+                        <nhs-card-content>
+                            @foreach (var service in Model.PreviousAssociatedServices)
+                            {
+                                <partial name="TaskListOrderItem"
+                                         model="@Model.OrderItemModelForPrevious(service.CatalogueItemId)" />
+                            }
+                        </nhs-card-content>
+                        <nhs-card-footer>
+                            <vc:inline-information text="You cannot change your original associated services when amending an order" />
+                        </nhs-card-footer>
+                    </nhs-card-v2>
+                }
+                <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-6">Associated Services for this order</h3>
+                <nhs-card-v2>
+                    <nhs-card-content>
+                        @if (Model.AssociatedServices.Any())
                         {
-                            <partial name="TaskListOrderItem"
-                            model="@Model.OrderItemModel(service.CatalogueItemId)" />
+                            @foreach (var service in Model.AssociatedServices)
+                            {
+                                <partial name="TaskListOrderItem"
+                                         model="@Model.OrderItemModel(service.CatalogueItemId)" />
+                            }
                         }
-                    }
-                    else
-                    {
-                        <p>No associated services have been added to this order yet.</p>
-                    }
-                </nhs-card-content>
-                <nhs-card-footer>
-                    @if (Model.OrderType.MergerOrSplit)
-                    {
-                        <vc:inline-information text="Associated services cannot be changed." />
-                    }
-                    else if (Model.IsAmendment)
-                    {
-                        <vc:inline-information text="You cannot add associated services or edit ones included in the original order when amending an order." />
-                    }
-                    else if (!Model.UnselectedAssociatedServicesAvailable)
-                    {
-                        <vc:inline-information text="All the associated services available for this catalogue solution have already been added." />
-                    }
-                    else
-                    {
-                        <vc:add-or-change href="@addAssociatedServicesLink" noun-phrase="Associated services" />
-                    }
-                </nhs-card-footer>
+                        else
+                        {
+                            <p>No associated services have been added to this order</p>
+                        }
+                    </nhs-card-content>
+                    <nhs-card-footer>
+                        @if (Model.OrderType.MergerOrSplit)
+                        {
+                            <vc:inline-information text="Associated services cannot be changed." />
+                        }
+                        else if (!Model.UnselectedAssociatedServicesAvailable)
+                        {
+                            <vc:inline-information text="All the associated services available for this catalogue solution have already been added." />
+                        }
+                        else if (Model.IsAmendment && !Model.HasNewRecipients)
+                        {
+                            <vc:inline-information text="Cannot add associated services without new service recipients" />
+                        }
+                        else
+                        {
+                            <vc:add-or-change href="@addAssociatedServicesLink" noun-phrase="Associated services" />
+                        }
+                    </nhs-card-footer>
+                </nhs-card-v2>
             }
-        </nhs-card-v2>
 
         <vc:nhs-anchor-button text="Save and continue"
                                  url="@Model.OnwardLink"

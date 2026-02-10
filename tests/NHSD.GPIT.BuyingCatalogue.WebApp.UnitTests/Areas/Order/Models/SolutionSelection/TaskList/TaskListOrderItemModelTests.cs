@@ -281,7 +281,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             orderItem.Quantity = null;
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem) { IsAssociatedService = true };
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem)
+            {
+                IsAssociatedService = true,
+                FromPreviousRevision = true,
+            };
 
             model.QuantityStatus.Should().Be(TaskProgress.Completed);
         }

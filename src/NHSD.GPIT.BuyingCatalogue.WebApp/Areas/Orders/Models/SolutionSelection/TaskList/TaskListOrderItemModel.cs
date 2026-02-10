@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     return TaskProgress.CannotStart;
                 }
 
-                if (IsAmendment && IsAssociatedService)
+                if (IsAmendment && IsAssociatedService && FromPreviousRevision)
                 {
                     return TaskProgress.Completed;
                 }

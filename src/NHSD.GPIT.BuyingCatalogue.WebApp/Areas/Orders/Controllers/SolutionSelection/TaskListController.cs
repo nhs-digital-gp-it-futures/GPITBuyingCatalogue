@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
 
-            var order = wrapper.IsAmendment ? wrapper.RolledUp : wrapper.Order;
+            var order = wrapper.Order;
 
             var solutions = order.OrderType.AssociatedServicesOnly
                 ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType, order.SelectedFrameworkId)
@@ -73,16 +73,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var selectedAssociatedServices = order.GetAssociatedServices();
 
-            return View(new TaskListModel(internalOrgId, callOffId, wrapper)
+            var model = new TaskListModel(internalOrgId, callOffId, wrapper)
             {
                 BackLink = Url.Action(backRoute.ActionName, backRoute.ControllerName, backRoute.RouteValues),
                 OnwardLink = Url.Action(onwardRoute.ActionName, onwardRoute.ControllerName, onwardRoute.RouteValues),
                 AlternativeSolutionsAvailable = solutions.Count > 1,
                 AdditionalServicesAvailable = additionalServices.Any(),
-                UnselectedAdditionalServicesAvailable = additionalServices.Where(x => !selectedAdditionalServices.Any(y => x.Id == y.CatalogueItemId)).Any(),
+                UnselectedAdditionalServicesAvailable =
+                    additionalServices.Where(x => !selectedAdditionalServices.Any(y => x.Id == y.CatalogueItemId))
+                        .Any(),
                 AssociatedServicesAvailable = associatedServices.Any(),
-                UnselectedAssociatedServicesAvailable = associatedServices.Where(x => !selectedAssociatedServices.Any(y => x.Id == y.CatalogueItemId)).Any(),
-            });
+                UnselectedAssociatedServicesAvailable = associatedServices
+                    .Where(x => !selectedAssociatedServices.Any(y => x.Id == y.CatalogueItemId))
+                    .Any(),
+            };
+
+            return View(model);
         }
     }
 }

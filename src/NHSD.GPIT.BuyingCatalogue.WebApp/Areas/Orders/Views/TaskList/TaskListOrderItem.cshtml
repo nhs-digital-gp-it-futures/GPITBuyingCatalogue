@@ -40,8 +40,7 @@
             <nhs-tag status-enum="@Model.PriceStatus" />
         </nhs-table-cell>
         <nhs-table-cell>
-            @if (Model.NumberOfPrices == 1 && Model.PriceStatus == TaskProgress.NotStarted
-            && !(Model.IsAmendment && Model.FromPreviousRevision))
+            @if (Model.NumberOfPrices == 1 && Model.PriceStatus == TaskProgress.NotStarted)
             {
                 <a id="Price_@Model.CatalogueItemId" style="float:right;"
                     href="@Url.Action(
@@ -79,8 +78,7 @@
         <nhs-table-cell>
             @if (Model.QuantityStatus != TaskProgress.CannotStart)
             {
-                @if ((Model.IsAmendment && Model.FromPreviousRevision && !Model.HasNewRecipients && Model.QuantityStatus != TaskProgress.InProgress)
-                    || (Model.IsAmendment && Model.IsAssociatedService))
+                @if (Model.IsAmendment && Model.FromPreviousRevision && Model.QuantityStatus != TaskProgress.InProgress && Model.QuantityStatus != TaskProgress.NotStarted)
                 {
                     <a id="Quantity_@Model.CatalogueItemId" style="float:right;"
                         href="@Url.Action(
