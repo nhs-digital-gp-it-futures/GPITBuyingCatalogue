@@ -18,9 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
     [Route("order/organisation/{internalOrgId}/order/{callOffId}")]
     public sealed class OrderController : Controller
     {
-        public const string ErrorKey = "Order";
-        public const string ErrorMessage = "Your order is incomplete. Please go back to the order and check again";
-
         private readonly IOrderService orderService;
         private readonly IOrderProgressService orderProgressService;
         private readonly IOrganisationsService organisationsService;

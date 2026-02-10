@@ -15,6 +15,10 @@ public sealed class SublocationQuantityHubModel : NavBaseModel
     public const string AdviceText = "Select a sublocation to enter the amount you want to order for your practices.";
     public const string AdviceTextPatient = "Review the practice list sizes for the organisations you have added. These numbers will be used to calculate the cost of the solution or service.";
 
+    public SublocationQuantityHubModel()
+    {
+    }
+
     public SublocationQuantityHubModel(
         Organisation organisation,
         CatalogueItem catalogueItem,

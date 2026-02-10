@@ -49,10 +49,7 @@
         </nhs-card-v2>
     </div>
 
-    <vc:nhs-anchor-button text="Save and continue"
-                          url="@Url.Action(
-                                   typeof(TaskListController).ControllerName(),
-                                   nameof(TaskListController.TaskList),
-                                   new { internalOrgId, callOffId })"
-                          type="Primary"/>
+    <form method="post">
+        <nhs-submit-button text="Save and Continue" />
+    </form>
 </div>
