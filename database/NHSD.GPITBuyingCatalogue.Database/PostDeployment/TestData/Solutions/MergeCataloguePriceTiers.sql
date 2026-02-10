@@ -204,7 +204,26 @@ BEGIN
         (197, 1136, 1, 99, CAST(1.2600 AS Decimal(18, 4)), GETUTCDATE(), 2),
         (198, 1136, 100, NULL, CAST(1.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
         (199, 1137, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
-        (200, 1138, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2))
+        (200, 1138, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (201, 1139, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (202, 1140, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (203, 1141, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (204, 1142, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (205, 1143, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (206, 1144, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (207, 1145, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (208, 1146, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (209, 1147, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (210, 1148, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (211, 1149, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (212, 1150, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (213, 1151, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (214, 1152, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (215, 1153, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (216, 1154, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (217, 1155, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (218, 1156, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2),
+        (219, 1157, 1, NULL, CAST(300.0000 AS Decimal(18, 4)), GETUTCDATE(), 2))
     AS SOURCE ([Id], [CataloguePriceId], [LowerRange], [UpperRange], [Price], [LastUpdated], [LastUpdatedBy])
     ON TARGET.[Id] = SOURCE.[Id]
     WHEN MATCHED THEN UPDATE SET
