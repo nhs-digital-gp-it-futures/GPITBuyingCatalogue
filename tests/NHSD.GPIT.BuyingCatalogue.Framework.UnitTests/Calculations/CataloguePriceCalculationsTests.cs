@@ -310,6 +310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
                 .Create();
 
             Order order = fixture.Build<Order>()
+                .With(o => o.Revision, 1)
                 .With(o => o.OrderItems, new HashSet<OrderItem> { orderItem })
                 .With(o => o.OrderSublocations, new List<OrderSublocation> { sublocation })
                 .Create();
@@ -432,7 +433,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
                 .With(o => o.OrderNumber, new Random().Next(0, 999999))
                 .Create();
 
-            var orderWrapper = new OrderWrapper(order);
+            var previous = revision == 1 ? [] : new List<Order>() { new() { Revision = 1 } };
+
+            var orderWrapper = new OrderWrapper(order, previous);
 
             orderWrapper.TotalCostForOrderItem(perMonthOrderItemUsedForTotal.CatalogueItem.Id).Should().Be(total);
         }
