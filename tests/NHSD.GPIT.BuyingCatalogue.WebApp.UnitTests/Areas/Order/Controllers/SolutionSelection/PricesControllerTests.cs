@@ -210,7 +210,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockListPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id).Returns(catalogueItem);
 
-            mockRoutingService.GetRoute(RoutingPoint.ConfirmPrice, orderWrapper, Arg.Any<RouteValues>()).Returns(new RoutingResult { ActionName = Constants.Actions.SelectQuantity, ControllerName = Constants.Controllers.Quantity });
+            mockRoutingService.GetRoute(RoutingPoint.ConfirmPrice, orderWrapper, Arg.Any<RouteValues>())
+                .Returns(
+                    new RoutingResult
+                    {
+                        ActionName = nameof(TaskListController.TaskList),
+                        ControllerName = typeof(TaskListController).ControllerName(),
+                        RouteValues = new { internalOrgId, callOffId },
+                    });
 
             List<PricingTierDto> actual = null;
 
@@ -231,8 +238,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(QuantityController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(QuantityController.SelectQuantity));
+            actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
         }
 
         [Theory]
@@ -393,9 +400,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .GetRoute(RoutingPoint.EditPrice, Arg.Any<OrderWrapper>(), Arg.Any<RouteValues>())
                 .Returns(new RoutingResult
                 {
-                    ActionName = nameof(QuantityController.SelectQuantity),
-                    ControllerName = typeof(QuantityController).ControllerName(),
-                    RouteValues = new { internalOrgId, callOffId, orderItem.CatalogueItemId },
+                    ActionName = nameof(TaskListController.TaskList),
+                    ControllerName = typeof(TaskListController).ControllerName(),
+                    RouteValues = new { internalOrgId, callOffId },
                 });
 
             var result = await controller.EditPrice(internalOrgId, callOffId, orderItem.CatalogueItemId, model);
@@ -409,13 +416,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(QuantityController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(QuantityController.SelectQuantity));
+            actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
-                { "catalogueItemId", orderItem.CatalogueItemId },
             });
         }
 

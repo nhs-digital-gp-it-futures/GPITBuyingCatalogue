@@ -15,6 +15,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
             ServiceRecipients = serviceRecipients;
         }
 
+        public SubLocationModel(
+            string odsCode,
+            string name,
+            ServiceRecipientQuantityModel[] serviceRecipients)
+            : this(name, serviceRecipients)
+        {
+            OdsCode = odsCode;
+        }
+
+        public string OdsCode { get; set; }
+
         public string Name { get; set; }
 
         public ServiceRecipientQuantityModel[] ServiceRecipients { get; set; }

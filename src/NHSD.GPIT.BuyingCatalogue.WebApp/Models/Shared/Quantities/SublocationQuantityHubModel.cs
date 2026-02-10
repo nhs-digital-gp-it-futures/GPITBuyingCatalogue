@@ -41,16 +41,15 @@ public sealed class SublocationQuantityHubModel : NavBaseModel
 
     public SubLocationModel[] SubLocations { get; set; }
 
-    public RoutingSource? Source { get; set; }
-
     public RoutingFields RoutingFields { get; init; }
 
     private static SubLocationModel[] CreateSubLocations(IEnumerable<ServiceRecipientQuantityDto> recipients)
     {
         return recipients
-            .GroupBy(x => x.Location)
+            .GroupBy(x => (x.ParentSublocationOdsCode, x.Location))
             .Select(x => new SubLocationModel(
-                x.Key,
+                x.Key.ParentSublocationOdsCode,
+                x.Key.Location,
                 x.Select(CreateServiceRecipient).ToArray()))
             .ToArray();
     }

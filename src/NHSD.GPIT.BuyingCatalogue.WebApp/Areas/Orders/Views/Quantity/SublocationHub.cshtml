@@ -26,7 +26,7 @@
                     @foreach (var sublocationData in Model.SubLocations)
                     {
                         <nhs-table-row-container>
-                            <nhs-table-cell>@(sublocationData.ServiceRecipients.First().ParentSublocationOdsCode)</nhs-table-cell>
+                            <nhs-table-cell>@sublocationData.OdsCode</nhs-table-cell>
                             <nhs-table-cell>@sublocationData.ServiceRecipients.Length.ToString()</nhs-table-cell>
                             <nhs-table-cell>
                                 <nhs-tag status-enum="@(sublocationData.Status)"/>
@@ -36,10 +36,9 @@
                                    asp-controller="@(typeof(QuantityController).ControllerName())"
                                    asp-action="@(nameof(QuantityController.SelectServiceSublocationRecipientQuantity))"
                                    asp-route-catalogueItemId="@Model.RoutingFields.CatalogueItem"
-                                   asp-route-parentOdsCode="@(sublocationData.ServiceRecipients.First().ParentSublocationOdsCode)"
+                                   asp-route-parentOdsCode="@sublocationData.OdsCode"
                                    asp-route-internalOrgId="@Model.RoutingFields.InternalOrgId"
                                    asp-route-callOffId="@Model.RoutingFields.CallOffId"
-                                   asp-route-source="@Model.Source"
                                 >Select</a>
                             </nhs-table-cell>
                         </nhs-table-row-container>

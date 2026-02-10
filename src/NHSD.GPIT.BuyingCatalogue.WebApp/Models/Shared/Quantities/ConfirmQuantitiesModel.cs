@@ -10,8 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 
 public sealed class ConfirmQuantitiesModel : NavBaseModel
 {
-    private const string AdviceText = "Review the total amount you have added to the practices in this {0}.";
-    private const string AdvicePatientText = "Review the patient totals for the organisations you have added in this {0}";
+    internal const string AdviceText = "Review the total amount you have added to the practices in this {0}.";
+    internal const string AdvicePatientText = "Review the patient totals for the organisations you have added in this {0}";
 
     public ConfirmQuantitiesModel()
     {

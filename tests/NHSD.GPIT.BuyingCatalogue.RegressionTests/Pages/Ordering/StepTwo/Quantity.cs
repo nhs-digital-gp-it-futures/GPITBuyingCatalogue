@@ -22,12 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
 
         public void AddQuantity()
         {
-            var perServiceRecipient = CommonActions.ElementIsDisplayed(ByExtensions.DataTestId("perServiceRecipient"));
-
-            if (perServiceRecipient)
-                AddPracticeListSize();
-            else
-                AddUnitQuantity();
+            AddPracticeListSize();
         }
 
         public void EditQuantity(string catalogueItemName)
@@ -80,16 +75,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
                 }
             }
 
-            CommonActions.ClickSave();
-        }
-
-        private void AddUnitQuantity()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-             typeof(QuantityController),
-             nameof(QuantityController.SelectQuantity)).Should().BeTrue();
-
-            TextGenerators.NumberInputAddRandomNumber(QuantityObjects.QuantityInput, 50, 1000);
             CommonActions.ClickSave();
         }
 

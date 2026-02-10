@@ -36,7 +36,7 @@ public sealed class SelectServiceRecipientQuantityModel : NavBaseModel
         (Title, Advice) = price.ProvisioningType switch
         {
             ProvisioningType.Patient => (TitleTextPatient, AdviceTextPatient),
-            _ => (string.Format(TitleText, catalogueItem.CatalogueItemType.Name()), AdviceText),
+            _ => (string.Format(TitleText, catalogueItem.CatalogueItemType.Name().ToLowerInvariant()), AdviceText),
         };
 
         CatalogueItemType = catalogueItem.CatalogueItemType;
