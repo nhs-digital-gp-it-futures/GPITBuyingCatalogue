@@ -211,17 +211,17 @@ public static class OrderTests
                                 {
                                     OrderId = 1002,
                                     ParentSublocationOdsCode = "XXXX",
-                                    RecipientOdsCode = "AAAA",
+                                    RecipientOdsCode = "AAAG",
                                     OrderItemSublocationRecipients =
-                                        [new OrderItemSublocationRecipient(1002, "AAAA", catalogueItemId)],
+                                        [new OrderItemSublocationRecipient(1002, "AAAG", catalogueItemId)],
                                 },
                                 new OrderSublocationRecipient
                                 {
                                     OrderId = 1002,
                                     ParentSublocationOdsCode = "XXXX",
-                                    RecipientOdsCode = "AAAB",
+                                    RecipientOdsCode = "AAAH",
                                     OrderItemSublocationRecipients =
-                                        [new OrderItemSublocationRecipient(1002, "AAAB", catalogueItemId)],
+                                        [new OrderItemSublocationRecipient(1002, "AAAH", catalogueItemId)],
                                 },
                                 new OrderSublocationRecipient
                                 {
@@ -242,17 +242,17 @@ public static class OrderTests
                     {
                         OrderId = 1002,
                         ParentSublocationOdsCode = "XXXX",
-                        RecipientOdsCode = "AAAA",
+                        RecipientOdsCode = "AAAG",
                         OrderItemSublocationRecipients =
-                            [new OrderItemSublocationRecipient(1002, "AAAA", catalogueItemId)],
+                            [new OrderItemSublocationRecipient(1002, "AAAG", catalogueItemId)],
                     },
                     new()
                     {
                         OrderId = 1002,
                         ParentSublocationOdsCode = "XXXX",
-                        RecipientOdsCode = "AAAB",
+                        RecipientOdsCode = "AAAH",
                         OrderItemSublocationRecipients =
-                            [new OrderItemSublocationRecipient(1002, "AAAB", catalogueItemId)],
+                            [new OrderItemSublocationRecipient(1002, "AAAH", catalogueItemId)],
                     },
                 },
             ],

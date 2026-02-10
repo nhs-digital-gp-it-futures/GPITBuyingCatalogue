@@ -352,7 +352,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             // which might happen if we amend migrated order that wasn't global recipient compatible
             return GetOrderRecipients()
                 .Where(PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(previous, catalogueItemId))
-                .Where(PreviousRecipientDidNotExistForAmendmentPredicate(previous, IsAmendment))
+                .Where(CurrentRecipientDidNotExistInPreviousOrderPredicate(previous, IsAmendment))
                 .ToList();
 
             // it doesn't exist on this order so no recipients apply
@@ -379,7 +379,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             };
         }
 
-        private static Func<OrderSublocationRecipient, bool> PreviousRecipientDidNotExistForAmendmentPredicate(
+        private static Func<OrderSublocationRecipient, bool> CurrentRecipientDidNotExistInPreviousOrderPredicate(
             Order previous,
             bool isAmendment)
         {
