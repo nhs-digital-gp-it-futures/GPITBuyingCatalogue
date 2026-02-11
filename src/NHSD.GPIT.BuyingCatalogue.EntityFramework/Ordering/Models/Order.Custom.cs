@@ -383,9 +383,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             Order previous,
             bool isAmendment)
         {
-            return cr => isAmendment
-                && previous != null
-                && previous.FlattenedRecipients.All(previousRecipient => previousRecipient.RecipientOdsCode != cr.RecipientOdsCode);
+            return cr => previous == null || (isAmendment
+                && previous.FlattenedRecipients.All(previousRecipient => previousRecipient.RecipientOdsCode != cr.RecipientOdsCode));
         }
 
         private OrderItem InitialiseOrderItem(
