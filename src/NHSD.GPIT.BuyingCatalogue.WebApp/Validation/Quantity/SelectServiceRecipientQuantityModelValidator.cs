@@ -7,7 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Quantity
     {
         public SelectServiceRecipientQuantityModelValidator()
         {
-            RuleForEach(x => x.SubLocations).Cascade(CascadeMode.Continue).SetValidator(new SubLocationModelValidator());
+            RuleForEach(x => x.SubLocations)
+                .Cascade(CascadeMode.Continue)
+                .SetValidator(m => new SubLocationModelValidator(m.ProvisioningType, m.CatalogueItemType));
         }
     }
 }

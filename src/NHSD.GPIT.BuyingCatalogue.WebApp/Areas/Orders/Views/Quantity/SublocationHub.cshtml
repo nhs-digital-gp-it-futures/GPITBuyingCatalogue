@@ -1,12 +1,6 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
-@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
-@using ValidationSummaryTagHelper = NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers.ValidationSummaryTagHelper
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities.SelectServiceRecipientQuantityModel
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities.SublocationQuantityHubModel
 
 @{
     ViewBag.Title = Model.Title;
@@ -14,12 +8,12 @@
     var internalOrgId = Model.RoutingFields.InternalOrgId;
     var callOffId = Model.RoutingFields.CallOffId;
 }
-<partial name="Partials/_BackLink" model="Model" />
+<partial name="Partials/_BackLink" model="Model"/>
 
 <div class="nhsuk-grid-row" data-test-id="perServiceRecipient">
     <div class="nhsuk-grid-column-full">
-        <nhs-page-title model="Model" />
-        
+        <nhs-page-title model="Model"/>
+
         <h5>@tableTitle</h5>
         <nhs-card-v2>
             <nhs-card-content>
@@ -28,31 +22,23 @@
                     <nhs-table-column>Organisations added</nhs-table-column>
                     <nhs-table-column>Status</nhs-table-column>
                     <nhs-table-column>Action</nhs-table-column>
-    
+
                     @foreach (var sublocationData in Model.SubLocations)
                     {
                         <nhs-table-row-container>
-                            <nhs-table-cell>@(sublocationData.ServiceRecipients.First().ParentSublocationOdsCode)</nhs-table-cell>
+                            <nhs-table-cell>@sublocationData.OdsCode</nhs-table-cell>
                             <nhs-table-cell>@sublocationData.ServiceRecipients.Length.ToString()</nhs-table-cell>
                             <nhs-table-cell>
-                                @if (sublocationData.ServiceRecipients.All(recipient => !string.IsNullOrWhiteSpace(recipient.InputQuantity)))
-                                {
-                                    <nhs-tag status-enum="@TaskProgress.Completed"/>
-                                }
-                                else
-                                {
-                                    <nhs-tag status-enum="@TaskProgress.NotStarted"/>
-                                }
+                                <nhs-tag status-enum="@(sublocationData.Status)"/>
                             </nhs-table-cell>
                             <nhs-table-cell>
                                 <a class="nhsuk-link"
                                    asp-controller="@(typeof(QuantityController).ControllerName())"
                                    asp-action="@(nameof(QuantityController.SelectServiceSublocationRecipientQuantity))"
                                    asp-route-catalogueItemId="@Model.RoutingFields.CatalogueItem"
-                                   asp-route-parentOdsCode="@(sublocationData.ServiceRecipients.First().ParentSublocationOdsCode)"
+                                   asp-route-parentOdsCode="@sublocationData.OdsCode"
                                    asp-route-internalOrgId="@Model.RoutingFields.InternalOrgId"
                                    asp-route-callOffId="@Model.RoutingFields.CallOffId"
-                                   asp-route-source="@Model.Source"
                                 >Select</a>
                             </nhs-table-cell>
                         </nhs-table-row-container>
@@ -61,11 +47,8 @@
             </nhs-card-content>
         </nhs-card-v2>
     </div>
-    
-    <vc:nhs-anchor-button text="Save and continue"
-                          url="@Url.Action(
-                                   typeof(TaskListController).ControllerName(),
-                                   nameof(TaskListController.TaskList),
-                                   new { internalOrgId, callOffId })"
-                          type="Primary" /> 
+
+    <form method="post">
+        <nhs-submit-button text="Save and Continue" />
+    </form>
 </div>

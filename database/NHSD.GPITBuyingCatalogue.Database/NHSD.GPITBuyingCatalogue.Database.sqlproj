@@ -136,7 +136,6 @@
     <Folder Include="Ordering\" />
     <Folder Include="Ordering\Tables\" />
     <Folder Include="Ordering\TemporalTables\" />
-    <Folder Include="Ordering\Views\" />
     <Folder Include="Organisations\" />
     <Folder Include="Organisations\Tables\" />
     <Folder Include="Organisations\TemporalTables\" />

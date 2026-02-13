@@ -1,4 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities.SelectServiceRecipientQuantityModel
 
@@ -7,33 +8,41 @@
     var inputRequired = false;
 }
 
-<partial name="Partials/_BackLink" model="Model" />
+<partial name="Partials/_BackLink" model="Model"/>
 
 <div class="nhsuk-grid-row" data-test-id="perServiceRecipient">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary exclude-child-errors="true"/>
-        <nhs-page-title model="Model" />
+        <nhs-page-title model="Model"/>
 
-        @if (Model.ShouldShowInset)
+        @if (Model.ProvisioningType is ProvisioningType.Patient)
+        {
+            <p>
+                We've included the latest practice list sizes, published on
+                <a href="https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice"
+                   target="_blank">the NHS Digital website (opens in a new tab)</a>.
+            </p>
+        }
+
+        @if (Model.CatalogueItemType is not CatalogueItemType.Solution)
         {
             <nhs-inset-text>
                 <p>
-                    We've included the latest practice list sizes, published on
-                    <a href="https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice"
-                       target="_blank">the NHS Digital website (opens in a new tab)</a>.
+                    If this service is not required for some of your practices enter 0
                 </p>
             </nhs-inset-text>
         }
-        
+
         <form method="post">
-            <hidden-inputs title="Title" caption="Caption" advice="Advice" />
-            <input type="hidden" asp-for="@Model.BackLink" />
-            <input type="hidden" asp-for="@Model.Source" />
-            <input type="hidden" asp-for="@Model.ProvisioningType" />
-            <input type="hidden" asp-for="@Model.BillingPeriod" />
+            <hidden-inputs title="Title" caption="Caption" advice="Advice"/>
+            <input type="hidden" asp-for="@Model.BackLink"/>
+            <input type="hidden" asp-for="@Model.Source"/>
+            <input type="hidden" asp-for="@Model.ProvisioningType"/>
+            <input type="hidden" asp-for="@Model.BillingPeriod"/>
+            <input type="hidden" asp-for="@Model.CatalogueItemType"/>
             @if (Model.OrderType != null)
             {
-                <input type="hidden" asp-for="@Model.OrderType.Value" name="@nameof(Model.OrderType)" />
+                <input type="hidden" asp-for="@Model.OrderType.Value" name="@nameof(Model.OrderType)"/>
             }
 
             @if (Model.OrderType?.MergerOrSplit ?? false)
@@ -44,7 +53,6 @@
                     OrderTypeEnum.AssociatedServiceMerger => "retained",
                     _ => throw new InvalidOperationException("Expected only merger or split")
                 };
-
 
                 <h2 class="nhsuk-heading-s">
                     Service recipient to be @tobeValue: @Model.PracticeReorganisationRecipient
@@ -62,53 +70,61 @@
                 </h2>
             }
 
-            @for (var i=0; i < Model.SubLocations.Length; i++)
+            @for (var i = 0; i < Model.SubLocations.Length; i++)
             {
-                <input type="hidden" asp-for="@Model.SubLocations[i].Name" />
+                <input type="hidden" asp-for="@Model.SubLocations[i].Name"/>
 
                 <nhs-expander-v2 asp-for="@Model.SubLocations[i]" open="true" catches-errors="true">
-                    <nhs-expander-summary label-text="@Model.SubLocations[i].Name" bold-title="true" secondary-text-title="@Model.SubLocations[i].ServiceRecipients.Length.ToString()" secondary-text=" recipients added" />
+                    <nhs-expander-summary label-text="@Model.SubLocations[i].Name" bold-title="true"
+                                          secondary-text-title="@Model.SubLocations[i].ServiceRecipients.Length.ToString()"
+                                          secondary-text=" recipients added"/>
                     <nhs-expander-content>
-                    <nhs-table data-test-id="additional-service-dashboard-table">
-                        <nhs-table-column>Organisation </nhs-table-column>
-                        <nhs-table-column>ODS code</nhs-table-column>
-                        <nhs-table-column>@Model.QuantityColumnTitle</nhs-table-column>
+                        <nhs-table data-test-id="additional-service-dashboard-table">
+                            <nhs-table-column>Organisation</nhs-table-column>
+                            <nhs-table-column>ODS code</nhs-table-column>
+                            <nhs-table-column>@Model.QuantityColumnTitle</nhs-table-column>
 
-                        @for (var index=0; index < Model.SubLocations[i].ServiceRecipients.Length; index++)
-                        {
-                            <nhs-table-row-container>
-                                <nhs-table-cell>
-                                    <input type="hidden" asp-for="@Model.SubLocations[i].ServiceRecipients[index].Name" />
-                                    <input type="hidden" asp-for="@Model.SubLocations[i].ServiceRecipients[index].ParentSublocationOdsCode" />
-                                    <input type="hidden" asp-for="@Model.SubLocations[i].ServiceRecipients[index].RecipientOdsCode" />
-                                    <input type="hidden" asp-for="@Model.SubLocations[i].ServiceRecipients[index].Quantity" />
-                                    <div style="margin-top: 6px">
-                                        @Model.SubLocations[i].ServiceRecipients[index].Name
-                                    </div>
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    <div style="margin-top: 6px">
-                                        @Model.SubLocations[i].ServiceRecipients[index].RecipientOdsCode
-                                    </div>
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    @if (Model.SubLocations[i].ServiceRecipients[index].Quantity > 0 && (Model.OrderType?.MergerOrSplit ?? false))
-                                    {
-                                        <input type="hidden" asp-for="@Model.SubLocations[i].ServiceRecipients[index].InputQuantity" />
-                                        @($"{Model.SubLocations[i].ServiceRecipients[index].Quantity:N0}")
-                                    }
-                                    else
-                                    {
-                                        inputRequired = true;
-                                        <nhs-input asp-for="@Model.SubLocations[i].ServiceRecipients[index].InputQuantity"
-                                                   input-width="Five" label-text="Patient total"
-                                                   data-test-id="input_quantity"
-                                                   visually-hidden-error=" for @Model.SubLocations[i].ServiceRecipients[index].Name"/>
-                                    }
-                                </nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    </nhs-table>
+                            @for (var index = 0; index < Model.SubLocations[i].ServiceRecipients.Length; index++)
+                            {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>
+                                        <input type="hidden"
+                                               asp-for="@Model.SubLocations[i].ServiceRecipients[index].Name"/>
+                                        <input type="hidden"
+                                               asp-for="@Model.SubLocations[i].ServiceRecipients[index].ParentSublocationOdsCode"/>
+                                        <input type="hidden"
+                                               asp-for="@Model.SubLocations[i].ServiceRecipients[index].RecipientOdsCode"/>
+                                        <input type="hidden"
+                                               asp-for="@Model.SubLocations[i].ServiceRecipients[index].Quantity"/>
+                                        <div style="margin-top: 6px">
+                                            @Model.SubLocations[i].ServiceRecipients[index].Name
+                                        </div>
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                        <div style="margin-top: 6px">
+                                            @Model.SubLocations[i].ServiceRecipients[index].RecipientOdsCode
+                                        </div>
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                        @if (Model.SubLocations[i].ServiceRecipients[index].Quantity > 0 && (Model.OrderType?.MergerOrSplit ?? false))
+                                        {
+                                            <input type="hidden"
+                                                   asp-for="@Model.SubLocations[i].ServiceRecipients[index].InputQuantity"/>
+                                            @($"{Model.SubLocations[i].ServiceRecipients[index].Quantity:N0}")
+                                        }
+                                        else
+                                        {
+                                            inputRequired = true;
+                                            <nhs-input
+                                                asp-for="@Model.SubLocations[i].ServiceRecipients[index].InputQuantity"
+                                                input-width="Five" label-text="Patient total"
+                                                data-test-id="input_quantity"
+                                                visually-hidden-error=" for @(Model.SubLocations[i].ServiceRecipients[index].Name)"/>
+                                        }
+                                    </nhs-table-cell>
+                                </nhs-table-row-container>
+                            }
+                        </nhs-table>
                     </nhs-expander-content>
                 </nhs-expander-v2>
             }
@@ -120,14 +136,18 @@
                         <ul>
                             @foreach (var (location, locationIndex) in Model.PreviouslySelected.Select((x, i) => (x, i)))
                             {
-                                <input type="hidden" asp-for="PreviouslySelected[locationIndex].Name" />
+                                <input type="hidden" asp-for="PreviouslySelected[locationIndex].Name"/>
 
                                 @foreach (var (recipient, index) in location.ServiceRecipients.Select((y, j) => (y, j)))
                                 {
-                                    <input type="hidden" asp-for="PreviouslySelected[locationIndex].ServiceRecipients[index].Name"/>
-                                    <input type="hidden" asp-for="PreviouslySelected[locationIndex].ServiceRecipients[index].ParentSublocationOdsCode" />
-                                    <input type="hidden" asp-for="PreviouslySelected[locationIndex].ServiceRecipients[index].RecipientOdsCode" />
-                                    <input type="hidden" asp-for="PreviouslySelected[locationIndex].ServiceRecipients[index].InputQuantity" />
+                                    <input type="hidden"
+                                           asp-for="PreviouslySelected[locationIndex].ServiceRecipients[index].Name"/>
+                                    <input type="hidden"
+                                           asp-for="PreviouslySelected[locationIndex].ServiceRecipients[index].ParentSublocationOdsCode"/>
+                                    <input type="hidden"
+                                           asp-for="PreviouslySelected[locationIndex].ServiceRecipients[index].RecipientOdsCode"/>
+                                    <input type="hidden"
+                                           asp-for="PreviouslySelected[locationIndex].ServiceRecipients[index].InputQuantity"/>
                                     <li>@recipient.Description : @recipient.InputQuantity</li>
                                 }
                             }
@@ -139,10 +159,10 @@
             <div class="nhsuk-u-margin-top-9">
                 @{
                     var submitButton = !inputRequired && Model.OrderType?.MergerOrSplit is true
-                    ? "Continue"
-                    : string.Empty; // use the default text
+                        ? "Continue"
+                        : string.Empty; // use the default text
                 }
-                <nhs-submit-button text="@submitButton" />
+                <nhs-submit-button text="@submitButton"/>
             </div>
         </form>
     </div>

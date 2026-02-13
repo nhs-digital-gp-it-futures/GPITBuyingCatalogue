@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
+using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Azure.Core;
 using Azure.Identity;
-using Azure.Storage.Blobs;
-using Azure.Storage.Queues;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -363,10 +363,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             return services.AddFluentValidation(
                     options =>
                     {
-                        options.RegisterValidatorsFromAssemblyContaining<SolutionModelValidator>();
+                        options.RegisterValidatorsFromAssemblyContaining<SolutionModelValidator>(IsCandidateValidator);
                         options.ValidatorOptions.DefaultClassLevelCascadeMode = FluentValidation.CascadeMode.Continue;
                         options.ValidatorOptions.DefaultRuleLevelCascadeMode = FluentValidation.CascadeMode.Stop;
                     }).AddSingleton<IValidatorInterceptor, FluentValidatorInterceptor>();
+
+            static bool IsCandidateValidator(AssemblyScanner.AssemblyScanResult res) =>
+                res.ValidatorType.GetCustomAttribute<ChildValidatorAttribute>() is null;
         }
 
         public static void ConfigureFormOptions(this IServiceCollection services)
