@@ -106,13 +106,13 @@ jobs:
           targets: 'min'
           workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
-#      - task: DotNetCoreCLI@2
-#        displayName: 'Run unit tests'
-#        inputs:
-#          command: test
-#          projects: '**/*UnitTests.csproj'
-#          arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
-#          publishTestResults: true
+      - task: DotNetCoreCLI@2
+        displayName: 'Run unit tests'
+        inputs:
+          command: test
+          projects: '**/*UnitTests.csproj'
+          arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
+          publishTestResults: true
 
       - task: SonarCloudAnalyze@3
       - task: SonarCloudPublish@3
