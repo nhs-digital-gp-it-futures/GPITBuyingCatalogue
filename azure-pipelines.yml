@@ -57,16 +57,8 @@ jobs:
           version: $(dotnetVersion)
           includePreviewVersions: false
 
-      - task: Cache@2
-        displayName: Cache NuGet Packages
-        inputs:
-          key: 'nuget | "$(Agent.OS)" | **/packages.lock.json'
-          path: /home/vsts/.nuget/packages
-          cacheHitVar: 'CACHE_RESTORED'
-
       - task: DotNetCoreCLI@2
         displayName: 'Run dotnet restore'
-        condition: ne(variables.CACHE_RESTORED, 'true')
         inputs:
           command: restore
           projects: |
@@ -80,12 +72,6 @@ jobs:
         displayName: 'Install Node.js'
         inputs:
           versionSpec: '14.x'
-
-      - task: Cache@2
-        displayName: Cache Node Packages
-        inputs:
-          key: 'npm | "$(Agent.OS)" | src/NHSD.GPIT.BuyingCatalogue.WebApp/package-lock.json'
-          path: src/NHSD.GPIT.BuyingCatalogue.WebApp/node_modules
 
       - task: Npm@1
         displayName: 'Run npm install'
