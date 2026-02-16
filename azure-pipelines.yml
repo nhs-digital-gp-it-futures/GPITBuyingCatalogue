@@ -1,6 +1,4 @@
 variables:
-  - name: dockerVersion
-    value: '19.03.5'
   - name: dotnetVersion
     value: '10.0.101'
   - name: MSBUILDSINGLELOADCONTEXT
@@ -73,10 +71,6 @@ jobs:
         displayName: 'Install Node.js'
         inputs:
           versionSpec: '14.x'
-
-      - task: DockerInstaller@0
-        inputs:
-          dockerVersion: $(dockerVersion)
 
       - task: Npm@1
         displayName: 'Run npm install'
