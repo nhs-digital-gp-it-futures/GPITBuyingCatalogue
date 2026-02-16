@@ -66,7 +66,6 @@ jobs:
             NHSD.GPIT.BuyingCatalogue.Database.sln
           feedsToUse: config
           nugetConfigPath: 'NuGet.config'
-          restoreArguments: '--locked-mode'
 
       - task: NodeTool@0
         displayName: 'Install Node.js'
