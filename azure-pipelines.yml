@@ -57,8 +57,16 @@ jobs:
           version: $(dotnetVersion)
           includePreviewVersions: false
 
+      - task: Cache@2
+        displayName: Cache NuGet Packages
+        inputs:
+          key: 'nuget | "$(Agent.OS)" | **/packages.lock.json'
+          path: $(NUGET_PACKAGES)
+          cacheHitVar: 'CACHE_RESTORED'
+
       - task: DotNetCoreCLI@2
         displayName: 'Run dotnet restore'
+        condition: ne(variables.CACHE_RESTORED, 'true')
         inputs:
           command: restore
           projects: |
@@ -66,11 +74,18 @@ jobs:
             NHSD.GPIT.BuyingCatalogue.Database.sln
           feedsToUse: config
           nugetConfigPath: 'NuGet.config'
+          restoreArguments: '--locked-mode'
 
       - task: NodeTool@0
         displayName: 'Install Node.js'
         inputs:
           versionSpec: '14.x'
+
+      - task: Cache@2
+        displayName: Cache Node Packages
+        inputs:
+          key: 'npm | "$(Agent.OS)" | src/NHSD.GPIT.BuyingCatalogue.WebApp/package-lock.json'
+          path: src/NHSD.GPIT.BuyingCatalogue.WebApp/node_modules
 
       - task: Npm@1
         displayName: 'Run npm install'
@@ -111,7 +126,7 @@ jobs:
 #          command: test
 #          projects: '**/*UnitTests.csproj'
 #          arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
-#          publishTestResults: false
+#          publishTestResults: true
 
       - task: SonarCloudAnalyze@3
       - task: SonarCloudPublish@3
