@@ -269,7 +269,7 @@ public class CompetitionHubController : Controller
             Caption = string.Empty,
             RoutingFields = new RoutingFields
             {
-                CatalogueItem = solutionId, InternalOrgId = internalOrgId,
+                SolutionId = solutionId, InternalOrgId = internalOrgId, CompetitionId = competitionId,
             },
         };
         // (IPrice price, CatalogueItem catalogueItem, int? quantity) =

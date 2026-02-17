@@ -9,4 +9,8 @@ public class RoutingFields
     public string InternalOrgId { get; init; }
 
     public CallOffId? CallOffId { get; init; }
+
+    public CatalogueItemId? SolutionId { get; init; }
+
+    public int? CompetitionId { get; init; }
 }
