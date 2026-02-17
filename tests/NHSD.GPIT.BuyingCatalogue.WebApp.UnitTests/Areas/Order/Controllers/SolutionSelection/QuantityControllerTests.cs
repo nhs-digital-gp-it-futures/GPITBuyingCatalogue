@@ -57,8 +57,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expectedModel = new SublocationQuantityHubModel(
                 order.OrderingParty,
                 orderItem.CatalogueItem,
-                orderItem.OrderItemPrice,
-                orderRecipientDtos)
+                orderRecipientDtos,
+                RoutingDestination.Order,
+                orderItem.OrderItemPrice)
             {
                 Caption = $"Order {order.CallOffId}",
                 RoutingFields = new()

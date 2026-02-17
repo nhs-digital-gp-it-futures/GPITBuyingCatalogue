@@ -22,12 +22,13 @@ public sealed class SublocationQuantityHubModel : NavBaseModel
     public SublocationQuantityHubModel(
         Organisation organisation,
         CatalogueItem catalogueItem,
-        IPrice price,
-        IEnumerable<ServiceRecipientQuantityDto> serviceRecipients)
+        IEnumerable<ServiceRecipientQuantityDto> serviceRecipients,
+        RoutingDestination destination = RoutingDestination.Order,
+        IPrice price = null)
     {
         Caption = catalogueItem.Name;
         Title = string.Format(TitleText, catalogueItem.CatalogueItemType.Name().ToLowerInvariant());
-        Advice = price.ProvisioningType switch
+        Advice = price?.ProvisioningType switch
         {
             ProvisioningType.Patient => AdviceTextPatient,
             _ => AdviceText,
@@ -35,6 +36,7 @@ public sealed class SublocationQuantityHubModel : NavBaseModel
 
         OrderingPartyName = organisation.Name;
         SubLocations = CreateSubLocations(serviceRecipients ?? []);
+        RoutingDestination = destination;
     }
 
     public string OrderingPartyName { get; init; }
@@ -42,6 +44,8 @@ public sealed class SublocationQuantityHubModel : NavBaseModel
     public SubLocationModel[] SubLocations { get; set; }
 
     public RoutingFields RoutingFields { get; init; }
+
+    public RoutingDestination RoutingDestination { get; init; }
 
     private static SubLocationModel[] CreateSubLocations(IEnumerable<ServiceRecipientQuantityDto> recipients)
     {

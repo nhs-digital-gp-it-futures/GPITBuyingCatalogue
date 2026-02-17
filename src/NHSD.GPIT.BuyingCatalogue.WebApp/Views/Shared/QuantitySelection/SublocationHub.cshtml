@@ -1,5 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities.SublocationQuantityHubModel
 
 @{
@@ -7,6 +9,18 @@
     var tableTitle = $"Sublocations for {Model.OrderingPartyName}";
     var internalOrgId = Model.RoutingFields.InternalOrgId;
     var callOffId = Model.RoutingFields.CallOffId;
+    var aspController = Model.RoutingDestination switch
+    {
+        RoutingDestination.Order => typeof(QuantityController).ControllerName(),
+        RoutingDestination.Competition => typeof(CompetitionHubController).ControllerName(),
+        _ => null,
+    };
+    var aspAction = Model.RoutingDestination switch
+    {
+        RoutingDestination.Order => nameof(QuantityController.SelectServiceSublocationRecipientQuantity),
+        RoutingDestination.Competition => nameof(CompetitionHubController.SelectServiceRecipientQuantity),
+        _ => null,
+    };
 }
 <partial name="Partials/_BackLink" model="Model"/>
 
@@ -33,8 +47,8 @@
                             </nhs-table-cell>
                             <nhs-table-cell>
                                 <a class="nhsuk-link"
-                                   asp-controller="@(typeof(QuantityController).ControllerName())"
-                                   asp-action="@(nameof(QuantityController.SelectServiceSublocationRecipientQuantity))"
+                                   asp-controller="@(aspController)"
+                                   asp-action="@(aspAction)"
                                    asp-route-catalogueItemId="@Model.RoutingFields.CatalogueItem"
                                    asp-route-parentOdsCode="@sublocationData.OdsCode"
                                    asp-route-internalOrgId="@Model.RoutingFields.InternalOrgId"

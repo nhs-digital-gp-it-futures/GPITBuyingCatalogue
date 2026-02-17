@@ -22,6 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/quantity/{catalogueItemId}/sublocations")]
     public class QuantityController : Controller
     {
+        private const string SublocationHubViewName = "QuantitySelection/SublocationHub";
+
         private readonly IGpPracticeService gpPracticeService;
         private readonly IOrderService orderService;
         private readonly IOrderQuantityService orderQuantityService;
@@ -60,8 +62,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var model = new SublocationQuantityHubModel(
                 order.OrderingParty,
                 orderItem.CatalogueItem,
-                orderItem.OrderItemPrice,
-                recipientDtos)
+                recipientDtos,
+                RoutingDestination.Order,
+                orderItem.OrderItemPrice)
             {
                 BackLink = Url.Action(
                     nameof(TaskListController.TaskList),
@@ -74,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 },
             };
 
-            return View(model);
+            return View(SublocationHubViewName, model);
         }
 
         [HttpPost]
