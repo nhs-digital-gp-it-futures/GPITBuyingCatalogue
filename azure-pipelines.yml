@@ -1,6 +1,4 @@
 variables:
-  - name: dockerVersion
-    value: '19.03.5'
   - name: dotnetVersion
     value: '10.0.101'
   - name: MSBUILDSINGLELOADCONTEXT
@@ -74,10 +72,6 @@ jobs:
         inputs:
           versionSpec: '14.x'
 
-      - task: DockerInstaller@0
-        inputs:
-          dockerVersion: $(dockerVersion)
-
       - task: Npm@1
         displayName: 'Run npm install'
         inputs:
@@ -132,12 +126,8 @@ jobs:
           modifyOutputPath: false
           zipAfterPublish: true
 
-      - task: PublishBuildArtifacts@1
-        displayName: Package BuyingCatalogueFunction
-        inputs:
-          PathtoPublish: "$(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
-          ArtifactName: "BuyingCatalogueFunction"
-          publishLocation: "Container"
+      - publish: $(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction
+        artifact: BuyingCatalogueFunction
 
       - task: Docker@2
         displayName: 'Docker: Build and Push'

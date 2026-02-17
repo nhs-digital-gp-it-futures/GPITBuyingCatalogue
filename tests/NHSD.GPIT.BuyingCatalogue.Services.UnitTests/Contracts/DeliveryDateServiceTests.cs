@@ -123,6 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         public static async Task SetDeliveryDates_UpdatesDatabase(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] IOrderService mockOrderService,
             DeliveryDateService service)
         {
             var initialDate = DateTime.Today;
@@ -141,7 +142,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                 .Select(x => new RecipientDeliveryDateDto(x.RecipientOdsCode, newDate))
                 .ToList();
 
-            await service.SetDeliveryDates(order.Id, catalogueItemId, deliveryDates);
+            mockOrderService.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier).Returns(new OrderWrapper(order));
+
+            await service.SetDeliveryDates(order.OrderingParty.InternalIdentifier, order.CallOffId, catalogueItemId, deliveryDates);
             context.ChangeTracker.Clear();
 
             Order dbOrder = await context.Orders.Include(x => x.OrderItems)
