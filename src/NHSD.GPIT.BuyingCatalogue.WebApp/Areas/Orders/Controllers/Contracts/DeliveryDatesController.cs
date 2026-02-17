@@ -193,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 .Select(x => new RecipientDeliveryDateDto(x.OdsCode, x.Date!.Value))
                 .ToList();
 
-            await deliveryDateService.SetDeliveryDates(order.Id, catalogueItemId, deliveryDates);
+            await deliveryDateService.SetDeliveryDates(internalOrgId, order.CallOffId, catalogueItemId, deliveryDates);
 
             var route = routingService.GetRoute(
                 RoutingPoint.EditDeliveryDates,
@@ -244,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                     .Select(x => new RecipientDeliveryDateDto(x.RecipientOdsCode, order.DeliveryDate!.Value))
                     .ToList();
 
-            await deliveryDateService.SetDeliveryDates(order.Id, catalogueItemId, dates);
+            await deliveryDateService.SetDeliveryDates(internalOrgId, order.CallOffId, catalogueItemId, dates);
 
             return RedirectToAction(
                 nameof(EditDates),

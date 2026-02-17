@@ -63,23 +63,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task SetDeliveryDates(int orderId, CatalogueItemId catalogueItemId, List<RecipientDeliveryDateDto> deliveryDates)
+        public async Task SetDeliveryDates(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, List<RecipientDeliveryDateDto> deliveryDates)
         {
-            List<OrderItemSublocationRecipient> orderItemSublocationRecipients = await dbContext
-                .OrderItemSublocationRecipients
-                .Where(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId)
-                .ToListAsync();
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
-            foreach (OrderItemSublocationRecipient recipient in orderItemSublocationRecipients)
+            var recipientsDict = wrapper.DetermineOrderRecipients(catalogueItemId)
+                .ToDictionary(recipient => recipient.RecipientOdsCode);
+
+            deliveryDates?.ForEach(date =>
             {
-                RecipientDeliveryDateDto dto =
-                    deliveryDates.FirstOrDefault(x => x.OdsCode == recipient.RecipientOdsCode);
-
-                if (dto != null)
+                if (recipientsDict.TryGetValue(date.OdsCode, out OrderSublocationRecipient recipient))
                 {
-                    recipient.DeliveryDate = dto.DeliveryDate;
+                    recipient.SetDeliveryDateForItem(catalogueItemId, date.DeliveryDate);
                 }
-            }
+            });
 
             await dbContext.SaveChangesAsync();
         }
