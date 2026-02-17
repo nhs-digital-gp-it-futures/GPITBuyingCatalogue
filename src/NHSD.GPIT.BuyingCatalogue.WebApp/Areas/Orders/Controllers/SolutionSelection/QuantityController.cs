@@ -23,11 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
     public class QuantityController : Controller
     {
         private const string SublocationHubViewName = "QuantitySelection/SublocationHub";
+        private const string ServiceSublocationRecipientViewName = "QuantitySelection/SelectServiceSublocationRecipientQuantity";
 
         private readonly IGpPracticeService gpPracticeService;
         private readonly IOrderService orderService;
         private readonly IOrderQuantityService orderQuantityService;
-        private readonly IRoutingService routingService;
         private readonly IOrderItemService orderItemService;
 
         public QuantityController(
@@ -40,7 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             this.gpPracticeService = gpPracticeService ?? throw new ArgumentNullException(nameof(gpPracticeService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderQuantityService = orderQuantityService ?? throw new ArgumentNullException(nameof(orderQuantityService));
-            this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
         }
 
@@ -143,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             if (orderItem.OrderItemPrice.ProvisioningType != ProvisioningType.Patient)
             {
-                return View(model);
+                return View(ServiceSublocationRecipientViewName, model);
             }
 
             var solution = order.GetSolutionOrderItem();
@@ -157,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 await SetPracticeSizes(model, parentOdsCode);
             }
 
-            return View(model);
+            return View(ServiceSublocationRecipientViewName, model);
         }
 
         [HttpPost("{parentOdsCode}")]

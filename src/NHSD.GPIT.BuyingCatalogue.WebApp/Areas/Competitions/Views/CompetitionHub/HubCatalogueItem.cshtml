@@ -23,8 +23,8 @@
             : priceConfirmUrl;
 
     var quantityUrl = Model.CatalogueItemType is CatalogueItemType.Solution
-        ? Url.Action(nameof(CompetitionHubController.SelectQuantity), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, source })
-        : Url.Action(nameof(CompetitionHubController.SelectQuantity), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, serviceId = Model.CatalogueItemId, source });
+        ? Url.Action(nameof(CompetitionHubController.CompetitionSublocationHub), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, source })
+        : Url.Action(nameof(CompetitionHubController.CompetitionSublocationHub), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, serviceId = Model.CatalogueItemId, source });
 
     var quantity = (Model.GlobalQuantity ?? Model.OdsOrganisations.Sum(x => x.Value)).GetValueOrDefault();
 }
