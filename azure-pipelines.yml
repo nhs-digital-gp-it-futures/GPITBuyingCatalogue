@@ -111,7 +111,7 @@ jobs:
           command: test
           projects: '**/*UnitTests.csproj'
           arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
-          publishTestResults: true
+          publishTestResults: false
 
       - task: SonarCloudAnalyze@3
       - task: SonarCloudPublish@3
