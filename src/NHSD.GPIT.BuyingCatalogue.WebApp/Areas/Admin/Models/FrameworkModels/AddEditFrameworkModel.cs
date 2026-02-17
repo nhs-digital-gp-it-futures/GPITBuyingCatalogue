@@ -13,14 +13,14 @@ public class AddEditFrameworkModel : NavBaseModel
 {
     public static readonly PageTitleModel AddPageTitle = new()
     {
-        Title = "Add a framework",
-        Advice = "Provide details for this framework.",
+        Title = "Add a contracting vehicle",
+        Advice = "Provide details for this contracting vehicle.",
     };
 
     public static readonly PageTitleModel EditPageTitle = new()
     {
-        Title = "Edit framework",
-        Advice = "These are the current details for this framework.",
+        Title = "Edit Contracting vehicle",
+        Advice = "These are the current details for this contracting vehicle.",
     };
 
     public AddEditFrameworkModel()
