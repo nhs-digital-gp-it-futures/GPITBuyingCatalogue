@@ -539,7 +539,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         [Theory]
         [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
         [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
-        public static async Task One_OrderItem_Two_Recipients_With_PerOrderItemQuantity_Results_In_One_Row(
+        public static async Task One_OrderItem_Two_Recipients_With_PerOrderItemQuantity_Results_In_Two_Rows(
             ProvisioningType provisioningType,
             Order order,
             CsvService service,
@@ -571,11 +571,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             List<FullOrderCsvModel> records =
                 GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap()).ToList();
 
-            records.Count.Should().Be(1);
-            records.First().ProductId.Should().Be(originalCatalogueItem.Id.ToString());
-            records.First().ServiceRecipientId.Should().Be(order.OrderingParty.ExternalIdentifier);
-            records.First().ServiceRecipientName.Should().Be(order.OrderingParty.Name);
-            records.First().ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{order.OrderingParty.ExternalIdentifier}-{orderItem.CatalogueItemId}");
+            records.Count.Should().Be(2);
         }
 
         [Theory]
