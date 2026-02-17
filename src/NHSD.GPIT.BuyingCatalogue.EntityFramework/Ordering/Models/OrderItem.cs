@@ -46,7 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             OrderItemPrice = OrderItemPrice?.Clone(),
             EstimationPeriod = EstimationPeriod,
             CatalogueItem = CatalogueItem,
-            Quantity = Quantity,
             OrderItemFunding = OrderItemFunding?.Clone(),
         };
     }
