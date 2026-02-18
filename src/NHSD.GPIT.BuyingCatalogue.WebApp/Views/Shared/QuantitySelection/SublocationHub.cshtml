@@ -7,8 +7,6 @@
 @{
     ViewBag.Title = Model.Title;
     var tableTitle = $"Sublocations for {Model.OrderingPartyName}";
-    var internalOrgId = Model.RoutingFields.InternalOrgId;
-    var callOffId = Model.RoutingFields.CallOffId;
     var aspController = Model.RoutingDestination switch
     {
         RoutingDestination.Order => typeof(QuantityController).ControllerName(),

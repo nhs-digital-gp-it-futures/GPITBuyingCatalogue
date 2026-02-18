@@ -272,20 +272,6 @@ public class CompetitionHubController : Controller
                 SolutionId = solutionId, InternalOrgId = internalOrgId, CompetitionId = competitionId,
             },
         };
-        // (IPrice price, CatalogueItem catalogueItem, int? quantity) =
-        //     GetGlobalQuantityDetails(competitionSolution, serviceId);
-        //
-        // if (price?.IsPerServiceRecipient() ?? false)
-        // {
-        //     return RedirectToAction(
-        //         nameof(SelectServiceRecipientQuantity),
-        //         new { internalOrgId, competitionId, solutionId, serviceId });
-        // }
-        //
-        // var model = new SelectOrderItemQuantityModel(catalogueItem, price, quantity)
-        // {
-        //     BackLink = Url.Action(nameof(Hub), new { internalOrgId, competitionId, solutionId }),
-        // };
 
         return View(SublocationHubViewName, model);
     }

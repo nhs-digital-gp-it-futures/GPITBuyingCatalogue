@@ -34,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             IGpPracticeService gpPracticeService,
             IOrderService orderService,
             IOrderQuantityService orderQuantityService,
-            IRoutingService routingService,
             IOrderItemService orderItemService)
         {
             this.gpPracticeService = gpPracticeService ?? throw new ArgumentNullException(nameof(gpPracticeService));
