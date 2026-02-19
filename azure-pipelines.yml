@@ -5,6 +5,8 @@ variables:
     value: '1'
   - name: buildConfiguration
     value: Release
+  - name: SonarQubePath
+    value: $(Agent.BuildDirectory)/.sonarqube
   - group: dev-acr-secrets
 
 trigger:
@@ -37,15 +39,70 @@ jobs:
       - script: echo semVer $(setVersionStep.semVer)
         name: echovar
 
-  - job: dockerBuildAndPush
-    displayName: Build and Package
-    variables:
-      semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
-      ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
-        latestTag: latest
-      ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
-        latestTag: latestbuild
+  - job: database
+    displayName: Create DACPAC
+    dependsOn: version
+    pool:
+      vmImage: 'ubuntu-latest'
 
+    steps:
+      - task: UseDotNet@2
+        displayName: 'Use DotNet $(dotnetVersion)'
+        inputs:
+          version: $(dotnetVersion)
+          includePreviewVersions: false
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Run dotnet restore'
+        inputs:
+          command: restore
+          projects: |
+            NHSD.GPIT.BuyingCatalogue.Database.sln
+          feedsToUse: config
+          nugetConfigPath: 'NuGet.config'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Run dotnet build'
+        inputs:
+          command: build
+          projects: |
+            NHSD.GPIT.BuyingCatalogue.Database.sln
+          arguments: '--no-restore --configuration $(buildConfiguration)'
+
+      - task: CopyFiles@2
+        displayName: Copy DACPAC
+        inputs:
+          SourceFolder: 'database/NHSD.GPITBuyingCatalogue.Database'
+          Contents: '**/*.dacpac'
+          TargetFolder: '$(build.artifactStagingDirectory)/dacpacs'
+          CleanTargetFolder: false
+          OverWrite: true
+          flattenFolders: true
+
+      - publish: $(build.artifactStagingDirectory)/dacpacs
+        displayName: Publish DACPAC
+        artifact: dacpacs
+
+  - job: publishTerraform
+    displayName: Publish Terraform
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    steps:
+      - publish: terraform/functionapp
+        displayName: Publish Terraform - Function App
+        artifact: terraform-functionapp
+
+      - publish: terraform/webapp
+        displayName: Publish Terraform - WebApp
+        artifact: build-artifact
+
+      - publish: terraform/core
+        displayName: Publish Terraform - Core
+        artifact: core-terraform
+
+  - job: compile
+    displayName: Compile source code
     dependsOn: version
     pool:
       vmImage: 'ubuntu-latest'
@@ -63,20 +120,8 @@ jobs:
           command: restore
           projects: |
             NHSD.GPIT.BuyingCatalogue.sln
-            NHSD.GPIT.BuyingCatalogue.Database.sln
           feedsToUse: config
           nugetConfigPath: 'NuGet.config'
-
-      - task: NodeTool@0
-        displayName: 'Install Node.js'
-        inputs:
-          versionSpec: '14.x'
-
-      - task: Npm@1
-        displayName: 'Run npm install'
-        inputs:
-          command: 'install'
-          workingDir: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
       - task: SonarCloudPrepare@3
         inputs:
@@ -86,7 +131,7 @@ jobs:
           projectKey: '$(SonarKey)'
           projectName: '$(SonarProject)'
           extraProperties: |
-            sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/tests/**/coverage.opencover.xml
+            sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/coverage_*/**/coverage.opencover.xml
             sonar.exclusions=src/NHSD.GPIT.BuyingCatalogue.UI.Components/**,src/NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp/**,**/*.cshtml,**/*.ts,tests/**
 
       - task: DotNetCoreCLI@2
@@ -95,26 +140,7 @@ jobs:
           command: build
           projects: |
             NHSD.GPIT.BuyingCatalogue.sln
-            NHSD.GPIT.BuyingCatalogue.Database.sln
           arguments: '--no-restore --configuration $(buildConfiguration)'
-
-      - task: gulp@0
-        displayName: 'Run gulp min'
-        inputs:
-          gulpFile: 'src/NHSD.GPIT.BuyingCatalogue.WebApp/gulpfile.js'
-          targets: 'min'
-          workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
-
-      - task: DotNetCoreCLI@2
-        displayName: 'Run unit tests'
-        inputs:
-          command: test
-          projects: '**/*UnitTests.csproj'
-          arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
-          publishTestResults: false
-
-      - task: SonarCloudAnalyze@3
-      - task: SonarCloudPublish@3
 
       - task: DotNetCoreCLI@2
         displayName: Publish BuyingCatalogueFunction
@@ -126,8 +152,178 @@ jobs:
           modifyOutputPath: false
           zipAfterPublish: true
 
+      - bash: |
+          NUGET_ROOT=$(dotnet nuget locals global-packages -l | sed -n 's/global-packages: //p')
+          candidate=$(find "$NUGET_ROOT" -type f -iname 'coverlet.collector*.dll' -print -quit || true)
+          ADAPTER_DIR=$(dirname "$candidate")
+          echo "Found coverlet path: $ADAPTER_DIR"
+          echo "##vso[task.setvariable variable=coverlet_path;]$ADAPTER_DIR"
+        displayName: Find Coverlet path
+
+      - task: CopyFiles@2
+        displayName: 'Gather test DLLs'
+        inputs:
+          SourceFolder: '$(Build.SourcesDirectory)'
+          Contents: 'tests/**/*UnitTests*/bin/$(buildConfiguration)/**'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/test_binaries'
+
+      - task: CopyFiles@2
+        displayName: 'Gather coverlet'
+        inputs:
+          SourceFolder: '$(coverlet_path)'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/coverlet'
+
       - publish: $(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction
+        displayName: Publish Function App
         artifact: BuyingCatalogueFunction
+
+      - publish: $(SonarQubePath)
+        displayName: Publish SonarQube
+        artifact: sonarqube
+
+      - publish: $(Build.ArtifactStagingDirectory)/test_binaries
+        displayName: Publish Tests
+        artifact: test_binaries
+
+      - publish: $(Build.ArtifactStagingDirectory)/coverlet
+        displayName: Publish Coverlet
+        artifact: coverlet
+
+  - job: runTests
+    displayName: Run tests
+    dependsOn: compile
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      parallel: 6
+    variables:
+      - name: file_dlls
+        value: $(Agent.TempDirectory)/dlls.txt
+      - name: file_tests
+        value: $(Agent.TempDirectory)/all_tests.txt
+      - name: runner_tests
+        value: $(Agent.TempDirectory)/runner_tests.txt
+      - name: coverlet_path
+        value: $(Pipeline.Workspace)/coverlet
+    steps:
+      - checkout: none
+
+      - download: current
+        artifact: test_binaries
+        displayName: Download test artifacts
+
+      - download: current
+        artifact: coverlet
+        displayName: Download coverlet
+
+      - task: UseDotNet@2
+        displayName: 'Use DotNet $(dotnetVersion)'
+        inputs:
+          version: $(dotnetVersion)
+          includePreviewVersions: false
+
+      - bash: |
+          find $(Pipeline.Workspace)/test_binaries \
+            -path "*bin/$(buildConfiguration)/net*/*.UnitTests.dll" \
+            ! -path "*/ref/*" \
+            | tr '\n' ' ' \
+            > $(file_dlls)
+          
+          echo "Discovered DLLs:"
+          cat $(file_dlls)
+        displayName: Scan test DLLS
+
+      - bash: |
+          dotnet test $(cat $(file_dlls)) \
+            --list-tests 2>/dev/null \
+            | grep -E "^[[:space:]]{4}[^[:space:]]" \
+            | sed 's/^[[:space:]]*//' \
+            > $(file_tests)
+          
+          awk "NR % $(System.TotalJobsInPhase) == ($(System.JobPositionInPhase) - 1)" \
+            $(file_tests) \
+            | sed 's/[(].*$//' \
+            | sed 's/[[:space:]]\+$//' \
+            | awk '!seen[$0]++' > $(runner_tests)          
+          
+          echo "Total tests: $(wc -l < $(file_tests))"
+          echo "This runner's tests: $(wc -l < $(runner_tests))"
+        displayName: Partition tests
+
+      - bash: |
+          FILTER=$(awk '{printf "%sFullyQualifiedName=%s", (NR>1 ? "|" : ""), $0}' $(runner_tests))
+          
+          cat > $(Agent.TempDirectory)/partition.runsettings <<EOF
+          <?xml version="1.0" encoding="utf-8"?>
+          <RunSettings>
+            <RunConfiguration>
+              <TestCaseFilter>${FILTER}</TestCaseFilter>
+            </RunConfiguration>
+          </RunSettings>
+          EOF
+        displayName: Create test runsettings filter
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Run unit tests'
+        inputs:
+          command: test
+          projects: '$(Pipeline.Workspace)/test_binaries/**/bin/$(buildConfiguration)/net*/*.UnitTests.dll'
+          arguments: '--settings $(Agent.TempDirectory)/partition.runsettings --collect:"XPlat Code Coverage;Format=opencover" --test-adapter-path "$(coverlet_path)" -- xunit.parallelizeTestCollections=true'
+          publishTestResults: false
+
+      - publish: $(Build.SourcesDirectory)/TestResults
+        displayName: Publish coverage results
+        artifact: coverage_$(System.JobPositionInPhase)
+
+  - job: publishOutput
+    displayName: Publish output
+    dependsOn:
+      - version
+      - compile
+      - runTests
+    variables:
+      semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
+      ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
+        latestTag: latest
+      ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
+        latestTag: latestbuild
+    steps:
+      - download: current
+        artifact: sonarqube
+        displayName: Download SonarQube files
+
+      - download: current
+        patterns: |
+          **/coverage.opencover.xml
+        displayName: Download code coverage results
+
+      - task: SonarCloudPrepare@3
+        inputs:
+          SonarCloud: 'SonarCloud'
+          organization: '$(SonarOrganization)'
+          scannerMode: 'dotnet'
+          projectKey: '$(SonarKey)'
+          projectName: '$(SonarProject)'
+          extraProperties: |
+            sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/coverage_*/**/coverage.opencover.xml
+            sonar.exclusions=src/NHSD.GPIT.BuyingCatalogue.UI.Components/**,src/NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp/**,**/*.cshtml,**/*.ts,tests/**
+
+      - task: CopyFiles@2
+        displayName: 'Move SonarQube'
+        inputs:
+          SourceFolder: '$(Pipeline.Workspace)/sonarqube'
+          Contents: '**'
+          TargetFolder: '$(SonarQubePath)'
+
+      - task: CopyFiles@2
+        displayName: 'Move Code Coverage'
+        inputs:
+          SourceFolder: '$(Pipeline.Workspace)'
+          Contents: '**/coverage.opencover.xml'
+          TargetFolder: '$(Build.SourcesDirectory)'
+
+      - task: SonarCloudAnalyze@3
+      - task: SonarCloudPublish@3
 
       - task: Docker@2
         displayName: 'Docker: Build and Push'
@@ -141,47 +337,3 @@ jobs:
           tags: |
             $(semVer)
             $(latestTag)
-
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: |
-            $release = "$(semVer)"
-            mkdir $(Build.ArtifactStagingDirectory)/code
-            $release | Out-File $(Build.ArtifactStagingDirectory)/code/release.txt
-
-      - task: CopyFiles@2
-        displayName: Copy DACPAC
-        inputs:
-          SourceFolder: 'database/NHSD.GPITBuyingCatalogue.Database'
-          Contents: '**/*.dacpac'
-          TargetFolder: '$(build.artifactStagingDirectory)/dacpacs'
-          CleanTargetFolder: false
-          OverWrite: true
-          flattenFolders: true
-
-      - publish: $(build.artifactStagingDirectory)/code
-        displayName: Publish Code Version
-        artifact: code-version
-
-      - publish: $(build.artifactStagingDirectory)/dacpacs
-        displayName: Publish DACPAC
-        artifact: dacpacs
-
-  - job: createBuildArtifact
-    displayName: Publish Terraform
-    pool:
-      vmImage: 'ubuntu-latest'
-
-    steps:
-      - publish: terraform/functionapp
-        displayName: Publish Terraform - Function App
-        artifact: terraform-functionapp
-
-      - publish: terraform/webapp
-        displayName: Publish Terraform - WebApp
-        artifact: build-artifact
-
-      - publish: terraform/core
-        displayName: Publish Terraform - Core
-        artifact: core-terraform
