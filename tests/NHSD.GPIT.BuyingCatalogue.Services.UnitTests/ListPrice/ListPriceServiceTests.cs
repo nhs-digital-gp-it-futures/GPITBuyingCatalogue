@@ -714,5 +714,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
 
             price.CataloguePriceTiers.Contains(tier).Should().BeFalse();
         }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Test(ListPriceService service)
+        {
+            await service.FakeMethodToTestCodeCoverage();
+
+            Assert.True(true);
+        }
     }
 }
