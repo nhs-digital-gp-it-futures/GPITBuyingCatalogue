@@ -39,7 +39,7 @@
                         </h2>
 
                         <span class="detail">
-                            <strong>@Model.OrderItemsSelectable.Where(x => x.FundingType != OrderItemFundingType.None).Count()</strong> of <strong>@Model.OrderItemsSelectable.Count()</strong> started
+                            <strong>@Model.OrderItemsSelectable.Count(x => x.FundingType != OrderItemFundingType.None)</strong> of <strong>@Model.OrderItemsSelectable.Count()</strong> started
                         </span>
                     </div>
 
