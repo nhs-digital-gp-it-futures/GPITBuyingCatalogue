@@ -251,6 +251,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task FakeMethodToTestCodeCoverage()
+        {
+            var results = dbContext.AspNetUsers;
+            await Task.Yield();
+        }
+
         private Task<CatalogueItem> GetCatalogueItemWithListPrices(CatalogueItemId catalogueItemId, bool tracked)
         {
             var baseQuery = dbContext.CatalogueItems

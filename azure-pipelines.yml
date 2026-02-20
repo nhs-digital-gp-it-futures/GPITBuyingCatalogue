@@ -277,6 +277,8 @@ jobs:
 
   - job: publishOutput
     displayName: Publish output
+    pool:
+      vmImage: 'ubuntu-latest'
     dependsOn:
       - version
       - compile
