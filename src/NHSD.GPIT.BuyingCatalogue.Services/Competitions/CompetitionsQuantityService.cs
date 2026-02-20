@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -63,16 +64,9 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
         var solution = await GetSolution(internalOrgId, competitionId, solutionId);
         if (solution is null) return;
 
-        solution.Quantities = serviceRecipients
-            .Select(x =>
-                new CompetitionItemQuantity
-                {
-                    CompetitionId = competitionId,
-                    ParentSublocationOdsCode = x.ParentSublocationOdsCode,
-                    RecipientOdsCode = x.RecipientOdsCode,
-                    Quantity = x.Quantity!.Value,
-                })
-            .ToList();
+        var quantitiesDict = solution.Quantities.ToDictionary(x => x.RecipientOdsCode);
+
+        serviceRecipients.ForEach(recipient => UpdateRecipientQuantity(recipient, solution, competitionId, quantitiesDict));
 
         if (dbContext.ChangeTracker.HasChanges())
             await dbContext.SaveChangesAsync();
@@ -88,16 +82,9 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
         var service = await GetSolutionService(internalOrgId, competitionId, solutionId, serviceId);
         if (service is null) return;
 
-        service.Quantities = serviceRecipients
-            .Select(x =>
-                new CompetitionItemQuantity
-                {
-                    CompetitionId = competitionId,
-                    ParentSublocationOdsCode = x.ParentSublocationOdsCode,
-                    RecipientOdsCode = x.RecipientOdsCode,
-                    Quantity = x.Quantity!.Value,
-                })
-            .ToList();
+        var quantitiesDict = service.Quantities.ToDictionary(x => x.RecipientOdsCode);
+
+        serviceRecipients.ForEach(recipient => UpdateRecipientQuantity(recipient, service, competitionId, quantitiesDict));
 
         await dbContext.SaveChangesAsync();
     }
@@ -126,6 +113,31 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
         service.Quantities.Clear();
 
         await dbContext.SaveChangesAsync();
+    }
+
+    private static void UpdateRecipientQuantity(
+        ServiceRecipientQuantityDto recipient,
+        CompetitionCatalogueItem item,
+        int competitionId,
+        Dictionary<string, CompetitionItemQuantity> quantitiesDict)
+    {
+        var competitionItemQuantity = new CompetitionItemQuantity
+        {
+            CompetitionId = competitionId,
+            ParentSublocationOdsCode = recipient.ParentSublocationOdsCode,
+            RecipientOdsCode = recipient.RecipientOdsCode,
+            Quantity = recipient.Quantity,
+        };
+        var recipientQuantityExists = quantitiesDict.ContainsKey(recipient.RecipientOdsCode);
+        if (!recipientQuantityExists)
+        {
+            item.Quantities.Add(competitionItemQuantity);
+        }
+        else
+        {
+            quantitiesDict[recipient.RecipientOdsCode] = competitionItemQuantity;
+            item.Quantities = quantitiesDict.Values.ToList();
+        }
     }
 
     private async Task<CompetitionSolution> GetSolution(

@@ -225,7 +225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var route = routingService.GetRoute(
                 RoutingPoint.EditPrice,
                 orderWrapper,
-                new RouteValues(internalOrgId, callOffId) { Source = model.Source });
+                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
         }

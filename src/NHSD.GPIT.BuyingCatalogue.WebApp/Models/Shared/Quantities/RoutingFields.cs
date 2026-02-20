@@ -12,5 +12,7 @@ public class RoutingFields
 
     public CatalogueItemId? SolutionId { get; init; }
 
+    public CatalogueItemId? ServiceId { get; init; }
+
     public int? CompetitionId { get; init; }
 }

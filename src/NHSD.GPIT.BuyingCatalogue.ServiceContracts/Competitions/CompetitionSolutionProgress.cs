@@ -21,11 +21,11 @@ public readonly struct CompetitionSolutionProgress(
     {
         get
         {
-            if (competitionSolution.Price == null && (!competitionSolution.Services.Any()
+            if (competitionSolution.Price == null && (competitionSolution.Services.Count == 0
                     || competitionSolution.Services.All(x => x.Price == null)))
                 return TaskProgress.NotStarted;
 
-            return (competitionSolution.Price != null && (!competitionSolution.Services.Any()
+            return (competitionSolution.Price != null && (competitionSolution.Services.Count == 0
                 || competitionSolution.Services.All(x => x.Price != null)))
                 ? TaskProgress.Completed
                 : TaskProgress.InProgress;
@@ -40,11 +40,14 @@ public readonly struct CompetitionSolutionProgress(
                 CompetitionSolution solution,
                 ICollection<CompetitionSublocationRecipient> recipients)
             {
-                return (solution.Quantity.HasValue || (solution.Quantities.Any()
-                        && recipients.All(x => solution.Quantities.Any(y => y.RecipientOdsCode == x.RecipientOdsCode))))
-                    && (!solution.Services.Any()
-                        || solution.Services.All(x => x.Quantity.HasValue || (x.Quantities.Any()
-                            && recipients.All(y => x.Quantities.Any(z => z.RecipientOdsCode == y.RecipientOdsCode)))));
+                return recipients.All(recipient =>
+                        solution.Quantities.Where(quantity => quantity.RecipientOdsCode == recipient.RecipientOdsCode)
+                            .All(quantity => quantity.Quantity.HasValue))
+                    && (solution.Services.Count == 0 || recipients.All(recipient =>
+                        solution.Services.All(service =>
+                            service.Quantities
+                                .Where(quantity => quantity.RecipientOdsCode == recipient.RecipientOdsCode)
+                                .All(quantity => quantity.Quantity.HasValue))));
             }
 
             if (PriceProgress is not TaskProgress.Completed) return TaskProgress.CannotStart;

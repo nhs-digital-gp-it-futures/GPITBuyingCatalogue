@@ -32,6 +32,7 @@ public class CompetitionHubController : Controller
     private const string ServiceSublocationRecipientViewName = "QuantitySelection/SelectServiceSublocationRecipientQuantity";
     private const string SelectAssociatedServicesViewName = "Services/SelectAssociatedServices";
     private const string SublocationHubViewName = "QuantitySelection/SublocationHub";
+    private const string ConfirmQuantitiesViewName = "QuantitySelection/ConfirmQuantities";
 
     private readonly IOdsService odsService;
     private readonly ICompetitionsService competitionsService;
@@ -250,26 +251,34 @@ public class CompetitionHubController : Controller
         CatalogueItemId? serviceId = null)
     {
         var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
-        var recipients = competition.FlattenedRecipients
-            .Select(recipient => new ServiceRecipientQuantityDto(
-                recipient.ParentSublocationOdsCode,
-                recipient.RecipientOdsCode,
-                recipient.RecipientOrganisation.Name,
-                null));
-        var catalogueItem =
+        var competitionSolution =
             competition.CompetitionSolutions.FirstOrDefault(solution => solution.CatalogueItemId == solutionId);
+
+        CompetitionCatalogueItem service = null;
+        if (serviceId is not null)
+        {
+            service = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
+            if (service is null) throw new ArgumentException("Service not found");
+        }
+
+        var quantities = service?.Quantities ?? competitionSolution?.Quantities;
+        var recipients = await GetRecipientQuantities(
+            competition.FlattenedRecipients.ToList(),
+            quantities?.ToList(),
+            internalOrgId);
+        var catalogueItem = service != null ? service.CatalogueItem : competitionSolution?.CatalogueItem;
 
         var model = new SublocationQuantityHubModel(
             competition.Organisation,
-            catalogueItem?.CatalogueItem,
+            catalogueItem,
             recipients,
             RoutingDestination.Competition)
         {
             BackLink = Url.Action(nameof(Hub), new { internalOrgId, competitionId, solutionId }),
-            Caption = string.Empty,
+            Caption = catalogueItem?.Name,
             RoutingFields = new RoutingFields
             {
-                SolutionId = solutionId, InternalOrgId = internalOrgId, CompetitionId = competitionId,
+                SolutionId = solutionId, InternalOrgId = internalOrgId, CompetitionId = competitionId, ServiceId = serviceId,
             },
         };
 
@@ -284,30 +293,72 @@ public class CompetitionHubController : Controller
         SelectOrderItemQuantityModel model,
         CatalogueItemId? serviceId = null)
     {
-        if (!ModelState.IsValid)
+        var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
+        var competitionSolution =
+            competition.CompetitionSolutions.FirstOrDefault(solution => solution.CatalogueItemId == solutionId);
+
+        CompetitionCatalogueItem service = null;
+        if (serviceId is not null)
         {
-            return View(OrderItemViewName, model);
+            service = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
+            if (service is null) throw new ArgumentException("Service not found");
         }
 
-        if (serviceId is null)
+        var quantities = service?.Quantities ?? competitionSolution?.Quantities;
+
+        var recipients = await GetRecipientQuantities(
+            competition.FlattenedRecipients.ToList(),
+            quantities?.ToList(),
+            internalOrgId);
+
+        return !recipients.All(recipient => recipient.Quantity.HasValue) ?
+             RedirectToAction(nameof(Hub), new { internalOrgId, competitionId, solutionId })
+             : RedirectToAction(nameof(ConfirmQuantities), new { internalOrgId, competitionId, solutionId, serviceId });
+    }
+
+    [HttpGet("sublocations/confirm-quantities")]
+    public async Task<IActionResult> ConfirmQuantities(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId? serviceId = null)
+    {
+        var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
+        var competitionSolution =
+            competition.CompetitionSolutions.FirstOrDefault(solution => solution.CatalogueItemId == solutionId);
+
+        CompetitionCatalogueItem service = null;
+        if (serviceId is not null)
         {
-            await competitionsQuantityService.SetSolutionGlobalQuantity(
-                internalOrgId,
-                competitionId,
-                solutionId,
-                int.Parse(model.Quantity));
-        }
-        else
-        {
-            await competitionsQuantityService.SetServiceGlobalQuantity(
-                internalOrgId,
-                competitionId,
-                solutionId,
-                serviceId.GetValueOrDefault(),
-                int.Parse(model.Quantity));
+            service = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
+            if (service is null) throw new ArgumentException("Service not found");
         }
 
-        return RedirectToAction(nameof(CompetitionSublocationHub), new { internalOrgId, competitionId, solutionId });
+        var quantities = service?.Quantities ?? competitionSolution?.Quantities;
+        var catalogueItem = service?.CatalogueItem ?? competitionSolution?.CatalogueItem;
+        var price = service?.Price ?? competitionSolution?.Price;
+
+        var recipients = await GetRecipientQuantities(
+            competition.FlattenedRecipients.ToList(),
+            quantities?.ToList(),
+            internalOrgId);
+
+        var model = new ConfirmQuantitiesModel(
+            catalogueItem,
+            price,
+            recipients.ToList())
+        {
+            BackLink = Url.Action(
+                nameof(CompetitionSublocationHub),
+                typeof(CompetitionHubController).ControllerName(),
+                new { internalOrgId, competitionId, solutionId, serviceId }),
+            ContinueLink = Url.Action(
+                nameof(Hub),
+                typeof(CompetitionHubController).ControllerName(),
+                new { internalOrgId, competitionId, solutionId, serviceId }),
+        };
+
+        return View(ConfirmQuantitiesViewName, model);
     }
 
     [HttpGet("{solutionId}/select-recipient-quantity/{parentOdsCode}")]
@@ -326,7 +377,7 @@ public class CompetitionHubController : Controller
 
         var model = new SelectServiceRecipientQuantityModel(item, price, recipientQuantities)
         {
-            BackLink = Url.Action(nameof(CompetitionSublocationHub), new { internalOrgId, competitionId, solutionId }),
+            BackLink = Url.Action(nameof(CompetitionSublocationHub), new { internalOrgId, competitionId, solutionId, serviceId }),
         };
 
         return View(ServiceSublocationRecipientViewName, model);
@@ -352,7 +403,7 @@ public class CompetitionHubController : Controller
                 ParentSublocationOdsCode = parentOdsCode,
                 RecipientOdsCode = x.RecipientOdsCode,
                 Quantity = string.IsNullOrWhiteSpace(x.InputQuantity)
-                    ? x.Quantity
+                    ? null
                     : int.Parse(x.InputQuantity),
             })
             .ToList();
@@ -375,7 +426,7 @@ public class CompetitionHubController : Controller
                 quantities);
         }
 
-        return RedirectToAction(nameof(CompetitionSublocationHub), new { internalOrgId, competitionId, solutionId });
+        return RedirectToAction(nameof(CompetitionSublocationHub), new { internalOrgId, competitionId, solutionId, serviceId });
     }
 
     [HttpGet("{solutionId}/associated-services")]
@@ -459,7 +510,7 @@ public class CompetitionHubController : Controller
         IReadOnlyList<CompetitionSublocationRecipient> competitionRecipients,
         ICollection<CompetitionItemQuantity> recipientQuantities,
         string internalOrgId,
-        string parentOdsCode)
+        string parentOdsCode = null)
     {
         List<string> competitionRecipientIds = competitionRecipients.Select(x => x.RecipientOdsCode).ToList();
         var practiceListSizes = await gpPracticeService.GetNumberOfPatients(competitionRecipientIds);
@@ -469,7 +520,7 @@ public class CompetitionHubController : Controller
                 competitionRecipientIds);
 
         return competitionRecipients
-            .Where(x => x.ParentSublocationOdsCode == parentOdsCode)
+            .Where(x => parentOdsCode == null || x.ParentSublocationOdsCode == parentOdsCode)
             .Select(x =>
         {
             var quantity = recipientQuantities?.FirstOrDefault(y => x.RecipientOdsCode == y.RecipientOdsCode)

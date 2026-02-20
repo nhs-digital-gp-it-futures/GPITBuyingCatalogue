@@ -8,13 +8,13 @@ public class OrderingInformationItem
     public OrderingInformationItem(
         CatalogueItem catalogueItem,
         IPrice price,
-        int quantity)
+        int? quantity)
     {
         CatalogueItemType = catalogueItem.CatalogueItemType;
         CatalogueItemName = catalogueItem.Name;
         SupplierName = catalogueItem.Supplier.LegalName;
         Price = price;
-        Quantity = quantity;
+        Quantity = quantity ?? 0;
     }
 
     public CatalogueItemType CatalogueItemType { get; set; }
