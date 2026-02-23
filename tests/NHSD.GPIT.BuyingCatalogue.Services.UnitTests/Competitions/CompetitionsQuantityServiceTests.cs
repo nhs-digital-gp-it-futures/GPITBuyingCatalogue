@@ -33,42 +33,6 @@ public static class CompetitionsQuantityServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task SetSolutionGlobalQuantity_SetsQuantity(
-        Organisation organisation,
-        Competition competition,
-        Solution solution,
-        int quantity,
-        [Frozen] BuyingCatalogueDbContext context,
-        CompetitionsQuantityService service)
-    {
-        competition.OrganisationId = organisation.Id;
-        competition.CompetitionSolutions.Add(new CompetitionSolution(competition.Id, solution.CatalogueItemId) { IsShortlisted = true });
-
-        context.Solutions.Add(solution);
-        context.Organisations.Add(organisation);
-        context.Competitions.Add(competition);
-
-        await context.SaveChangesAsync();
-
-        context.ChangeTracker.Clear();
-
-        await service.SetSolutionGlobalQuantity(
-            organisation.InternalIdentifier,
-            competition.Id,
-            solution.CatalogueItemId,
-            quantity);
-
-        var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.Quantities)
-            .FirstOrDefaultAsync(x => x.Id == competition.Id);
-
-        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
-
-        updatedSolution.Quantity.Should().Be(quantity);
-    }
-
-    [Theory]
-    [MockInMemoryDbAutoData]
     public static async Task SetSolutionRecipientQuantity_SetsQuantity(
         Organisation organisation,
         Competition competition,
@@ -104,56 +68,6 @@ public static class CompetitionsQuantityServiceTests
         var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
 
         updatedSolution.Quantities.Should().HaveCount(odsOrganisations.Count);
-    }
-
-    [Theory]
-    [MockInMemoryDbAutoData]
-    public static async Task SetServiceGlobalQuantity_SetsQuantity(
-        Organisation organisation,
-        Competition competition,
-        Solution solution,
-        AdditionalService additionalService,
-        int quantity,
-        [Frozen] BuyingCatalogueDbContext context,
-        CompetitionsQuantityService service)
-    {
-        competition.OrganisationId = organisation.Id;
-        competition.CompetitionSolutions.Add(
-            new CompetitionSolution(competition.Id, solution.CatalogueItemId)
-            {
-                IsShortlisted = true,
-                Services = new List<CompetitionCatalogueItem>
-                {
-                    new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId, true),
-                },
-            });
-
-        context.AdditionalServices.Add(additionalService);
-        context.Solutions.Add(solution);
-        context.Organisations.Add(organisation);
-        context.Competitions.Add(competition);
-
-        await context.SaveChangesAsync();
-
-        context.ChangeTracker.Clear();
-
-        await service.SetServiceGlobalQuantity(
-            organisation.InternalIdentifier,
-            competition.Id,
-            solution.CatalogueItemId,
-            additionalService.CatalogueItemId,
-            quantity);
-
-        var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.Services)
-            .ThenInclude(x => x.Quantities)
-            .FirstOrDefaultAsync(x => x.Id == competition.Id);
-
-        var updatedSolution = updatedCompetition.CompetitionSolutions.First(x => x.CatalogueItemId == solution.CatalogueItemId);
-
-        var updatedService = updatedSolution.Services.First(x => x.CatalogueItemId == additionalService.CatalogueItemId);
-
-        updatedService.Quantity.Should().Be(quantity);
     }
 
     [Theory]

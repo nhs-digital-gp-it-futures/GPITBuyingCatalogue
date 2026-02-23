@@ -44,7 +44,7 @@ public class CompetitionSolution : CompetitionCatalogueItem
         var price = Price as IPrice;
 
         var solutionMonthlyCost =
-            price.CalculateCostPerMonth(Quantity ?? Quantities.Sum(x => x.Quantity ?? 0));
+            price?.CalculateCostPerMonth(Quantity ?? Quantities.Sum(x => x.Quantity ?? 0));
         var servicesMonthlyCost = Services?.Sum(x =>
             ((IPrice)x.Price)?.CalculateCostPerMonth(x.Quantity ?? x.Quantities.Sum(y => y.Quantity ?? 0)));
         var oneOffCost = AssociatedServices

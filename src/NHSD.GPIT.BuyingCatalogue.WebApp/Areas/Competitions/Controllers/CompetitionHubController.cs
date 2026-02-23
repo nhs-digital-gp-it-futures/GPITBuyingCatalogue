@@ -257,14 +257,14 @@ public class CompetitionHubController : Controller
         CompetitionCatalogueItem service = null;
         if (serviceId is not null)
         {
-            service = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
-            if (service is null) throw new ArgumentException("Service not found");
+            service = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId)
+                ?? throw new ArgumentException("Service not found");
         }
 
         var quantities = service?.Quantities ?? competitionSolution?.Quantities;
         var recipients = await GetRecipientQuantities(
             competition.FlattenedRecipients.ToList(),
-            quantities?.ToList(),
+            quantities,
             internalOrgId);
         var catalogueItem = service != null ? service.CatalogueItem : competitionSolution?.CatalogueItem;
 
@@ -300,8 +300,8 @@ public class CompetitionHubController : Controller
         CompetitionCatalogueItem service = null;
         if (serviceId is not null)
         {
-            service = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
-            if (service is null) throw new ArgumentException("Service not found");
+            service = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId)
+                ?? throw new ArgumentException("Service not found");
         }
 
         var quantities = service?.Quantities ?? competitionSolution?.Quantities;
@@ -330,8 +330,8 @@ public class CompetitionHubController : Controller
         CompetitionCatalogueItem service = null;
         if (serviceId is not null)
         {
-            service = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
-            if (service is null) throw new ArgumentException("Service not found");
+            service = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId)
+                ?? throw new ArgumentException("Service not found");
         }
 
         var quantities = service?.Quantities ?? competitionSolution?.Quantities;
@@ -536,21 +536,6 @@ public class CompetitionHubController : Controller
                 quantity,
                 location);
         });
-    }
-
-    private static (IPrice Price, CatalogueItem CatalogueItem, int? Quantity) GetGlobalQuantityDetails(
-        CompetitionSolution competitionSolution,
-        CatalogueItemId? serviceId = null)
-    {
-        if (serviceId is null)
-        {
-            return (competitionSolution.Price, competitionSolution.CatalogueItem,
-                competitionSolution.Quantity);
-        }
-
-        var service = competitionSolution.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
-
-        return service is null ? (null, null, null) : (service.Price, service.CatalogueItem, service.Quantity);
     }
 
     private async Task<SelectServicesModel> GetSelectServicesModel(

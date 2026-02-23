@@ -21,40 +21,6 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public async Task SetSolutionGlobalQuantity(string internalOrgId, int competitionId, CatalogueItemId solutionId, int quantity)
-    {
-        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
-            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
-
-        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
-        if (solution is null) return;
-
-        solution.Quantity = quantity;
-
-        await dbContext.SaveChangesAsync();
-    }
-
-    public async Task SetServiceGlobalQuantity(
-        string internalOrgId,
-        int competitionId,
-        CatalogueItemId solutionId,
-        CatalogueItemId serviceId,
-        int quantity)
-    {
-        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.Services)
-            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
-
-        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
-
-        var service = solution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
-        if (service is null) return;
-
-        service.Quantity = quantity;
-
-        await dbContext.SaveChangesAsync();
-    }
-
     public async Task SetSolutionRecipientQuantity(
         string internalOrgId,
         int competitionId,

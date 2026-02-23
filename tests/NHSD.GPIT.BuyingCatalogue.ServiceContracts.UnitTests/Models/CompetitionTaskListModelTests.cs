@@ -304,10 +304,12 @@ public static class CompetitionTaskListModelTests
     public static void Construct_WithIncompletePrices_SetsStatuses(
         CatalogueItemId solutionId,
         Competition competition,
-        List<CompetitionSublocation> competitionSublocations)
+        string odsCode)
     {
+        var sublocationRecipient = new CompetitionSublocationRecipient { RecipientOdsCode = odsCode, };
+        var competitionSublocation = new CompetitionSublocation { SublocationRecipients = [sublocationRecipient], };
         competition.ContractLength = 5;
-        competition.CompetitionSublocations = competitionSublocations;
+        competition.CompetitionSublocations = [competitionSublocation];
         competition.IncludesNonPrice = true;
         competition.Weightings = new() { Price = 50, NonPrice = 50 };
         competition.HasReviewedCriteria = true;
@@ -318,6 +320,7 @@ public static class CompetitionTaskListModelTests
             ServiceLevel = new(),
             NonPriceWeights = new() { Implementation = 50, Interoperability = 25, ServiceLevel = 25 },
         };
+        var quantity = new CompetitionItemQuantity { RecipientOdsCode = odsCode, Quantity = null, };
         competition.CompetitionSolutions = new List<CompetitionSolution>
         {
             new(competition.Id, solutionId)
@@ -329,6 +332,7 @@ public static class CompetitionTaskListModelTests
                     new(ScoreType.ServiceLevel, 5),
                 },
                 Price = new CompetitionCatalogueItemPrice(),
+                Quantities = [quantity],
             },
         };
 
@@ -344,10 +348,12 @@ public static class CompetitionTaskListModelTests
     public static void Construct_WithCompletePrices_SetsStatuses(
         CatalogueItemId solutionId,
         Competition competition,
-        List<CompetitionSublocation> competitionSublocations)
+        string odsCode)
     {
+        var sublocationRecipient = new CompetitionSublocationRecipient { RecipientOdsCode = odsCode, };
+        var competitionSublocation = new CompetitionSublocation { SublocationRecipients = [sublocationRecipient], };
         competition.ContractLength = 5;
-        competition.CompetitionSublocations = competitionSublocations;
+        competition.CompetitionSublocations = [competitionSublocation];
         competition.IncludesNonPrice = true;
         competition.Weightings = new() { Price = 50, NonPrice = 50 };
         competition.HasReviewedCriteria = true;
@@ -358,6 +364,7 @@ public static class CompetitionTaskListModelTests
             ServiceLevel = new(),
             NonPriceWeights = new() { Implementation = 50, Interoperability = 25, ServiceLevel = 25 },
         };
+        var quantity = new CompetitionItemQuantity { RecipientOdsCode = odsCode, Quantity = 5, };
         competition.CompetitionSolutions = new List<CompetitionSolution>
         {
             new(competition.Id, solutionId)
@@ -369,7 +376,7 @@ public static class CompetitionTaskListModelTests
                     new(ScoreType.ServiceLevel, 5),
                 },
                 Price = new CompetitionCatalogueItemPrice(),
-                Quantity = 5,
+                Quantities = [quantity],
             },
         };
 
