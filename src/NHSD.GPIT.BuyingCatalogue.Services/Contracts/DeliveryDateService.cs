@@ -63,12 +63,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task SetDeliveryDates(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, List<RecipientDeliveryDateDto> deliveryDates)
+        public async Task SetDeliveryDates(int orderId, CatalogueItemId catalogueItemId, List<RecipientDeliveryDateDto> deliveryDates)
         {
-            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-
-            var recipientsDict = wrapper.DetermineOrderRecipients(catalogueItemId)
-                .ToDictionary(recipient => recipient.RecipientOdsCode);
+            var recipients = await dbContext.OrderSublocationRecipients
+                .Where(x => x.OrderId == orderId)
+                .ToListAsync();
+            var recipientsDict = recipients.ToDictionary(recipient => recipient.RecipientOdsCode);
 
             deliveryDates?.ForEach(date =>
             {
