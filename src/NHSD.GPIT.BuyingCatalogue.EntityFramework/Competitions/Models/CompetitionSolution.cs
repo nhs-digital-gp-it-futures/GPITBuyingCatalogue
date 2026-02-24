@@ -44,11 +44,11 @@ public class CompetitionSolution : CompetitionCatalogueItem
         var price = Price as IPrice;
 
         var solutionMonthlyCost =
-            price?.CalculateCostPerMonth(Quantity ?? Quantities.Sum(x => x.Quantity ?? 0));
+            price?.CalculateCostPerMonth(Quantities.Sum(x => x.Quantity.GetValueOrDefault()));
         var servicesMonthlyCost = Services?.Sum(x =>
-            ((IPrice)x.Price)?.CalculateCostPerMonth(x.Quantity ?? x.Quantities.Sum(y => y.Quantity ?? 0)));
+            ((IPrice)x.Price)?.CalculateCostPerMonth(x.Quantities.Sum(y => y.Quantity.GetValueOrDefault())));
         var oneOffCost = AssociatedServices
-            .Sum(x => ((IPrice)x.Price)?.CalculateOneOffCost(x.Quantity ?? x.Quantities.Sum(y => y.Quantity ?? 0)));
+            .Sum(x => ((IPrice)x.Price)?.CalculateOneOffCost(x.Quantities.Sum(y => y.Quantity.GetValueOrDefault())));
 
         return oneOffCost + ((solutionMonthlyCost + servicesMonthlyCost) * contractLength);
     }

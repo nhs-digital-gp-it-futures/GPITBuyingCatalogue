@@ -3006,11 +3006,12 @@ public static class CompetitionsServiceTests
     {
         const int priceWeighting = 70;
         const int nonPriceWeighting = 100 - priceWeighting;
+        var quantity = new CompetitionItemQuantity() { Quantity = 1000 };
 
         competition.IncludesNonPrice = true;
         competition.Weightings = new() { Price = priceWeighting, NonPrice = nonPriceWeighting, };
 
-        winningSolution.Quantity = 1000;
+        winningSolution.Quantities = [quantity];
         winningSolution.Price = new()
         {
             BillingPeriod = TimeUnit.PerMonth,
@@ -3023,7 +3024,7 @@ public static class CompetitionsServiceTests
             },
         };
 
-        nonWinningSolution.Quantity = 1000;
+        nonWinningSolution.Quantities = [quantity];
         nonWinningSolution.Price = new()
         {
             BillingPeriod = TimeUnit.PerMonth,
@@ -3053,7 +3054,9 @@ public static class CompetitionsServiceTests
     {
         competition.IncludesNonPrice = false;
 
-        winningSolution.Quantity = 1000;
+        var quantity = new CompetitionItemQuantity { Quantity = 1000 };
+
+        winningSolution.Quantities = [quantity];
         winningSolution.Price = new()
         {
             BillingPeriod = TimeUnit.PerMonth,
@@ -3066,7 +3069,7 @@ public static class CompetitionsServiceTests
             },
         };
 
-        nonWinningSolution.Quantity = 1000;
+        nonWinningSolution.Quantities = [quantity];
         nonWinningSolution.Price = new()
         {
             BillingPeriod = TimeUnit.PerMonth,
