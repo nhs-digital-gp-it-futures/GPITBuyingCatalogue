@@ -3211,6 +3211,33 @@ public static class CompetitionsServiceTests
                     .Excluding(m => m.Services));
     }
 
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionWithSolutionsHub_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.FrameworkId = competition.Framework.Id;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var result = await service.GetCompetitionWithSolutionsHub(
+            organisation.InternalIdentifier,
+            competition.Id);
+
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(
+            competition,
+            opt => opt.Excluding(c => c.Framework));
+    }
+
     private static Organisation CommonOrganisationFactory(int customId = 0)
     {
         return new Organisation

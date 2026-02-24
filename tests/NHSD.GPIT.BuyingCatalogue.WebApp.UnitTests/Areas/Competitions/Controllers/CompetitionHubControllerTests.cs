@@ -844,14 +844,18 @@ public static class CompetitionHubControllerTests
         competitionSolution.Services = [];
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        await controller.Invoking(c => c.CompetitionSublocationHub(
+        Exception exception = await Record.ExceptionAsync(async () =>
+        {
+            await controller.CompetitionSublocationHub(
                 internalOrgId,
                 competition.Id,
                 solution.CatalogueItemId,
-                serviceId))
-            .Should()
-            .ThrowAsync<ArgumentException>()
-            .WithMessage("Service not found");
+                serviceId);
+        });
+
+        exception.Should().NotBeNull();
+        exception.Should().BeOfType<ArgumentException>();
+        exception!.Message.Should().Be("Service not found");
     }
 
     [Theory]

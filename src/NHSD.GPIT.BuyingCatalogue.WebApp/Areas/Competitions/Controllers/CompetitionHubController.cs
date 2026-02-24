@@ -33,6 +33,7 @@ public class CompetitionHubController : Controller
     private const string SelectAssociatedServicesViewName = "Services/SelectAssociatedServices";
     private const string SublocationHubViewName = "QuantitySelection/SublocationHub";
     private const string ConfirmQuantitiesViewName = "QuantitySelection/ConfirmQuantities";
+    private const string ServiceNotFoundErrorMessage = "Service not found";
 
     private readonly IOdsService odsService;
     private readonly ICompetitionsService competitionsService;
@@ -258,7 +259,7 @@ public class CompetitionHubController : Controller
         if (serviceId is not null)
         {
             service = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId)
-                ?? throw new ArgumentException("Service not found");
+                ?? throw new ArgumentException(ServiceNotFoundErrorMessage);
         }
 
         var quantities = service?.Quantities ?? competitionSolution?.Quantities;
@@ -301,7 +302,7 @@ public class CompetitionHubController : Controller
         if (serviceId is not null)
         {
             service = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId)
-                ?? throw new ArgumentException("Service not found");
+                ?? throw new ArgumentException(ServiceNotFoundErrorMessage);
         }
 
         var quantities = service?.Quantities ?? competitionSolution?.Quantities;
@@ -331,7 +332,7 @@ public class CompetitionHubController : Controller
         if (serviceId is not null)
         {
             service = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId)
-                ?? throw new ArgumentException("Service not found");
+                ?? throw new ArgumentException(ServiceNotFoundErrorMessage);
         }
 
         var quantities = service?.Quantities ?? competitionSolution?.Quantities;
@@ -581,7 +582,7 @@ public class CompetitionHubController : Controller
         }
 
         var service = competitionSolution.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
-        if (service is null) throw new ArgumentException("Service not found");
+        if (service is null) throw new ArgumentException(ServiceNotFoundErrorMessage);
 
         return (service.Price, service.CatalogueItem,
             await GetRecipientQuantities(
