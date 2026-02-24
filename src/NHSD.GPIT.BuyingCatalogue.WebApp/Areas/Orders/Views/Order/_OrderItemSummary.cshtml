@@ -36,17 +36,13 @@
 
             <br />
             <nhs-table label-text="@labelText" catches-errors="false">
-                @if (Model.IsAmendment)
-                {
-                    <nhs-table-column>Status</nhs-table-column>
-                }
                 <nhs-table-column>Organisation (ODS code)</nhs-table-column>
                 <nhs-table-column>Item ID</nhs-table-column>
                 <nhs-table-column>Planned delivery date</nhs-table-column>
                 <nhs-table-column>Quantity</nhs-table-column>
-
                 @if (Model.IsAmendment)
                 {
+                    <nhs-table-column>Status</nhs-table-column>
                     var previousOrderDictionary = Model.OrderWrapper.PreviousOrders.ToDictionary(order =>
                         order.Id);
                     @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient => OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, recipient)))

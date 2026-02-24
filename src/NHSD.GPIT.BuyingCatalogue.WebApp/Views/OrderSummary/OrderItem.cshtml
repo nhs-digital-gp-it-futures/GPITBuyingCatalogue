@@ -34,14 +34,14 @@ else
     <caption>@Model.OrderType.GetServiceRecipientsTitle()</caption>
     <thead>
         <tr>
-            @if (Model.IsAmendment && !Model.OrderType.MergerOrSplit)
-            {
-                <th>Status</th>
-            }
             <th>Organisation (ODS code)</th>
             <th>Item ID</th>
             <th>Planned delivery date</th>
             <th class="numeric">Quantity</th>
+            @if (Model.IsAmendment && !Model.OrderType.MergerOrSplit)
+            {
+                <th>Status</th>
+            }
         </tr>
     </thead>
 
