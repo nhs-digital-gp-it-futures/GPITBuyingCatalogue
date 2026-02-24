@@ -14,7 +14,7 @@ public class OrderingInformationItem
         CatalogueItemName = catalogueItem.Name;
         SupplierName = catalogueItem.Supplier.LegalName;
         Price = price;
-        Quantity = quantity ?? 0;
+        Quantity = quantity.GetValueOrDefault();
     }
 
     public CatalogueItemType CatalogueItemType { get; set; }
