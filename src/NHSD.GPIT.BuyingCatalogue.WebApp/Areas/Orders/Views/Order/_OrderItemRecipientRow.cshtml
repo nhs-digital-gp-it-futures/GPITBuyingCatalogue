@@ -38,13 +38,6 @@
     <nhs-table-cell>@($"{Model.CallOffId}-{Model.ServiceRecipient.RecipientOdsCode}-{Model.CatalogueItemId}")</nhs-table-cell>
     <nhs-table-cell>@deliveryDateText</nhs-table-cell>
     <nhs-table-cell>
-        @if (Model.HasServiceRecipientQuantities)
-        {
-            @(quantity.HasValue ? $"{quantity:N0}" : "-")
-        }
-        else
-        {
-            @("N/A")
-        }
+        @(quantity.HasValue ? $"{quantity:N0}" : "N/A")
     </nhs-table-cell>
 </nhs-table-row-container>

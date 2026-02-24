@@ -14,14 +14,12 @@ public class OrderItemRecipientRowModel
     public OrderItemRecipientRowModel(
         OrderSublocationRecipient recipient,
         AmendOrderItemModel amendOrderItemModel,
-        string callOffId,
-        bool hasServiceRecipientQuantities)
+        string callOffId)
     {
         ServiceRecipient = recipient;
         IsAmendment = amendOrderItemModel.IsAmendment;
         CallOffId = callOffId;
         CatalogueItemId = amendOrderItemModel.CatalogueItem.Id;
-        HasServiceRecipientQuantities = hasServiceRecipientQuantities;
         IsServiceRecipientAdded = amendOrderItemModel.IsServiceRecipientAdded(recipient.RecipientOdsCode);
         OrderType = amendOrderItemModel.OrderType;
     }
@@ -33,8 +31,6 @@ public class OrderItemRecipientRowModel
     public string CallOffId { get; init; }
 
     public CatalogueItemId CatalogueItemId { get; init; }
-
-    public bool HasServiceRecipientQuantities { get; init; }
 
     public bool IsServiceRecipientAdded { get; init; }
 

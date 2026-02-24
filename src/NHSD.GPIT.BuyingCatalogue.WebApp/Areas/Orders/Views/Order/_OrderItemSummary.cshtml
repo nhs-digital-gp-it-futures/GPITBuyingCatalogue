@@ -12,7 +12,6 @@
 @model AmendOrderItemModel
 
 @{
-    var hasServiceRecipientQuantities = ((IPrice)Model.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
     var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
 
     var editOrderDetailsLink = Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId });
@@ -52,7 +51,7 @@
                         order.Id);
                     @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient => OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, recipient)))
                     {
-                        var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, serviceRecipient), hasServiceRecipientQuantities);
+                        var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, serviceRecipient));
                         <nhs-table-row-container>
                             <partial name="_OrderItemRecipientRow" model="itemRecipientRowModel" />
                         </nhs-table-row-container>
@@ -60,7 +59,7 @@
                 }
                  @foreach (var serviceRecipient in Model.RolledUpRecipientsForItem.Where(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)))
                 {
-                    var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, Model.CallOffId.ToString(), hasServiceRecipientQuantities);
+                    var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, Model.CallOffId.ToString());
                     <nhs-table-row-container>
                         <partial name="_OrderItemRecipientRow" model="itemRecipientRowModel" />
                     </nhs-table-row-container>
