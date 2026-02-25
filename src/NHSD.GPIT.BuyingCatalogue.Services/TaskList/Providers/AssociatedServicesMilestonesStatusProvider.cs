@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             var order = wrapper.Order;
 
-            if (order.IsAmendment || !HasAssociatedServices(order))
+            if (!HasAssociatedServices(order))
             {
                 return TaskProgress.NotApplicable;
             }
