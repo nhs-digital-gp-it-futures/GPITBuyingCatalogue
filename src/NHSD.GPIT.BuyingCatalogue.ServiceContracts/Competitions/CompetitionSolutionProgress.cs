@@ -56,17 +56,18 @@ public readonly struct CompetitionSolutionProgress(
             Func<IEnumerable<CompetitionItemQuantity>, bool> anyQuantitiesPredicate = quantities => quantities.Any(quantity => quantity.Quantity.HasValue);
             Func<IEnumerable<CompetitionItemQuantity>, bool> allQuantitiesPredicate = quantities => quantities.All(quantity => quantity.Quantity.HasValue);
 
-            return !HasQuantities(
+            if (!HasQuantities(
                     competitionSolution,
                     services =>
                         services.Any(service => ServiceHasQuantities(service, anyQuantitiesPredicate)),
-                    anyQuantitiesPredicate) ? TaskProgress.NotStarted
-                : HasQuantities(
+                    anyQuantitiesPredicate))
+                return TaskProgress.NotStarted;
+
+            return HasQuantities(
                     competitionSolution,
                     services =>
                         services.All(service => ServiceHasQuantities(service, allQuantitiesPredicate)),
-                    allQuantitiesPredicate) ? TaskProgress.Completed
-                : TaskProgress.InProgress;
+                    allQuantitiesPredicate) ? TaskProgress.Completed : TaskProgress.InProgress;
         }
     }
 }
