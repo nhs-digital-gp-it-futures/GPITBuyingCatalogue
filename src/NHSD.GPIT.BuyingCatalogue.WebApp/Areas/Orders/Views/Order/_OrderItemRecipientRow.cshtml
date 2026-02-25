@@ -19,32 +19,25 @@
 }
 
 <nhs-table-row-container>
-    @if (Model.IsAmendment)
-    {
-        <nhs-table-cell style="width: 50px;">
-            @if (Model.IsServiceRecipientAdded)
-            {
-                <div class="bc-c-task-list__task-status">
-                    <strong class="nhsuk-tag nhsuk-tag--blue">Added</strong>
-                </div>
-            }
-            else
-            {
-                <span aria-label="Existing"></span>
-            }
-        </nhs-table-cell>
-    }
     <nhs-table-cell>@Model.ServiceRecipient.RecipientOdsOrganisation?.Name (@Model.ServiceRecipient.RecipientOdsCode)</nhs-table-cell>
     <nhs-table-cell>@($"{Model.CallOffId}-{Model.ServiceRecipient.RecipientOdsCode}-{Model.CatalogueItemId}")</nhs-table-cell>
     <nhs-table-cell>@deliveryDateText</nhs-table-cell>
     <nhs-table-cell>
-        @if (Model.HasServiceRecipientQuantities)
-        {
-            @(quantity.HasValue ? $"{quantity:N0}" : "-")
-        }
-        else
-        {
-            @("N/A")
-        }
+        @(quantity.HasValue ? $"{quantity:N0}" : "N/A")
     </nhs-table-cell>
+    @if (Model.IsAmendment)
+    {
+        <nhs-table-cell style="width: 50px;">
+            <div class="bc-c-task-list__task-status">
+                @if (Model.IsServiceRecipientAdded)
+                {
+                    <strong class="nhsuk-tag nhsuk-tag--blue">Added</strong>
+                }
+                else
+                {
+                    <strong class="nhsuk-tag nhsuk-tag--green">Completed</strong>
+                }
+            </div>
+        </nhs-table-cell>
+    }
 </nhs-table-row-container>
