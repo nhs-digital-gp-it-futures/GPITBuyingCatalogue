@@ -254,19 +254,18 @@ public class CompetitionHubController : Controller
         var competitionSolution =
             competition.CompetitionSolutions.FirstOrDefault(solution => solution.CatalogueItemId == solutionId);
 
-        CompetitionCatalogueItem competitionItem = competitionSolution;
-        if (serviceId is not null)
-        {
-            competitionItem = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId)
-                ?? throw new ArgumentException(ServiceNotFoundErrorMessage);
-        }
+        CompetitionCatalogueItem item = serviceId is not null
+            ? competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId)
+            : competitionSolution;
 
-        var quantities = competitionItem?.Quantities;
+        if (item is null) return BadRequest();
+
+        var quantities = item?.Quantities;
         var recipients = await GetRecipientQuantities(
             competition.FlattenedRecipients.ToList(),
             quantities,
             internalOrgId);
-        var catalogueItem = competitionItem?.CatalogueItem;
+        var catalogueItem = item?.CatalogueItem;
 
         var model = new SublocationQuantityHubModel(
             competition.Organisation,
@@ -299,14 +298,13 @@ public class CompetitionHubController : Controller
         var competitionSolution =
             competition.CompetitionSolutions.FirstOrDefault(solution => solution.CatalogueItemId == solutionId);
 
-        CompetitionCatalogueItem competitionItem = competitionSolution;
-        if (serviceId is not null)
-        {
-            competitionItem = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId)
-                ?? throw new ArgumentException(ServiceNotFoundErrorMessage);
-        }
+        CompetitionCatalogueItem item = serviceId is not null
+            ? competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId)
+            : competitionSolution;
 
-        var quantities = competitionItem?.Quantities;
+        if (item is null) return BadRequest();
+
+        var quantities = item?.Quantities;
 
         var recipients = await GetRecipientQuantities(
             competition.FlattenedRecipients.ToList(),
@@ -329,16 +327,15 @@ public class CompetitionHubController : Controller
         var competitionSolution =
             competition.CompetitionSolutions.FirstOrDefault(solution => solution.CatalogueItemId == solutionId);
 
-        CompetitionCatalogueItem competitionItem = competitionSolution;
-        if (serviceId is not null)
-        {
-            competitionItem = competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId)
-                ?? throw new ArgumentException(ServiceNotFoundErrorMessage);
-        }
+        CompetitionCatalogueItem item = serviceId is not null
+            ? competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId)
+            : competitionSolution;
 
-        var quantities = competitionItem?.Quantities;
-        var catalogueItem = competitionItem?.CatalogueItem;
-        var price = competitionItem?.Price;
+        if (item is null) return BadRequest();
+
+        var quantities = item?.Quantities;
+        var catalogueItem = item?.CatalogueItem;
+        var price = item?.Price;
         var recipients = await GetRecipientQuantities(
             competition.FlattenedRecipients.ToList(),
             quantities?.ToList(),
