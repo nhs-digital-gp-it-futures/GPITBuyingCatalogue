@@ -641,9 +641,15 @@ public static class CompetitionHubControllerTests
 
         var expectedModel = new SublocationQuantityHubModel(
             competition.Organisation,
-            solution.CatalogueItem,
-            recipients,
-            RoutingDestination.Competition);
+            solution.CatalogueItem)
+        {
+            SubLocations = CreateSublocationHelper.CreateSubLocations(recipients)
+                .Select(s => new SubLocationModel(s)
+                {
+                    ForwardingLink = "testUrl",
+                })
+                .ToArray(),
+        };
 
         var result = (await controller.CompetitionSublocationHub(internalOrgId, competition.Id, solution.CatalogueItemId))
             .As<ViewResult>();
@@ -654,7 +660,6 @@ public static class CompetitionHubControllerTests
                 expectedModel,
                 opt =>
                     opt.Excluding(m => m.BackLink)
-                    .Excluding(m => m.RoutingFields)
                     .Excluding(m => m.Caption));
     }
 
@@ -709,9 +714,15 @@ public static class CompetitionHubControllerTests
 
         var expectedModel = new SublocationQuantityHubModel(
             competition.Organisation,
-            solutionService.CatalogueItem,
-            recipients,
-            RoutingDestination.Competition);
+            solutionService.CatalogueItem)
+        {
+            SubLocations = CreateSublocationHelper.CreateSubLocations(recipients)
+                .Select(s => new SubLocationModel(s)
+                {
+                    ForwardingLink = "testUrl",
+                })
+                .ToArray(),
+        };
 
         var result = (await controller.CompetitionSublocationHub(internalOrgId, competition.Id, solution.CatalogueItemId, service.CatalogueItemId))
             .As<ViewResult>();
@@ -720,7 +731,6 @@ public static class CompetitionHubControllerTests
         result.Model.Should().BeEquivalentTo(
             expectedModel,
             opt => opt.Excluding(m => m.BackLink)
-                .Excluding(m => m.RoutingFields)
                 .Excluding(m => m.Caption));
     }
 

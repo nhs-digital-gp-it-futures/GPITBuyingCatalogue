@@ -81,8 +81,6 @@ public sealed class SelectServiceRecipientQuantityModel : NavBaseModel
 
     public RoutingSource? Source { get; set; }
 
-    public RoutingFields RoutingFields { get; init; }
-
     public string OrderingPartyName { get; init; }
 
     public bool ShouldShowInset => ProvisioningType == ProvisioningType.Patient;

@@ -45,29 +45,23 @@ public readonly struct CompetitionSolutionProgress(
                     && (solution.Services.Count == 0 || servicesHaveQuantitiesPredicate(solution.Services));
             }
 
-            bool ServiceHasQuantities(CompetitionCatalogueItem service, Func<IEnumerable<CompetitionItemQuantity>, bool> predicate)
-            {
-                var quantities = service.Quantities;
-                return predicate(quantities);
-            }
+            bool AnyQuantitiesPredicate(IEnumerable<CompetitionItemQuantity> quantities) => quantities.Any(quantity => quantity.Quantity.HasValue);
+            bool AllQuantitiesPredicate(IEnumerable<CompetitionItemQuantity> quantities) => quantities.All(quantity => quantity.Quantity.HasValue);
 
             if (PriceProgress is not TaskProgress.Completed) return TaskProgress.CannotStart;
-
-            Func<IEnumerable<CompetitionItemQuantity>, bool> anyQuantitiesPredicate = quantities => quantities.Any(quantity => quantity.Quantity.HasValue);
-            Func<IEnumerable<CompetitionItemQuantity>, bool> allQuantitiesPredicate = quantities => quantities.All(quantity => quantity.Quantity.HasValue);
 
             if (!HasQuantities(
                     competitionSolution,
                     services =>
-                        services.Any(service => ServiceHasQuantities(service, anyQuantitiesPredicate)),
-                    anyQuantitiesPredicate))
+                        services.Any(service => AnyQuantitiesPredicate(service.Quantities)),
+                    AnyQuantitiesPredicate))
                 return TaskProgress.NotStarted;
 
             return HasQuantities(
                     competitionSolution,
                     services =>
-                        services.All(service => ServiceHasQuantities(service, allQuantitiesPredicate)),
-                    allQuantitiesPredicate) ? TaskProgress.Completed : TaskProgress.InProgress;
+                        services.All(service => AllQuantitiesPredicate(service.Quantities)),
+                    AllQuantitiesPredicate) ? TaskProgress.Completed : TaskProgress.InProgress;
         }
     }
 }
