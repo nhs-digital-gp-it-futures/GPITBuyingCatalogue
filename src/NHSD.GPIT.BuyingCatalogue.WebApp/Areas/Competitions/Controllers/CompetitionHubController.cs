@@ -272,7 +272,7 @@ public class CompetitionHubController : Controller
             catalogueItem)
         {
             BackLink = Url.Action(nameof(Hub), new { internalOrgId, competitionId, solutionId }),
-            Caption = catalogueItem?.Name,
+            Caption = catalogueItem.Name,
             SubLocations = CreateSublocationHelper.CreateSubLocations(recipients ?? [])
                 .Select(sublocation => new SubLocationModel(sublocation)
                 {
