@@ -144,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             mockOrderService.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier).Returns(new OrderWrapper(order));
 
-            await service.SetDeliveryDates(order.OrderingParty.InternalIdentifier, order.CallOffId, catalogueItemId, deliveryDates);
+            await service.SetDeliveryDates(order.Id, catalogueItemId, deliveryDates);
             context.ChangeTracker.Clear();
 
             Order dbOrder = await context.Orders.Include(x => x.OrderItems)
