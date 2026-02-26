@@ -15,6 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
             ServiceRecipients = serviceRecipients;
         }
 
+        public SubLocationModel(SubLocationModel sublocationModel)
+        {
+            Name = sublocationModel.Name;
+            OdsCode = sublocationModel.OdsCode;
+            ServiceRecipients = sublocationModel.ServiceRecipients;
+        }
+
         public SubLocationModel(
             string odsCode,
             string name,
@@ -27,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
         public string OdsCode { get; set; }
 
         public string Name { get; set; }
+
+        public string ForwardingLink { get; set; }
 
         public ServiceRecipientQuantityModel[] ServiceRecipients { get; set; }
 

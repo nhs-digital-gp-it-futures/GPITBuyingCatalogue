@@ -22,23 +22,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/quantity/{catalogueItemId}/sublocations")]
     public class QuantityController : Controller
     {
+        private const string SublocationHubViewName = "QuantitySelection/SublocationHub";
+        private const string ServiceSublocationRecipientViewName = "QuantitySelection/SelectServiceSublocationRecipientQuantity";
+
         private readonly IGpPracticeService gpPracticeService;
         private readonly IOrderService orderService;
         private readonly IOrderQuantityService orderQuantityService;
-        private readonly IRoutingService routingService;
         private readonly IOrderItemService orderItemService;
 
         public QuantityController(
             IGpPracticeService gpPracticeService,
             IOrderService orderService,
             IOrderQuantityService orderQuantityService,
-            IRoutingService routingService,
             IOrderItemService orderItemService)
         {
             this.gpPracticeService = gpPracticeService ?? throw new ArgumentNullException(nameof(gpPracticeService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderQuantityService = orderQuantityService ?? throw new ArgumentNullException(nameof(orderQuantityService));
-            this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
         }
 
@@ -60,21 +60,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var model = new SublocationQuantityHubModel(
                 order.OrderingParty,
                 orderItem.CatalogueItem,
-                orderItem.OrderItemPrice,
-                recipientDtos)
+                orderItem.OrderItemPrice)
             {
                 BackLink = Url.Action(
                     nameof(TaskListController.TaskList),
                     typeof(TaskListController).ControllerName(),
                     new { internalOrgId, callOffId }),
                 Caption = $"Order {callOffId}",
-                RoutingFields = new RoutingFields
-                {
-                    CatalogueItem = catalogueItemId, InternalOrgId = internalOrgId, CallOffId = callOffId,
-                },
+                SubLocations = CreateSublocationHelper.CreateSubLocations(recipientDtos ?? [])
+                    .Select(sublocation => new SubLocationModel(sublocation)
+                    {
+                        ForwardingLink = Url.Action(
+                            nameof(SelectServiceSublocationRecipientQuantity),
+                            typeof(QuantityController).ControllerName(),
+                            new { internalOrgId, sublocation.OdsCode, callOffId, catalogueItemId }),
+                    }).ToArray(),
             };
 
-            return View(model);
+            return View(SublocationHubViewName, model);
         }
 
         [HttpPost]
@@ -101,13 +104,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new { internalOrgId, callOffId });
         }
 
-        [HttpGet("{parentOdsCode}")]
+        [HttpGet("{odsCode}")]
         [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
         public async Task<IActionResult> SelectServiceSublocationRecipientQuantity(
             string internalOrgId,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
-            string parentOdsCode,
+            string odsCode,
             RoutingSource? source = null)
         {
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
@@ -116,10 +119,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
-            List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem, parentOdsCode);
+            List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem, odsCode);
 
             IEnumerable<ServiceRecipientQuantityDto> previousRecipients =
-                GetPreviousRecipients(wrapper, orderItem, parentOdsCode);
+                GetPreviousRecipients(wrapper, orderItem, odsCode);
 
             var practiceReorganisation = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient;
 
@@ -140,35 +143,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             if (orderItem.OrderItemPrice.ProvisioningType != ProvisioningType.Patient)
             {
-                return View(model);
+                return View(ServiceSublocationRecipientViewName, model);
             }
 
             var solution = order.GetSolutionOrderItem();
             if (solution?.OrderItemPrice?.ProvisioningType is ProvisioningType.Patient
                 && solution.CatalogueItemId != catalogueItemId)
             {
-                await SetPracticeSizes(model, parentOdsCode, solution, wrapper.DetermineOrderRecipients(solution.CatalogueItemId));
+                await SetPracticeSizes(model, odsCode, solution, wrapper.DetermineOrderRecipients(solution.CatalogueItemId));
             }
             else
             {
-                await SetPracticeSizes(model, parentOdsCode);
+                await SetPracticeSizes(model, odsCode);
             }
 
-            return View(model);
+            return View(ServiceSublocationRecipientViewName, model);
         }
 
-        [HttpPost("{parentOdsCode}")]
+        [HttpPost("{odsCode}")]
         [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
         public async Task<IActionResult> SelectServiceSublocationRecipientQuantity(
             string internalOrgId,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
-            string parentOdsCode,
+            string odsCode,
             SelectServiceRecipientQuantityModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View(ServiceSublocationRecipientViewName, model);
             }
 
             var orderWrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
@@ -177,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             List<OrderItemRecipientQuantityDto> quantities = model.SubLocations[0].ServiceRecipients
                 .Select(x => new OrderItemRecipientQuantityDto
                 {
-                    ParentSublocationOdsCode = parentOdsCode,
+                    ParentSublocationOdsCode = odsCode,
                     RecipientOdsCode = x.RecipientOdsCode,
                     Quantity = string.IsNullOrWhiteSpace(x.InputQuantity)
                         ? null

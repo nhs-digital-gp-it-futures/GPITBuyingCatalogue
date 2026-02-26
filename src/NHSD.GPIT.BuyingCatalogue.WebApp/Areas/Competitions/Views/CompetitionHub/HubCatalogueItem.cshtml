@@ -23,8 +23,8 @@
             : priceConfirmUrl;
 
     var quantityUrl = Model.CatalogueItemType is CatalogueItemType.Solution
-        ? Url.Action(nameof(CompetitionHubController.SelectQuantity), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, source })
-        : Url.Action(nameof(CompetitionHubController.SelectQuantity), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, serviceId = Model.CatalogueItemId, source });
+        ? Url.Action(nameof(CompetitionHubController.CompetitionSublocationHub), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, source })
+        : Url.Action(nameof(CompetitionHubController.CompetitionSublocationHub), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, serviceId = Model.CatalogueItemId, source });
 
     var quantity = (Model.GlobalQuantity ?? Model.OdsOrganisations.Sum(x => x.Value)).GetValueOrDefault();
 }
@@ -81,7 +81,7 @@
         {
             <nhs-summary-list-row label-text="Price per month">£@(((IPrice)Model.Price).CalculateCostPerMonth(quantity).ToString("N2"))</nhs-summary-list-row>
         }
-        <nhs-summary-list-row label-text="Quantity">@quantity.ToString($"#,###")</nhs-summary-list-row>
+        <nhs-summary-list-row label-text="Quantity">@quantity.ToString($"#,##0")</nhs-summary-list-row>
         @if (Model.Price.BillingPeriod is not null)
         {
             <nhs-summary-list-row label-text="Total price">£@CalculateTotalCost().ToString("N2")</nhs-summary-list-row>

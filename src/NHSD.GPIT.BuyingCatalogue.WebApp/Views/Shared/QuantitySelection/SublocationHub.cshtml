@@ -1,12 +1,12 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities.SublocationQuantityHubModel
 
 @{
     ViewBag.Title = Model.Title;
     var tableTitle = $"Sublocations for {Model.OrderingPartyName}";
-    var internalOrgId = Model.RoutingFields.InternalOrgId;
-    var callOffId = Model.RoutingFields.CallOffId;
 }
 <partial name="Partials/_BackLink" model="Model"/>
 
@@ -32,14 +32,7 @@
                                 <nhs-tag status-enum="@(sublocationData.Status)"/>
                             </nhs-table-cell>
                             <nhs-table-cell>
-                                <a class="nhsuk-link"
-                                   asp-controller="@(typeof(QuantityController).ControllerName())"
-                                   asp-action="@(nameof(QuantityController.SelectServiceSublocationRecipientQuantity))"
-                                   asp-route-catalogueItemId="@Model.RoutingFields.CatalogueItem"
-                                   asp-route-parentOdsCode="@sublocationData.OdsCode"
-                                   asp-route-internalOrgId="@Model.RoutingFields.InternalOrgId"
-                                   asp-route-callOffId="@Model.RoutingFields.CallOffId"
-                                >Select</a>
+                                <a class="nhsuk-link" href="@sublocationData.ForwardingLink">Select</a>
                             </nhs-table-cell>
                         </nhs-table-row-container>
                     }

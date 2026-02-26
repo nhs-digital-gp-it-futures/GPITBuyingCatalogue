@@ -12,7 +12,7 @@ public class CompetitionItemQuantity
 
     public int CompetitionItemId { get; set; }
 
-    public int Quantity { get; set; }
+    public int? Quantity { get; set; }
 
     public CompetitionSublocationRecipient Recipient { get; set; }
 }

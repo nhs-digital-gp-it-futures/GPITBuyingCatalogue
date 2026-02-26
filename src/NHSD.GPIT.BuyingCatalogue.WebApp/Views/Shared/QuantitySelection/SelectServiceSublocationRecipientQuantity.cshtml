@@ -115,9 +115,10 @@
                                         else
                                         {
                                             inputRequired = true;
+                                            var labelText = Model.ProvisioningType.IsPerServiceRecipient() ? "Patient total" : string.Empty;
                                             <nhs-input
                                                 asp-for="@Model.SubLocations[i].ServiceRecipients[index].InputQuantity"
-                                                input-width="Five" label-text="Patient total"
+                                                input-width="Five" label-text="@labelText"
                                                 data-test-id="input_quantity"
                                                 visually-hidden-error=" for @(Model.SubLocations[i].ServiceRecipients[index].Name)"/>
                                         }

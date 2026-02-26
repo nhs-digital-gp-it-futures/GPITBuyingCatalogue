@@ -57,16 +57,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expectedModel = new SublocationQuantityHubModel(
                 order.OrderingParty,
                 orderItem.CatalogueItem,
-                orderItem.OrderItemPrice,
-                orderRecipientDtos)
+                orderItem.OrderItemPrice)
             {
                 Caption = $"Order {order.CallOffId}",
-                RoutingFields = new()
-                {
-                    CatalogueItem = solution.CatalogueItemId,
-                    InternalOrgId = internalOrgId,
-                    CallOffId = order.CallOffId,
-                },
+                SubLocations = CreateSublocationHelper.CreateSubLocations(orderRecipientDtos)
+                    .Select(sublocation => new SubLocationModel(sublocation)
+                    {
+                        ForwardingLink = "testUrl",
+                    })
+                    .ToArray(),
             };
 
             var result = await controller.SublocationHub(internalOrgId, order.CallOffId, solution.CatalogueItemId);

@@ -34,16 +34,16 @@ public static class SolutionPriceModelTests
         Solution solution,
         CompetitionSolution competitionSolution,
         CompetitionCatalogueItemPrice price,
-        CompetitionCatalogueItemPriceTier tier,
-        int quantity)
+        CompetitionCatalogueItemPriceTier tier)
     {
         tier.LowerRange = 0;
         tier.UpperRange = null;
 
         price.Tiers = new List<CompetitionCatalogueItemPriceTier> { tier };
 
+        var quantity = new CompetitionItemQuantity { Quantity = 5, };
         competitionSolution.CatalogueItem = solution.CatalogueItem;
-        competitionSolution.Quantity = quantity;
+        competitionSolution.Quantities = [quantity];
         competitionSolution.Price = price;
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
