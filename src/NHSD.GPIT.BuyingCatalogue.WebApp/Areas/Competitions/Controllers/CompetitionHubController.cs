@@ -260,12 +260,12 @@ public class CompetitionHubController : Controller
 
         if (item is null) return BadRequest();
 
-        var quantities = item?.Quantities;
+        var quantities = item.Quantities;
         var recipients = await GetRecipientQuantities(
             competition.FlattenedRecipients.ToList(),
             quantities,
             internalOrgId);
-        var catalogueItem = item?.CatalogueItem;
+        var catalogueItem = item.CatalogueItem;
 
         var model = new SublocationQuantityHubModel(
             competition.Organisation,
@@ -304,7 +304,7 @@ public class CompetitionHubController : Controller
 
         if (item is null) return BadRequest();
 
-        var quantities = item?.Quantities;
+        var quantities = item.Quantities;
 
         var recipients = await GetRecipientQuantities(
             competition.FlattenedRecipients.ToList(),
@@ -333,9 +333,9 @@ public class CompetitionHubController : Controller
 
         if (item is null) return BadRequest();
 
-        var quantities = item?.Quantities;
-        var catalogueItem = item?.CatalogueItem;
-        var price = item?.Price;
+        var quantities = item.Quantities;
+        var catalogueItem = item.CatalogueItem;
+        var price = item.Price;
         var recipients = await GetRecipientQuantities(
             competition.FlattenedRecipients.ToList(),
             quantities?.ToList(),
