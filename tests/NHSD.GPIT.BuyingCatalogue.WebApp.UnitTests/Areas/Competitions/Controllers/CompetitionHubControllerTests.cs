@@ -840,7 +840,7 @@ public static class CompetitionHubControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task CompetitionSublocationHub_Throws_ArgumentException(
+    public static async Task CompetitionSublocationHub_Returns_BadRequest(
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
@@ -854,18 +854,14 @@ public static class CompetitionHubControllerTests
         competitionSolution.Services = [];
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        Exception exception = await Record.ExceptionAsync(async () =>
-        {
-            await controller.CompetitionSublocationHub(
-                internalOrgId,
-                competition.Id,
-                solution.CatalogueItemId,
-                serviceId);
-        });
+        var response = await controller.CompetitionSublocationHub(
+            internalOrgId,
+            competition.Id,
+            solution.CatalogueItemId,
+            serviceId);
 
-        exception.Should().NotBeNull();
-        exception.Should().BeOfType<ArgumentException>();
-        exception!.Message.Should().Be("Service not found");
+        response.Should().NotBeNull();
+        response.Should().BeOfType<BadRequestResult>();
     }
 
     [Theory]
