@@ -211,5 +211,63 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             model.Title.Should().Be(TaskListModel.AmendmentTitle);
         }
+
+        [Theory]
+        [MockAutoData]
+        public static void Model_ShouldReturnOrderItemModelForPreviousAssociatedServices(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderItem orderItem,
+            OrderItem orderItem2,
+            OrderSublocation sublocation,
+            EntityFramework.Ordering.Models.Order order)
+        {
+            var initialCallOffId = new CallOffId(callOffId.OrderNumber, 1);
+            order.OrderNumber = initialCallOffId.OrderNumber;
+            order.Revision = initialCallOffId.Revision;
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            orderItem.Order = order;
+            order.OrderItems = [orderItem];
+            order.OrderSublocations = [sublocation];
+
+            var amendedCallOffId = new CallOffId(callOffId.OrderNumber, 2);
+            var amendedOrder = order.Clone();
+            var solution = orderItem2;
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            amendedOrder.OrderNumber = amendedCallOffId.OrderNumber;
+            amendedOrder.Revision = amendedCallOffId.Revision;
+            amendedOrder.OrderItems = [solution];
+
+            var orderWrapper = new OrderWrapper(amendedOrder, [order]);
+            var taskListModel = new TaskListModel(internalOrgId, callOffId, orderWrapper);
+
+            var expectedGrouping = new List<EntityFramework.Ordering.Models.Order> { order }
+                .SelectMany(o => o.GetAssociatedServices())
+                .GroupBy(o => o.Order.CallOffId);
+
+            taskListModel.PreviousAssociatedServices.Should().NotBeEmpty();
+            taskListModel.PreviousAssociatedServices.Should().HaveCount(1);
+            taskListModel.PreviousAssociatedServices.Should().BeEquivalentTo(expectedGrouping);
+
+            var expectedTaskListOrderItemModel = new TaskListOrderItemModel(
+                internalOrgId,
+                taskListModel.CallOffId,
+                taskListModel.OrderType,
+                orderWrapper.RolledUp.FlattenedRecipients,
+                orderItem);
+
+            var orderItemModelForPrevious =
+                taskListModel.OrderItemModelForPrevious(initialCallOffId, orderItem.CatalogueItemId);
+
+            orderItemModelForPrevious.Should()
+                .BeEquivalentTo(
+                    expectedTaskListOrderItemModel,
+                    opt => opt.Excluding(oi => oi.FromPreviousRevision)
+                        .Excluding(oi => oi.HasNewRecipients)
+                        .Excluding(oi => oi.NumberOfPrices)
+                        .Excluding(oi => oi.PriceId)
+                        .Excluding(oi => oi.CanBeRemoved)
+                        .Excluding(oi => oi.QuantityStatus));
+        }
     }
 }

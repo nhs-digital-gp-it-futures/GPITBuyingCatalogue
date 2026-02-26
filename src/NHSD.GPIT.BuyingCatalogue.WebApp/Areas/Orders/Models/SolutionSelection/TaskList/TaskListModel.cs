@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public const string InProgressTitle = "Catalogue solution and services";
 
         private readonly Dictionary<CatalogueItemId, TaskListOrderItemModel> taskModels = new();
-        private readonly Dictionary<CatalogueItemId, TaskListOrderItemModel> taskModelsForPrevious = new();
+        private readonly Dictionary<CallOffId, Dictionary<CatalogueItemId, TaskListOrderItemModel>> taskModelsForPrevious = new();
 
         public TaskListModel()
         {
@@ -43,7 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             CatalogueSolution = rolledUpOrder.GetSolutionOrderItem();
             AdditionalServices = rolledUpOrder.GetAdditionalServices();
             AssociatedServices = wrapper.Order.GetAssociatedServices() ?? new List<OrderItem>();
-            PreviousAssociatedServices = Previous?.GetAssociatedServices() ?? new List<OrderItem>();
+            PreviousAssociatedServices = wrapper.PreviousOrders
+                .SelectMany(order => order.GetAssociatedServices() ?? new List<OrderItem>())
+                .GroupBy(item => item.Order.CallOffId);
             HasNewRecipients = wrapper.HasNewOrderRecipients;
 
             var currentAdditionalServices = wrapper.Order.GetAdditionalServices();
@@ -100,7 +102,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 }));
 
             AssociatedServices.ForEach(x => AddTaskModelForAssociatedService(taskModels, internalOrgId, callOffId, x, rolledUpOrder, !OrderType.MergerOrSplit));
-            PreviousAssociatedServices.ForEach(x => AddTaskModelForAssociatedService(taskModelsForPrevious, internalOrgId, callOffId, x, rolledUpOrder, false));
+            PreviousAssociatedServices.ForEach(grouping =>
+            {
+                var groupingDict = grouping.ToDictionary(
+                    item => item.CatalogueItemId,
+                    item => BuildTaskListOrderItemModelForAssociatedService(
+                        internalOrgId,
+                        callOffId,
+                        item,
+                        rolledUpOrder,
+                        false));
+
+                taskModelsForPrevious.Add(
+                    grouping.Key,
+                    groupingDict);
+            });
         }
 
         public Order Previous { get; set; }
@@ -145,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public IEnumerable<OrderItem> AssociatedServices { get; set; }
 
-        public IEnumerable<OrderItem> PreviousAssociatedServices { get; set; }
+        public IEnumerable<IGrouping<CallOffId, OrderItem>> PreviousAssociatedServices { get; set; }
 
         public TaskProgress Progress =>
             taskModels.All(x =>
@@ -158,28 +174,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public TaskListOrderItemModel OrderItemModel(CatalogueItemId catalogueItemId) => taskModels.TryGetValue(catalogueItemId, out TaskListOrderItemModel value) ? value : null;
 
-        public TaskListOrderItemModel OrderItemModelForPrevious(CatalogueItemId catalogueItemId) => taskModelsForPrevious.TryGetValue(catalogueItemId, out TaskListOrderItemModel value) ? value : null;
+        public TaskListOrderItemModel OrderItemModelForPrevious(CallOffId callOffId, CatalogueItemId catalogueItemId)
+        {
+            if (taskModelsForPrevious.TryGetValue(callOffId, out var catalogueItemDict))
+            {
+                return catalogueItemDict.TryGetValue(catalogueItemId, out var taskListOrderItemModel) ? taskListOrderItemModel : null;
+            }
+
+            return null;
+        }
 
         private void AddTaskModelForAssociatedService(
             Dictionary<CatalogueItemId, TaskListOrderItemModel> models,
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem x,
+            OrderItem orderItem,
             Order rolledUpOrder,
             bool canBeRemoved)
         {
             models.Add(
-                x.CatalogueItemId,
-                new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.FlattenedRecipients, x)
-                {
-                    FromPreviousRevision = x.Order.CallOffId.Revision < callOffId.Revision,
-                    HasNewRecipients = HasNewRecipients,
-                    NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
-                    PriceId = x.CatalogueItem.CataloguePrices.Count == 1
-                        ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
-                        : 0,
-                    CanBeRemoved = canBeRemoved,
-                });
+                orderItem.CatalogueItemId,
+                BuildTaskListOrderItemModelForAssociatedService(internalOrgId, callOffId, orderItem, rolledUpOrder, canBeRemoved));
+        }
+
+        private TaskListOrderItemModel BuildTaskListOrderItemModelForAssociatedService(string internalOrgId, CallOffId callOffId, OrderItem orderItem, Order rolledUpOrder, bool canBeRemoved)
+        {
+            return new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.FlattenedRecipients, orderItem)
+            {
+                FromPreviousRevision = orderItem.Order.CallOffId.Revision < callOffId.Revision,
+                HasNewRecipients = HasNewRecipients,
+                NumberOfPrices = orderItem.CatalogueItem.CataloguePrices.Count,
+                PriceId = orderItem.CatalogueItem.CataloguePrices.Count == 1
+                    ? orderItem.CatalogueItem.CataloguePrices.First().CataloguePriceId
+                    : 0,
+                CanBeRemoved = canBeRemoved,
+            };
         }
     }
 }

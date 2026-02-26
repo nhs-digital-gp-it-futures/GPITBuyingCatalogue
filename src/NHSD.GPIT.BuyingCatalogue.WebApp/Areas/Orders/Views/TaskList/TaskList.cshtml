@@ -114,22 +114,6 @@
             }
             else
             {
-                @if (Model.IsAmendment && Model.PreviousAssociatedServices.Any())
-                {
-                    <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-6">Associated Services from previous order</h3>
-                    <nhs-card-v2>
-                        <nhs-card-content>
-                            @foreach (var service in Model.PreviousAssociatedServices)
-                            {
-                                <partial name="TaskListOrderItem"
-                                         model="@Model.OrderItemModelForPrevious(service.CatalogueItemId)" />
-                            }
-                        </nhs-card-content>
-                        <nhs-card-footer>
-                            <vc:inline-information text="You cannot change your original associated services when amending an order" />
-                        </nhs-card-footer>
-                    </nhs-card-v2>
-                }
                 <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-6">Associated Services for this order</h3>
                 <nhs-card-v2>
                     <nhs-card-content>
@@ -165,6 +149,26 @@
                         }
                     </nhs-card-footer>
                 </nhs-card-v2>
+                @if (Model.IsAmendment && Model.PreviousAssociatedServices.Any())
+                {
+                    <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-6">Previously ordered associated services</h3>
+                    <p>View details about associated services that have been ordered before.</p>
+                    <p>Prices and quantities for previously ordered associated services reflect what was agreed at the time the order was placed.</p>
+                    
+                    <nhs-inset-text>You cannot change your original associated services when amending an order</nhs-inset-text>
+                    
+                    @foreach (var grouping in Model.PreviousAssociatedServices.Reverse())
+                    {
+                        var callOffId = grouping.Key;
+                        <nhs-expander label-text="@callOffId" open="@false">
+                            @foreach (var item in grouping)
+                            {
+                                <partial name="TaskListOrderItem"
+                                         model="@Model.OrderItemModelForPrevious(callOffId, item.CatalogueItemId)"/>
+                            }
+                        </nhs-expander>
+                    }
+                }
             }
 
         <vc:nhs-anchor-button text="Save and continue"
