@@ -279,7 +279,7 @@ public class CompetitionHubController : Controller
                     ForwardingLink = Url.Action(
                         nameof(SelectServiceRecipientQuantity),
                         typeof(CompetitionHubController).ControllerName(),
-                        new { internalOrgId, sublocation.OdsCode, competitionId, serviceId }),
+                        new { internalOrgId, sublocation.OdsCode, competitionId, solutionId, serviceId }),
                 }).ToArray(),
         };
 

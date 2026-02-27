@@ -13,7 +13,7 @@
 
         @foreach (var sublocation in Model.Sublocations)
         {
-            <nhs-expander label-text="@($"{sublocation.Key} ({sublocation.Value.Count} selected)")">
+            <nhs-expander open="@(true)" label-text="@($"{sublocation.Key} ({sublocation.Value.Count} selected)")">
                 <nhs-table>
                     <nhs-table-column>Organisation</nhs-table-column>
                     <nhs-table-column>Quantity</nhs-table-column>
