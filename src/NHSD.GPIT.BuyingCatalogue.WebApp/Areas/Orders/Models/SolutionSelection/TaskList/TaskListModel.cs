@@ -73,10 +73,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                             ? CatalogueSolution.CatalogueItem.CataloguePrices.First().CataloguePriceId
                             : 0,
                         PreviousRecipients = Previous?.FlattenedRecipients.Count() ?? 0,
-                        QuantityChanged =
-                            (Previous?.OrderItems ?? [])
-                            .FirstOrDefault(x => x.CatalogueItemId == CatalogueSolution.CatalogueItemId)
-                            ?.Quantity != wrapper.Order.GetSolutionOrderItem().Quantity,
                         CanBeRemoved = false,
                     });
             }
@@ -92,12 +88,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
                         : 0,
                     PreviousRecipients = Previous?.FlattenedRecipients.Count() ?? 0,
-                    QuantityChanged = ((Previous?.OrderItems ?? [])
-                            .FirstOrDefault(y => y.CatalogueItemId == x.CatalogueItemId)
-                            ?.Quantity ?? 0) !=
-                        (currentAdditionalServices?.Where(y => y.CatalogueItemId == x.CatalogueItemId)
-                            .FirstOrDefault()
-                            ?.Quantity ?? 0),
                     CanBeRemoved = !(IsAmendment && (Previous?.Exists(x.CatalogueItemId) ?? false)),
                 }));
 

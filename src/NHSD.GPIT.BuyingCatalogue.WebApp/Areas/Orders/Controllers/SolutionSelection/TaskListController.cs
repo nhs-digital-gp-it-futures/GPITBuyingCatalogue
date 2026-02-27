@@ -79,16 +79,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 OnwardLink = Url.Action(onwardRoute.ActionName, onwardRoute.ControllerName, onwardRoute.RouteValues),
                 AlternativeSolutionsAvailable = solutions.Count > 1,
                 AdditionalServicesAvailable = additionalServices.Any(),
-                UnselectedAdditionalServicesAvailable =
-                    additionalServices.Where(x => !selectedAdditionalServices.Any(y => x.Id == y.CatalogueItemId))
-                        .Any(),
+                UnselectedAdditionalServicesAvailable = additionalServices.Any(x => selectedAdditionalServices.All(y => x.Id != y.CatalogueItemId)),
                 AssociatedServicesAvailable = associatedServices.Any(),
-                UnselectedAssociatedServicesAvailable = associatedServices
-                    .Where(x => !selectedAssociatedServices.Any(y => x.Id == y.CatalogueItemId))
-                    .Any(),
-            };
-
-            return View(model);
+                UnselectedAssociatedServicesAvailable = associatedServices.Any(x => selectedAssociatedServices.All(y => x.Id != y.CatalogueItemId)),
+            });
         }
     }
 }

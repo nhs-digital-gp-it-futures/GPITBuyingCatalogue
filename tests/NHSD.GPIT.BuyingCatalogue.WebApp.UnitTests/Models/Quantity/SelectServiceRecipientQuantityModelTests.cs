@@ -15,22 +15,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
     public static class SelectServiceRecipientQuantityModelTests
     {
         [Theory]
-        [MockInlineAutoData(ProvisioningType.Patient, SelectServiceRecipientQuantityModel.AdviceTextPatient)]
-        [MockInlineAutoData(ProvisioningType.OnDemand, SelectServiceRecipientQuantityModel.AdviceText)]
-        [MockInlineAutoData(ProvisioningType.Declarative, SelectServiceRecipientQuantityModel.AdviceText)]
+        [MockInlineAutoData(ProvisioningType.OnDemand)]
+        [MockInlineAutoData(ProvisioningType.Declarative)]
         public static void WithValidOrderItem_PropertiesCorrectlySet(
             ProvisioningType provisioningType,
-            string expectedAdvice,
             List<ServiceRecipientQuantityDto> serviceRecipients,
             OrderItem item)
         {
+            item.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             item.OrderItemPrice.ProvisioningType = provisioningType;
 
             var model = new SelectServiceRecipientQuantityModel(item.CatalogueItem, item.OrderItemPrice, serviceRecipients);
 
-            model.Title.Should().Be(string.Format(SelectServiceRecipientQuantityModel.TitleText, item.CatalogueItem.CatalogueItemType.Description()));
+            model.Title.Should().Be(string.Format(SelectServiceRecipientQuantityModel.TitleText, item.CatalogueItem.CatalogueItemType.Name().ToLowerInvariant()));
             model.Caption.Should().Be(item.CatalogueItem.Name);
-            model.Advice.Should().Be(expectedAdvice);
+            model.Advice.Should().Be(SelectServiceRecipientQuantityModel.AdviceText);
             model.OrderType.Should().BeNull();
             model.PracticeReorganisationRecipient.Should().BeNull();
 
@@ -74,9 +73,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
 
             var model = new SelectServiceRecipientQuantityModel(orderType, null, item.CatalogueItem, item.OrderItemPrice, serviceRecipients, null);
 
-            model.Title.Should().Be(string.Format(SelectServiceRecipientQuantityModel.TitleText, item.CatalogueItem.CatalogueItemType.Description()));
+            model.Title.Should().Be(SelectServiceRecipientQuantityModel.TitleTextPatient);
             model.Caption.Should().Be(item.CatalogueItem.Name);
-            model.Advice.Should().Be(SelectServiceRecipientQuantityModel.AdviceTextQuantitySelect);
+            model.Advice.Should().Be(SelectServiceRecipientQuantityModel.AdviceTextPatient);
             model.OrderType.Should().Be(orderType);
             model.SubLocations.SelectMany(x => x.ServiceRecipients).Count().Should().Be(serviceRecipients.Count);
 
@@ -106,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
 
             var model = new SelectServiceRecipientQuantityModel(orderType, organisation, item.CatalogueItem, item.OrderItemPrice, serviceRecipients, null);
 
-            model.Title.Should().Be(string.Format(SelectServiceRecipientQuantityModel.TitleText, item.CatalogueItem.CatalogueItemType.Description()));
+            model.Title.Should().Be(SelectServiceRecipientQuantityModel.TitleTextPatient);
             model.Caption.Should().Be(item.CatalogueItem.Name);
             model.Advice.Should().Be(SelectServiceRecipientQuantityModel.AdviceTextMergerSplit);
             model.OrderType.Should().Be(orderType);

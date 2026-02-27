@@ -4,7 +4,7 @@ CREATE TABLE [ordering].[OrderItemSublocationRecipients]
     [CatalogueItemId] nvarchar(14) NOT NULL,
     [ParentSublocationOdsCode] NVARCHAR(10) NOT NULL,
     [RecipientOdsCode] NVARCHAR(10) NOT NULL,
-    [Quantity] int NULL CONSTRAINT PositiveQuantity_OrderItemSublocationRecipients_Quantity CHECK (Quantity > 0),
+    [Quantity] int NULL CONSTRAINT PositiveQuantity_OrderItemSublocationRecipients_Quantity CHECK (Quantity >= 0),
     [DeliveryDate] date NULL,
     [LastUpdated] datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
     [LastUpdatedBy] int NULL,

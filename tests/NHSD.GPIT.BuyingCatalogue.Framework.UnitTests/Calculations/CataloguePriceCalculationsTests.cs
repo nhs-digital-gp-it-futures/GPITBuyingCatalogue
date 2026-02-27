@@ -460,6 +460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         {
             order.Revision = revision;
             var orderItem = order.OrderItems.First();
+            orderItem.Quantity = null;
             order.OrderSublocations.ForEach(sl =>
                 sl.SublocationRecipients.ForEach(sr => sr.OrderItemSublocationRecipients.Clear()));
             var orderWrapper = new OrderWrapper(order);
@@ -484,6 +485,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             OrderItemPrice orderItemPrice)
         {
             orderItemPrice.BillingPeriod = TimeUnit.PerMonth;
+            orderItem.Quantity = null;
             orderItem.OrderItemPrice = orderItemPrice;
             recipient.OrderItemSublocationRecipients.Clear();
             recipient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
@@ -502,6 +504,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             OrderItemPrice orderItemPrice)
         {
             orderItemPrice.BillingPeriod = TimeUnit.PerYear;
+            orderItem.Quantity = null;
             orderItem.OrderItemPrice = orderItemPrice;
             recipient.OrderItemSublocationRecipients.Clear();
             recipient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
@@ -520,11 +523,72 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             OrderItemPrice orderItemPrice)
         {
             orderItemPrice.BillingPeriod = null;
+            orderItem.Quantity = null;
             orderItem.OrderItemPrice = orderItemPrice;
             recipient.OrderItemSublocationRecipients.Clear();
             recipient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
 
             var expectedResult = ((IPrice)orderItemPrice).CalculateOneOffCost(quantity);
+
+            orderItem.TotalCost([recipient]).Should().Be(expectedResult);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void OrderItem_TotalCost_GlobalQuantity_PerMonth_ReturnsExpected(
+            OrderSublocationRecipient recipient,
+            int globalQuantity,
+            int recipientQuantity,
+            OrderItem orderItem,
+            OrderItemPrice orderItemPrice)
+        {
+            orderItemPrice.BillingPeriod = TimeUnit.PerMonth;
+            orderItem.Quantity = globalQuantity;
+            orderItem.OrderItemPrice = orderItemPrice;
+            recipient.OrderItemSublocationRecipients.Clear();
+            recipient.SetQuantityForItem(orderItem.CatalogueItemId, recipientQuantity);
+
+            var expectedResult = ((IPrice)orderItemPrice).CalculateCostPerMonth(globalQuantity);
+
+            orderItem.TotalCost([recipient]).Should().Be(expectedResult);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void OrderItem_TotalCost_GlobalQuantity_PerYear_ReturnsExpected(
+            OrderSublocationRecipient recipient,
+            int globalQuantity,
+            int recipientQuantity,
+            OrderItem orderItem,
+            OrderItemPrice orderItemPrice)
+        {
+            orderItemPrice.BillingPeriod = TimeUnit.PerYear;
+            orderItem.Quantity = globalQuantity;
+            orderItem.OrderItemPrice = orderItemPrice;
+            recipient.OrderItemSublocationRecipients.Clear();
+            recipient.SetQuantityForItem(orderItem.CatalogueItemId, recipientQuantity);
+
+            var expectedResult = ((IPrice)orderItemPrice).CalculateCostPerYear(globalQuantity);
+
+            orderItem.TotalCost([recipient]).Should().Be(expectedResult);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void OrderItem_TotalCost_GlobalQuantity_OneOff_ReturnsExpected(
+            OrderSublocationRecipient recipient,
+            int globalQuantity,
+            int recipientQuantity,
+            OrderItem orderItem,
+            OrderItemPrice orderItemPrice)
+        {
+            orderItemPrice.BillingPeriod = null;
+            orderItem.Quantity = globalQuantity;
+            orderItem.OrderItemPrice = orderItemPrice;
+            recipient.OrderItemSublocationRecipients.Clear();
+            recipient.SetQuantityForItem(orderItem.CatalogueItemId, recipientQuantity);
+
+            var expectedResult = ((IPrice)orderItemPrice).CalculateOneOffCost(globalQuantity);
 
             orderItem.TotalCost([recipient]).Should().Be(expectedResult);
         }

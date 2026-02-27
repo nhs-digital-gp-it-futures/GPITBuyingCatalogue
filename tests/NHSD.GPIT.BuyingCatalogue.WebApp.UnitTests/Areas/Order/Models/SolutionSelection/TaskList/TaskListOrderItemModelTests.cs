@@ -149,6 +149,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         [MockInlineAutoData(ProvisioningType.Patient, null)]
         [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
         [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerSolutionOrService)]
+        [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerSolutionOrService)]
         public static void
             QuantityStatus_Amendment_PerServiceRecipient_Price_OrderItemRecipientQuantitiesEntered_ExpectedResult(
                 ProvisioningType provisioningType,
@@ -174,73 +176,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             };
 
             model.QuantityStatus.Should().Be(TaskProgress.Amended);
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void QuantityStatus_PerOrderItemProvisioningType_OrderItemQuantityEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem,
-            OrderSublocationRecipient[] recipients)
-        {
-            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
-            orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType =
-                CataloguePriceQuantityCalculationType.PerSolutionOrService;
-
-            orderItem.Quantity = 1;
-            recipients.ForEach(x => x.OrderItemSublocationRecipients.Clear());
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
-
-            model.QuantityStatus.Should().Be(TaskProgress.Completed);
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void
-            QuantityStatus_Amendment_PerOrderItemProvisioningType_OrderItemQuantityEntered_ExpectedResult(
-                string internalOrgId,
-                CallOffId callOffId,
-                OrderItem orderItem,
-                OrderSublocationRecipient[] recipients)
-        {
-            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
-            orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType =
-                CataloguePriceQuantityCalculationType.PerSolutionOrService;
-
-            orderItem.Quantity = 1;
-            recipients.ForEach(x => x.OrderItemSublocationRecipients.Clear());
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem)
-            {
-                FromPreviousRevision = true,
-                HasNewRecipients = true,
-                IsPerServiceRecipient = true,
-            };
-
-            model.QuantityStatus.Should().Be(TaskProgress.Amended);
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void
-            QuantityStatus_PerOrderItemProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
-                string internalOrgId,
-                CallOffId callOffId,
-                OrderItem orderItem,
-                OrderSublocationRecipient[] recipients)
-        {
-            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
-            orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType =
-                CataloguePriceQuantityCalculationType.PerSolutionOrService;
-
-            orderItem.Quantity = null;
-            recipients.ForEach(x => x.SetQuantityForItem(orderItem.CatalogueItemId, 1));
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
-
-            model.QuantityStatus.Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
@@ -288,25 +223,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             };
 
             model.QuantityStatus.Should().Be(TaskProgress.Completed);
-        }
-
-        [Theory]
-        [MockInlineAutoData(false, TaskProgress.Completed)]
-        [MockInlineAutoData(true, TaskProgress.Amended)]
-        public static void QuantityStatus_NonPerServiceRecipientAmendment_ExpectedResult(
-            bool quantityChanged,
-            TaskProgress taskProgress,
-            string internalOrgId,
-            OrderItem orderItem,
-            OrderSublocationRecipient[] recipients)
-        {
-            var callOffId = new CallOffId(1, 2);
-
-            orderItem.Quantity = null;
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem) { IsPerServiceRecipient = false, FromPreviousRevision = true, QuantityChanged = quantityChanged };
-
-            model.QuantityStatus.Should().Be(taskProgress);
         }
     }
 }

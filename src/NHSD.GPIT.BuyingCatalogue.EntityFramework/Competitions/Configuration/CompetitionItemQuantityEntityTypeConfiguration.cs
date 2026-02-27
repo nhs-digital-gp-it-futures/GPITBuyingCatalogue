@@ -21,6 +21,7 @@ public sealed class CompetitionItemQuantityEntityTypeConfiguration : IEntityType
         builder.HasOne(x => x.Recipient)
             .WithMany()
             .HasForeignKey(x => new { x.CompetitionId, x.ParentSublocationOdsCode, x.RecipientOdsCode })
+            .OnDelete(DeleteBehavior.Cascade)
             .HasConstraintName("FK_CompetitionItemQuantities_Recipient");
     }
 }

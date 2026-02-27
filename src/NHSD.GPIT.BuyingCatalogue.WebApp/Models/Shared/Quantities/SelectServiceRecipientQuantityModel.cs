@@ -12,16 +12,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 
 public sealed class SelectServiceRecipientQuantityModel : NavBaseModel
 {
-    public const string AdviceText = "Enter the quantity you want for each practice for the duration of your order.";
-    public const string AdviceTextPatient = "Select a sublocation to review the practice list size for each organisation in your order.";
+    public const string AdviceText = "Enter the amount you want to order for your practices.";
     public const string AdviceTextMergerSplit = "Review the quantity you’ll be ordering based on the service recipients you’ve selected.";
-    public const string QuantityColumnTitleText = "Quantity";
-    public const string QuantityColumnTitleTextPatient = "Practice list size";
-    public const string TitleText = "Quantity of {0}";
-
-    public const string AdviceTextQuantitySelect =
+    public const string AdviceTextPatient =
         "Review the practice list sizes for the organisations you have added."
         + " These numbers will be used to calculate the cost of the solution.";
+
+    public const string QuantityColumnTitleText = "Amount";
+    public const string QuantityColumnTitleTextPatient = "Practice list size";
+    public const string TitleText = "Quantity of {0}";
+    public const string TitleTextPatient = "Review patient list sizes";
 
     public SelectServiceRecipientQuantityModel()
     {
@@ -33,12 +33,13 @@ public sealed class SelectServiceRecipientQuantityModel : NavBaseModel
         IEnumerable<ServiceRecipientQuantityDto> serviceRecipients)
     {
         Caption = catalogueItem.Name;
-        Title = string.Format(TitleText, catalogueItem.CatalogueItemType.Name());
-        Advice = price.ProvisioningType switch
+        (Title, Advice) = price.ProvisioningType switch
         {
-            ProvisioningType.Patient => AdviceTextPatient,
-            _ => AdviceText,
+            ProvisioningType.Patient => (TitleTextPatient, AdviceTextPatient),
+            _ => (string.Format(TitleText, catalogueItem.CatalogueItemType.Name().ToLowerInvariant()), AdviceText),
         };
+
+        CatalogueItemType = catalogueItem.CatalogueItemType;
         ProvisioningType = price.ProvisioningType;
         BillingPeriod = price.BillingPeriod;
 
@@ -56,13 +57,17 @@ public sealed class SelectServiceRecipientQuantityModel : NavBaseModel
     {
         OrderType = orderType;
         PracticeReorganisationRecipient = $"{practiceReorganisationRecipient?.Name} ({practiceReorganisationRecipient?.Id})";
-
-        Advice = orderType.MergerOrSplit ? AdviceTextMergerSplit : AdviceTextQuantitySelect;
-
         PreviouslySelected = CreateSubLocations(previousRecipients ?? []) ?? [];
+
+        if (orderType.MergerOrSplit)
+        {
+            Advice = AdviceTextMergerSplit;
+        }
     }
 
     public OrderType OrderType { get; set; }
+
+    public CatalogueItemType CatalogueItemType { get; set; }
 
     public string PracticeReorganisationRecipient { get; set; }
 
@@ -76,11 +81,9 @@ public sealed class SelectServiceRecipientQuantityModel : NavBaseModel
 
     public RoutingSource? Source { get; set; }
 
-    public RoutingFields RoutingFields { get; init; }
-
     public string OrderingPartyName { get; init; }
 
-    public bool ShouldShowInset => ProvisioningType is ProvisioningType.Patient;
+    public bool ShouldShowInset => ProvisioningType == ProvisioningType.Patient;
 
     public string QuantityColumnTitle => ProvisioningType switch
     {

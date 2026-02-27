@@ -7,15 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
 public interface ICompetitionsQuantityService
 {
-    Task SetSolutionGlobalQuantity(string internalOrgId, int competitionId, CatalogueItemId solutionId, int quantity);
-
-    Task SetServiceGlobalQuantity(
-        string internalOrgId,
-        int competitionId,
-        CatalogueItemId solutionId,
-        CatalogueItemId serviceId,
-        int quantity);
-
     Task SetSolutionRecipientQuantity(
         string internalOrgId,
         int competitionId,

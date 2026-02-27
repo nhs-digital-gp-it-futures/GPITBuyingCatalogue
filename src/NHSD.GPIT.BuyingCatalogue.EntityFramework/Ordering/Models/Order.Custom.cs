@@ -322,7 +322,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                         InitialiseOrderItem(
                             item.CatalogueItem.Id,
                             item.OrderItemPrice?.Clone(),
-                            item.Quantity,
                             item.EstimationPeriod));
                 }
             }
@@ -390,12 +389,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         private OrderItem InitialiseOrderItem(
             CatalogueItemId catalogueItemId,
             OrderItemPrice orderItemPrice,
-            int? quantity,
             TimeUnit? estimationPeriod)
         {
             var orderItem = InitialiseOrderItem(catalogueItemId);
             orderItem.OrderItemPrice = orderItemPrice;
-            orderItem.Quantity = quantity;
             orderItem.EstimationPeriod = estimationPeriod;
             return orderItem;
         }

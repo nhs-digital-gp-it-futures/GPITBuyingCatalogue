@@ -1,0 +1,39 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities.ConfirmQuantitiesModel
+
+@{
+    ViewBag.Title = Model.Title;
+}
+
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title model="Model"/>
+
+        @foreach (var sublocation in Model.Sublocations)
+        {
+            <nhs-expander open="@(true)" label-text="@($"{sublocation.Key} ({sublocation.Value.Count} selected)")">
+                <nhs-table>
+                    <nhs-table-column>Organisation</nhs-table-column>
+                    <nhs-table-column>Quantity</nhs-table-column>
+                    @foreach (var recipient in sublocation.Value)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>@recipient.Name</nhs-table-cell>
+                            <nhs-table-cell>@recipient.Quantity.GetValueOrDefault()</nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </nhs-expander>
+        }
+
+        <p>
+            You can <a href="@Model.BackLink">update the quantities</a> if needed, or edit them later if you continue with your order.
+        </p>
+
+        <vc:nhs-anchor-button text="Continue"
+                              url="@Model.ContinueLink"
+                              type="Primary"/>
+    </div>
+</div>
