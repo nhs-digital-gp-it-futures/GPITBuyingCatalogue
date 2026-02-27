@@ -88,23 +88,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     return TaskProgress.Completed;
                 }
 
-                if (!IsPerServiceRecipient && IsAmendment && FromPreviousRevision)
+                if (RolledUpOrderRecipients.AllQuantitiesEntered(rolledUpOrderItem))
                 {
-                    return QuantityChanged ? TaskProgress.Amended : TaskProgress.Completed;
-                }
-                else
-                {
-                    if (RolledUpOrderRecipients.AllQuantitiesEntered(rolledUpOrderItem))
-                    {
-                        return FromPreviousRevision && HasNewRecipients ? TaskProgress.Amended : TaskProgress.Completed;
-                    }
-                    else if (RolledUpOrderRecipients.SomeButNotAllNewQuantitiesEntered(rolledUpOrderItem, PreviousRecipients))
-                    {
-                        return TaskProgress.InProgress;
-                    }
+                    return FromPreviousRevision && HasNewRecipients ? TaskProgress.Amended : TaskProgress.Completed;
                 }
 
-                return TaskProgress.NotStarted;
+                return RolledUpOrderRecipients.SomeButNotAllNewQuantitiesEntered(rolledUpOrderItem, PreviousRecipients)
+                    ? TaskProgress.InProgress
+                    : TaskProgress.NotStarted;
             }
         }
     }

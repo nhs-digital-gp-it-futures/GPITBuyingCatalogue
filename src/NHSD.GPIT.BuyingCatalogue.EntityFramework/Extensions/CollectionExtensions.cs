@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
@@ -35,14 +34,7 @@ public static class CollectionExtensions
             return false;
         }
 
-        var priceIsPerRecipient = ((IPrice)orderItem.OrderItemPrice).IsPerServiceRecipient();
-
-        if (priceIsPerRecipient)
-        {
-            return recipients.All(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue);
-        }
-
-        return orderItem.Quantity.HasValue;
+        return recipients.All(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue);
     }
 
     public static bool SomeButNotAllNewQuantitiesEntered(
@@ -53,12 +45,8 @@ public static class CollectionExtensions
         if (orderItem.OrderItemPrice == null || recipients == null)
             return false;
 
-        if (((IPrice)orderItem.OrderItemPrice).IsPerServiceRecipient())
-        {
-            var count = recipients.Count(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue) - previousRecipients;
-            return count > 0 && count < recipients.Count - previousRecipients;
-        }
-
-        return false;
+        var count = recipients.Count(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue)
+            - previousRecipients;
+        return count > 0 && count < recipients.Count - previousRecipients;
     }
 }

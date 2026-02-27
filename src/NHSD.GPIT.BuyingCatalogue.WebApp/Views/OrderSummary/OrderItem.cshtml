@@ -18,7 +18,6 @@ else
 
 @{
     var itemType = Model.CatalogueItem.CatalogueItemType.DisplayName();
-    var hasServiceRecipientQuantities = ((IPrice)Model.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
 }
 
 @if (Model.OrderType.MergerOrSplit)
@@ -35,17 +34,13 @@ else
     <caption>@Model.OrderType.GetServiceRecipientsTitle()</caption>
     <thead>
         <tr>
-            @if (Model.IsAmendment && !Model.OrderType.MergerOrSplit)
-            {
-                <th>Status</th>
-            }
             <th>Organisation (ODS code)</th>
             <th>Item ID</th>
             <th>Planned delivery date</th>
-
-            @if (hasServiceRecipientQuantities)
+            <th class="numeric">Quantity</th>
+            @if (Model.IsAmendment && !Model.OrderType.MergerOrSplit)
             {
-                <th class="numeric">Quantity</th>
+                <th>Status</th>
             }
         </tr>
     </thead>
@@ -64,16 +59,16 @@ else
             @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient =>
                           OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, recipient)))
             {
-                var recipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, serviceRecipient), hasServiceRecipientQuantities);
+                var recipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, serviceRecipient));
                 <partial name="ServiceRecipientRow" model="recipientRowModel" />
             }
         }
         @foreach (var recipient in Model.RolledUpRecipientsForItem.Where(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)))
         {
-            var recipientRowModel = new OrderItemRecipientRowModel(recipient, Model, Model.CallOffId.ToString(), hasServiceRecipientQuantities);
+            var recipientRowModel = new OrderItemRecipientRowModel(recipient, Model, Model.CallOffId.ToString());
             <partial name="ServiceRecipientRow" model="recipientRowModel" />
         }
-    @if (!Model.OrderType.MergerOrSplit && hasServiceRecipientQuantities
+    @if (!Model.OrderType.MergerOrSplit
             && Model.RolledUpRecipientsForItem.Count > 1)
         {
             <tr class="totals">

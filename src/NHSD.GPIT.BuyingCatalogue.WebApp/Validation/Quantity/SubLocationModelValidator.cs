@@ -1,21 +1,20 @@
 ﻿using System.Linq;
 using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Quantity
 {
+    [ChildValidator]
     public class SubLocationModelValidator : AbstractValidator<SubLocationModel>
     {
-        public const string ValueNotEnteredErrorMessage = "Enter all practice list sizes for {0}";
-
-        public SubLocationModelValidator()
+        public SubLocationModelValidator(
+            ProvisioningType provisioningType,
+            CatalogueItemType catalogueItemType)
         {
-            RuleFor(x => x)
-                .Must(x => x.ServiceRecipients.All(y => !string.IsNullOrEmpty(y.InputQuantity)))
-                .WithMessage(x => string.Format(ValueNotEnteredErrorMessage, x.Name))
-                .OverridePropertyName(x => x);
-
-            RuleForEach(x => x.ServiceRecipients).Cascade(CascadeMode.Continue).SetValidator(new ServiceRecipientQuantityModelValidator());
+            RuleForEach(x => x.ServiceRecipients)
+                .Cascade(CascadeMode.Continue)
+                .SetValidator(new ServiceRecipientQuantityModelValidator(provisioningType, catalogueItemType));
         }
     }
 }

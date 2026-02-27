@@ -16,7 +16,7 @@ public class SolutionPriceModel
         Name = solution.CatalogueItem.Name;
 
         var competitionSolutionProgress =
-            new CompetitionSolutionProgress(solution, competition.FlattenedRecipients.ToList());
+            new CompetitionSolutionProgress(solution);
 
         Progress = competitionSolutionProgress.Progress;
 

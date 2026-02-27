@@ -1,0 +1,47 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities.SublocationQuantityHubModel
+
+@{
+    ViewBag.Title = Model.Title;
+    var tableTitle = $"Sublocations for {Model.OrderingPartyName}";
+}
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row" data-test-id="perServiceRecipient">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title model="Model"/>
+
+        <h5>@tableTitle</h5>
+        <nhs-card-v2>
+            <nhs-card-content>
+                <nhs-table>
+                    <nhs-table-column>Sublocation</nhs-table-column>
+                    <nhs-table-column>Organisations added</nhs-table-column>
+                    <nhs-table-column>Status</nhs-table-column>
+                    <nhs-table-column>Action</nhs-table-column>
+
+                    @foreach (var sublocationData in Model.SubLocations)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>@sublocationData.OdsCode</nhs-table-cell>
+                            <nhs-table-cell>@sublocationData.ServiceRecipients.Length.ToString()</nhs-table-cell>
+                            <nhs-table-cell>
+                                <nhs-tag status-enum="@(sublocationData.Status)"/>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <a class="nhsuk-link" href="@sublocationData.ForwardingLink">Select</a>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </nhs-card-content>
+        </nhs-card-v2>
+    </div>
+
+    <form method="post">
+        <nhs-submit-button text="Save and Continue" />
+    </form>
+</div>

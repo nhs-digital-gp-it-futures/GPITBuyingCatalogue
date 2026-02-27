@@ -203,6 +203,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.CompetitionSublocations)
             .ThenInclude(y => y.SublocationRecipients)
             .ThenInclude(z => z.RecipientOrganisation)
+            .Include(x => x.Organisation)
             .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
