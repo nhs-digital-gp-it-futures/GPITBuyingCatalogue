@@ -82,7 +82,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 UnselectedAdditionalServicesAvailable = additionalServices.Any(x => selectedAdditionalServices.All(y => x.Id != y.CatalogueItemId)),
                 AssociatedServicesAvailable = associatedServices.Any(),
                 UnselectedAssociatedServicesAvailable = associatedServices.Any(x => selectedAssociatedServices.All(y => x.Id != y.CatalogueItemId)),
-            });
+            };
+
+            return View(model);
         }
     }
 }
