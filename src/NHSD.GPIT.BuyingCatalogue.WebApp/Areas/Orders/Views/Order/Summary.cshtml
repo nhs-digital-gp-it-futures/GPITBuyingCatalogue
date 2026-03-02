@@ -320,20 +320,44 @@
                 var heading = associatedServices.Count == 1
                 ? "Associated service"
                 : "Associated services";
+                var solutionName = solutions.FirstOrDefault()?.CatalogueItem.Name;
 
                 <h2 id="associated-services-title">@heading details</h2>
-                @foreach (var associatedService in associatedServices)
+                @if (Model.AssociatedServicesCurrentOrder.Any())
                 {
-                    var itemModel = Model.BuildAmendOrderItemModel(associatedService);
-                    if (Model.Order.OrderType.MergerOrSplit)
+                    var associatedServicesForCurrentOrder = Model.AssociatedServicesCurrentOrder.ToList();
+                    <h3>Associated Services for this order</h3>
+                    @foreach (var associatedService in associatedServicesForCurrentOrder)
                     {
-                        if (associatedServices.Count == 1)
+                        var itemModel = Model.BuildAmendOrderItemModel(associatedService, solutionName);
+                        if (Model.Order.OrderType.MergerOrSplit)
                         {
-                            totalDisplayed = true;
-                            itemModel.OrderTotals = Model.BuildOrderTotals();
+                            if (associatedServicesForCurrentOrder.Count == 1)
+                            {
+                                totalDisplayed = true;
+                                itemModel.OrderTotals = Model.BuildOrderTotals();
+                            }
                         }
+                        <partial name="_OrderItemSummary" model="@itemModel" />
                     }
-                    <partial name="_OrderItemSummary" model="@itemModel" />
+                }
+                
+                @if (Model.PreviousAssociatedServicesGrouping.Any())
+                {
+                    <h3>Previously ordered associated services</h3>
+                    @foreach (var group in Model.PreviousAssociatedServicesGrouping.Reverse())
+                    {
+                        <nhs-expander-v2 open="true">
+                            <nhs-expander-summary label-text="@group.Key" bold-title="true"></nhs-expander-summary>
+                            <nhs-expander-content>
+                                @foreach (var associatedService in group)
+                                {
+                                    var itemModel = Model.BuildAmendOrderItemModel(associatedService, solutionName);
+                                    <partial name="_OrderItemSummary" model="@itemModel" />
+                                }
+                            </nhs-expander-content>
+                        </nhs-expander-v2>
+                    }
                 }
 
                 <h2 id="as-milestones-title">Milestones and payment triggers for associated services</h2>

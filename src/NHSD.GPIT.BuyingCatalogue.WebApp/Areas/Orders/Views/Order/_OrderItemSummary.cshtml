@@ -18,7 +18,7 @@
 }
 
 <nhs-expander-v2 open="true">
-    <nhs-expander-summary label-text="@Model.CatalogueItem.Name" added-sticker="@(Model.IsAmendment && Model.IsOrderItemAdded)" bold-title="true"></nhs-expander-summary>
+    <nhs-expander-summary label-text="@Model.ItemName" bold-title="true"></nhs-expander-summary>
     <nhs-expander-content>
         @if (Model.OrderType.MergerOrSplit)
         {
@@ -74,7 +74,7 @@
                     <nhs-table-column>Pricing tier</nhs-table-column>
                 }
                 <nhs-table-column>Price per unit</nhs-table-column>
-                @if (Model.IsAmendment)
+                @if (Model.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService && Model.IsAmendment)
                 {
                     <nhs-table-column>Old quantity</nhs-table-column>
                     <nhs-table-column>New quantity</nhs-table-column>
@@ -98,7 +98,7 @@
                             }
                             <nhs-table-cell>£@rolledUpCosts[i].Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</nhs-table-cell>
 
-                            @if (Model.IsAmendment)
+                            @if (Model.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService && Model.IsAmendment)
                             {
                                 <nhs-table-cell>@($"{previousCosts[i].Quantity:N0}")</nhs-table-cell>
                                 <nhs-table-cell>@($"{rolledUpCosts[i].Quantity:N0}")</nhs-table-cell>

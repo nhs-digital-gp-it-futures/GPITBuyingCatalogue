@@ -54,6 +54,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public bool IsOrderItemAdded { get; }
 
+        public string ItemName { get; init; }
+
+        public bool FromPreviousRevision { get; init; }
+
         public OrderItemPrice OrderItemPrice => OrderItem.OrderItemPrice;
 
         public CatalogueItem CatalogueItem => OrderItem.CatalogueItem;

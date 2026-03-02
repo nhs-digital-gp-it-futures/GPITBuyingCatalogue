@@ -51,7 +51,7 @@
             else
             {
                 string actionName, actionText;
-                if (Model.IsAmendment && Model.FromPreviousRevision)
+                if (Model.IsAssociatedService && Model.FromPreviousRevision && Model.IsAmendment)
                 {
                     (actionName, actionText) = (nameof(PricesController.ViewPrice), "View");
                 }
@@ -78,7 +78,7 @@
         <nhs-table-cell>
             @if (Model.QuantityStatus != TaskProgress.CannotStart)
             {
-                @if (Model.IsAmendment && Model.FromPreviousRevision && Model.QuantityStatus != TaskProgress.InProgress && Model.QuantityStatus != TaskProgress.NotStarted)
+                @if (Model.IsAssociatedService && Model.FromPreviousRevision && Model.IsAmendment && Model.QuantityStatus != TaskProgress.InProgress && Model.QuantityStatus != TaskProgress.NotStarted)
                 {
                     <a id="Quantity_@Model.CatalogueItemId" style="float:right;"
                         href="@Url.Action(

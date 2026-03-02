@@ -48,8 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 .GroupBy(item => item.Order.CallOffId);
             HasNewRecipients = wrapper.HasNewOrderRecipients;
 
-            var currentAdditionalServices = wrapper.Order.GetAdditionalServices();
-
             if (rolledUpOrder.OrderType.AssociatedServicesOnly)
             {
                 SolutionName = rolledUpOrder.AssociatedServicesOnlyDetails.Solution?.Name;
@@ -91,7 +89,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     CanBeRemoved = !(IsAmendment && (Previous?.Exists(x.CatalogueItemId) ?? false)),
                 }));
 
-            AssociatedServices.ForEach(x => AddTaskModelForAssociatedService(taskModels, internalOrgId, callOffId, x, rolledUpOrder, !OrderType.MergerOrSplit));
+            AssociatedServices.ForEach(x => AddTaskModelForAssociatedService(
+                taskModels,
+                internalOrgId,
+                callOffId,
+                x,
+                wrapper.DetermineOrderRecipients(x.CatalogueItemId)
+                    .ToList(),
+                !OrderType.MergerOrSplit));
+
             PreviousAssociatedServices.ForEach(grouping =>
             {
                 var groupingDict = grouping.ToDictionary(
@@ -100,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         internalOrgId,
                         callOffId,
                         item,
-                        rolledUpOrder,
+                        wrapper.DetermineOrderRecipients(item.CatalogueItemId).ToList(),
                         false));
 
                 taskModelsForPrevious.Add(
@@ -179,17 +185,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             string internalOrgId,
             CallOffId callOffId,
             OrderItem orderItem,
-            Order rolledUpOrder,
+            List<OrderSublocationRecipient> recipients,
             bool canBeRemoved)
         {
             models.Add(
                 orderItem.CatalogueItemId,
-                BuildTaskListOrderItemModelForAssociatedService(internalOrgId, callOffId, orderItem, rolledUpOrder, canBeRemoved));
+                BuildTaskListOrderItemModelForAssociatedService(internalOrgId, callOffId, orderItem, recipients, canBeRemoved));
         }
 
-        private TaskListOrderItemModel BuildTaskListOrderItemModelForAssociatedService(string internalOrgId, CallOffId callOffId, OrderItem orderItem, Order rolledUpOrder, bool canBeRemoved)
+        private TaskListOrderItemModel BuildTaskListOrderItemModelForAssociatedService(string internalOrgId, CallOffId callOffId, OrderItem orderItem, List<OrderSublocationRecipient> recipients, bool canBeRemoved)
         {
-            return new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.FlattenedRecipients, orderItem)
+            return new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, recipients, orderItem)
             {
                 FromPreviousRevision = orderItem.Order.CallOffId.Revision < callOffId.Revision,
                 HasNewRecipients = HasNewRecipients,

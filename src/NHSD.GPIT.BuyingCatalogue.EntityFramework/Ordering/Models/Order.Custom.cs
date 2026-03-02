@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && !HasSublocationsWithNoRecipients()
                 && OrderItems.Count > 0
                 && HaveAllDeliveryDates(orderRecipients, previous)
-                && HaveAllQuantities(orderRecipients)
+                && AllValuesEntered(orderRecipients, (recipients, item) => recipients.AllQuantitiesEntered(item), previous)
                 && orderItems.All(oi => oi.OrderItemFunding is not null)
                 && ContractFlags is not null
                 && (!OrderType.ImplementationPlanRequired || Contract?.ImplementationPlan is not null)
@@ -56,12 +56,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool HaveAllDeliveryDates(ICollection<OrderSublocationRecipient> orderRecipients, Order previous = null)
         {
-            if (previous is not null && IsAmendment && HasAssociatedService())
-            {
-                return OrderItems.All(item => DetermineOrderRecipients(previous, item.CatalogueItemId).AllDeliveryDatesEntered(item.CatalogueItemId));
-            }
-
-            return OrderItems.All(x => orderRecipients.AllDeliveryDatesEntered(x.CatalogueItemId));
+            return AllValuesEntered(
+                orderRecipients,
+                (recipients, item) => recipients.AllDeliveryDatesEntered(item.CatalogueItemId),
+                previous);
         }
 
         public CatalogueItemId? GetSolutionId()
@@ -397,11 +395,21 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return orderItem;
         }
 
-        private bool HaveAllQuantities(ICollection<OrderSublocationRecipient> orderRecipients)
+        private bool AllValuesEntered(
+            ICollection<OrderSublocationRecipient> orderRecipients,
+            Func<ICollection<OrderSublocationRecipient>, OrderItem, bool> allValuesPred,
+            Order previous = null)
         {
-            var recipients = orderRecipients.ToList();
+            if (previous is not null && IsAmendment && HasAssociatedService())
+            {
+                return OrderItems.All(item =>
+                {
+                    var recipients = DetermineOrderRecipients(previous, item.CatalogueItemId);
+                    return allValuesPred(recipients, item);
+                });
+            }
 
-            return OrderItems.All(recipients.AllQuantitiesEntered);
+            return OrderItems.All(item => allValuesPred(orderRecipients, item));
         }
     }
 }

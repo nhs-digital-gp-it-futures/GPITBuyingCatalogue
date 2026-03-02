@@ -253,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 internalOrgId,
                 taskListModel.CallOffId,
                 taskListModel.OrderType,
-                orderWrapper.RolledUp.FlattenedRecipients,
+                [],
                 orderItem);
 
             var orderItemModelForPrevious =
