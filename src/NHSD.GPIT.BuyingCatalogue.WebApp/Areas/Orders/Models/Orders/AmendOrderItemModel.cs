@@ -20,8 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             ICollection<OrderSublocationRecipient> previousRecipients,
             OrderItem orderItem,
             OrderItem previous,
-            FundingTypeDescriptionModel fundingTypeDescription,
-            bool fromPreviousRevision = false)
+            FundingTypeDescriptionModel fundingTypeDescription)
         {
             ArgumentNullException.ThrowIfNull(orderItem);
 
@@ -41,8 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 (previousRecipients?.ForCatalogueItem(orderItem.CatalogueItemId) ?? []).ToDictionary(
                     x => x.RecipientOdsCode,
                     x => x);
-
-            FromPreviousRevision = fromPreviousRevision;
         }
 
         public CallOffId CallOffId { get; }

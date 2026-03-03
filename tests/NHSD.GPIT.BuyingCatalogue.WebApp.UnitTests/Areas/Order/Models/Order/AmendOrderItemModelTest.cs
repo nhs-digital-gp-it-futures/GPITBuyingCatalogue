@@ -144,8 +144,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
                 null,
                 orderItem,
                 previousOrderItem,
-                fundingTypeDescription,
-                fromPreviousRevision);
+                fundingTypeDescription)
+            {
+                FromPreviousRevision = fromPreviousRevision,
+            };
 
             model.CallOffId.Should().Be(callOffId);
             model.IsAmendment.Should().Be(callOffId.IsAmendment || fromPreviousRevision);

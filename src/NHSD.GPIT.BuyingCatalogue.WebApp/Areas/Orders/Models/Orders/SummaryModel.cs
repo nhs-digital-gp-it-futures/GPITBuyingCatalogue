@@ -98,14 +98,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 previousRecipients,
                 item,
                 Previous?.OrderItem(item.CatalogueItemId),
-                new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(item.CatalogueItemId)),
-                fromPreviousRevision)
+                new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(item.CatalogueItemId)))
             {
                 InternalOrgId = InternalOrgId,
                 CanEdit = !fromPreviousRevision && Order.OrderStatus == OrderStatus.InProgress,
                 PracticeReorganisationName = Order.AssociatedServicesOnlyDetails.PracticeReorganisationNameAndCode,
                 OrderWrapper = OrderWrapper,
                 ItemName = itemName,
+                FromPreviousRevision = fromPreviousRevision,
             };
         }
 
