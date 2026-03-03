@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -129,6 +130,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
             var result = model.BuildAmendOrderItemModel(orderItem);
             var expectedName = $"{order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Name} ({order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode})";
             result.PracticeReorganisationName.Should().Be(expectedName);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void AssociatedServices_PropertiesCorrectlySet(
+            OrderItem orderItem,
+            Order order)
+        {
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            orderItem.Order = order;
+            order.Revision = 1;
+            order.OrderItems = [orderItem];
+
+            var newOrder = order.Clone();
+            newOrder.Revision = 2;
+            newOrder.OrderItems = [orderItem];
+
+            var previousOrders = new List<Order> { order };
+
+            var orderWrapper = new OrderWrapper(newOrder, previousOrders);
+
+            var model = new OrderSummaryModel(orderWrapper, new ImplementationPlan());
+
+            model.AssociatedServicesForCurrentOrder.Should().BeEquivalentTo([orderItem]);
+            model.PreviousAssociatedServicesGrouping.Should().BeEquivalentTo(new List<OrderItem>() { orderItem }
+                .GroupBy(oi => oi.Order.CallOffId));
         }
     }
 }

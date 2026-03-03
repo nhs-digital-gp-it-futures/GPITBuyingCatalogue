@@ -353,6 +353,7 @@
                                 @foreach (var associatedService in group)
                                 {
                                     var itemModel = Model.BuildAmendOrderItemModel(associatedService, solutionName);
+                                    itemModel.IsCardView = true;
                                     <partial name="_OrderItemSummary" model="@itemModel" />
                                 }
                             </nhs-expander-content>

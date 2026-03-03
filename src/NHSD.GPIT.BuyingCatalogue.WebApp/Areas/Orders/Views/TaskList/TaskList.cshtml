@@ -163,8 +163,10 @@
                         <nhs-expander label-text="@callOffId" open="@false">
                             @foreach (var item in grouping)
                             {
+                                var itemModel = @Model.OrderItemModelForPrevious(callOffId, item.CatalogueItemId);
+                                itemModel.QuantityViewCallOffId = callOffId;
                                 <partial name="TaskListOrderItem"
-                                         model="@Model.OrderItemModelForPrevious(callOffId, item.CatalogueItemId)"/>
+                                         model="@itemModel"/>
                             }
                         </nhs-expander>
                     }

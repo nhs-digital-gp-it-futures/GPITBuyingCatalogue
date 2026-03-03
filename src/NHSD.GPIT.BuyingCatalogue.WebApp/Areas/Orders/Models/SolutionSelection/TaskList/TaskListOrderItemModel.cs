@@ -36,6 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public CallOffId CallOffId { get; set; }
 
+        public CallOffId QuantityViewCallOffId { get; set; }
+
         public OrderType OrderType { get; set; }
 
         public bool IsAmendment => CallOffId.IsAmendment;

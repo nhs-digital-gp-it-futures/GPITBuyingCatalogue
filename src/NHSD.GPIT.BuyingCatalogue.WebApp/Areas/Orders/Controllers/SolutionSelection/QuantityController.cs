@@ -202,11 +202,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> ViewServiceRecipientQuantity(
             string internalOrgId,
             CallOffId callOffId,
-            CatalogueItemId catalogueItemId)
+            CatalogueItemId catalogueItemId,
+            CallOffId quantityViewCallOffId)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Previous;
-            IEnumerable<OrderSublocationRecipient> recipients = order.FlattenedRecipients;
-            var orderItem = order.OrderItem(catalogueItemId);
+            var orderWrapper = await orderService.GetOrderWithOrderItems(quantityViewCallOffId, internalOrgId);
+            var orderItem = orderWrapper.Order.OrderItem(catalogueItemId);
+            var recipients = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
             var model = new ViewServiceRecipientQuantityModel(orderItem, recipients)
             {
