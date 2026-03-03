@@ -88,21 +88,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 ? $"{solutionName} - {item.CatalogueItem.Name}"
                 : item.CatalogueItem.Name;
             var fromPreviousRevision = item.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution && item.Order.Revision < OrderWrapper.Order.Revision;
+            var callOffId = item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
+                ? item.Order.CallOffId
+                : CallOffId;
             return new AmendOrderItemModel(
-                CallOffId,
+                callOffId,
                 Order.OrderType,
                 recipients,
                 previousRecipients,
                 item,
                 Previous?.OrderItem(item.CatalogueItemId),
-                new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(item.CatalogueItemId)))
+                new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(item.CatalogueItemId)),
+                fromPreviousRevision)
             {
                 InternalOrgId = InternalOrgId,
                 CanEdit = !fromPreviousRevision && Order.OrderStatus == OrderStatus.InProgress,
                 PracticeReorganisationName = Order.AssociatedServicesOnlyDetails.PracticeReorganisationNameAndCode,
                 OrderWrapper = OrderWrapper,
                 ItemName = itemName,
-                FromPreviousRevision = fromPreviousRevision,
             };
         }
 

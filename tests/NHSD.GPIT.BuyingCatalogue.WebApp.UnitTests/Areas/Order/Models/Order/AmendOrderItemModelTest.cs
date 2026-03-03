@@ -134,6 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             CallOffId callOffId,
             OrderItem orderItem,
             OrderItem previousOrderItem,
+            bool fromPreviousRevision,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
             var model = new AmendOrderItemModel(
@@ -143,10 +144,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
                 null,
                 orderItem,
                 previousOrderItem,
-                fundingTypeDescription);
+                fundingTypeDescription,
+                fromPreviousRevision);
 
             model.CallOffId.Should().Be(callOffId);
-            model.IsAmendment.Should().Be(callOffId.IsAmendment);
+            model.IsAmendment.Should().Be(callOffId.IsAmendment || fromPreviousRevision);
             model.OrderItemPrice.Should().Be(orderItem.OrderItemPrice);
             model.CatalogueItem.Should().Be(orderItem.CatalogueItem);
             model.RolledUpRecipientsForItem.Should().BeEquivalentTo(Array.Empty<OrderSublocationRecipient>());

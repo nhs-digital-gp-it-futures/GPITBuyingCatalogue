@@ -62,18 +62,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
             var itemName = solution.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService && solutionName != null
                 ? $"{solutionName} - {solution.CatalogueItem.Name}"
                 : solution.CatalogueItem.Name;
+            var fromPreviousRevision = solution.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution
+                && solution.Order.Revision < OrderWrapper.Order.Revision;
+            var callOffId = solution.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
+                ? solution.Order.CallOffId
+                : CallOffId;
             var model = new AmendOrderItemModel(
-                CallOffId,
+                callOffId,
                 Order.OrderType,
                 recipients,
                 previousRecipients,
                 solution,
                 Previous?.OrderItem(solution.CatalogueItemId),
-                new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(solution.CatalogueItemId)))
+                new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(solution.CatalogueItemId)),
+                fromPreviousRevision)
             {
                 OrderWrapper = OrderWrapper,
                 ItemName = itemName,
-                FromPreviousRevision = solution.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution && solution.Order.Revision < OrderWrapper.Order.Revision,
             };
 
             if (Order.OrderType.MergerOrSplit)
