@@ -123,6 +123,11 @@ jobs:
           feedsToUse: config
           nugetConfigPath: 'NuGet.config'
 
+      - script: |
+          echo "Printing all pipeline variables..."
+          printenv | sort
+        displayName: "Print all variables (before SonarQubePrepare)"
+
       - task: SonarCloudPrepare@3
         inputs:
           SonarCloud: 'SonarCloud'
@@ -133,6 +138,11 @@ jobs:
           extraProperties: |
             sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/coverage_*/**/coverage.opencover.xml
             sonar.exclusions=src/NHSD.GPIT.BuyingCatalogue.UI.Components/**,src/NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp/**,**/*.cshtml,**/*.ts,tests/**
+
+      - script: |
+          echo "Printing all pipeline variables..."
+          printenv | sort
+        displayName: "Print all variables (after SonarQubePrepare)"
 
       - task: DotNetCoreCLI@2
         displayName: 'Run dotnet build'
