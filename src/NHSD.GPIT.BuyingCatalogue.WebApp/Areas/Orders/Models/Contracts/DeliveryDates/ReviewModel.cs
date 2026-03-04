@@ -56,9 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public OrderWrapper OrderWrapper { get; set; } = new();
 
-        public string OrderItemName(CatalogueItemId catalogueItemId) => orderItemNames.ContainsKey(catalogueItemId)
-            ? orderItemNames[catalogueItemId]
-            : string.Empty;
+        public string OrderItemName(CatalogueItemId catalogueItemId) => orderItemNames.TryGetValue(catalogueItemId, out var value)
+            ? value : string.Empty;
 
         public List<DateTime?> OrderItemDates(CatalogueItemId catalogueItemId)
         {

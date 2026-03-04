@@ -17,10 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public SelectDateModel(string internalOrgId, CallOffId callOffId, Order order, bool? applyToAll, DateTime? existingDeliveryDate)
         {
-            if (order == null)
-            {
-                throw new ArgumentNullException(nameof(order));
-            }
+            ArgumentNullException.ThrowIfNull(order);
 
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;

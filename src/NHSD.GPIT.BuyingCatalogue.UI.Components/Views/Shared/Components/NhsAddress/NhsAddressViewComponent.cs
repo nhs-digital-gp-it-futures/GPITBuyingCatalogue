@@ -12,8 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAdd
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Making this Static causes Razor to be unable to call the Invoke Function.")]
         public HtmlString Invoke(EntityFramework.Addresses.Models.Address address)
         {
-            if (address is null)
-                throw new ArgumentNullException(nameof(address));
+            ArgumentNullException.ThrowIfNull(address);
 
             return new HtmlString(ProcessAddressBreakRowSeperatedString(address));
         }

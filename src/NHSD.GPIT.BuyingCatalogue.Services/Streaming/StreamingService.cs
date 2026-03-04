@@ -23,8 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Streaming
 
         public async Task<Stream> StreamContents(Uri uri)
         {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
+            ArgumentNullException.ThrowIfNull(uri);
 
             var response = await httpClient.GetAsync(uri);
 

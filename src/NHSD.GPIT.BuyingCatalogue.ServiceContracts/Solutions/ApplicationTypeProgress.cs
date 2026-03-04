@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         public TaskProgress PluginsStatus() => (appicationTypeDetail.Plugins?.Required != null) ? TaskProgress.Completed : TaskProgress.NotStarted;
 
         public TaskProgress SupportedBrowsersStatus() =>
-            (appicationTypeDetail.BrowsersSupported != null && appicationTypeDetail.BrowsersSupported.Any() && appicationTypeDetail.MobileResponsive.HasValue) ? TaskProgress.Completed : TaskProgress.NotStarted;
+            (appicationTypeDetail.BrowsersSupported != null && appicationTypeDetail.BrowsersSupported.Count != 0 && appicationTypeDetail.MobileResponsive.HasValue) ? TaskProgress.Completed : TaskProgress.NotStarted;
 
         public TaskProgress NativeMobileThirdPartyStatus() => Status(GetStatus(appicationTypeDetail.MobileThirdParty));
 

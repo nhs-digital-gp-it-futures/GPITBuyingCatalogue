@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
                 .Select(Enum.Parse<T>)
                 .ToList();
 
-            if (selectedFilterEnums == null || !selectedFilterEnums.Any())
+            if (selectedFilterEnums == null || selectedFilterEnums.Count == 0)
                 throw new ArgumentException("Invalid filter format", nameof(selectedFilterIds));
 
             return selectedFilterEnums;

@@ -12,16 +12,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         public static bool ContainsIgnoreCase(this string input, char value)
         {
-            if (input is null)
-                throw new ArgumentNullException(nameof(input));
+            ArgumentNullException.ThrowIfNull(input);
 
             return input.Contains(value, StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool ContainsIgnoreCase(this string input, string value)
         {
-            if (input is null)
-                throw new ArgumentNullException(nameof(input));
+            ArgumentNullException.ThrowIfNull(input);
 
             return input.Contains(value, StringComparison.OrdinalIgnoreCase);
         }

@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             model.Name.Should().Be(catalogueItem.Supplier.Name);
             model.Url.Should().Be(catalogueItem.Supplier.SupplierUrl);
             model.Summary.Should().Be(catalogueItem.Supplier.Summary);
-            model.Contacts.Any().Should().BeTrue();
+            model.Contacts.Should().NotBeEmpty();
         }
 
         [Theory]

@@ -78,9 +78,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 BackLink = Url.Action(backRoute.ActionName, backRoute.ControllerName, backRoute.RouteValues),
                 OnwardLink = Url.Action(onwardRoute.ActionName, onwardRoute.ControllerName, onwardRoute.RouteValues),
                 AlternativeSolutionsAvailable = solutions.Count > 1,
-                AdditionalServicesAvailable = additionalServices.Any(),
+                AdditionalServicesAvailable = additionalServices.Count != 0,
                 UnselectedAdditionalServicesAvailable = additionalServices.Where(x => !selectedAdditionalServices.Any(y => x.Id == y.CatalogueItemId)).Any(),
-                AssociatedServicesAvailable = associatedServices.Any(),
+                AssociatedServicesAvailable = associatedServices.Count != 0,
                 UnselectedAssociatedServicesAvailable = associatedServices.Where(x => !selectedAssociatedServices.Any(y => x.Id == y.CatalogueItemId)).Any(),
             });
         }

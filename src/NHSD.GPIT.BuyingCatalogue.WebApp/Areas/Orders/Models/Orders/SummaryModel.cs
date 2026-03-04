@@ -39,15 +39,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public ContractBilling BespokeBilling => Order.Contract?.ContractBilling;
 
-        public bool HasBespokeMilestones => BespokePlan != null && BespokePlan.Milestones.Any();
+        public bool HasBespokeMilestones => BespokePlan != null && BespokePlan.Milestones.Count != 0;
 
         public string DefaultMilestoneLabelText => "Default milestones and payment triggers";
 
         public string BespokeMilestoneLabelText => "Bespoke milestones and payment triggers";
 
-        public bool HasBespokeBilling => BespokeBilling != null && BespokeBilling.ContractBillingItems.Any();
+        public bool HasBespokeBilling => BespokeBilling != null && BespokeBilling.ContractBillingItems.Count != 0;
 
-        public bool HasSpecificRequirements => BespokeBilling != null && BespokeBilling.Requirements.Any();
+        public bool HasSpecificRequirements => BespokeBilling != null && BespokeBilling.Requirements.Count != 0;
 
         public string BespokeBillingLabelText => "Bespoke milestones and payment triggers";
 

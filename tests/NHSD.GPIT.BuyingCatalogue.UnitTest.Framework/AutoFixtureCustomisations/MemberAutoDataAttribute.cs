@@ -29,10 +29,7 @@ public class MemberAutoDataAttribute : DataAttribute
 
     protected MemberAutoDataAttribute(string memberName, object[] parameters, Func<IFixture> fixtureFactory)
     {
-        if (fixtureFactory == null)
-        {
-            throw new ArgumentNullException(nameof(fixtureFactory));
-        }
+        ArgumentNullException.ThrowIfNull(fixtureFactory);
 
         memberDataAttribute = new(memberName, parameters);
         fixture = new(fixtureFactory, LazyThreadSafetyMode.PublicationOnly);
@@ -40,10 +37,7 @@ public class MemberAutoDataAttribute : DataAttribute
 
     public override IEnumerable<object[]> GetData(MethodInfo testMethod)
     {
-        if (testMethod == null)
-        {
-            throw new ArgumentNullException(nameof(testMethod));
-        }
+        ArgumentNullException.ThrowIfNull(testMethod);
 
         var memberData = memberDataAttribute.GetData(testMethod);
 

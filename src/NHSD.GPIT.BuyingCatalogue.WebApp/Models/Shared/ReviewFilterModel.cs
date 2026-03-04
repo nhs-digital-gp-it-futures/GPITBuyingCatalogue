@@ -61,15 +61,15 @@ public class ReviewFilterModel : NavBaseModel
 
     public bool InCompetition { get; set; }
 
-    public bool HasEpics() => FilterDetails.Capabilities.Any(x => x.Value.Any());
+    public bool HasEpics() => FilterDetails.Capabilities.Any(x => x.Value.Count != 0);
 
     public bool HasFramework() => !string.IsNullOrEmpty(FilterDetails.FrameworkName);
 
-    public bool HasHostingTypes() => FilterDetails.HostingTypes.Any();
+    public bool HasHostingTypes() => FilterDetails.HostingTypes.Count != 0;
 
-    public bool HasApplicationTypes() => FilterDetails.ApplicationTypes.Any();
+    public bool HasApplicationTypes() => FilterDetails.ApplicationTypes.Count != 0;
 
-    public bool HasInteroperabilityIntegrationTypes() => FilterDetails.Integrations.Any();
+    public bool HasInteroperabilityIntegrationTypes() => FilterDetails.Integrations.Count != 0;
 
     public bool HasAdditionalFilters() => HasFramework()
         || HasHostingTypes() || HasApplicationTypes() || HasInteroperabilityIntegrationTypes();

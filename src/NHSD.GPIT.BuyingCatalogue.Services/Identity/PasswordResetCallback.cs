@@ -21,8 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
 
         public Uri GetPasswordResetCallback(PasswordResetToken token)
         {
-            if (token is null)
-                throw new ArgumentNullException(nameof(token));
+            ArgumentNullException.ThrowIfNull(token);
 
             // ReSharper disable once Mvc.AreaNotResolved
             var action = generator.GetUriByAction(

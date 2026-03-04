@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var newServiceIds = selectedServiceIds.Except(currentServiceIds).ToList();
 
-            if (newServiceIds.Any())
+            if (newServiceIds.Count != 0)
             {
                 await orderItemService.AddOrderItems(internalOrgId, callOffId, newServiceIds);
             }

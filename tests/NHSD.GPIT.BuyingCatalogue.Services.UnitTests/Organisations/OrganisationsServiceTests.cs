@@ -231,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 .Where(x => x.RelatedOrganisationId == OrganisationId)
                 .ToListAsync();
 
-            if (existing.Any())
+            if (existing.Count != 0)
             {
                 existing.ForEach(x => context.RelatedOrganisations.Remove(x));
                 await context.SaveChangesAsync();
@@ -253,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 .Where(x => x.RelatedOrganisationId == OrganisationId)
                 .ToListAsync();
 
-            if (existing.Any())
+            if (existing.Count != 0)
             {
                 existing.ForEach(x => context.RelatedOrganisations.Remove(x));
             }

@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
         private static bool AllFundingSourcesEntered(OrderWrapper wrapper)
         {
             return wrapper.Order.SelectedFramework != null
-                && wrapper.OrderItems.Any()
+                && wrapper.OrderItems.Count != 0
                 && wrapper.OrderItems.All(x => x.OrderItemFunding != null);
         }
 

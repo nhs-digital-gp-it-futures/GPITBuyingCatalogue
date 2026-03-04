@@ -30,8 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ProcurementHub
 
         public async Task ContactProcurementHub(ProcurementHubRequest request)
         {
-            if (request == null)
-                throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(request);
 
             var odsCode = string.IsNullOrWhiteSpace(request.OdsCode)
                 ? OdsCodeNotSupplied

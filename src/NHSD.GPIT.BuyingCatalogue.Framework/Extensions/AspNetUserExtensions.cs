@@ -9,16 +9,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
     {
         public static string GetDisplayName(this AspNetUser user)
         {
-            if (user is null)
-                throw new ArgumentNullException(nameof(user));
+            ArgumentNullException.ThrowIfNull(user);
 
             return $"{user.FirstName} {user.LastName}";
         }
 
         public static string GetRoleName(this AspNetUser user)
         {
-            if (user is null)
-                throw new ArgumentNullException(nameof(user));
+            ArgumentNullException.ThrowIfNull(user);
 
             return user.AspNetUserRoles.FirstOrDefault()?.Role?.Name;
         }

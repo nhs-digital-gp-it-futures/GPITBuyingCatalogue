@@ -20,8 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (context is null)
-                throw new ArgumentNullException(nameof(context));
+            ArgumentNullException.ThrowIfNull(context);
 
             var (showBanner, useAnalytics) = ExtractCookieData(context.HttpContext.Request, cookieExpirationSettings.BuyingCatalogueCookiePolicyDate);
 

@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
                            && m.GetParameters().Length == types.Length + 1 // + 1 because extension method parameter (this)
                            select m).ToList();
 
-            if (!methods.Any())
+            if (methods.Count == 0)
             {
                 return default;
             }

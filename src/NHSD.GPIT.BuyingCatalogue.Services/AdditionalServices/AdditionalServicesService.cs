@@ -22,11 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
 
         public async Task<CatalogueItemId> AddAdditionalService(CatalogueItem solution, AdditionalServicesDetailsModel model)
         {
-            if (solution is null)
-                throw new ArgumentNullException(nameof(solution));
+            ArgumentNullException.ThrowIfNull(solution);
 
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var additionalService = new CatalogueItem
             {
@@ -49,8 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
 
         public async Task EditAdditionalService(CatalogueItemId catalogueItemId, CatalogueItemId additionalServiceId, AdditionalServicesDetailsModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var additionalService = await GetAdditionalService(catalogueItemId, additionalServiceId);
 

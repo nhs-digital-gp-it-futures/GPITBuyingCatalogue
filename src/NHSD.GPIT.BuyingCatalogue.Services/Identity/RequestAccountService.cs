@@ -31,8 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
 
         public async Task RequestAccount(NewAccountDetails request)
         {
-            if (request == null)
-                throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(request);
 
             var odsCode = string.IsNullOrWhiteSpace(request.OdsCode)
                 ? OdsCodeNotSupplied

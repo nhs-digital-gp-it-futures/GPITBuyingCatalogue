@@ -11,12 +11,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
 
         public ITaskProgressProvider ProviderFor(OrderTaskListStatus status)
         {
-            if (!providers.ContainsKey(status))
-            {
-                providers.Add(status, GetProvider(status));
-            }
+            if (providers.TryGetValue(status, out ITaskProgressProvider value)) return value;
 
-            return providers[status];
+            value = GetProvider(status);
+            providers.Add(status, value);
+
+            return value;
         }
 
         private static ITaskProgressProvider GetProvider(OrderTaskListStatus status)

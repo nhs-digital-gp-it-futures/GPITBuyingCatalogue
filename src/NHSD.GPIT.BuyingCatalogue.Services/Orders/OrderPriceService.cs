@@ -24,10 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task UpdatePrice(int orderId, CatalogueItemId catalogueItemId, List<PricingTierDto> agreedPrices)
         {
-            if (agreedPrices == null)
-            {
-                throw new ArgumentNullException(nameof(agreedPrices));
-            }
+            ArgumentNullException.ThrowIfNull(agreedPrices);
 
             var orderItem = await dbContext.OrderItems
                 .Include(x => x.OrderItemPrice)
@@ -59,15 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task UpsertPrice(int orderId, CataloguePrice price, List<PricingTierDto> agreedPrices)
         {
-            if (price == null)
-            {
-                throw new ArgumentNullException(nameof(price));
-            }
+            ArgumentNullException.ThrowIfNull(price);
 
-            if (agreedPrices == null)
-            {
-                throw new ArgumentNullException(nameof(agreedPrices));
-            }
+            ArgumentNullException.ThrowIfNull(agreedPrices);
 
             var orderItem = await dbContext.OrderItems
                 .Include(x => x.OrderItemPrice)

@@ -52,10 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task DeleteOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<CatalogueItemId> itemIds)
         {
-            if (itemIds == null)
-            {
-                throw new ArgumentNullException(nameof(itemIds));
-            }
+            ArgumentNullException.ThrowIfNull(itemIds);
 
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
@@ -129,8 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task SetOrderItemEstimationPeriod(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, CataloguePrice price)
         {
-            if (price is null)
-                throw new ArgumentNullException(nameof(price));
+            ArgumentNullException.ThrowIfNull(price);
 
             var orderId = await dbContext.OrderId(internalOrgId, callOffId);
 
@@ -174,8 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             CatalogueItemId catalogueItemId,
             OrderItemFundingType selectedFundingType)
         {
-            if (item is null)
-                throw new ArgumentNullException(nameof(item));
+            ArgumentNullException.ThrowIfNull(item);
 
             if (item.FundingType == selectedFundingType)
                 return;

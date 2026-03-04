@@ -52,7 +52,7 @@ public class SelectSolutionsModel : NavBaseModel
             false),
     };
 
-    public bool HasNoSolutions() => !Solutions.Any();
+    public bool HasNoSolutions() => Solutions.Count == 0;
 
     public bool HasSingleSolution() => Solutions.Count == 1;
 }

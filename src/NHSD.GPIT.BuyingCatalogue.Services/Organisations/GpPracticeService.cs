@@ -37,8 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task ImportGpPracticeData(Uri csvUri, string emailAddress)
         {
-            if (csvUri == null)
-                throw new ArgumentNullException(nameof(csvUri));
+            ArgumentNullException.ThrowIfNull(csvUri);
 
             if (string.IsNullOrWhiteSpace(emailAddress))
                 throw new ArgumentNullException(nameof(emailAddress));
@@ -50,8 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task SendConfirmationEmail(ImportGpPracticeListResult result, string emailAddress)
         {
-            if (result == null)
-                throw new ArgumentNullException(nameof(result));
+            ArgumentNullException.ThrowIfNull(result);
 
             if (string.IsNullOrWhiteSpace(emailAddress))
                 throw new ArgumentNullException(nameof(emailAddress));

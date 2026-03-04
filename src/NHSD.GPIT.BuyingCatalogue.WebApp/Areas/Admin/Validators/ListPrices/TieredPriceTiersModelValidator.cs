@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
         {
             var price = GetCataloguePrice(model, model.CataloguePriceId);
 
-            return price.CataloguePriceTiers.Any();
+            return price.CataloguePriceTiers.Count != 0;
         }
 
         private bool HaveTierWithStartingRange(TieredPriceTiersModel model, PublicationStatus? status)

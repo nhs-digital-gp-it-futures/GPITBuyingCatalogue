@@ -51,8 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public NavBaseModel NavModel => new NavBaseModel() { BackLink = BackLink };
 
-        public List<IdAndNameModel<string>> Items(int groupId) => EpicGroupsAndItems.ContainsKey(groupId)
-            ? EpicGroupsAndItems[groupId]
-            : new List<IdAndNameModel<string>>();
+        public List<IdAndNameModel<string>> Items(int groupId) => EpicGroupsAndItems.TryGetValue(groupId, out List<IdAndNameModel<string>> value)
+            ? value : new List<IdAndNameModel<string>>();
     }
 }

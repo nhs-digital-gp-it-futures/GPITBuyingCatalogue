@@ -35,8 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task<bool> OrganisationExists(OdsOrganisation odsOrganisation)
         {
-            if (odsOrganisation is null)
-                throw new ArgumentNullException(nameof(odsOrganisation));
+            ArgumentNullException.ThrowIfNull(odsOrganisation);
 
             return await dbContext.Organisations.AnyAsync(o => o.ExternalIdentifier == odsOrganisation.OdsCode || o.Name == odsOrganisation.OrganisationName);
         }
@@ -67,10 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task UpdateOrganisation(OdsOrganisation organisation)
         {
-            if (organisation == null)
-            {
-                throw new ArgumentNullException(nameof(organisation));
-            }
+            ArgumentNullException.ThrowIfNull(organisation);
 
             var existing = await dbContext.Organisations
                 .FirstOrDefaultAsync(x => x.ExternalIdentifier == organisation.OdsCode);

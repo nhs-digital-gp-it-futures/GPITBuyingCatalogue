@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
             AddressStatus = supplier.Address is not null;
 
-            ContactsStatus = supplier.SupplierContacts.Any();
+            ContactsStatus = supplier.SupplierContacts.Count != 0;
 
             SupplierId = supplier.Id;
 

@@ -20,7 +20,7 @@ public static class EditCapabilitiesModelTests
 
         model.CatalogueItemType.Should().Be(solution.CatalogueItem.CatalogueItemType.Name());
         model.Title.Should().Be("Capabilities and Epics");
-        model.CapabilityCategories.Should().HaveCount(capabilityCategories.Count(cc => cc.Capabilities.Any()));
+        model.CapabilityCategories.Should().HaveCount(capabilityCategories.Count(cc => cc.Capabilities.Count != 0));
     }
 
     [Theory]
@@ -33,7 +33,7 @@ public static class EditCapabilitiesModelTests
 
         model.CatalogueItemType.Should().Be(additionalService.CatalogueItem.CatalogueItemType.Name());
         model.Title.Should().Be($"{additionalService.CatalogueItem.Name} Capabilities and Epics");
-        model.CapabilityCategories.Should().HaveCount(capabilityCategories.Count(cc => cc.Capabilities.Any()));
+        model.CapabilityCategories.Should().HaveCount(capabilityCategories.Count(cc => cc.Capabilities.Count != 0));
     }
 
     [Theory]

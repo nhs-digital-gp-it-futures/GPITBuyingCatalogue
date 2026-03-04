@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Impleme
 
         public ImplementationPlan BespokePlan { get; set; }
 
-        public bool HasBespokeMilestones => BespokePlan != null && BespokePlan.Milestones.Any();
+        public bool HasBespokeMilestones => BespokePlan != null && BespokePlan.Milestones.Count != 0;
 
         public string SupplierImplementationPlan => Solution?.ImplementationDetail
             ?? "The supplier has not provided a standard implementation plan. You should contact them to discuss this.";

@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
 
         private static IList<CapabilityCategoryModel> GetCapabilities(CatalogueItem catalogueItem, IEnumerable<CapabilityCategory> capabilityCategories)
         {
-            var categories = capabilityCategories.Where(cc => cc.Capabilities.Any())
+            var categories = capabilityCategories.Where(cc => cc.Capabilities.Count != 0)
                 .Select(
                     cc => new CapabilityCategoryModel(
                         catalogueItem,

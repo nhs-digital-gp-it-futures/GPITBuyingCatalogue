@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             var contract = await GetContractWithImplementationPlan(orderId);
             if (contract is not null)
             {
-                if (contract.ImplementationPlan?.Milestones.Any() ?? false)
+                if (contract.ImplementationPlan?.Milestones.Count != 0)
                     dbContext.ImplementationPlanMilestones.RemoveRange(contract.ImplementationPlan.Milestones);
 
                 dbContext.Contracts.Remove(contract);

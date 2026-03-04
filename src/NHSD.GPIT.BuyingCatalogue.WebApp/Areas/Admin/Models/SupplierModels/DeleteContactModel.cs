@@ -12,8 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
         public DeleteContactModel(SupplierContact supplierContact, string supplierName)
         {
-            if (supplierContact is null)
-                throw new ArgumentNullException(nameof(supplierContact));
+            ArgumentNullException.ThrowIfNull(supplierContact);
 
             SupplierId = supplierContact.SupplierId;
             ContactId = supplierContact.Id;

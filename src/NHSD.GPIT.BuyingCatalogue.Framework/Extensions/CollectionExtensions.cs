@@ -7,8 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
     {
         public static void AddRange<T>(this ICollection<T> collection, IEnumerable<T> items)
         {
-            if (collection is null)
-                throw new ArgumentNullException(nameof(collection));
+            ArgumentNullException.ThrowIfNull(collection);
 
             if (items is null)
                 return;
@@ -19,8 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         public static void RemoveRange<T>(this ICollection<T> collection, IEnumerable<T> items)
         {
-            if (collection is null)
-                throw new ArgumentNullException(nameof(collection));
+            ArgumentNullException.ThrowIfNull(collection);
 
             if (items is null)
                 return;

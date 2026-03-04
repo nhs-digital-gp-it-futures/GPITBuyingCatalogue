@@ -97,7 +97,7 @@ public class CompetitionHubController : Controller
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
             AssociatedServicesRemaining = associatedServices.Any(x => selectedAssociatedServices.All(y => x.Id != y.CatalogueItemId)),
-            AssociatedServicesAvailable = associatedServices.Any(),
+            AssociatedServicesAvailable = associatedServices.Count != 0,
             AssociatedServicesUrl = Url.Action(
                 nameof(SelectAssociatedServices),
                 new { internalOrgId, competitionId, solutionId }),

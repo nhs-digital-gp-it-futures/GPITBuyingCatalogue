@@ -9,8 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
     {
         public static IEnumerable<string> GetFeatures(this Solution solution)
         {
-            if (solution is null)
-                throw new ArgumentNullException(nameof(solution));
+            ArgumentNullException.ThrowIfNull(solution);
 
             return string.IsNullOrWhiteSpace(solution.Features)
                 ? Array.Empty<string>()

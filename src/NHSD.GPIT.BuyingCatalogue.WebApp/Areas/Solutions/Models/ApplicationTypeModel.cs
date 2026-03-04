@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             HardwareRequirements = client.HardwareRequirements;
             AdditionalInformation = client.AdditionalInformation;
 
-            DisplayApplicationType = BrowsersSupported.Any() ||
+            DisplayApplicationType = BrowsersSupported.Count != 0 ||
                 MobileResponsive.HasValue ||
                 MobileFirstDesign.HasValue ||
                 PluginsRequired.HasValue ||
@@ -120,10 +120,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             HardwareRequirements = client.NativeMobileHardwareRequirements;
             AdditionalInformation = client.NativeMobileAdditionalInformation;
 
-            DisplayApplicationType = MobileOperatingSystems.Any() ||
+            DisplayApplicationType = MobileOperatingSystems.Count != 0 ||
                 !string.IsNullOrWhiteSpace(OperatingSystemDescription) ||
                 !string.IsNullOrWhiteSpace(MinimumConnectionSpeed) ||
-                MobileConnectionTypes.Any() ||
+                MobileConnectionTypes.Count != 0 ||
                 !string.IsNullOrWhiteSpace(ConnectionRequirements) ||
                 !string.IsNullOrWhiteSpace(MemoryRequirements) ||
                 !string.IsNullOrWhiteSpace(StorageSpace) ||

@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 .Where(x => x.OrderId == orderId && catalogueItemIds.Contains(x.CatalogueItemId))
                 .ToListAsync();
 
-            if (!requirements.Any())
+            if (requirements.Count == 0)
             {
                 return;
             }

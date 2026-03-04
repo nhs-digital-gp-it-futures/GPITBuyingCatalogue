@@ -12,8 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
 
         public EditSlaTypeConfirmationModel(CatalogueItem catalogueItem)
         {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
+            ArgumentNullException.ThrowIfNull(catalogueItem);
 
             SolutionName = catalogueItem.Name;
 

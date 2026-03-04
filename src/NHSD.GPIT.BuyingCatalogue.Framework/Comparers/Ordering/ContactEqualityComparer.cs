@@ -21,7 +21,7 @@ public class ContactEqualityComparer : IEqualityComparer<Contact>
 
     public int GetHashCode(Contact obj)
     {
-        if (obj == null) throw new ArgumentNullException(nameof(obj));
+        ArgumentNullException.ThrowIfNull(obj);
 
         return HashCode.Combine(obj.FirstName, obj.LastName, obj.Email, obj.Phone);
     }

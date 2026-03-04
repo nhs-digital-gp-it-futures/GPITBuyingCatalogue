@@ -17,8 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
         public ApplicationTypeSectionModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
+            ArgumentNullException.ThrowIfNull(catalogueItem);
 
             var applicationType = catalogueItem.Solution?.EnsureAndGetApplicationType();
 

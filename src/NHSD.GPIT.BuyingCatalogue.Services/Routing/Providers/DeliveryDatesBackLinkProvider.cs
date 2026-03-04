@@ -13,10 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             ArgumentNullException.ThrowIfNull(orderWrapper);
             var order = orderWrapper.Order ?? throw new ArgumentNullException(nameof(orderWrapper));
 
-            if (routeValues == null)
-            {
-                throw new ArgumentNullException(nameof(routeValues));
-            }
+            ArgumentNullException.ThrowIfNull(routeValues);
 
             if (routeValues.Source is RoutingSource.TaskList
                 || routeValues.CatalogueItemId == null)
@@ -65,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 .Select(x => x.RecipientOdsCode);
             var crossOver = solutionOdsCodes.Intersect(nextItemOdsCodes);
 
-            if (!solutionDates.Any()
+            if (solutionDates.Count == 0
                 || solutionDates.All(x => x == order.DeliveryDate)
                 || !crossOver.Any())
             {

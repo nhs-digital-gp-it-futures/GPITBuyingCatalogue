@@ -13,8 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
 
         public SessionService(IHttpContextAccessor accessor)
         {
-            if (accessor is null)
-                throw new ArgumentNullException(nameof(accessor));
+            ArgumentNullException.ThrowIfNull(accessor);
 
             session = accessor.HttpContext?.Session
                 ?? throw new InvalidOperationException("HttpContext or HttpContext.Session is null");

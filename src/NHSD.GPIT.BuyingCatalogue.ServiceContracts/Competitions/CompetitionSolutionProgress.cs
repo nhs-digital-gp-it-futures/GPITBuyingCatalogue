@@ -21,11 +21,11 @@ public readonly struct CompetitionSolutionProgress(
     {
         get
         {
-            if (competitionSolution.Price == null && (!competitionSolution.Services.Any()
+            if (competitionSolution.Price == null && (competitionSolution.Services.Count == 0
                     || competitionSolution.Services.All(x => x.Price == null)))
                 return TaskProgress.NotStarted;
 
-            return (competitionSolution.Price != null && (!competitionSolution.Services.Any()
+            return (competitionSolution.Price != null && (competitionSolution.Services.Count == 0
                 || competitionSolution.Services.All(x => x.Price != null)))
                 ? TaskProgress.Completed
                 : TaskProgress.InProgress;
@@ -40,10 +40,10 @@ public readonly struct CompetitionSolutionProgress(
                 CompetitionSolution solution,
                 ICollection<CompetitionSublocationRecipient> recipients)
             {
-                return (solution.Quantity.HasValue || (solution.Quantities.Any()
+                return (solution.Quantity.HasValue || (solution.Quantities.Count != 0
                         && recipients.All(x => solution.Quantities.Any(y => y.RecipientOdsCode == x.RecipientOdsCode))))
-                    && (!solution.Services.Any()
-                        || solution.Services.All(x => x.Quantity.HasValue || (x.Quantities.Any()
+                    && (solution.Services.Count == 0
+                        || solution.Services.All(x => x.Quantity.HasValue || (x.Quantities.Count != 0
                             && recipients.All(y => x.Quantities.Any(z => z.RecipientOdsCode == y.RecipientOdsCode)))));
             }
 

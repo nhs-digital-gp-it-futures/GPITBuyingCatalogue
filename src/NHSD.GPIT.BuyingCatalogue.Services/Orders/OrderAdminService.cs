@@ -63,8 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             string framework = null,
             OrderStatus? status = null)
         {
-            if (options is null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             var baseQuery = dbContext.Orders.Include(x => x.OrderingParty)
                 .OrderByDescending(o => o.Created)
@@ -176,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private static IQueryable<Order> GetSearchTermBySearchType(IQueryable<Order> baseQuery, string searchTerm, string searchTermType)
         {
-            if (!OrderSearchTerms.SearchTermFilters.ContainsKey(searchTermType))
+            if (!OrderSearchTerms.SearchTermFilters.TryGetValue(searchTermType, out Func<IQueryable<Order>, string, IQueryable<Order>> value))
             {
                 var parsedCallOffId = ParseCallOffId(searchTerm);
                 return baseQuery.Where(o => o.OrderNumber.ToString().Contains(parsedCallOffId)
@@ -186,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && oi.CatalogueItem.Name.Contains(searchTerm)));
             }
 
-            return OrderSearchTerms.SearchTermFilters[searchTermType](baseQuery, searchTerm);
+            return value(baseQuery, searchTerm);
         }
 
         private static string ParseCallOffId(string search) => search

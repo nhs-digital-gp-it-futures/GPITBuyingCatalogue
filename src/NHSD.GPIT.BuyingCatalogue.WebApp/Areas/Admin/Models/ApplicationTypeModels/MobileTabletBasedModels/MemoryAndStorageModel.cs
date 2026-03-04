@@ -16,8 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
         public MemoryAndStorageModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
+            ArgumentNullException.ThrowIfNull(catalogueItem);
 
             MemorySizes = Framework.Constants.SelectLists.MemorySizes;
 

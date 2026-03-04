@@ -15,8 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
         public ConnectivityAndResolutionModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
+            ArgumentNullException.ThrowIfNull(catalogueItem);
 
             SelectedConnectionSpeed = ApplicationTypeDetail?.MinimumConnectionSpeed;
 

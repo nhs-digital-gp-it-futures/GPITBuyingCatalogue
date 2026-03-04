@@ -63,8 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
         public async Task AddCapabilitiesToCatalogueItem(CatalogueItemId catalogueItemId, SaveCatalogueItemCapabilitiesModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var catalogueItemCapabilities = await dbContext.CatalogueItemCapabilities.Where(c => c.CatalogueItemId == catalogueItemId).ToListAsync();
             var catalogueItemEpics = await dbContext.CatalogueItemEpics.Where(e => e.CatalogueItemId == catalogueItemId).ToListAsync();
@@ -137,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             var staleEpics = existingEpics
                 .Where(epic => !selectedCapabilitiesAndEpics.GetValueOrDefault(epic.CapabilityId, Array.Empty<string>()).Contains(epic.EpicId)).ToList();
 
-            if (staleEpics.Any())
+            if (staleEpics.Count != 0)
                 dbContext.CatalogueItemEpics.RemoveRange(staleEpics);
         }
     }

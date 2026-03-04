@@ -17,11 +17,9 @@ internal class ControllerSpecimenCommand : ISpecimenCommand
 {
     public virtual void Execute(object specimen, ISpecimenContext context)
     {
-        if (specimen is null)
-            throw new ArgumentNullException(nameof(specimen));
+        ArgumentNullException.ThrowIfNull(specimen);
 
-        if (context is null)
-            throw new ArgumentNullException(nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
 
         if (specimen is Controller controller)
         {

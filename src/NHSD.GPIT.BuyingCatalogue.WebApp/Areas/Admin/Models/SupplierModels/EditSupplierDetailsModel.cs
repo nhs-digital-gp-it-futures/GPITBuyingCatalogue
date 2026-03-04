@@ -13,8 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
         public EditSupplierDetailsModel(Supplier supplier)
         {
-            if (supplier is null)
-                throw new ArgumentNullException(nameof(supplier));
+            ArgumentNullException.ThrowIfNull(supplier);
 
             SupplierId = supplier.Id;
             SupplierName = supplier.Name;

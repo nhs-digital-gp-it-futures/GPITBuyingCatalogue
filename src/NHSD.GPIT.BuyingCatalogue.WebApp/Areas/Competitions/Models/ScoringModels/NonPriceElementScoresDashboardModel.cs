@@ -22,7 +22,7 @@ public class NonPriceElementScoresDashboardModel : NavBaseModel
         NonPriceElements = competition.NonPriceElements.GetNonPriceElements()
             .ToDictionary(
                 x => x,
-                x => competition.CompetitionSolutions.Any() && competition.CompetitionSolutions.All(
+                x => competition.CompetitionSolutions.Count != 0 && competition.CompetitionSolutions.All(
                     y => y.Scores.Any(z => z.ScoreType.AsNonPriceElement() == x))
                     ? TaskProgress.Completed
                     : TaskProgress.NotStarted);

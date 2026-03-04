@@ -12,8 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
         public MobileTabletBasedModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
+            ArgumentNullException.ThrowIfNull(catalogueItem);
 
             ApplicationType = ApplicationType.MobileTablet;
         }

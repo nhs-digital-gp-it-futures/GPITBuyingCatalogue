@@ -65,8 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 
         private Task SendInitialEmailAsync(PasswordResetToken token)
         {
-            if (token is null)
-                throw new ArgumentNullException(nameof(token));
+            ArgumentNullException.ThrowIfNull(token);
 
             var user = token.User;
 

@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.CatalogueItemId).Count > 0)
                 .ToList();
 
-        public Order Last => previous.Any()
+        public Order Last => previous.Count != 0
             ? previous.Last()
             : null;
 

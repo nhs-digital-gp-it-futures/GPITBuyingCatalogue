@@ -12,10 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public ViewOrderItemQuantityModel(OrderItem orderItem)
         {
-            if (orderItem == null)
-            {
-                throw new ArgumentNullException(nameof(orderItem));
-            }
+            ArgumentNullException.ThrowIfNull(orderItem);
 
             ItemName = orderItem.CatalogueItem.Name;
             ItemType = orderItem.CatalogueItem.CatalogueItemType.Name();

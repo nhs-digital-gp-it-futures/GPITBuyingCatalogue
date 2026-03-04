@@ -34,7 +34,7 @@ public class SolutionModel
 
     public string Summary { get; set; }
 
-    public string GetAdditionalServicesList() => RequiredServices.Any()
+    public string GetAdditionalServicesList() => RequiredServices.Count != 0
         ? string.Join(", ", RequiredServices)
         : "None";
 }

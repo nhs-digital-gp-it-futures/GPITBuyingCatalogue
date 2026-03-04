@@ -43,9 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 
         public Dictionary<int, List<string>> CapabilityGroupsAndItems { get; set; } = new();
 
-        public List<string> Items(int groupId) => CapabilityGroupsAndItems.ContainsKey(groupId)
-            ? CapabilityGroupsAndItems[groupId]
-            : new List<string>();
+        public List<string> Items(int groupId) => CapabilityGroupsAndItems.TryGetValue(groupId, out List<string> value)
+            ? value : new List<string>();
 
         public void PopulateCapabilities(List<Capability> capabilities, ICollection<int> selected = null)
         {

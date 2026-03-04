@@ -11,10 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             ArgumentNullException.ThrowIfNull(orderWrapper);
             ArgumentNullException.ThrowIfNull(orderWrapper.Order);
 
-            if (routeValues == null)
-            {
-                throw new ArgumentNullException(nameof(routeValues));
-            }
+            ArgumentNullException.ThrowIfNull(routeValues);
 
             return new RoutingResult
             {

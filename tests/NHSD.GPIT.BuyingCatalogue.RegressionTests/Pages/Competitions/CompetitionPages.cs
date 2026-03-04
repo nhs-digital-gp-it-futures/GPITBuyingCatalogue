@@ -307,7 +307,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
             var winningSolution = solutions.Select(x => x.CatalogueItemId).ToList();
 
-            if (winningSolution.Any())
+            if (winningSolution.Count != 0)
             {
                 var winningSolutionResult = winningSolution.First();
                 return winningSolutionResult;
@@ -359,7 +359,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 .Where(y => y.CompetitionId == competitionId && !y.IsWinningSolution && y.IsShortlisted)
                 .ToList();
 
-            if (solutions.Any())
+            if (solutions.Count != 0)
             {
                 var nextWinningSolution = solutions.First();
                 nextWinningSolution.IsWinningSolution = true;

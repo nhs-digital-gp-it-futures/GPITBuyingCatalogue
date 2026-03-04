@@ -10,8 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
     {
         public static IReadOnlyList<HostingType> AvailableHosting(this Hosting hosting)
         {
-            if (hosting is null)
-                throw new ArgumentNullException(nameof(hosting));
+            ArgumentNullException.ThrowIfNull(hosting);
 
             var result = new List<HostingType>(4);
 
@@ -32,8 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         public static TaskProgress HostingTypeStatus(this Hosting hosting, HostingType hostingType)
         {
-            if (hosting is null)
-                throw new ArgumentNullException(nameof(hosting));
+            ArgumentNullException.ThrowIfNull(hosting);
 
             return hostingType switch
             {
@@ -47,8 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         public static bool HasHostingType(this Hosting hosting, HostingType hostingType)
         {
-            if (hosting is null)
-                throw new ArgumentNullException(nameof(hosting));
+            ArgumentNullException.ThrowIfNull(hosting);
 
             return hostingType switch
             {

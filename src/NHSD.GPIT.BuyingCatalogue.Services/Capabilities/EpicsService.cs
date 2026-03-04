@@ -20,10 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
         public async Task<List<Epic>> GetEpicsByIds(IEnumerable<string> epicIds)
         {
-            if (epicIds == null)
-            {
-                throw new ArgumentNullException(nameof(epicIds));
-            }
+            ArgumentNullException.ThrowIfNull(epicIds);
 
             return await dbContext.Epics.AsNoTracking()
                 .Include(x => x.Capabilities)
@@ -35,10 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
         public async Task<List<Epic>> GetReferencedEpicsByCapabilityIds(IEnumerable<int> capabilityIds)
         {
-            if (capabilityIds == null)
-            {
-                throw new ArgumentNullException(nameof(capabilityIds));
-            }
+            ArgumentNullException.ThrowIfNull(capabilityIds);
 
             return await dbContext.Epics.AsNoTracking()
                 .Include(x => x.Capabilities)

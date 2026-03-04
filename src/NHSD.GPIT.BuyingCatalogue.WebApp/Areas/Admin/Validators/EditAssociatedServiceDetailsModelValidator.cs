@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                     var problems = solutions.Select(x => x.With(model.PracticeReorganisation)).Where(x => x.IsNotValid).ToList();
                     context.MessageFormatter.AppendArgument("Solutions", string.Join(", ", problems.Select(p => p.SolutionName)));
                     context.MessageFormatter.AppendArgument("Message", problems.Count > 1 ? MultipleSolutions : SingleSolution);
-                    return !problems.Any();
+                    return problems.Count == 0;
                 })
                 .WithMessage((_, y) => "{Message} {Solutions}")
                 .OverridePropertyName("practice-reorganisation");

@@ -7,8 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
     {
         public static UriBuilder AppendQueryParameterToUrl(this UriBuilder uri, string queryParameterName, string queryParameterValue)
         {
-            if (uri is null)
-                throw new ArgumentNullException(nameof(uri));
+            ArgumentNullException.ThrowIfNull(uri);
 
             var query = HttpUtility.ParseQueryString(uri.Query);
             query.Set(queryParameterName, queryParameterValue);

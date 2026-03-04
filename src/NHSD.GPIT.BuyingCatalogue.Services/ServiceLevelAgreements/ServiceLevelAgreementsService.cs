@@ -25,8 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
         public async Task AddServiceLevelAgreement(AddSlaModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == model.Solution.Id);
             solution.ServiceLevelAgreement = new EntityFramework.Catalogue.Models.ServiceLevelAgreements
@@ -74,11 +73,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
         public async Task SaveServiceAvailabilityTimes(CatalogueItem solution, ServiceAvailabilityTimesModel model)
         {
-            if (solution is null)
-                throw new ArgumentNullException(nameof(solution));
+            ArgumentNullException.ThrowIfNull(solution);
 
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var serviceAvailabilityTimes = new ServiceAvailabilityTimes
             {
@@ -98,11 +95,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
         public async Task UpdateServiceAvailabilityTimes(CatalogueItem solution, int serviceAvailabilityTimesId, ServiceAvailabilityTimesModel model)
         {
-            if (solution is null)
-                throw new ArgumentNullException(nameof(solution));
+            ArgumentNullException.ThrowIfNull(solution);
 
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var serviceAvailabilityTimes = await GetServiceAvailabilityTimes(solution.Id, serviceAvailabilityTimesId);
 
@@ -134,11 +129,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
         public async Task AddSLAContact(CatalogueItem solution, EditSLAContactModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
-            if (solution is null)
-                throw new ArgumentNullException(nameof(solution));
+            ArgumentNullException.ThrowIfNull(solution);
 
             var slaContact = new SlaContact
             {
@@ -168,8 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
         public async Task EditSlaContact(EditSLAContactModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var contact = await dbContext.SlaContacts.FirstAsync(slac => slac.Id == model.Id);
 
@@ -184,8 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
         public async Task AddServiceLevel(CatalogueItemId solutionId, EditServiceLevelModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var serviceLevel = new SlaServiceLevel
             {
@@ -203,8 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
         public async Task UpdateServiceLevel(CatalogueItemId solutionId, int serviceLevelId, EditServiceLevelModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var serviceLevel = await GetServiceLevel(solutionId, serviceLevelId);
             serviceLevel.TypeOfService = model.ServiceType;

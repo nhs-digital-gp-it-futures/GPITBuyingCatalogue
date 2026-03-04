@@ -10,10 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.FundingTypes
     {
         public OrderItemFundingType GetFundingType(List<OrderItemFundingType> allFundingTypes, OrderItemFundingType fundingType)
         {
-            if (allFundingTypes == null)
-            {
-                throw new ArgumentNullException(nameof(allFundingTypes));
-            }
+            ArgumentNullException.ThrowIfNull(allFundingTypes);
 
             if (Enum.IsDefined(typeof(FundingType), fundingType.ToString()) || fundingType == OrderItemFundingType.CentralFunding)
                 return fundingType;

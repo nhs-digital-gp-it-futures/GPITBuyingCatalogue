@@ -93,8 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
 
         public async Task AddListPrice(CatalogueItemId solutionId, CataloguePrice cataloguePrice)
         {
-            if (cataloguePrice is null)
-                throw new ArgumentNullException(nameof(cataloguePrice));
+            ArgumentNullException.ThrowIfNull(cataloguePrice);
 
             var item = await GetCatalogueItemWithListPrices(solutionId, true);
 
@@ -112,8 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             TimeUnit? timeUnit,
             CataloguePriceQuantityCalculationType? quantityCalculationType)
         {
-            if (pricingUnit is null)
-                throw new ArgumentNullException(nameof(pricingUnit));
+            ArgumentNullException.ThrowIfNull(pricingUnit);
 
             var solution = await GetCatalogueItemWithListPrices(solutionId, true);
             var price = solution.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
@@ -141,8 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             CataloguePriceQuantityCalculationType? quantityCalculationType,
             decimal price)
         {
-            if (pricingUnit is null)
-                throw new ArgumentNullException(nameof(pricingUnit));
+            ArgumentNullException.ThrowIfNull(pricingUnit);
 
             var solution = await GetCatalogueItemWithListPrices(solutionId, true);
             var cataloguePrice = solution.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
@@ -174,8 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
 
         public async Task AddListPriceTier(CatalogueItemId solutionId, int cataloguePriceId, CataloguePriceTier tier)
         {
-            if (tier is null)
-                throw new ArgumentNullException(nameof(tier));
+            ArgumentNullException.ThrowIfNull(tier);
 
             var cataloguePrice = await dbContext
                 .CataloguePrices

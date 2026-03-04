@@ -20,10 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public ViewServiceRecipientQuantityModel(OrderItem orderItem, IEnumerable<OrderSublocationRecipient> recipients)
         {
-            if (orderItem == null)
-            {
-                throw new ArgumentNullException(nameof(orderItem));
-            }
+            ArgumentNullException.ThrowIfNull(orderItem);
 
             ItemName = orderItem.CatalogueItem.Name;
             ItemType = orderItem.CatalogueItem.CatalogueItemType.Name();

@@ -70,8 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
 
         public async Task<Supplier> AddSupplier(EditSupplierModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var latestSupplier = await dbContext.Suppliers.OrderByDescending(s => s.Id).Take(1).FirstAsync();
 
@@ -105,8 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
 
         public async Task<Supplier> EditSupplierDetails(int supplierId, EditSupplierModel updatedSupplier)
         {
-            if (updatedSupplier is null)
-                throw new ArgumentNullException(nameof(updatedSupplier));
+            ArgumentNullException.ThrowIfNull(updatedSupplier);
 
             var supplier = await GetSupplier(supplierId);
 
@@ -144,8 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
 
         public async Task<Supplier> EditSupplierContact(int supplierId, int contactId, SupplierContact updatedContact)
         {
-            if (updatedContact is null)
-                throw new ArgumentNullException(nameof(updatedContact));
+            ArgumentNullException.ThrowIfNull(updatedContact);
 
             var supplier = await GetSupplier(supplierId);
 

@@ -41,8 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task NominateOrganisation(int userId, NominateOrganisationRequest request)
         {
-            if (request == null)
-                throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(request);
 
             var user = await usersService.GetUser(userId);
 

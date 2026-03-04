@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 builder.AddCssClass(TagHelperConstants.GovUkJsCharacterCount);
             }
 
-            if (describedBy.Any())
+            if (describedBy.Count != 0)
             {
                 builder.MergeAttribute(
                     TagHelperConstants.AriaDescribedBy,

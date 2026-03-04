@@ -144,7 +144,7 @@ public class CompetitionTaskListModel
 
             CompareAndScoreSolutions = CompletedInProgressOrNotStarted(
                 competition,
-                c => c.CompetitionSolutions.Any() && c.CompetitionSolutions.All(
+                c => c.CompetitionSolutions.Count != 0 && c.CompetitionSolutions.All(
                     x => x.Scores.Count > 0),
                 c => c.CompetitionSolutions.Any(
                     x => x.Scores.Count > 0 && (HasIncompleteScore(competition, x, ScoreType.Implementation)

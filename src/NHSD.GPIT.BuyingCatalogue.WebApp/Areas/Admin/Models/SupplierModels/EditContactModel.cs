@@ -16,8 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
         public EditContactModel(Supplier supplier)
         {
-            if (supplier is null)
-                throw new ArgumentNullException(nameof(supplier));
+            ArgumentNullException.ThrowIfNull(supplier);
 
             SupplierId = supplier.Id;
 
@@ -27,11 +26,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
         public EditContactModel(SupplierContact contact, Supplier supplier, IList<CatalogueItem> solutionsReferencing)
         {
-            if (contact is null)
-                throw new ArgumentNullException(nameof(contact));
+            ArgumentNullException.ThrowIfNull(contact);
 
-            if (supplier is null)
-                throw new ArgumentNullException(nameof(supplier));
+            ArgumentNullException.ThrowIfNull(supplier);
 
             SolutionsReferencingThisContact = solutionsReferencing ?? throw new ArgumentNullException(nameof(solutionsReferencing));
 

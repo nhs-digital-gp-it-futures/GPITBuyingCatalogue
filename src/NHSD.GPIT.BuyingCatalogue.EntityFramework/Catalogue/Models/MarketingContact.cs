@@ -43,8 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public virtual void UpdateFrom(MarketingContact sourceContact)
         {
-            if (sourceContact == null)
-                throw new ArgumentNullException(nameof(sourceContact));
+            ArgumentNullException.ThrowIfNull(sourceContact);
 
             Department = sourceContact.Department;
             Email = sourceContact.Email;

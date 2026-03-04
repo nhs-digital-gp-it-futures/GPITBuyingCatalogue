@@ -73,10 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public bool HasDifferentQuantityBasisThan(IPrice price)
         {
-            if (price == null)
-            {
-                throw new ArgumentNullException(nameof(price));
-            }
+            ArgumentNullException.ThrowIfNull(price);
 
             return ProvisioningType != price.ProvisioningType
                 || CataloguePriceQuantityCalculationType != price.CataloguePriceQuantityCalculationType;

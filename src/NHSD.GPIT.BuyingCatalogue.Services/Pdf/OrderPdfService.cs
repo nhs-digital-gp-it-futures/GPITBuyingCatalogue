@@ -31,7 +31,7 @@ public class OrderPdfService : IOrderPdfService
 
     public async Task<MemoryStream> CreateOrderSummaryPdf(Order order)
     {
-        if (order == null) throw new ArgumentNullException(nameof(order));
+        ArgumentNullException.ThrowIfNull(order);
 
         var url = OrderSummaryUri(order.OrderingParty.InternalIdentifier, order.CallOffId);
 

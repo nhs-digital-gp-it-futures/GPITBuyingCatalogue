@@ -37,8 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.DevelopmentPlans
 
         public async Task SaveWorkOffPlan(CatalogueItemId solutionId, SaveWorkOffPlanModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var solution = await dbContext.Solutions
                 .Include(s => s.WorkOffPlans)
@@ -58,8 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.DevelopmentPlans
 
         public async Task UpdateWorkOffPlan(int id, SaveWorkOffPlanModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var existingPlan = await dbContext.WorkOffPlans.FirstOrDefaultAsync(wp => wp.Id == id);
 

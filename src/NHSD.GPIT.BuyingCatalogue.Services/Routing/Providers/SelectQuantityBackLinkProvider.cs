@@ -8,10 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
     {
         public RoutingResult Process(OrderWrapper orderWrapper, RouteValues routeValues)
         {
-            if (routeValues == null)
-            {
-                throw new ArgumentNullException(nameof(routeValues));
-            }
+            ArgumentNullException.ThrowIfNull(routeValues);
 
             if (routeValues.Source == RoutingSource.TaskList)
             {

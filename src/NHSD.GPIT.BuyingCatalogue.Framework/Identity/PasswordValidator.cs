@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
                 .Take(passwordSettings.NumOfPreviousPasswords)
                 .ToList();
 
-            if (!hashes.Any())
+            if (hashes.Count == 0)
             {
                 return false;
             }

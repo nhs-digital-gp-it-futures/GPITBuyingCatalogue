@@ -17,8 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             TModel model,
             bool partial = false)
         {
-            if (controller is null)
-                throw new ArgumentNullException(nameof(controller));
+            ArgumentNullException.ThrowIfNull(controller);
 
             if (string.IsNullOrEmpty(viewName))
             {

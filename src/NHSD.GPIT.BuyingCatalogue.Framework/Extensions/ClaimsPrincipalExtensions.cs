@@ -11,32 +11,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
     {
         public static string GetPrimaryOrganisationName(this ClaimsPrincipal user)
         {
-            if (user is null)
-                throw new ArgumentNullException(nameof(user));
+            ArgumentNullException.ThrowIfNull(user);
 
             return GetClaimValue(user, Constants.CatalogueClaims.PrimaryOrganisationName);
         }
 
         public static string GetUserDisplayName(this ClaimsPrincipal user)
         {
-            if (user is null)
-                throw new ArgumentNullException(nameof(user));
+            ArgumentNullException.ThrowIfNull(user);
 
             return GetClaimValue(user, Constants.CatalogueClaims.UserDisplayName);
         }
 
         public static string GetPrimaryOrganisationInternalIdentifier(this ClaimsPrincipal user)
         {
-            if (user is null)
-                throw new ArgumentNullException(nameof(user));
+            ArgumentNullException.ThrowIfNull(user);
 
             return GetClaimValue(user, Constants.CatalogueClaims.PrimaryOrganisationInternalIdentifier);
         }
 
         public static IReadOnlyList<string> GetSecondaryOrganisationInternalIdentifiers(this ClaimsPrincipal user)
         {
-            if (user is null)
-                throw new ArgumentNullException(nameof(user));
+            ArgumentNullException.ThrowIfNull(user);
 
             return user.Claims.Where(c => c.Type.EqualsIgnoreCase(Constants.CatalogueClaims.SecondaryOrganisationInternalIdentifier))
                 .Select(c => c.Value)
@@ -60,8 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         public static int UserId(this ClaimsPrincipal user)
         {
-            if (user is null)
-                throw new ArgumentNullException(nameof(user));
+            ArgumentNullException.ThrowIfNull(user);
 
             var idValue = GetClaimValue(user, Constants.CatalogueClaims.UserId);
 

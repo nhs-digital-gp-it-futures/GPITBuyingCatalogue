@@ -35,8 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
         /// of <paramref name="addressTemplate"/> is <see langword="null"/>.</exception>
         public EmailAddress(EmailAddressTemplate addressTemplate)
         {
-            if (addressTemplate is null)
-                throw new ArgumentNullException(nameof(addressTemplate));
+            ArgumentNullException.ThrowIfNull(addressTemplate);
 
             Address = addressTemplate.Address ?? throw new ArgumentException(
                 $"{nameof(EmailAddressTemplate.Address)} of {nameof(addressTemplate)} must be provided",

@@ -22,8 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
         public async Task<string> AddSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel)
         {
-            if (epicModel is null)
-                throw new ArgumentNullException(nameof(epicModel));
+            ArgumentNullException.ThrowIfNull(epicModel);
 
             List<Capability> capabilities = await dbContext.Capabilities.Where(x => epicModel.CapabilityIds.Contains(x.Id)).ToListAsync();
 
@@ -51,8 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
         public async Task EditSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel)
         {
-            if (epicModel is null)
-                throw new ArgumentNullException(nameof(epicModel));
+            ArgumentNullException.ThrowIfNull(epicModel);
 
             var epic = await dbContext
                 .Epics

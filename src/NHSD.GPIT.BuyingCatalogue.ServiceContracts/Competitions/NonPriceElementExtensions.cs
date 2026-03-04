@@ -19,8 +19,8 @@ public static class NonPriceElementExtensions
 
         return nonPriceElement switch
         {
-            NonPriceElement.Features => nonPriceElements.Features.Any(),
-            NonPriceElement.Interoperability => nonPriceElements.IntegrationTypes.Any(),
+            NonPriceElement.Features => nonPriceElements.Features.Count != 0,
+            NonPriceElement.Interoperability => nonPriceElements.IntegrationTypes.Count != 0,
             NonPriceElement.Implementation => nonPriceElements.Implementation is not null,
             NonPriceElement.ServiceLevel => nonPriceElements.ServiceLevel is not null,
             _ => throw new ArgumentOutOfRangeException(

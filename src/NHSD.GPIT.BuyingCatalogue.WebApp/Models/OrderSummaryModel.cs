@@ -35,11 +35,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public bool UseDefaultDataProcessing => Order?.ContractFlags?.UseDefaultDataProcessing == true;
 
-        public bool HasBespokeMilestones => BespokePlan != null && BespokePlan.Milestones.Any();
+        public bool HasBespokeMilestones => BespokePlan != null && BespokePlan.Milestones.Count != 0;
 
-        public bool HasBespokeBilling => BespokeBilling != null && BespokeBilling.ContractBillingItems.Any();
+        public bool HasBespokeBilling => BespokeBilling != null && BespokeBilling.ContractBillingItems.Count != 0;
 
-        public bool HasSpecificRequirements => BespokeBilling != null && BespokeBilling.Requirements.Any();
+        public bool HasSpecificRequirements => BespokeBilling != null && BespokeBilling.Requirements.Count != 0;
 
         public AmendOrderItemModel BuildAmendOrderItemModel(OrderItem solution)
         {

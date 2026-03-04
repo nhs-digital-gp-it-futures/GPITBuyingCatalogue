@@ -12,13 +12,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
     {
         public ValidationResult AfterAspNetValidation(ActionContext actionContext, IValidationContext validationContext, ValidationResult result)
         {
-            if (!result.Errors.Any())
+            if (result.Errors.Count == 0)
                 return result;
 
             var errors = GetDistinctErrors(actionContext.ModelState, result.Errors).ToList();
 
             var delimitedErrors = errors.Where(e => e.PropertyName.Contains('|')).ToList();
-            if (!delimitedErrors.Any())
+            if (delimitedErrors.Count == 0)
             {
                 result.Errors.Clear();
                 result.Errors.AddRange(errors);

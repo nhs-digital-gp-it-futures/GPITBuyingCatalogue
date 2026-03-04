@@ -10,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.Extensions
             var uri = driver.GetUri();
             var queryString = QueryHelpers.ParseQuery(uri.Query);
 
-            if (!queryString.ContainsKey(queryStringKey))
+            if (!queryString.TryGetValue(queryStringKey, out Microsoft.Extensions.Primitives.StringValues value))
                 return string.Empty;
 
-            return queryString[queryStringKey];
+            return value;
         }
 
         internal static Uri GetUri(this IWebDriver driver)

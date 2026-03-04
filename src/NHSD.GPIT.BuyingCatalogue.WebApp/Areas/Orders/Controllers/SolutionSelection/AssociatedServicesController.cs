@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
         private async Task AddOrderItems(string internalOrgId, CallOffId callOffId, List<CatalogueItemId> serviceIds)
         {
-            if (serviceIds.Any())
+            if (serviceIds.Count != 0)
             {
                 await orderItemService.AddOrderItems(internalOrgId, callOffId, serviceIds);
             }

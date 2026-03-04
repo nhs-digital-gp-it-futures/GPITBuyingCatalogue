@@ -83,7 +83,7 @@ public static class CompetitionHubControllerTests
         var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition)
         {
             AssociatedServicesRemaining = true,
-            AssociatedServicesAvailable = associatedServices.Any(),
+            AssociatedServicesAvailable = associatedServices.Count != 0,
         };
 
         var result = (await controller.Hub(internalOrgId, competition.Id, solution.CatalogueItemId)).As<ViewResult>();
@@ -148,7 +148,7 @@ public static class CompetitionHubControllerTests
         var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition)
         {
             AssociatedServicesRemaining = false,
-            AssociatedServicesAvailable = associatedServices.Any(),
+            AssociatedServicesAvailable = associatedServices.Count != 0,
         };
 
         var result = (await controller.Hub(internalOrgId, competition.Id, solution.CatalogueItemId)).As<ViewResult>();
