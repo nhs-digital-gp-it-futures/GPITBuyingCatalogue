@@ -123,11 +123,6 @@ jobs:
           feedsToUse: config
           nugetConfigPath: 'NuGet.config'
 
-      - script: |
-          echo "Printing all pipeline variables..."
-          printenv | sort
-        displayName: "Print all variables (before SonarQubePrepare)"
-
       - task: SonarCloudPrepare@3
         inputs:
           SonarCloud: 'SonarCloud'
@@ -138,11 +133,6 @@ jobs:
           extraProperties: |
             sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/coverage_*/**/coverage.opencover.xml
             sonar.exclusions=src/NHSD.GPIT.BuyingCatalogue.UI.Components/**,src/NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp/**,**/*.cshtml,**/*.ts,tests/**
-
-      - script: |
-          echo "Printing all pipeline variables..."
-          printenv | sort
-        displayName: "Print all variables (after SonarQubePrepare)"
 
       - task: DotNetCoreCLI@2
         displayName: 'Run dotnet build'
@@ -170,6 +160,19 @@ jobs:
           echo "##vso[task.setvariable variable=coverlet_path;]$ADAPTER_DIR"
         displayName: Find Coverlet path
 
+      - bash: |
+          sonar_names=$(
+            printenv | grep 'SONAR.*_' | awk -F= '
+            {
+              echo "##vso[task.setvariable variable=" $1 ";isOutput=true]" $2;
+              print $1;
+            }' | paste -sd ';' -
+          )
+          
+          echo "SonarQube Variables: ${sonar_names}"
+          echo "##vso[task.setvariable variable=SONAR_VARNAMES;isOutput=true]${sonar_names}"
+        displayName: Copy SonarQube Variables
+
       - task: CopyFiles@2
         displayName: 'Gather test DLLs'
         inputs:
@@ -182,6 +185,20 @@ jobs:
         inputs:
           SourceFolder: '$(coverlet_path)'
           TargetFolder: '$(Build.ArtifactStagingDirectory)/coverlet'
+
+      - task: CopyFiles@2
+        displayName: Copy SonarQube Task
+        inputs:
+          SourceFolder: '$(Agent.WorkFolder)/_tasks'
+          Contents: 'SonarCloudPrepare*/**'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/tasks'
+
+      - task: CopyFiles@2
+        displayName: Copy SonarQube Temp
+        inputs:
+          SourceFolder: '$(Agent.TempDirectory)/sonar'
+          Contents: '**'
+          TargetFolder: '$(Build.ArtifactStagingDirectory/temp'
 
       - publish: $(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction
         displayName: Publish Function App
@@ -198,6 +215,14 @@ jobs:
       - publish: $(Build.ArtifactStagingDirectory)/coverlet
         displayName: Publish Coverlet
         artifact: coverlet
+
+      - publish: $(Build.ArtifactStagingDirectory)/temp
+        displayName: Publish SonarQube Temp
+        artifact: temp
+
+      - publish: $(Build.ArtifactStagingDirectory)/tasks
+        displayName: Publish SonarQube Tasks
+        artifact: tasks
 
   - job: runTests
     displayName: Run tests
@@ -309,17 +334,6 @@ jobs:
           **/coverage.opencover.xml
         displayName: Download code coverage results
 
-      - task: SonarCloudPrepare@3
-        inputs:
-          SonarCloud: 'SonarCloud'
-          organization: '$(SonarOrganization)'
-          scannerMode: 'dotnet'
-          projectKey: '$(SonarKey)'
-          projectName: '$(SonarProject)'
-          extraProperties: |
-            sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/coverage_*/**/coverage.opencover.xml
-            sonar.exclusions=src/NHSD.GPIT.BuyingCatalogue.UI.Components/**,src/NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp/**,**/*.cshtml,**/*.ts,tests/**
-
       - task: CopyFiles@2
         displayName: 'Move SonarQube'
         inputs:
@@ -337,15 +351,15 @@ jobs:
       - task: SonarCloudAnalyze@3
       - task: SonarCloudPublish@3
 
-      - task: Docker@2
-        displayName: 'Docker: Build and Push'
-        condition: succeeded()
-        inputs:
-          containerRegistry: 'gpitfuturesdevacr'
-          repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
-          command: 'buildAndPush'
-          Dockerfile: 'src/**/NHSD.GPIT.BuyingCatalogue.WebApp/Dockerfile'
-          buildContext: './'
-          tags: |
-            $(semVer)
-            $(latestTag)
+#      - task: Docker@2
+#        displayName: 'Docker: Build and Push'
+#        condition: succeeded()
+#        inputs:
+#          containerRegistry: 'gpitfuturesdevacr'
+#          repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
+#          command: 'buildAndPush'
+#          Dockerfile: 'src/**/NHSD.GPIT.BuyingCatalogue.WebApp/Dockerfile'
+#          buildContext: './'
+#          tags: |
+#            $(semVer)
+#            $(latestTag)
