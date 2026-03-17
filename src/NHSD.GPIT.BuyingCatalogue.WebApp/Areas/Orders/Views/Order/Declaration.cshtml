@@ -1,0 +1,31 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.CallOffTermsDeclarationModel
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary/>
+
+        <nhs-page-title model="Model"/>
+
+        <span>
+            <p>I confirm that I have read and understood:</p>
+            <ul>
+                <li>the Call-off terms and conditions before I submit my order</li>
+                <li>the Call-off procedure if I have completed a competition</li>
+            </ul>
+        </span>
+
+        <form method="post">
+            <input type="hidden" asp-for="CallOffId" />
+            <nhs-fieldset-form-label asp-for="@Model">
+                <nhs-checkbox-container>
+                    <nhs-checkbox asp-for="DeclarationAccepted"
+                                  label-text="I understand and agree to the above statements"/>
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
+            <nhs-submit-button/>
+        </form>
+
+    </div>
+</div>

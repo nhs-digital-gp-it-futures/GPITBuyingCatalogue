@@ -74,5 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         public Task SetOrderPracticeReorganisationRecipient(string internalOrgId, CallOffId callOffId, string odsCode);
 
         public Task SetFundingSourceForForceFundedItems(string internalOrgId, CallOffId callOffId);
+
+        public Task AcceptCallOffTerms(string internalOrgId, CallOffId callOffId, bool declarationAccepted);
     }
 }

@@ -28,6 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList
 
         public TaskProgress DataProcessingInformation { get; set; } = TaskProgress.CannotStart;
 
+        public TaskProgress CallOffTermsDeclaration { get; set; } = TaskProgress.CannotStart;
+
         public TaskProgress ReviewAndCompleteStatus { get; set; } = TaskProgress.CannotStart;
     }
 }

@@ -65,6 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool IsTerminated { get; set; }
 
+        public bool AcceptedTermsAndConditions { get; set; }
+
         public virtual OrderDeletionApproval OrderDeletionApproval { get; set; }
 
         public virtual OrderTermination OrderTermination { get; set; }
