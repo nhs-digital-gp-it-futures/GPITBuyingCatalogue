@@ -202,6 +202,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> ViewServiceRecipientQuantity(
             string internalOrgId,
             CallOffId callOffId,
+            CatalogueItemId catalogueItemId)
+        {
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Previous;
+            IEnumerable<OrderSublocationRecipient> recipients = order.FlattenedRecipients;
+            var orderItem = order.OrderItem(catalogueItemId);
+
+            var model = new ViewServiceRecipientQuantityModel(orderItem, recipients)
+            {
+                BackLink = Url.Action(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            return View(model);
+        }
+
+        [HttpGet("view/{quantityViewCallOffId}")]
+        public async Task<IActionResult> ViewServiceRecipientQuantity(
+            string internalOrgId,
+            CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             CallOffId quantityViewCallOffId)
         {

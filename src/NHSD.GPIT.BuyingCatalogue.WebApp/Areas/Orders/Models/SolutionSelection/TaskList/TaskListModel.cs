@@ -174,7 +174,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
             if (taskModelsForPrevious.TryGetValue(callOffId, out var catalogueItemDict))
             {
-                return catalogueItemDict.TryGetValue(catalogueItemId, out var taskListOrderItemModel) ? taskListOrderItemModel : null;
+                var model = catalogueItemDict.TryGetValue(catalogueItemId, out var taskListOrderItemModel) ? taskListOrderItemModel : null;
+                model?.HasNewRecipients = false;
+
+                return model;
             }
 
             return null;

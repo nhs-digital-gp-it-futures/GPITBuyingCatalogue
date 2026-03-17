@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             var itemName = item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService && solutionName != null
                 ? $"{solutionName} - {item.CatalogueItem.Name}"
                 : item.CatalogueItem.Name;
-            var fromPreviousRevision = item.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution && item.Order.Revision < OrderWrapper.Order.Revision;
+            var fromPreviousRevision = item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService && item.Order.Revision < OrderWrapper.Order.Revision;
             var callOffId = item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
                 ? item.Order.CallOffId
                 : CallOffId;
