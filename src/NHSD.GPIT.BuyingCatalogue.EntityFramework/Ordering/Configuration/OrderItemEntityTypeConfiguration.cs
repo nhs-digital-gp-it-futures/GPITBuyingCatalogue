@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
@@ -42,12 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .WithMany()
                 .HasForeignKey(oi => oi.LastUpdatedBy)
                 .HasConstraintName("FK_OrderItems_LastUpdatedBy");
-
-            builder.HasMany(oi => oi.AssociatedServices)
-                .WithOne()
-                .HasForeignKey(oi => new { oi.ParentOrderId, oi.ParentCatalogueItemId })
-                .HasConstraintName("FK_OrderItems_Parent")
-                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

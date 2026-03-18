@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
@@ -24,8 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
-        public CatalogueItemType CatalogueItemType { get; set; }
-
         public CatalogueItem CatalogueItem { get; set; }
 
         public TimeUnit? EstimationPeriod { get; set; }
@@ -43,12 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public OrderItemFunding OrderItemFunding { get; set; }
 
         public OrderItemPrice OrderItemPrice { get; set; }
-
-        public int ParentOrderId { get; set; }
-
-        public CatalogueItemId ParentCatalogueItemId { get; set; }
-
-        public ICollection<OrderItem> AssociatedServices { get; set; } = new HashSet<OrderItem>();
 
         public OrderItem Clone() => new(CatalogueItemId)
         {
