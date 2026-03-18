@@ -33,7 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool CanComplete(
             ICollection<OrderSublocationRecipient> orderRecipients,
-            ICollection<OrderItem> orderItems)
+            ICollection<OrderItem> orderItems,
+            Order previous = null)
         {
             return
                 !string.IsNullOrWhiteSpace(Description)
@@ -43,8 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && (HasValidCatalogueItems() || HasAssociatedService())
                 && !HasSublocationsWithNoRecipients()
                 && OrderItems.Count > 0
-                && HaveAllDeliveryDates(orderRecipients)
-                && HaveAllQuantities(orderRecipients)
+                && HaveAllDeliveryDates(orderRecipients, previous)
+                && AllValuesEntered(orderRecipients, (recipients, item) => recipients.AllQuantitiesEntered(item), previous)
                 && orderItems.All(oi => oi.OrderItemFunding is not null)
                 && ContractFlags is not null
                 && (!OrderType.ImplementationPlanRequired || Contract?.ImplementationPlan is not null)
@@ -53,9 +54,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && OrderStatus == OrderStatus.InProgress;
         }
 
-        public bool HaveAllDeliveryDates(ICollection<OrderSublocationRecipient> orderRecipients)
+        public bool HaveAllDeliveryDates(ICollection<OrderSublocationRecipient> orderRecipients, Order previous = null)
         {
-            return OrderItems.All(x => orderRecipients.AllDeliveryDatesEntered(x.CatalogueItemId));
+            return AllValuesEntered(
+                orderRecipients,
+                (recipients, item) => recipients.AllDeliveryDatesEntered(item.CatalogueItemId),
+                previous);
         }
 
         public CatalogueItemId? GetSolutionId()
@@ -335,7 +339,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 return [];
             }
 
-            if (previous == null || !previous.Exists(catalogueItemId))
+            if (previous == null || (!previous.Exists(catalogueItemId)
+                && OrderItem(catalogueItemId).CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService))
             {
                 // No previous order or this order item is new, all recipients apply
                 return GetOrderRecipients().ToList();
@@ -345,6 +350,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             // which might happen if we amend migrated order that wasn't global recipient compatible
             return GetOrderRecipients()
                 .Where(PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(previous, catalogueItemId))
+                .Where(CurrentRecipientDidNotExistInPreviousOrderPredicate(previous, IsAmendment))
                 .ToList();
 
             // it doesn't exist on this order so no recipients apply
@@ -362,13 +368,21 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return cr =>
             {
                 OrderSublocationRecipient previousRecipient =
-                    previous.FlattenedRecipients.FirstOrDefault(pr =>
+                    previous?.FlattenedRecipients.FirstOrDefault(pr =>
                         pr.RecipientOdsCode == cr.RecipientOdsCode);
 
                 return previousRecipient is null
                     || previousRecipient.OrderItemSublocationRecipients.All(oir =>
                         oir.CatalogueItemId != catalogueItemId);
             };
+        }
+
+        private static Func<OrderSublocationRecipient, bool> CurrentRecipientDidNotExistInPreviousOrderPredicate(
+            Order previous,
+            bool isAmendment)
+        {
+            return cr => previous == null || (isAmendment
+                && previous.FlattenedRecipients.All(previousRecipient => previousRecipient.RecipientOdsCode != cr.RecipientOdsCode));
         }
 
         private OrderItem InitialiseOrderItem(
@@ -382,11 +396,21 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return orderItem;
         }
 
-        private bool HaveAllQuantities(ICollection<OrderSublocationRecipient> orderRecipients)
+        private bool AllValuesEntered(
+            ICollection<OrderSublocationRecipient> orderRecipients,
+            Func<ICollection<OrderSublocationRecipient>, OrderItem, bool> allValuesPred,
+            Order previous = null)
         {
-            var recipients = orderRecipients.ToList();
+            if (previous is not null && IsAmendment && HasAssociatedService())
+            {
+                return OrderItems.All(item =>
+                {
+                    var recipients = DetermineOrderRecipients(previous, item.CatalogueItemId);
+                    return allValuesPred(recipients, item);
+                });
+            }
 
-            return OrderItems.All(recipients.AllQuantitiesEntered);
+            return OrderItems.All(item => allValuesPred(orderRecipients, item));
         }
     }
 }

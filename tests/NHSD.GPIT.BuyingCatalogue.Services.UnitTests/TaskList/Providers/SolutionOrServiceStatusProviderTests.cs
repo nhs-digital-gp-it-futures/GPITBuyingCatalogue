@@ -141,6 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         public static void Get_Amended_NewOrderItem_ReturnsInProgress(
             OrderItem orderItemToAdd,
             Order order,
+            OrderSublocation sublocation,
             SolutionOrServiceStatusProvider service)
         {
             var state = new OrderProgress
@@ -157,8 +158,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 var matchingItem = amendedOrder.OrderItems.FirstOrDefault(a => a.CatalogueItemId == i.CatalogueItemId);
                 matchingItem.CatalogueItem = i.CatalogueItem;
             });
-
             amendedOrder.OrderItems.Add(orderItemToAdd);
+            amendedOrder.OrderSublocations.Add(sublocation);
 
             var actual = service.Get(new OrderWrapper(amendedOrder, [order]), state);
 
@@ -253,8 +254,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [MockAutoData]
+        [MockInlineAutoData(CatalogueItemType.AdditionalService)]
+        [MockInlineAutoData(CatalogueItemType.AssociatedService)]
         public static void Get_SolutionSelected_EverythingPopulated_Amendment_ReturnsCompleted(
+            CatalogueItemType catalogueItemType,
             Order previousOrder,
             Order order,
             SolutionOrServiceStatusProvider service)
@@ -265,7 +268,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x =>
             {
-                x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+                x.CatalogueItem.CatalogueItemType = catalogueItemType;
             });
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 

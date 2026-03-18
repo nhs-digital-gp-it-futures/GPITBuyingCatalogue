@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -104,7 +105,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [MockInlineAutoData(1, TaskProgress.Completed)]
-        [MockInlineAutoData(2, TaskProgress.Amended)]
         public static void Get_AllFundingSourceInfoEntered_ReturnsCompleted(
             int revision,
             TaskProgress expectedTaskProgress,
@@ -114,8 +114,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             var state = new OrderProgress { DeliveryDates = TaskProgress.Completed };
 
             order.Revision = revision;
+            var wrapper = new OrderWrapper(order);
 
-            var actual = service.Get(new OrderWrapper(order), state);
+            var actual = service.Get(wrapper, state);
+
+            actual.Should().Be(expectedTaskProgress);
+        }
+
+        [Theory]
+        [MockInlineAutoData(2, TaskProgress.Amended)]
+        public static void Get_AllFundingSourceInfoEntered_ReturnsAmended(
+            int revision,
+            TaskProgress expectedTaskProgress,
+            Order order,
+            FundingSourceStatusProvider service)
+        {
+            var state = new OrderProgress { DeliveryDates = TaskProgress.Completed };
+            var previous = new Order { Revision = 1 };
+
+            order.Revision = revision;
+            var wrapper = new OrderWrapper(order, [previous]);
+
+            var actual = service.Get(wrapper, state);
 
             actual.Should().Be(expectedTaskProgress);
         }

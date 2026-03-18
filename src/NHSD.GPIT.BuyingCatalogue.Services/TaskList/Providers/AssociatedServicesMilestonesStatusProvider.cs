@@ -18,13 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             var order = wrapper.Order;
 
-            if (order.IsAmendment || !HasAssociatedServices(order))
+            if (!HasAssociatedServices(order))
             {
                 return TaskProgress.NotApplicable;
             }
 
             var fundingSourceStatus = new[] { TaskProgress.Completed, TaskProgress.Amended };
-            var planStatus = new[] { TaskProgress.Completed, TaskProgress.NotApplicable };
+            var planStatus = new[] { TaskProgress.Completed, TaskProgress.NotApplicable, TaskProgress.Amended };
             var contractBillingEntered = order.Contract?.ContractBilling is not null;
 
             if ((!fundingSourceStatus.Contains(state.FundingSource)
@@ -35,6 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             }
 
             if ((state.ImplementationPlan != TaskProgress.Completed)
+                && (state.ImplementationPlan != TaskProgress.Amended)
                 && (state.ImplementationPlan != TaskProgress.NotApplicable
                     || state.FundingSource != TaskProgress.Completed))
                 return TaskProgress.CannotStart;

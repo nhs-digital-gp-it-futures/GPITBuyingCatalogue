@@ -96,26 +96,23 @@
                                                  typeof(ImplementationPlanController).ControllerName(),
                                                  new { Model.InternalOrgId, Model.CallOffId })"
                                         status="@Model.Progress.ImplementationPlan" />
-
-                    @if (!Model.IsAmendment)
-                    {
-                        <nhs-task-list-item label-text="Associated service milestones"
-                                            label-hint="@Model.StatusDescription(OrderSummaryField.AssociatedServicesMilestones)"
-                                            data-test-id="test-associated-service-billing"
-                                            url="@Url.Action(
-                                                     nameof(ContractBillingController.Index),
-                                                     typeof(ContractBillingController).ControllerName(),
-                                                     new { Model.InternalOrgId, Model.CallOffId })"
-                                            status="@Model.Progress.AssociatedServiceBilling" />
-                        <nhs-task-list-item label-text="Associated service requirements"
-                                            label-hint="@Model.StatusDescription(OrderSummaryField.AssociatedServicesRequirements)"
-                                            data-test-id="test-associated-service-requirements"
-                                            url="@Url.Action(
-                                                     nameof(RequirementController.Index),
-                                                     typeof(RequirementController).ControllerName(),
-                                                     new { Model.InternalOrgId, Model.CallOffId })"
-                                            status="@Model.Progress.AssociatedServiceRequirements" />
-                    }
+                    
+                    <nhs-task-list-item label-text="Associated service milestones"
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.AssociatedServicesMilestones)"
+                                        data-test-id="test-associated-service-billing"
+                                        url="@Url.Action(
+                                                 nameof(ContractBillingController.Index),
+                                                 typeof(ContractBillingController).ControllerName(),
+                                                 new { Model.InternalOrgId, Model.CallOffId })"
+                                        status="@Model.Progress.AssociatedServiceBilling" />
+                    <nhs-task-list-item label-text="Associated service requirements"
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.AssociatedServicesRequirements)"
+                                        data-test-id="test-associated-service-requirements"
+                                        url="@Url.Action(
+                                                 nameof(RequirementController.Index),
+                                                 typeof(RequirementController).ControllerName(),
+                                                 new { Model.InternalOrgId, Model.CallOffId })"
+                                        status="@Model.Progress.AssociatedServiceRequirements" />
 
                     <nhs-task-list-item label-text="Data processing information"
                                         label-hint="@Model.StatusDescription(OrderSummaryField.DataProcessing)"
