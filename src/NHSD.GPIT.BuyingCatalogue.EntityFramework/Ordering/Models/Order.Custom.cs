@@ -339,8 +339,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 return [];
             }
 
-            if ((previous == null || !previous.Exists(catalogueItemId))
-                && OrderItem(catalogueItemId)?.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService)
+            if (previous == null || (!previous.Exists(catalogueItemId)
+                && OrderItem(catalogueItemId).CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService))
             {
                 // No previous order or this order item is new, all recipients apply
                 return GetOrderRecipients().ToList();
