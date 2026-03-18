@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
@@ -27,6 +29,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public Order RolledUp => OrderWrapper.RolledUp;
 
+        public IEnumerable<OrderItem> AssociatedServicesForCurrentOrder => OrderWrapper.Order.GetAssociatedServices();
+
+        public IEnumerable<IGrouping<CallOffId, OrderItem>> PreviousAssociatedServicesGrouping =>
+            OrderWrapper.PreviousOrders.SelectMany(order => order.GetAssociatedServices())
+                .GroupBy(associatedService => associatedService.Order.CallOffId);
+
         public ImplementationPlan DefaultImplementationPlan { get; set; }
 
         public ImplementationPlan BespokePlan => Order.Contract?.ImplementationPlan;
@@ -41,18 +49,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public bool HasSpecificRequirements => BespokeBilling != null && BespokeBilling.Requirements.Any();
 
-        public AmendOrderItemModel BuildAmendOrderItemModel(OrderItem solution)
+        public AmendOrderItemModel BuildAmendOrderItemModel(OrderItem solution, string solutionName = null)
         {
+            var orderLinkedList = new LinkedList<Order>([.. OrderWrapper.PreviousOrders, OrderWrapper.Order]);
+            var previous = orderLinkedList.Find(solution.Order)?.Previous;
+            var recipients = solution.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
+                ? solution.Order.DetermineOrderRecipients(previous?.Value, solution.CatalogueItemId)
+                : RolledUp.GetOrderRecipients().ToList();
+            var previousRecipients = solution.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
+                ? []
+                : Previous?.GetOrderRecipients().ToList();
+            var itemName = solution.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService && solutionName != null
+                ? $"{solutionName} - {solution.CatalogueItem.Name}"
+                : solution.CatalogueItem.Name;
+            var callOffId = solution.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
+                ? solution.Order.CallOffId
+                : CallOffId;
             var model = new AmendOrderItemModel(
-                CallOffId,
+                callOffId,
                 Order.OrderType,
-                RolledUp.GetOrderRecipients().ToList(),
-                Previous?.FlattenedRecipients.ToList(),
+                recipients,
+                previousRecipients,
                 solution,
                 Previous?.OrderItem(solution.CatalogueItemId),
                 new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(solution.CatalogueItemId)))
             {
                 OrderWrapper = OrderWrapper,
+                ItemName = itemName,
+                FromPreviousRevision = solution.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution
+                    && solution.Order.Revision < OrderWrapper.Order.Revision,
             };
 
             if (Order.OrderType.MergerOrSplit)

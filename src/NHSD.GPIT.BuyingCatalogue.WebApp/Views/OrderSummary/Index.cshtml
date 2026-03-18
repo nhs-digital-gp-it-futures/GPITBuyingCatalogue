@@ -303,13 +303,32 @@
 
                 @if (Model.RolledUp.GetAssociatedServices().Any())
                     {
-                        <h2>@(Model.RolledUp.GetAdditionalServices().Count() > 1 ? "Associated services" : "Associated service")</h2>
-                        @foreach (var service in Model.RolledUp.GetAssociatedServices())
+                        var solutionName = Model.RolledUp.GetSolutions().First().CatalogueItem.Name;
+                        <h2>@(Model.RolledUp.GetAssociatedServices().Count() > 1 ? "Associated services" : "Associated service") details</h2>
+                        if (Model.AssociatedServicesForCurrentOrder.Any())
                         {
-                            var itemModel = Model.BuildAmendOrderItemModel(service);
-                            <partial name="OrderItem" model="@itemModel" />
+                            <h3>Associated Services for this order</h3>
+                            @foreach (var service in Model.AssociatedServicesForCurrentOrder)
+                            {
+                                var itemModel = Model.BuildAmendOrderItemModel(service, solutionName);
+                                <partial name="OrderItem" model="@itemModel" />
+                            }
+                            <div style="page-break-after: always"></div>   
                         }
-                        <div style="page-break-after: always"></div>
+
+                        if (Model.PreviousAssociatedServicesGrouping.Any())
+                        {
+                            <h3>Previously ordered associated services</h3>
+                            @foreach (var group in Model.PreviousAssociatedServicesGrouping.Reverse())
+                            {
+                                <h3>@group.Key</h3>
+                                @foreach (var service in group)
+                                {
+                                    var itemModel = Model.BuildAmendOrderItemModel(service, solutionName);
+                                    <partial name="OrderItem" model="@itemModel" />
+                                }
+                            }
+                        }
                     }
 
                 <div class="pdf-container">

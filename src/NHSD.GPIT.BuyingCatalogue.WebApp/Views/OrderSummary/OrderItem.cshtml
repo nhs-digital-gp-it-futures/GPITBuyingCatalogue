@@ -5,16 +5,8 @@
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.AmendOrderItemModel;
-@if (Model.IsAmendment && Model.IsOrderItemAdded)
-{
-    <h3>
-        <strong class="nhsuk-tag nhsuk-tag--grey">Added</strong> @Model.CatalogueItem.Name
-    </h3>
-}
-else
-{
-    <h3>@Model.CatalogueItem.Name</h3>
-}
+
+<h4>@Model.ItemName</h4>
 
 @{
     var itemType = Model.CatalogueItem.CatalogueItemType.DisplayName();
@@ -102,7 +94,7 @@ else
                             <th>Pricing tier</th>
                         }
                         <th>Price per unit</th>
-                        @if (Model.IsAmendment)
+                        @if (Model.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService && Model.IsAmendment)
                         {
                             <th>Old quantity</th>
                             <th>New quantity</th>
@@ -128,7 +120,7 @@ else
                                     }
                                 <td>£@rolledUpCosts[i].Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</td>
 
-                                    @if (Model.IsAmendment)
+                                    @if (Model.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService && Model.IsAmendment)
                                     {
                                     <td>@($"{previousCosts[i].Quantity:N0}")</td>
                                     <td>@($"{rolledUpCosts[i].Quantity:N0}")</td>

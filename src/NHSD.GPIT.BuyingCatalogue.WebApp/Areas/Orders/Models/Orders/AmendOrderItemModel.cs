@@ -48,11 +48,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public OrderType OrderType { get; }
 
-        public bool IsAmendment => CallOffId.IsAmendment;
+        public bool IsAmendment => FromPreviousRevision || CallOffId.IsAmendment;
 
         public bool CanEdit { get; set; }
 
         public bool IsOrderItemAdded { get; }
+
+        public string ItemName { get; init; }
+
+        public bool IsCardView { get; set; }
+
+        public bool FromPreviousRevision { get; init; }
 
         public OrderItemPrice OrderItemPrice => OrderItem.OrderItemPrice;
 

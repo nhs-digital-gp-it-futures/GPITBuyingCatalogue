@@ -29,7 +29,7 @@
     {
         <nhs-table-cell style="width: 50px;">
             <div class="bc-c-task-list__task-status">
-                @if (Model.IsServiceRecipientAdded)
+                @if (!Model.FromPreviousRevision && Model.IsServiceRecipientAdded)
                 {
                     <strong class="nhsuk-tag nhsuk-tag--blue">Added</strong>
                 }

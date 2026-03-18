@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.CannotStart;
             }
 
-            var allDeliveryDatesSet = order.HaveAllDeliveryDates(wrapper.RolledUp.GetOrderRecipients().ToList());
+            var allDeliveryDatesSet = order.HaveAllDeliveryDates(wrapper.RolledUp.GetOrderRecipients().ToList(), wrapper.Previous);
 
             if (allDeliveryDatesSet && (wrapper.HasNewOrderRecipients || wrapper.HasNewOrderItems))
             {
