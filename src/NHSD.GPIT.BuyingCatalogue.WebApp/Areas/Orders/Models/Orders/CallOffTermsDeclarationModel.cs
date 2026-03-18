@@ -9,15 +9,18 @@ public class CallOffTermsDeclarationModel : NavBaseModel
     {
     }
 
-    public CallOffTermsDeclarationModel(Order order)
+    public CallOffTermsDeclarationModel(Order order, string callOffTermsUrl)
     {
         CallOffId = order.CallOffId;
+        CallOffTermsUrl = callOffTermsUrl;
         DeclarationAccepted = order.AcceptedTermsAndConditions;
     }
 
     public CallOffId CallOffId { get; set; }
 
     public bool DeclarationAccepted { get; set; }
+
+    public string CallOffTermsUrl { get; set; }
 
     public override string Title => "Declaration";
 

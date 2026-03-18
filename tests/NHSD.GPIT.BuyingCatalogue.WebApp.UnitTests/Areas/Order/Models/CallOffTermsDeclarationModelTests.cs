@@ -9,13 +9,15 @@ public static class CallOffTermsDeclarationModelTests
     [Theory]
     [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
-        EntityFramework.Ordering.Models.Order order)
+        EntityFramework.Ordering.Models.Order order,
+        string callOffTermsUrl)
     {
-        var model = new CallOffTermsDeclarationModel(order);
+        var model = new CallOffTermsDeclarationModel(order, callOffTermsUrl);
 
         model.Title.Should().Be("Declaration");
         model.Caption.Should().Be($"Order {order.CallOffId}");
         model.CallOffId.Should().Be(order.CallOffId);
+        model.CallOffTermsUrl.Should().Be(callOffTermsUrl);
         model.DeclarationAccepted.Should().Be(order.AcceptedTermsAndConditions);
     }
 }

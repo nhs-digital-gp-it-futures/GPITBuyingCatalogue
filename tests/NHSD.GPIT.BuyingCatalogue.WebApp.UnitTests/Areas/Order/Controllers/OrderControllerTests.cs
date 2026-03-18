@@ -587,12 +587,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static async Task Declaration_ReturnsViewWithModel(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
+            [Frozen] CallOffTermsSettings settings,
             [Frozen] IOrderService orderService,
             OrderController controller)
         {
             orderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            var expectedModel = new CallOffTermsDeclarationModel(order);
+            var expectedModel = new CallOffTermsDeclarationModel(order, settings.Url);
 
             var result = (await controller.Declaration(internalOrgId, order.CallOffId)).Should()
                 .BeOfType<ViewResult>()

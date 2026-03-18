@@ -264,7 +264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             var orderWrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
             var order = orderWrapper.Order;
 
-            var model = new CallOffTermsDeclarationModel(order)
+            var model = new CallOffTermsDeclarationModel(order, callOffTermsSettings.Url)
             {
                 BackLink = Url.Action(nameof(Order), new { internalOrgId, callOffId }),
             };
