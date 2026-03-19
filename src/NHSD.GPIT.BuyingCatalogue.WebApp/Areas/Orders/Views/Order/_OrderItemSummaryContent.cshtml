@@ -39,7 +39,7 @@
             @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient => OrderWrapper.GetCallOffIdForPreviousRecipient(previousOrderDictionary, recipient, orderIdWithCatalogueItem)))
             {
                 var callOffId = OrderWrapper.GetCallOffIdForPreviousRecipient(previousOrderDictionary, serviceRecipient, orderIdWithCatalogueItem);
-                var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId.ToString());
+                var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId);
 
                 <nhs-table-row-container>
                     <partial name="_OrderItemRecipientRow" model="@itemRecipientRowModel" />

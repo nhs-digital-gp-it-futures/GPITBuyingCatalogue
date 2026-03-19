@@ -53,7 +53,7 @@
                           OrderWrapper.GetCallOffIdForPreviousRecipient(previousOrderDictionary, recipient, orderIdWithCatalogueItem)))
             {
                 var callOffId = OrderWrapper.GetCallOffIdForPreviousRecipient(previousOrderDictionary, serviceRecipient, orderIdWithCatalogueItem);
-                var recipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId.ToString());
+                var recipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId);
                 <partial name="ServiceRecipientRow" model="recipientRowModel" />
             }
         }
