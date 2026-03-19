@@ -34,31 +34,15 @@
             <nhs-table-column>Status</nhs-table-column>
             var previousOrderDictionary = Model.OrderWrapper.PreviousOrders.ToDictionary(order =>
                 order.Id);
-            int? orderIdWithAdditionalService = null;
-            if (Model.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService && Model.OrderWrapper.PreviousOrders.First().OrderItems.FirstOrDefault(oi => oi.CatalogueItemId == Model.CatalogueItem.Id) == null)
+            var orderIdWithCatalogueItem = Model.OrderWrapper.PreviousOrders.SelectMany(o => o.OrderItems).FirstOrDefault(oi => oi.CatalogueItemId == Model.CatalogueItem.Id)?.OrderId;
+            
+            @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient => OrderWrapper.GetCallOffIdForPreviousRecipient(previousOrderDictionary, recipient, orderIdWithCatalogueItem)))
             {
-                orderIdWithAdditionalService = Model.OrderWrapper.PreviousOrders.SelectMany(o => o.OrderItems).FirstOrDefault(oi => oi.CatalogueItemId == Model.CatalogueItem.Id)?.OrderId;
-            }
-            @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient => OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, recipient)))
-            {
-                OrderItemRecipientRowModel itemRecipientRowModel;
-                if (orderIdWithAdditionalService != null)
-                {
-                    var initialOrderWithAdditionalService = previousOrderDictionary[orderIdWithAdditionalService.Value];
-                    var initialOrderWithRecipient = previousOrderDictionary[serviceRecipient.OrderId];
-                    var callOffId = initialOrderWithRecipient.Revision < initialOrderWithAdditionalService.Revision
-                        ? initialOrderWithAdditionalService.CallOffId
-                        : initialOrderWithRecipient.CallOffId;
-                    itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId.ToString());
-                }
-                else
-                {
-                    itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, serviceRecipient));
-                }
+                var callOffId = OrderWrapper.GetCallOffIdForPreviousRecipient(previousOrderDictionary, serviceRecipient, orderIdWithCatalogueItem);
+                var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId.ToString());
 
-                var model = itemRecipientRowModel;
                 <nhs-table-row-container>
-                    <partial name="_OrderItemRecipientRow" model="model" />
+                    <partial name="_OrderItemRecipientRow" model="@itemRecipientRowModel" />
                 </nhs-table-row-container>
             }
         }

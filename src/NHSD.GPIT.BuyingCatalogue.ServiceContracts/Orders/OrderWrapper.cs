@@ -110,9 +110,16 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         /// </summary>
         public Order RolledUp => rolledUpLazy.Value;
 
-        public static string GetCallOffIdForRecipient(Dictionary<int, Order> previousOrders, OrderSublocationRecipient recipient)
+        public static CallOffId GetCallOffIdForPreviousRecipient(Dictionary<int, Order> previousOrders, OrderSublocationRecipient recipient, int? orderIdWithCatalogueItem)
         {
-            return previousOrders[recipient.OrderId].CallOffId.ToString();
+            var initialOrderWithCatalogueItem = orderIdWithCatalogueItem.HasValue
+                ? previousOrders[orderIdWithCatalogueItem.Value]
+                : null;
+            var initialOrderWithRecipient = previousOrders[recipient.OrderId];
+
+            return initialOrderWithCatalogueItem == null || initialOrderWithRecipient.Revision >= initialOrderWithCatalogueItem.Revision
+                ? initialOrderWithRecipient.CallOffId
+                : initialOrderWithCatalogueItem.CallOffId;
         }
 
         public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId)

@@ -46,12 +46,14 @@
     else
     {
         var previousOrderDictionary = Model.OrderWrapper.PreviousOrders.ToDictionary(order => order.Id);
+        var orderIdWithCatalogueItem = Model.OrderWrapper.PreviousOrders.SelectMany(o => o.OrderItems).FirstOrDefault(oi => oi.CatalogueItemId == Model.CatalogueItem.Id)?.OrderId;
         @if (Model.IsAmendment)
         {
             @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient =>
-                          OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, recipient)))
+                          OrderWrapper.GetCallOffIdForPreviousRecipient(previousOrderDictionary, recipient, orderIdWithCatalogueItem)))
             {
-                var recipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, serviceRecipient));
+                var callOffId = OrderWrapper.GetCallOffIdForPreviousRecipient(previousOrderDictionary, serviceRecipient, orderIdWithCatalogueItem);
+                var recipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId.ToString());
                 <partial name="ServiceRecipientRow" model="recipientRowModel" />
             }
         }
