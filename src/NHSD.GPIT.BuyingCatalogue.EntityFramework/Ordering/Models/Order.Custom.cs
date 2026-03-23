@@ -51,6 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && (!OrderType.ImplementationPlanRequired || Contract?.ImplementationPlan is not null)
                 && (IsAmendment || !HasAssociatedService() || Contract?.ContractBilling is not null)
                 && ContractFlags?.UseDefaultDataProcessing == true
+                && AcceptedTermsAndConditions
                 && OrderStatus == OrderStatus.InProgress;
         }
 
