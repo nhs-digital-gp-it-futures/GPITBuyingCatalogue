@@ -14,6 +14,7 @@
         AssociatedServicesMilestones,
         AssociatedServicesRequirements,
         DataProcessing,
+        CallOffTermsDeclaration,
         ReviewAndComplete,
     }
 }

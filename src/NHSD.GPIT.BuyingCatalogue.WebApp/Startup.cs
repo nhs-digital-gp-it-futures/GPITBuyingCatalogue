@@ -90,6 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .ConfigureConsentCookieSettings(Configuration)
                 .ConfigureTermsOfUseSettings(Configuration)
                 .ConfigureAnalyticsSettings(Configuration)
+                .ConfigureCallOffTermsSettings(Configuration)
                 .ConfigurePriceTiersCap(Configuration)
                 .ConfigureAccountManagement(Configuration)
                 .ConfigureRecaptcha(Configuration)

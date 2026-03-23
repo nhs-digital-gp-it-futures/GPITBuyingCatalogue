@@ -27,6 +27,10 @@
                             caption="@Model.OrganisationName"
                             advice="@Model.TitleAdvice" />
 
+            <p>
+                When completing an order you should refer to the <a href="@Model.CallOffTermsUrl" target="_blank">Call-off terms and conditions. (opens in a new tab)</a>
+            </p>
+
             @if (!string.IsNullOrWhiteSpace(Model.Description))
             {
                 <h2 class="nhsuk-heading-s">Description</h2>
@@ -119,6 +123,12 @@
                                         data-test-id="test-data-processing-info"
                                         url="@Url.Action(nameof(DataProcessingPlanController.Index), typeof(DataProcessingPlanController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"
                                         status="@Model.Progress.DataProcessingInformation" />
+
+                    <nhs-task-list-item label-text="Declaration"
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.CallOffTermsDeclaration)"
+                                        data-test-id="test-declaration"
+                                        url="@Url.Action(nameof(OrderController.Declaration), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"
+                                        status="@Model.Progress.CallOffTermsDeclaration" />
                 </nhs-task-list-section>
 
                 <nhs-task-list-section label-text="Complete order">

@@ -24,6 +24,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
@@ -58,6 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             OrderProgress orderTaskList,
             [Frozen] IOrderService orderServiceMock,
             [Frozen] IOrderProgressService orderProgressService,
+            [Frozen] CallOffTermsSettings settings,
             OrderController controller)
         {
             order.LastUpdatedByUser = aspNetUser;
@@ -76,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             await orderServiceMock.Received().GetOrderForTaskListStatuses(order.CallOffId, internalOrgId);
             await orderProgressService.Received().GetOrderProgress(internalOrgId, order.CallOffId);
 
-            var expected = new OrderModel(internalOrgId, orderTaskList, order)
+            var expected = new OrderModel(internalOrgId, orderTaskList, order, settings.Url)
             {
                 DescriptionUrl = "testUrl",
             };
@@ -220,6 +222,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             OrderTypeEnum orderType,
             string frameworkId,
             [Frozen] IOrganisationsService organisationsService,
+            [Frozen] CallOffTermsSettings settings,
             Organisation organisation,
             OrderController controller)
         {
@@ -229,7 +232,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             await organisationsService.Received().GetOrganisationByInternalIdentifier(internalOrgId);
 
-            var expected = new OrderModel(internalOrgId, orderType, new OrderProgress(), organisation.Name)
+            var expected = new OrderModel(internalOrgId, orderType, new OrderProgress(), organisation.Name, settings.Url)
             {
                 DescriptionUrl = "testUrl",
             };
@@ -577,6 +580,63 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             OrderController.GetAdvice(new OrderWrapper(order), false)
                 .Should()
                 .Be("There is an amendment currently in progress for this contract.");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Declaration_ReturnsViewWithModel(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] CallOffTermsSettings settings,
+            [Frozen] IOrderService orderService,
+            OrderController controller)
+        {
+            orderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
+
+            var expectedModel = new CallOffTermsDeclarationModel(order, settings.Url);
+
+            var result = (await controller.Declaration(internalOrgId, order.CallOffId)).Should()
+                .BeOfType<ViewResult>()
+                .Subject;
+
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Declaration_InvalidModel_Redirects(
+            string internalOrgId,
+            CallOffId callOffId,
+            CallOffTermsDeclarationModel model,
+            OrderController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = (await controller.Declaration(internalOrgId, callOffId, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().Be(model);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Declaration_ValidModel_Redirects(
+            string internalOrgId,
+            CallOffId callOffId,
+            CallOffTermsDeclarationModel model,
+            OrderController controller)
+        {
+            model.DeclarationAccepted = true;
+
+            var result = (await controller.Declaration(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrderController.Order));
+            result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+            });
         }
 
         private static void SetControllerHttpContext(ControllerBase controller)

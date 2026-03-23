@@ -31,6 +31,7 @@
     SelectedFrameworkId NVARCHAR(36) NULL,
     [DeliveryDate] DATE NULL,
     [CompetitionId] INT NULL,
+    [AcceptedTermsAndConditions] BIT NOT NULL DEFAULT(0),
     CONSTRAINT PK_Orders PRIMARY KEY (Id),
     CONSTRAINT FK_Orders_OrderingParty FOREIGN KEY (OrderingPartyId) REFERENCES organisations.Organisations (Id),
     CONSTRAINT FK_Orders_OrderingPartyContact FOREIGN KEY (OrderingPartyContactId) REFERENCES ordering.Contacts (Id),

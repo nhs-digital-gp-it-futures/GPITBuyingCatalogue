@@ -10,33 +10,28 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 {
     [Authorize("Buyer")]
     [Area("Orders")]
     [Route("order/organisation/{internalOrgId}/order/{callOffId}")]
-    public sealed class OrderController : Controller
+    public sealed class OrderController(
+        IOrderService orderService,
+        IOrderProgressService orderProgressService,
+        IOrganisationsService organisationsService,
+        IImplementationPlanService implementationPlanService,
+        IOrderPdfService pdfService,
+        CallOffTermsSettings callOffTermsSettings)
+        : Controller
     {
-        private readonly IOrderService orderService;
-        private readonly IOrderProgressService orderProgressService;
-        private readonly IOrganisationsService organisationsService;
-        private readonly IImplementationPlanService implementationPlanService;
-        private readonly IOrderPdfService pdfService;
-
-        public OrderController(
-            IOrderService orderService,
-            IOrderProgressService orderProgressService,
-            IOrganisationsService organisationsService,
-            IImplementationPlanService implementationPlanService,
-            IOrderPdfService pdfService)
-        {
-            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-            this.orderProgressService = orderProgressService ?? throw new ArgumentNullException(nameof(orderProgressService));
-            this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
-            this.implementationPlanService = implementationPlanService ?? throw new ArgumentNullException(nameof(implementationPlanService));
-            this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
-        }
+        private readonly IOrderService orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+        private readonly IOrderProgressService orderProgressService = orderProgressService ?? throw new ArgumentNullException(nameof(orderProgressService));
+        private readonly IOrganisationsService organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+        private readonly IImplementationPlanService implementationPlanService = implementationPlanService ?? throw new ArgumentNullException(nameof(implementationPlanService));
+        private readonly IOrderPdfService pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
+        private readonly CallOffTermsSettings settings = callOffTermsSettings ?? throw new ArgumentNullException(nameof(callOffTermsSettings));
 
         [HttpGet]
         public async Task<IActionResult> Order(string internalOrgId, CallOffId callOffId)
@@ -61,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var orderProgress = await orderProgressService.GetOrderProgress(internalOrgId, callOffId);
 
-            var orderModel = new OrderModel(internalOrgId, orderProgress, order)
+            var orderModel = new OrderModel(internalOrgId, orderProgress, order, settings.Url)
             {
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.OrderDescription),
@@ -110,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-            var orderModel = new OrderModel(internalOrgId, orderType, new OrderProgress(), organisation.Name)
+            var orderModel = new OrderModel(internalOrgId, orderType, new OrderProgress(), organisation.Name, settings.Url)
             {
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.NewOrderDescription),
@@ -261,6 +256,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 nameof(Summary),
                 typeof(OrderController).ControllerName(),
                 new { internalOrgId, callOffId });
+        }
+
+        [HttpGet("declaration")]
+        public async Task<IActionResult> Declaration(string internalOrgId, CallOffId callOffId)
+        {
+            var orderWrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = orderWrapper.Order;
+
+            var model = new CallOffTermsDeclarationModel(order, callOffTermsSettings.Url)
+            {
+                BackLink = Url.Action(nameof(Order), new { internalOrgId, callOffId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("declaration")]
+        public async Task<IActionResult> Declaration(string internalOrgId, CallOffId callOffId, CallOffTermsDeclarationModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await orderService.AcceptCallOffTerms(internalOrgId, callOffId, model.DeclarationAccepted);
+
+            return RedirectToAction(nameof(Order), new { internalOrgId, callOffId });
         }
 
         internal static string GetAdvice(OrderWrapper orderWrapper, bool latestOrder)

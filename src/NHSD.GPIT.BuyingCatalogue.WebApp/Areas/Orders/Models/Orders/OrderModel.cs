@@ -38,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             new(OrderSummaryField.AssociatedServicesMilestones, "Review the default milestones and create bespoke ones."),
             new(OrderSummaryField.AssociatedServicesRequirements, "Provide details of any specific requirements for your associated services."),
             new(OrderSummaryField.DataProcessing, "Download the data processing information template for the supplier to complete."),
+            new(OrderSummaryField.CallOffTermsDeclaration, "Review and accept the Call-off terms and conditions."),
             new(OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete your order."),
         ];
 
@@ -54,8 +55,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             string internalOrgId,
             OrderType orderType,
             OrderProgress orderSections,
-            string organisationName)
-            : this(internalOrgId, orderSections)
+            string organisationName,
+            string callOffTermsUrl)
+            : this(internalOrgId, orderSections, callOffTermsUrl)
         {
             Title = "New order";
             TitleAdvice = "You must provide an order description before a unique ID is created for this order.";
@@ -66,8 +68,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public OrderModel(
             string internalOrgId,
             OrderProgress orderSections,
-            Order order)
-            : this(internalOrgId, orderSections)
+            Order order,
+            string callOffTermsUrl)
+            : this(internalOrgId, orderSections, callOffTermsUrl)
         {
             Title = $"Order {order.CallOffId}";
             CallOffId = order.CallOffId;
@@ -90,13 +93,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         private OrderModel(
             string internalOrgId,
-            OrderProgress orderSections)
+            OrderProgress orderSections,
+            string callOffTermsUrl)
         {
             InternalOrgId = internalOrgId;
             Progress = orderSections;
+            CallOffTermsUrl = callOffTermsUrl;
         }
 
         public CallOffId CallOffId { get; set; }
+
+        public string CallOffTermsUrl { get; set; }
 
         public bool IsAmendment { get; }
 
