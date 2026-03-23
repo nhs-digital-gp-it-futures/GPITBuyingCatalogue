@@ -22,8 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers
 
         Task<IList<Supplier>> GetAllSuppliers(string searchTerm = null);
 
-        Task<IList<Supplier>> GetAllActiveSuppliers();
-
         Task<IList<Supplier>> GetSuppliersBySearchTerm(string searchTerm);
 
         Task<IList<CatalogueItem>> GetSolutionsReferencingSupplierContact(int supplierContactId);
