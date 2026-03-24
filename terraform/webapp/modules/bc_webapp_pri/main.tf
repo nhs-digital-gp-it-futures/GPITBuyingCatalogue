@@ -43,6 +43,7 @@ resource "azurerm_linux_web_app" "webapp" {
 
     RECAPTCHASETTINGS__SITEKEY   = var.recaptcha_site_key
     RECAPTCHASETTINGS__SECRETKEY = var.recaptcha_secret_key
+    CALLOFFTERMS__URL            = var.calloff_terms_url
 
     NOTIFY_API_KEY = var.notify_api_key
 
