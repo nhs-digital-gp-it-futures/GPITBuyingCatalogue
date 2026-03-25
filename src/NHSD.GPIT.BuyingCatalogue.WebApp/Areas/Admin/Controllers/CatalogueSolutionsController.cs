@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var suppliers = await suppliersService.GetAllActiveSuppliers();
+            var suppliers = await suppliersService.GetAllSuppliers();
 
             var model = new SolutionModel(solution).WithSelectListItems(suppliers);
 
@@ -177,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var suppliers = await suppliersService.GetAllActiveSuppliers();
+                var suppliers = await suppliersService.GetAllSuppliers();
 
                 model.Frameworks = (await solutionsService.GetAllFrameworks())
                     .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id })
