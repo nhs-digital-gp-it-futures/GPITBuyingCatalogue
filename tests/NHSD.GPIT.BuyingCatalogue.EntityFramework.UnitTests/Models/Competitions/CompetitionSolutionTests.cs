@@ -183,4 +183,78 @@ public static class CompetitionSolutionTests
 
         total.Should().Be(expectedPrice);
     }
+
+    [Theory]
+    [MockAutoData]
+    public static void CalculateTotalPrice_SolutionWithServicesNoPrice_ReturnsExpected(
+        CompetitionSolution solution,
+        CompetitionAssociatedService associatedService,
+        CompetitionAdditionalService additionalService)
+    {
+        const int contractLength = 12;
+        const int price = 1000;
+        const int quantity = 5;
+        const int expectedPrice = price * quantity;
+
+        additionalService.Price = associatedService.Price = null;
+        additionalService.Quantities = associatedService.Quantities = [];
+
+        solution.Services = [associatedService, additionalService];
+        solution.Price = new CompetitionCatalogueItemPrice
+        {
+            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
+            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
+            ProvisioningType = ProvisioningType.Patient,
+            BillingPeriod = TimeUnit.PerYear,
+            Tiers = [new CompetitionCatalogueItemPriceTier { LowerRange = 0, UpperRange = null, Price = price }],
+        };
+        solution.Quantities = [new CompetitionItemQuantity { Quantity = quantity }];
+
+        var total = solution.CalculateTotalPrice(contractLength);
+
+        total.Should().Be(expectedPrice);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void CalculateTotalPrice_SolutionWithNullServices_ReturnsExpected(
+        CompetitionSolution solution)
+    {
+        const int contractLength = 12;
+        const int price = 1000;
+        const int quantity = 5;
+        const int expectedPrice = price * quantity;
+
+        solution.Services = null;
+        solution.Price = new CompetitionCatalogueItemPrice
+        {
+            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
+            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
+            ProvisioningType = ProvisioningType.Patient,
+            BillingPeriod = TimeUnit.PerYear,
+            Tiers = [new CompetitionCatalogueItemPriceTier { LowerRange = 0, UpperRange = null, Price = price }],
+        };
+        solution.Quantities = [new CompetitionItemQuantity { Quantity = quantity }];
+
+        var total = solution.CalculateTotalPrice(contractLength);
+
+        total.Should().Be(expectedPrice);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void CalculateTotalPrice_SolutionWithNullPrice_ReturnsExpected(
+        CompetitionSolution solution)
+    {
+        const int contractLength = 12;
+        const int expectedPrice = 0;
+
+        solution.Services = null;
+        solution.Price = null;
+        solution.Quantities = [];
+
+        var total = solution.CalculateTotalPrice(contractLength);
+
+        total.Should().Be(expectedPrice);
+    }
 }

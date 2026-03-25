@@ -29,9 +29,11 @@ public class CompetitionSolution : CompetitionCatalogueItem
 
     public ICollection<CompetitionCatalogueItem> Services { get; set; } = new HashSet<CompetitionCatalogueItem>();
 
-    public ICollection<CompetitionAdditionalService> AdditionalServices => Services.OfType<CompetitionAdditionalService>().ToList();
+    public ICollection<CompetitionAdditionalService> AdditionalServices =>
+        Services.OfType<CompetitionAdditionalService>().ToList();
 
-    public ICollection<CompetitionAssociatedService> AssociatedServices => Services.OfType<CompetitionAssociatedService>().ToList();
+    public ICollection<CompetitionAssociatedService> AssociatedServices =>
+        Services.OfType<CompetitionAssociatedService>().ToList();
 
     public ICollection<SolutionScore> Scores { get; set; } = new HashSet<SolutionScore>();
 
@@ -50,6 +52,7 @@ public class CompetitionSolution : CompetitionCatalogueItem
         var oneOffCost = Services?
             .Sum(x => ((IPrice)x.Price)?.CalculateOneOffCost(x.Quantities.Sum(y => y.Quantity.GetValueOrDefault())));
 
-        return oneOffCost + ((solutionMonthlyCost + servicesMonthlyCost) * contractLength);
+        return ((solutionMonthlyCost.GetValueOrDefault() + servicesMonthlyCost.GetValueOrDefault()) * contractLength)
+            + oneOffCost.GetValueOrDefault();
     }
 }
