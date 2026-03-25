@@ -41,13 +41,13 @@ public class CompetitionSolution : CompetitionCatalogueItem
 
     public decimal? CalculateTotalPrice(int contractLength)
     {
-        var price = Price as IPrice;
+        IPrice price = Price;
 
         var solutionMonthlyCost =
             price?.CalculateCostPerMonth(Quantities.Sum(x => x.Quantity.GetValueOrDefault()));
         var servicesMonthlyCost = Services?.Sum(x =>
             ((IPrice)x.Price)?.CalculateCostPerMonth(x.Quantities.Sum(y => y.Quantity.GetValueOrDefault())));
-        var oneOffCost = AssociatedServices
+        var oneOffCost = Services?
             .Sum(x => ((IPrice)x.Price)?.CalculateOneOffCost(x.Quantities.Sum(y => y.Quantity.GetValueOrDefault())));
 
         return oneOffCost + ((solutionMonthlyCost + servicesMonthlyCost) * contractLength);
