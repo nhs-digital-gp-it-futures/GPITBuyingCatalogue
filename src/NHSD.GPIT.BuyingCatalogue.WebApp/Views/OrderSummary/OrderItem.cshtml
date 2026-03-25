@@ -49,9 +49,9 @@
         @if (Model.IsAmendment)
         {
             @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient =>
-                          OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, recipient)))
+                          Model.OrderWrapper.GetCallOffIdForRecipient(recipient)))
             {
-                var recipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, serviceRecipient));
+                var recipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, Model.OrderWrapper.GetCallOffIdForRecipient(serviceRecipient));
                 <partial name="ServiceRecipientRow" model="recipientRowModel" />
             }
         }
