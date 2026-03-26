@@ -45,7 +45,6 @@
     }
     else
     {
-        var previousOrderDictionary = Model.OrderWrapper.PreviousOrders.ToDictionary(order => order.Id);
         @if (Model.IsAmendment)
         {
             @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient =>

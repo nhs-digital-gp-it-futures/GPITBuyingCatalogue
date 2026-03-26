@@ -272,6 +272,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             return new Order
             {
+                Id = Id,
                 AssociatedServicesOnlyDetails = AssociatedServicesOnlyDetails,
                 DeliveryDate = DeliveryDate,
                 Revision = Revision,

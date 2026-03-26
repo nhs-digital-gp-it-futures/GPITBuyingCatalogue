@@ -42,11 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
                 Order output = orderedPreviousOrders.First().Clone();
 
-                foreach (OrderSublocationRecipient recipient in output.GetOrderRecipients())
-                {
-                    recipient.OrderId = previous[0].Id;
-                }
-
                 foreach (Order amendment in orderedPreviousOrders.Skip(1))
                 {
                     output.Apply(amendment);
@@ -58,7 +53,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             rolledUpLazy = new Lazy<Order>(() =>
             {
                 var output = Previous?.Clone();
-
                 if (output == null)
                 {
                     return Order.Clone();

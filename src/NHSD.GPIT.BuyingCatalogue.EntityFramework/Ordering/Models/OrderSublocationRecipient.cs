@@ -56,6 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             return new OrderSublocationRecipient
             {
+                OrderId = OrderId,
                 RecipientOdsCode = RecipientOdsCode,
                 RecipientOdsOrganisation = RecipientOdsOrganisation,
                 ParentSublocationOdsCode = ParentSublocationOdsCode,
