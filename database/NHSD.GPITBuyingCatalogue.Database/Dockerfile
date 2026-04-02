@@ -4,9 +4,9 @@ COPY database/NHSD.GPITBuyingCatalogue.Database .
 RUN dotnet build "NHSD.GPITBuyingCatalogue.Database.sqlproj" -c Release -o build
 
 FROM mcr.microsoft.com/mssql-tools:latest AS dacfx
-RUN apt-get -o Acquire::https::No-Cache=True -o Acquire::http::No-Cache=True update && apt-get install libunwind8 libicu-dev wget unzip -y
+RUN apt-get update && apt-get install libunwind8 libicu-dev wget unzip -y
 WORKDIR /deploy-db
-RUN wget https://aka.ms/sqlpackage-linux -O sqlpackage.zip \
+RUN wget https://go.microsoft.com/fwlink/?linkid=2338525 -O sqlpackage.zip \
     && mkdir sqlpackage \
     && unzip sqlpackage.zip -d /sqlpackage \
     && chmod a+x /sqlpackage/sqlpackage
