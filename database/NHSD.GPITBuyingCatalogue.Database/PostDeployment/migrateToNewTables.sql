@@ -141,92 +141,38 @@ BEGIN
     SET @RowsInserted = @@ROWCOUNT
 END
 
-SET @RowsInserted = 1;
-
-WHILE @RowsInserted > 0
-BEGIN
-  ;WITH cte AS (
-    SELECT TOP (@BatchSize) s.*
-    FROM ordering.OrderSublocations s
-    LEFT JOIN ordering.OrderSublocationsV2 s2 ON s2.OrderId = s.OrderId AND s2.SublocationOdsCode = s.SublocationOdsCode
-    WHERE s2.Id IS NULL
-    ORDER BY s.OrderId, s.SublocationOdsCode
-  )
-  INSERT INTO ordering.OrderSublocationsV2(OrderId, SublocationOdsCode, OwnerOdsCode)
-  SELECT 
-    c.OrderId, 
-    c.SublocationOdsCode,
-    c.OwnerOdsCode
-  FROM cte c
-
-  SET @RowsInserted = @@ROWCOUNT;
-
-  IF @RowsInserted > 0
-  BEGIN
-    PRINT CONCAT('Inserted batch of ', @RowsInserted, ' rows into OrderSublocationsV2');
-    WAITFOR DELAY '00:00:00.050';
-  END
-END
-
-SET @RowsInserted = 1
-
-WHILE @RowsInserted > 0
-BEGIN
-  ;WITH cte AS (
-    SELECT TOP (@BatchSize) r.*, s.id as orderSublocationId
-    FROM ordering.OrderSublocationRecipients r
-    LEFT JOIN ordering.OrderSublocationsV2 s ON r.OrderId = s.OrderId AND r.ParentSublocationOdsCode = s.SublocationOdsCode
-    ORDER BY s.OrderId, s.SublocationOdsCode
-  )
-  INSERT INTO ordering.OrderSublocationRecipientsV2(OrderSublocationId, RecipientOdsCode)
-  SELECT 
-    c.orderSublocationId,
-    c.RecipientOdsCode
-  FROM cte c
-      WHERE NOT EXISTS (
-    SELECT 1 FROM ordering.OrderSublocationRecipientsV2 osr WHERE osr.OrderSublocationId = c.orderSublocationId AND osr.RecipientOdsCode = c.RecipientOdsCode
-    )
-
-  SET @RowsInserted = @@ROWCOUNT
-
-  IF @RowsInserted > 0
-  BEGIN
-    PRINT CONCAT('Inserted batch of ', @RowsInserted, ' rows into OrderSublocationRecipientsV2');
-    WAITFOR DELAY '00:00:00.050';
-  END
-END
-
 SET @RowsInserted = 1
 
 WHILE @RowsInserted > 0
 BEGIN
   ;WITH cte_raw AS (
-    SELECT TOP (@BatchSize) oisr.*, sr.id as OrderSublocationRecipientId, oi.Id as OrderItemId
+    SELECT TOP (@BatchSize) oisr.*, oi.Id as OrderItemId
     FROM ordering.OrderItemSublocationRecipients oisr
-    LEFT JOIN ordering.OrderSublocationsV2 s ON s.OrderId = oisr.OrderId AND s.SublocationOdsCode = oisr.ParentSublocationOdsCode
-    LEFT JOIN ordering.OrderSublocationRecipientsV2 sr ON sr.OrderSublocationId = s.Id AND sr.RecipientOdsCode = oisr.RecipientOdsCode
     LEFT JOIN ordering.OrderItemsV2 oi ON oisr.OrderId = oi.OrderId AND oisr.CatalogueItemId = oi.CatalogueItemId
-    ORDER BY s.OrderId, s.SublocationOdsCode
+    ORDER BY oisr.OrderId, oisr.ParentSublocationOdsCode, oisr.RecipientOdsCode
   ),
-cte AS (
-  SELECT DISTINCT OrderItemId, OrderSublocationRecipientId, Quantity, DeliveryDate, LastUpdated, LastUpdatedBy
-  FROM cte_raw
-)
-  INSERT INTO ordering.OrderItemSublocationRecipientsV2(OrderItemId, OrderSublocationRecipientId, Quantity, DeliveryDate, LastUpdated, LastUpdatedBy)
+  cte AS (
+    SELECT DISTINCT OrderItemId, OrderId, ParentSublocationOdsCode, RecipientOdsCode, Quantity, DeliveryDate, LastUpdated, LastUpdatedBy
+    FROM cte_raw
+  )
+  INSERT INTO ordering.OrderItemSublocationRecipientsV2(OrderItemId, OrderId, ParentSublocationOdsCode, RecipientOdsCode, Quantity, DeliveryDate, LastUpdated, LastUpdatedBy)
   SELECT 
     c.OrderItemId,
-    c.OrderSublocationRecipientId,
+    c.OrderId,
+    c.ParentSublocationOdsCode,
+    c.RecipientOdsCode,
     c.Quantity,
     c.DeliveryDate,
     c.LastUpdated,
     c.LastUpdatedBy
   FROM cte c
   WHERE c.OrderItemId IS NOT NULL
-  AND c.OrderSublocationRecipientId IS NOT NULL
   AND NOT EXISTS (
     SELECT 1 FROM ordering.OrderItemSublocationRecipientsV2 t
     WHERE t.OrderItemId = c.OrderItemId
-      AND t.OrderSublocationRecipientId = c.OrderSublocationRecipientId
+      AND t.OrderId = c.OrderId
+      AND t.ParentSublocationOdsCode = c.ParentSublocationOdsCode
+      AND t.RecipientOdsCode = c.RecipientOdsCode
   );
 
   SET @RowsInserted = @@ROWCOUNT

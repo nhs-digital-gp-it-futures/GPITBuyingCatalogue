@@ -2,7 +2,9 @@ CREATE TABLE [ordering].[OrderItemSublocationRecipientsV2]
 (
     [Id] INT IDENTITY(1, 1) NOT NULL,
     [OrderItemId] INT NOT NULL,
-    [OrderSublocationRecipientId] INT NOT NULL,
+    [OrderId] INT NOT NULL,
+    [ParentSublocationOdsCode] NVARCHAR(10) NOT NULL,
+    [RecipientOdsCode] NVARCHAR(10) NOT NULL,
     [Quantity] int NULL CONSTRAINT PositiveQuantityV2_OrderItemSublocationRecipients_Quantity CHECK (Quantity >= 0),
     [DeliveryDate] date NULL,
     [LastUpdated] datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
@@ -11,8 +13,8 @@ CREATE TABLE [ordering].[OrderItemSublocationRecipientsV2]
     [SysEndTime] datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_OrderItemSublocationRecipientsV2 PRIMARY KEY ([Id]),
-    CONSTRAINT UQ_OrderItemSublocationRecipientsV2 UNIQUE ([OrderItemId], [OrderSublocationRecipientId]),
+    CONSTRAINT UQ_OrderItemSublocationRecipientsV2 UNIQUE ([OrderItemId], [OrderId], [ParentSublocationOdsCode], [RecipientOdsCode]),
     CONSTRAINT FK_OrderItemSublocationRecipientsV2_OrderItem FOREIGN KEY ([OrderItemId]) REFERENCES [ordering].[OrderItemsV2] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT FK_OrderItemSublocationRecipientsV2_SublocationRecipient FOREIGN KEY ([OrderSublocationRecipientId]) REFERENCES [ordering].[OrderSublocationRecipientsV2] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT FK_OrderItemSublocationRecipientsV2_SublocationRecipient FOREIGN KEY ([OrderId], [ParentSublocationOdsCode], [RecipientOdsCode]) REFERENCES [ordering].[OrderSublocationRecipients] ([OrderId], [ParentSublocationOdsCode], [RecipientOdsCode]) ON DELETE CASCADE,
     CONSTRAINT FK_OrderItemSublocationRecipientsV2_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES [users].[AspNetUsers]([Id]),
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [ordering].[OrderItemSublocationRecipientsV2_History]))
