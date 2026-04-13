@@ -81,29 +81,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static async Task GetAllActiveSuppliers_RetrievesAllActiveSuppliers(
-            [Frozen] BuyingCatalogueDbContext context,
-            Supplier supplier1,
-            Supplier supplier2,
-            Supplier supplier3,
-            SuppliersService service)
-        {
-            supplier1.IsActive = false;
-            context.Suppliers.Add(supplier1);
-            supplier2.IsActive = true;
-            context.Suppliers.Add(supplier2);
-            supplier3.IsActive = true;
-            context.Suppliers.Add(supplier3);
-            await context.SaveChangesAsync();
-
-            var actual = await service.GetAllActiveSuppliers();
-
-            actual.Count.Should().Be(2);
-            actual.Any(s => s.Id == supplier1.Id).Should().BeFalse();
-        }
-
-        [Theory]
-        [MockInMemoryDbAutoData]
         public static async Task GetSupplierByName_RetrievesCorrectSupplier(
             [Frozen] BuyingCatalogueDbContext context,
             Supplier supplier1,

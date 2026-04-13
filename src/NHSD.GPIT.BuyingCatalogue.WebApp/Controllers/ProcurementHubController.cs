@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ProcurementHub;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.ProcurementHub;
 
@@ -59,6 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         }
 
         [HttpPost]
+        [ValidateRecaptcha]
         public async Task<IActionResult> Index(ProcurementHubDetailsModel model)
         {
             if (!ModelState.IsValid)

@@ -811,6 +811,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task AcceptCallOffTerms(string internalOrgId, CallOffId callOffId, bool declarationAccepted)
+        {
+            var order = await dbContext.Order(internalOrgId, callOffId);
+            order.AcceptedTermsAndConditions = declarationAccepted;
+
+            await dbContext.SaveChangesAsync();
+        }
+
         private static void TerminateOrder(Order order, DateTime dateOfTermination, string reason)
         {
             order.IsTerminated = true;

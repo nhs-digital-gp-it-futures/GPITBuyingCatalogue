@@ -116,6 +116,10 @@ variable "backend_subnet_id" {
   type = string
 }
 
+variable "calloff_terms_url" {
+  type = string
+}
+
 variable "webapp_identity" {
   type = object({
     id           = string

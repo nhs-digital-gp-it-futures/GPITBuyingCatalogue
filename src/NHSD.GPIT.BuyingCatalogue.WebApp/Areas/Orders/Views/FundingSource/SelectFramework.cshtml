@@ -8,11 +8,11 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary RadioId="@nameof(Model.SelectedFramework)"/>
         <nhs-page-title title="@ViewBag.Title"
-                        advice="Your Cctalogue solution is available from more than one procurement framework. You must choose the framework you want to order from before you can select your funding sources."
+                        advice="Your Catalogue solution is available from more than one contracting vehicle. You must choose the contracting vehicle you want to order from before you can select your funding sources."
                         caption="@Model.Caption" />
         <form method="post">
             <nhs-fieldset-form-label asp-for="SelectedFramework" 
-                                     label-text="Which framework do you want to order from?"
+                                     label-text="Which contracting vehicle do you want to order from?"
                                      size="Small">
                 <nhs-radio-buttons asp-for="SelectedFramework"
                                    values="@Model.Frameworks.Cast<object>()"
@@ -27,4 +27,3 @@
         </form>
     </div>
 </div>
-

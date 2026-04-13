@@ -481,7 +481,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockSolutionService.GetSolutionWithBasicInformation(solutionId)
                 .Returns(catalogueItem);
 
-            mockSuppliersService.GetAllActiveSuppliers()
+            mockSuppliersService.GetAllSuppliers()
                 .Returns(suppliers);
 
             var framework = new EntityFramework.Catalogue.Models.Framework
@@ -526,7 +526,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockSolutionService.GetSolutionWithBasicInformation(solutionId)
                 .Returns(catalogueItem);
 
-            mockSuppliersService.GetAllActiveSuppliers()
+            mockSuppliersService.GetAllSuppliers()
                 .Returns(suppliers);
 
             var framework = new EntityFramework.Catalogue.Models.Framework

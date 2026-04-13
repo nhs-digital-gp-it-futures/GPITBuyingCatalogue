@@ -38,6 +38,7 @@ using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Security;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 using Notify.Client;
 using Notify.Interfaces;
@@ -220,6 +221,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             cookieExpiration.ConsentExpiration = configuration.GetValue<TimeSpan>(CatalogueCookies.BuyingCatalogueConsentExpiration);
 
             services.AddSingleton(cookieExpiration);
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureCallOffTermsSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var callOffTermsSettings = configuration.GetSection("callOffTerms").Get<CallOffTermsSettings>();
+
+            services.AddSingleton(callOffTermsSettings);
 
             return services;
         }

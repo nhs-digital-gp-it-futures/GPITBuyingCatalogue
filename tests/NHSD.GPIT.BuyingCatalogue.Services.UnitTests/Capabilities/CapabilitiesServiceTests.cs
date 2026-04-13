@@ -368,7 +368,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             [Frozen] BuyingCatalogueDbContext dbContext,
             CapabilitiesService service)
         {
-            capabilities.ForEach(x => x.CatalogueItemCapabilities = null);
+            capabilities.ForEach(x =>
+            {
+                x.CatalogueItemCapabilities = null;
+                x.Status = CapabilityStatus.Effective;
+            });
             catalogueItems.ForEach(
                 x =>
                 {
@@ -388,6 +392,40 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             var referencedCapabilities = await service.GetReferencedCapabilities();
 
             capabilities.ForEach(x => referencedCapabilities.Should().Contain(y => x.Id == y.Id));
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetReferencedCapabilities_WithItemsReferencingExpiredCapabilities_ReturnsCapabilities(
+            List<Capability> capabilities,
+            List<CatalogueItem> catalogueItems,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            CapabilitiesService service)
+        {
+            capabilities.ForEach(x =>
+            {
+                x.CatalogueItemCapabilities = null;
+                x.Status = CapabilityStatus.Expired;
+            });
+            catalogueItems.ForEach(
+                x =>
+                {
+                    x.CatalogueItemCapabilities = null;
+                    x.PublishedStatus = PublicationStatus.Published;
+                });
+
+            var catalogueItemCapabilities = capabilities.Zip(catalogueItems)
+                .Select(x => new CatalogueItemCapability(x.Second.Id, x.First.Id))
+                .ToList();
+
+            dbContext.Capabilities.AddRange(capabilities);
+            dbContext.CatalogueItems.AddRange(catalogueItems);
+            dbContext.CatalogueItemCapabilities.AddRange(catalogueItemCapabilities);
+            await dbContext.SaveChangesAsync();
+
+            var referencedCapabilities = await service.GetReferencedCapabilities();
+
+            referencedCapabilities.Should().BeEmpty();
         }
 
         [Theory]

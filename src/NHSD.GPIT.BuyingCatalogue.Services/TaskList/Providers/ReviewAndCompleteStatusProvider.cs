@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.Completed;
             }
 
-            return state.DataProcessingInformation == TaskProgress.Completed
+            return state.CallOffTermsDeclaration == TaskProgress.Completed
                 ? TaskProgress.NotStarted
                 : TaskProgress.CannotStart;
         }

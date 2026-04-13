@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] ISuppliersService mockService,
             AddCatalogueSolutionController controller)
         {
-            mockService.GetAllActiveSuppliers().Returns(suppliers);
+            mockService.GetAllSuppliers().Returns(suppliers);
 
             var actual = (await controller.Index()).As<ViewResult>();
 
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ViewName.Should().Be("Details");
             actual.Model.As<SolutionModel>()
                 .SuppliersSelectList.Should()
-                .BeEquivalentTo(suppliers.Select(s => new SelectOption<string>($"{s.Name} ({s.Id})", s.Id.ToString(CultureInfo.InvariantCulture))));
+                .BeEquivalentTo(suppliers.Select(s => new SelectOption<string>($"{s.Name} ({s.Id}) ({(s.IsActive ? "Active" : "Inactive")})", s.Id.ToString(CultureInfo.InvariantCulture))));
         }
 
         [Theory]
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             AddCatalogueSolutionController controller,
             List<Supplier> suppliers)
         {
-            mockSuppliersService.GetAllActiveSuppliers().Returns(suppliers);
+            mockSuppliersService.GetAllSuppliers().Returns(suppliers);
 
             mockService.GetSolutionByName(Arg.Any<string>()).Returns((CatalogueItem)null);
 

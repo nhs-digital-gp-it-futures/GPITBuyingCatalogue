@@ -17,11 +17,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
+            string callOffTermsUrl,
             OrderProgress progress)
         {
             order.LastUpdatedByUser = aspNetUser;
 
-            var model = new OrderModel(internalOrgId, progress, order);
+            var model = new OrderModel(internalOrgId, progress, order, callOffTermsUrl);
 
             model.Progress.Should().BeEquivalentTo(progress);
             model.Title.Should().Be($"Order {order.CallOffId}");
@@ -31,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.LastUpdatedByUserName.Should().Be(aspNetUser.FullName);
             model.LastUpdated.Should().Be(order.LastUpdated);
             model.IsAmendment.Should().Be(order.IsAmendment);
+            model.CallOffTermsUrl.Should().Be(callOffTermsUrl);
         }
 
         [Theory]
@@ -39,6 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
+            string callOffTermsUrl,
             OrderProgress progress)
         {
             const string expected =
@@ -47,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             order.LastUpdatedByUser = aspNetUser;
             order.Revision = 2;
 
-            var model = new OrderModel(internalOrgId, progress, order);
+            var model = new OrderModel(internalOrgId, progress, order, callOffTermsUrl);
 
             model.TitleAdvice.Should().Be(expected);
         }
@@ -58,6 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
+            string callOffTermsUrl,
             OrderProgress progress)
         {
             const string expected =
@@ -67,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             order.CompetitionId = null;
             order.Revision = 1;
 
-            var model = new OrderModel(internalOrgId, progress, order);
+            var model = new OrderModel(internalOrgId, progress, order, callOffTermsUrl);
 
             model.TitleAdvice.Should().Be(expected);
         }
@@ -78,6 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
+            string callOffTermsUrl,
             OrderProgress progress)
         {
             const string expected =
@@ -87,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             order.CompetitionId = 1;
             order.Revision = 1;
 
-            var model = new OrderModel(internalOrgId, progress, order);
+            var model = new OrderModel(internalOrgId, progress, order, callOffTermsUrl);
 
             model.TitleAdvice.Should().Be(expected);
         }
@@ -105,12 +110,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockInlineAutoData(OrderSummaryField.AssociatedServicesMilestones, false)]
         [MockInlineAutoData(OrderSummaryField.DataProcessing, false)]
         [MockInlineAutoData(OrderSummaryField.ReviewAndComplete, true)]
-        public static void InProgressOrder_StausDecription_IsAmendment_ReturnsExpected(
+        public static void InProgressOrder_StausDescription_IsAmendment_ReturnsExpected(
             OrderSummaryField key,
             bool amendmentSpecific,
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
+            string callOffTermsUrl,
             OrderProgress progress)
         {
             order.OrderType = OrderTypeEnum.Solution;
@@ -118,18 +124,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             order.CompetitionId = null;
             order.Revision = 2;
 
-            var model = new OrderModel(internalOrgId, progress, order);
+            var model = new OrderModel(internalOrgId, progress, order, callOffTermsUrl);
 
-            if (amendmentSpecific)
-            {
-                model.StatusDescription(key)
-                    .Should().Be(OrderModel.AmendmentSpecificDescriptions.Value(key));
-            }
-            else
-            {
-                model.StatusDescription(key)
-                    .Should().Be(OrderModel.DefaultDescriptions.Value(key));
-            }
+            model.StatusDescription(key)
+                .Should()
+                .Be(
+                    amendmentSpecific
+                        ? OrderModel.AmendmentSpecificDescriptions.Value(key)
+                        : OrderModel.DefaultDescriptions.Value(key));
         }
 
         [Theory]
@@ -144,6 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ImplementationPlan)]
         [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.AssociatedServicesMilestones)]
         [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.DataProcessing)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.CallOffTermsDeclaration)]
         [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ReviewAndComplete)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderDescription)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderingParty)]
@@ -156,13 +159,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ImplementationPlan)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.AssociatedServicesMilestones)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.DataProcessing)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.CallOffTermsDeclaration)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ReviewAndComplete)]
-        public static void InProgressOrder_StausDecription_IsOriginalOrder_ReturnsExpected(
+        public static void InProgressOrder_StausDescription_IsOriginalOrder_ReturnsExpected(
             OrderTypeEnum orderType,
             OrderSummaryField key,
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
+            string callOffTermsUrl,
             OrderProgress progress)
         {
             order.OrderType = orderType;
@@ -170,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             order.CompetitionId = null;
             order.Revision = 1;
 
-            var model = new OrderModel(internalOrgId, progress, order);
+            var model = new OrderModel(internalOrgId, progress, order, callOffTermsUrl);
 
             model.StatusDescription(key)
                 .Should().Be(OrderModel.DefaultDescriptions.Value(key));
@@ -188,13 +193,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockInlineAutoData(OrderSummaryField.ImplementationPlan, false)]
         [MockInlineAutoData(OrderSummaryField.AssociatedServicesMilestones, false)]
         [MockInlineAutoData(OrderSummaryField.DataProcessing, false)]
+        [MockInlineAutoData(OrderSummaryField.CallOffTermsDeclaration, false)]
         [MockInlineAutoData(OrderSummaryField.ReviewAndComplete, false)]
-        public static void InProgressOrder_StausDecription_IsCompetitionOrder_ReturnsExpected(
+        public static void InProgressOrder_StausDescription_IsCompetitionOrder_ReturnsExpected(
             OrderSummaryField key,
             bool competitionSpecific,
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
+            string callOffTermsUrl,
             OrderProgress progress)
         {
             order.OrderType = OrderTypeEnum.Solution;
@@ -202,18 +209,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             order.CompetitionId = 1;
             order.Revision = 1;
 
-            var model = new OrderModel(internalOrgId, progress, order);
+            var model = new OrderModel(internalOrgId, progress, order, callOffTermsUrl);
 
-            if (competitionSpecific)
-            {
-                model.StatusDescription(key)
-                    .Should().Be(OrderModel.CompetitionOrderDescriptions.Value(key));
-            }
-            else
-            {
-                model.StatusDescription(key)
-                    .Should().Be(OrderModel.DefaultDescriptions.Value(key));
-            }
+            model.StatusDescription(key)
+                .Should()
+                .Be(
+                    competitionSpecific
+                        ? OrderModel.CompetitionOrderDescriptions.Value(key)
+                        : OrderModel.DefaultDescriptions.Value(key));
         }
 
         [Theory]
@@ -228,6 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ImplementationPlan, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.AssociatedServicesMilestones, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.DataProcessing, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.CallOffTermsDeclaration, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ReviewAndComplete, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderDescription, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderingParty, false)]
@@ -240,14 +244,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ImplementationPlan, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.AssociatedServicesMilestones, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.DataProcessing, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.CallOffTermsDeclaration, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ReviewAndComplete, false)]
-        public static void InProgressOrder_StausDecription_MergerSplitOrder_ReturnsExpected(
+        public static void InProgressOrder_StausDescription_MergerSplitOrder_ReturnsExpected(
             OrderTypeEnum orderType,
             OrderSummaryField key,
             bool mergerSplitSpecific,
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
+            string callOffTermsUrl,
             OrderProgress progress)
         {
             order.OrderType = orderType;
@@ -255,18 +261,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             order.CompetitionId = null;
             order.Revision = 1;
 
-            var model = new OrderModel(internalOrgId, progress, order);
+            var model = new OrderModel(internalOrgId, progress, order, callOffTermsUrl);
 
-            if (mergerSplitSpecific)
-            {
-                model.StatusDescription(key)
-                    .Should().Be(OrderModel.MergerSplitSpecificDescriptions.Value(key));
-            }
-            else
-            {
-                model.StatusDescription(key)
-                    .Should().Be(OrderModel.DefaultDescriptions.Value(key));
-            }
+            model.StatusDescription(key)
+                .Should()
+                .Be(
+                    mergerSplitSpecific
+                        ? OrderModel.MergerSplitSpecificDescriptions.Value(key)
+                        : OrderModel.DefaultDescriptions.Value(key));
         }
 
         [Theory]
@@ -278,15 +280,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             OrderTypeEnum orderType,
             string internalOrgId,
             OrderProgress progress,
+            string callOffTermsUrl,
             string organisationName)
         {
-            var model = new OrderModel(internalOrgId, orderType, progress, organisationName);
+            var model = new OrderModel(internalOrgId, orderType, progress, organisationName, callOffTermsUrl);
 
             model.Progress.Should().BeEquivalentTo(progress);
             model.Title.Should().Be("New order");
             model.OrganisationName.Should().Be(organisationName);
             model.CallOffId.Should().BeEquivalentTo(default(CallOffId));
-            model.Description.Should().Be(default);
+            model.Description.Should().Be(null);
         }
 
         [Theory]
@@ -301,6 +304,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ImplementationPlan)]
         [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.AssociatedServicesMilestones)]
         [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.DataProcessing)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.CallOffTermsDeclaration)]
         [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ReviewAndComplete)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderDescription)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderingParty)]
@@ -313,15 +317,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ImplementationPlan)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.AssociatedServicesMilestones)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.DataProcessing)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.CallOffTermsDeclaration)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ReviewAndComplete)]
-        public static void NewOrder_StausDecription_IsOriginalOrder_ReturnsExpected(
+        public static void NewOrder_StausDescription_IsOriginalOrder_ReturnsExpected(
             OrderTypeEnum orderType,
             OrderSummaryField key,
             string internalOrgId,
             OrderProgress progress,
+            string callOffTermsUrl,
             string organisationName)
         {
-            var model = new OrderModel(internalOrgId, orderType, progress, organisationName);
+            var model = new OrderModel(internalOrgId, orderType, progress, organisationName, callOffTermsUrl);
 
             model.StatusDescription(key)
                 .Should().Be(OrderModel.DefaultDescriptions.Value(key));
@@ -339,6 +345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ImplementationPlan, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.AssociatedServicesMilestones, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.DataProcessing, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.CallOffTermsDeclaration, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ReviewAndComplete, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderDescription, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderingParty, false)]
@@ -351,30 +358,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ImplementationPlan, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.AssociatedServicesMilestones, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.DataProcessing, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.CallOffTermsDeclaration, false)]
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ReviewAndComplete, false)]
-        public static void NewOrder_StausDecription_MergerSplitOrder_ReturnsExpected(
+        public static void NewOrder_StausDescription_MergerSplitOrder_ReturnsExpected(
             OrderTypeEnum orderType,
             OrderSummaryField key,
             bool mergerSplitSpecific,
             string internalOrgId,
             OrderProgress progress,
+            string callOffTermsUrl,
             string organisationName)
         {
-            var model = new OrderModel(internalOrgId, orderType, progress, organisationName);
+            var model = new OrderModel(internalOrgId, orderType, progress, organisationName, callOffTermsUrl);
 
-            if (mergerSplitSpecific)
-            {
-                model.StatusDescription(key)
-                    .Should().Be(OrderModel.MergerSplitSpecificDescriptions.Value(key));
-            }
-            else
-            {
-                model.StatusDescription(key)
-                    .Should().Be(OrderModel.DefaultDescriptions.Value(key));
-            }
+            model.StatusDescription(key)
+                .Should()
+                .Be(
+                    mergerSplitSpecific
+                        ? OrderModel.MergerSplitSpecificDescriptions.Value(key)
+                        : OrderModel.DefaultDescriptions.Value(key));
         }
 
-        public static string Value(this IEnumerable<KeyValuePair<OrderSummaryField, string>> source, OrderSummaryField key)
+        private static string Value(this IEnumerable<KeyValuePair<OrderSummaryField, string>> source, OrderSummaryField key)
         {
             return source.Single(kv => kv.Key == key).Value;
         }
