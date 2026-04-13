@@ -29,13 +29,13 @@ public class CompetitionSolution : CompetitionCatalogueItem
 
     public ICollection<CompetitionCatalogueItem> Services { get; set; } = new HashSet<CompetitionCatalogueItem>();
 
-    public ICollection<CompetitionAdditionalService> AdditionalServices =>
-        Services.OfType<CompetitionAdditionalService>().ToList();
-
-    public ICollection<CompetitionAssociatedService> AssociatedServices =>
-        Services.OfType<CompetitionAssociatedService>().ToList();
-
     public ICollection<SolutionScore> Scores { get; set; } = new HashSet<SolutionScore>();
+
+    public IEnumerable<CompetitionAdditionalService> GetAdditionalServices() =>
+        Services.OfType<CompetitionAdditionalService>();
+
+    public IEnumerable<CompetitionAssociatedService> GetAssociatedServices() =>
+        Services.OfType<CompetitionAssociatedService>();
 
     public bool HasScoreType(ScoreType type) => Scores.Any(x => x.ScoreType == type);
 
