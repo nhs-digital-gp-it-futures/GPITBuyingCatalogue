@@ -62,13 +62,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 services.AddAuthorizationBuilder()
                     .AddPolicy("AdminOnly", policy => policy.RequireClaim(
                             ClaimTypes.Role,
-                            new[] { OrganisationFunction.Authority.Name }))
+                            OrganisationFunction.Authority.Name))
                     .AddPolicy("Buyer", policy => policy.RequireClaim(
                             ClaimTypes.Role,
-                            new[] { OrganisationFunction.Buyer.Name, OrganisationFunction.AccountManager.Name }))
+                            OrganisationFunction.Buyer.Name,
+                            OrganisationFunction.AccountManager.Name))
                     .AddPolicy("AccountManager", policy => policy.RequireClaim(
                             ClaimTypes.Role,
-                            new[] { OrganisationFunction.AccountManager.Name }))
+                            OrganisationFunction.AccountManager.Name))
                     .AddPolicy("Development", policy => policy.Requirements.Add(new DevelopmentRequirement()));
             }
 
