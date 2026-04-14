@@ -25,6 +25,7 @@
 :r ./InsertEmailNotificationType.sql
 :r ./InsertDefaultImplementationPlan.sql
 :r ./InsertOrganisationTypes.sql
+:r ./InsertSolutionStandardStatuses.sql
 
 -- Organisation Data
 :r ./CreateExecutiveAgency.sql
