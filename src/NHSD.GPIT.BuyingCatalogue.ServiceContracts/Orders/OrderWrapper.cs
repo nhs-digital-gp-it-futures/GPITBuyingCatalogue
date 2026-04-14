@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public class OrderWrapper
     {
-        private readonly List<Order> previous = new();
+        private readonly IDictionary<int, Order> previous = new Dictionary<int, Order>();
         private readonly Lazy<Order> previousLazy;
         private readonly Lazy<Order> rolledUpLazy;
 
@@ -29,23 +29,20 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
             Order = currentOrder;
 
-            previous = previousOrders.OrderBy(x => x.CallOffId.Revision).ToList();
+            previous = previousOrders.ToDictionary(x => x.Id, x => x);
+
+            var orderedPreviousOrders = previous.Values;
 
             previousLazy = new Lazy<Order>(() =>
             {
-                if (previous.Count == 0)
+                if (orderedPreviousOrders.Count == 0)
                 {
                     return null;
                 }
 
-                Order output = previous.First().Clone();
+                Order output = orderedPreviousOrders.First().Clone();
 
-                foreach (OrderSublocationRecipient recipient in output.GetOrderRecipients())
-                {
-                    recipient.OrderId = previous[0].Id;
-                }
-
-                foreach (Order amendment in previous.Skip(1))
+                foreach (Order amendment in orderedPreviousOrders.Skip(1))
                 {
                     output.Apply(amendment);
                 }
@@ -69,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             });
         }
 
-        public IReadOnlyList<Order> PreviousOrders => previous;
+        public IReadOnlyList<Order> PreviousOrders => previous.Values.ToList();
 
         public bool IsAmendment => Order.CallOffId.IsAmendment;
 
@@ -86,9 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.CatalogueItemId).Count > 0)
                 .ToList();
 
-        public Order Last => previous.Any()
-            ? previous.Last()
-            : null;
+        public Order Last => previous.Last().Value;
 
         /// <summary>
         /// Gets or sets the most recent Order.
@@ -110,12 +105,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         /// </summary>
         public Order RolledUp => rolledUpLazy.Value;
 
-        public static string GetCallOffIdForPreviousRecipient(Dictionary<int, Order> previousOrders, OrderSublocationRecipient recipient, int? orderIdWithCatalogueItem)
+        public string GetCallOffIdForPreviousRecipient(OrderSublocationRecipient recipient, int? orderIdWithCatalogueItem)
         {
             var initialOrderWithCatalogueItem = orderIdWithCatalogueItem.HasValue
-                ? previousOrders[orderIdWithCatalogueItem.Value]
-                : null;
-            var initialOrderWithRecipient = previousOrders[recipient.OrderId];
+                    ? previous[orderIdWithCatalogueItem.Value]
+                    : null;
+            var initialOrderWithRecipient = previous[recipient.OrderId];
 
             var callOffId = initialOrderWithCatalogueItem == null || initialOrderWithRecipient.Revision >= initialOrderWithCatalogueItem.Revision
                 ? initialOrderWithRecipient.CallOffId
@@ -165,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public IEnumerable<OrderItemFundingType> FundingTypesForItem(CatalogueItemId catalogueItemId)
         {
-            var fundingTypes = previous
+            var fundingTypes = PreviousOrders
                 .SelectMany(o => o.OrderItems.Where(oi => oi.CatalogueItemId == catalogueItemId).Select(oi => oi.FundingType))
                 .ToList();
 

@@ -306,11 +306,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             ];
 
             var orderWrapper = new OrderWrapper(finalAmendedOrder, [order, amendedOrder]);
-            var previousOrdersDictionary = orderWrapper.PreviousOrders.ToDictionary(o => o.Id);
 
-            var callOffIdForInitialRecipient = OrderWrapper.GetCallOffIdForPreviousRecipient(previousOrdersDictionary, sublocationRecipient, order.Id);
-            var callOffIdForAddedRecipient = OrderWrapper.GetCallOffIdForPreviousRecipient(
-                    previousOrdersDictionary,
+            var callOffIdForInitialRecipient = orderWrapper.GetCallOffIdForPreviousRecipient(sublocationRecipient, order.Id);
+            var callOffIdForAddedRecipient = orderWrapper.GetCallOffIdForPreviousRecipient(
                     addedRecipient,
                     amendedOrder.OrderItems.FirstOrDefault(oi => oi.CatalogueItemId == catalogueItem2.Id)?.OrderId);
 
