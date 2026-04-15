@@ -162,6 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             return
             [
+
                 // 2 Existing sublocations that should be ticked, and a new one that shouldn't
                 [
                     CommonOrganisationFactory(),
@@ -307,6 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             return
             [
+
                 // 2 existing, 1 unticked and 2 ticked resulting in 2 sublocations and 1 remove
                 [
                     CommonOrganisationFactory(),
@@ -408,6 +410,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             return
             [
+
                 // No removes
                 [
                     "AAAA,AAAB,AAAC",
@@ -611,6 +614,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             return
             [
+
                 // Repo + all mode = 3 selected
                 [
                     CommonOrganisationFactory(), CommonOrderFactory(),
@@ -802,6 +806,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             return
             [
+
                 // 1 existing + repo = 3 rendered with 1 existing selected
                 [
                     CommonOrganisationFactory(), CommonOrderFactory(),
@@ -939,6 +944,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             return
             [
+
                 // Current logic will copy previous recipients to the current order so they need to be included in both
                 // 1 in previous order = 2 visible for selection
                 [
@@ -1258,6 +1264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             return
             [
+
                 // no existing sublocation recipients + 2 new selected = 2 adds
                 [
                     CommonOrganisationFactory(), CommonOrderFactory(), "XXXX",
