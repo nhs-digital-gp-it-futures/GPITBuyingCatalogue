@@ -42,6 +42,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
                 Order output = orderedPreviousOrders.First().Clone();
 
+                foreach (OrderSublocationRecipient recipient in output.GetOrderRecipients())
+                {
+                    recipient.OrderId = orderedPreviousOrders.First().Id;
+                }
+
                 foreach (Order amendment in orderedPreviousOrders.Skip(1))
                 {
                     output.Apply(amendment);
@@ -83,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.CatalogueItemId).Count > 0)
                 .ToList();
 
-        public Order Last => previous.Last().Value;
+        public Order Last => previous.Any() ? previous.Last().Value : null;
 
         /// <summary>
         /// Gets or sets the most recent Order.
