@@ -6,8 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
     [ExcludeFromCodeCoverage]
     public sealed record EmailAddressTemplate
     {
-        private readonly string address;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="EmailAddressTemplate"/> class.
         /// </summary>
@@ -35,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
         /// white space.</exception>
         public string Address
         {
-            get => address;
+            get;
             init
             {
                 if (string.IsNullOrWhiteSpace(value))
@@ -45,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
                         nameof(value));
                 }
 
-                address = value;
+                field = value;
             }
         }
 
