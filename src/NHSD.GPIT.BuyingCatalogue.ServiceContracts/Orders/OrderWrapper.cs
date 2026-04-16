@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             });
         }
 
-        public IReadOnlyList<Order> PreviousOrders => previous.Values.ToList();
+        public IReadOnlyList<Order> PreviousOrders => GetPreviousOrders();
 
         public bool IsAmendment => Order.CallOffId.IsAmendment;
 
@@ -172,5 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             fundingTypes.AddRange(Order.OrderItems.Where(oi => oi.CatalogueItemId == catalogueItemId).Select(oi => oi.FundingType));
             return fundingTypes.Distinct();
         }
+
+        private IReadOnlyList<Order> GetPreviousOrders() => previous.Values.ToList();
     }
 }
