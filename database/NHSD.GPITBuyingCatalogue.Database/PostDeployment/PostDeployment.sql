@@ -77,3 +77,9 @@
 :r ./TestData/InsertTestOrderSeedData.sql
 :r ./TestData/InsertFilters.sql
 :r ./TestData/Competitions/InsertCompetitions.sql
+
+-----------------------------------------------------------------
+--                      MIGRATION SCRIPTS                      --
+-----------------------------------------------------------------
+
+:r ./MigrateSolutionStandards.sql

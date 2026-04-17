@@ -1,7 +1,7 @@
 MERGE INTO catalogue.SolutionStandardStatuses AS TARGET
 USING (VALUES (1, 'N/A'),
-              (2, 'Not Met'),
-              (3, 'Not Yet Selected'),
+              (2, 'Not Yet Selected'),
+              (3, 'Not Met'),
               (4, 'In Progress'),
               (5, 'Fully Met'))
 AS SOURCE ([Id], [Name])
