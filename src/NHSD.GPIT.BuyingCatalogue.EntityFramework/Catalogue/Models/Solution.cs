@@ -56,6 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public ICollection<Standard> InProgressStandards { get; set; } = new HashSet<Standard>();
 
+        public ICollection<SolutionStandard> SolutionStandards { get; set; } = new HashSet<SolutionStandard>();
+
         public ApplicationTypeDetail EnsureAndGetApplicationType()
         {
             return ApplicationTypeDetail ?? new ApplicationTypeDetail();
