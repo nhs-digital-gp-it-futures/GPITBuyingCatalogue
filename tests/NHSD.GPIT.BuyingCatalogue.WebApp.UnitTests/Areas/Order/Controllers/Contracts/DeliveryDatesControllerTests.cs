@@ -717,7 +717,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             order.FlattenedRecipients.ToList()
                 .ForEach(x => x.OrderItemSublocationRecipients
-                    .Where(y => y.CatalogueItemId != solutionId)
+                    .Where(y => y.OrderItem.CatalogueItemId != solutionId)
                     .ToList()
                     .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
 
@@ -771,7 +771,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             order.FlattenedRecipients.ToList()
                 .ForEach(x => x.OrderItemSublocationRecipients
-                    .Where(y => y.CatalogueItemId != solutionId)
+                    .Where(y => y.OrderItem.CatalogueItemId != solutionId)
                     .ToList()
                     .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
 

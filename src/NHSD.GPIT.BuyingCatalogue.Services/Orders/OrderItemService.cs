@@ -186,8 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
                 item.OrderItemFunding = new OrderItemFunding
                 {
-                    OrderId = orderId,
-                    CatalogueItemId = catalogueItemId,
+                    OrderItemId = item.Id,
                     OrderItemFundingType = selectedFundingType,
                 };
             }

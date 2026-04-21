@@ -2095,8 +2095,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var result = await context.Orders.FirstAsync(x => x.Id == order.Id);
             var orderItemFunding = result.OrderItems.First().OrderItemFunding;
             orderItemFunding.Should().NotBeNull();
-            orderItemFunding.OrderId.Should().Be(order.Id);
-            orderItemFunding.CatalogueItemId.Should().Be(orderItem.CatalogueItemId);
+            orderItemFunding.OrderItem.OrderId.Should().Be(order.Id);
+            orderItemFunding.OrderItem.CatalogueItemId.Should().Be(orderItem.CatalogueItemId);
             orderItemFunding.OrderItemFundingType.Should().Be(fundingType.AsOrderItemFundingType());
         }
 
@@ -2123,8 +2123,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var result = await context.Orders.FirstAsync(x => x.Id == order.Id);
             var orderItemFunding = result.OrderItems.First().OrderItemFunding;
             orderItemFunding.Should().NotBeNull();
-            orderItemFunding.OrderId.Should().Be(order.Id);
-            orderItemFunding.CatalogueItemId.Should().Be(orderItem.CatalogueItemId);
+            orderItemFunding.OrderItem.OrderId.Should().Be(order.Id);
+            orderItemFunding.OrderItem.CatalogueItemId.Should().Be(orderItem.CatalogueItemId);
             orderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
         }
 

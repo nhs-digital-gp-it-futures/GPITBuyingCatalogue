@@ -308,7 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
             order.FlattenedRecipients.ForEach(r =>
-                r.OrderItemSublocationRecipients.Where(i => i.CatalogueItemId == orderItem.CatalogueItemId)
+                r.OrderItemSublocationRecipients.Where(i => i.OrderItem.Id == orderItem.Id)
                     .ForEach(x => x.Quantity = null));
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));

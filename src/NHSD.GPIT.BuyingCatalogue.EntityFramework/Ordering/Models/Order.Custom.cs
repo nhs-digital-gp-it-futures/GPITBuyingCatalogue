@@ -237,7 +237,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                              .OrderItemSublocationRecipients)
                 {
                     if (existingRecipient.OrderItemSublocationRecipients.All(x =>
-                            x.CatalogueItemId != newOrderItemSublocationRecipient.CatalogueItemId))
+                            x.OrderItemId != newOrderItemSublocationRecipient.OrderItemId))
                     {
                         existingRecipient.OrderItemSublocationRecipients.Add(newOrderItemSublocationRecipient);
                     }
@@ -367,7 +367,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
                 return previousRecipient is null
                     || previousRecipient.OrderItemSublocationRecipients.All(oir =>
-                        oir.CatalogueItemId != catalogueItemId);
+                        oir.OrderItem.CatalogueItemId != catalogueItemId);
             };
         }
 

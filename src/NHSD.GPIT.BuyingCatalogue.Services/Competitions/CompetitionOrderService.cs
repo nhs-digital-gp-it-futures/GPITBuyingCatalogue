@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions;
@@ -120,27 +123,43 @@ public class CompetitionOrderService : ICompetitionOrderService
 
     private static IEnumerable<OrderItem> CreateDirectAwardOrderItems(CompetitionSolution directAwardSolution)
     {
-        var orderItems = directAwardSolution.Services.Select(
-                x => new OrderItem(x.CatalogueItemId) { Created = DateTime.UtcNow })
+        var solutionOrderItem = new OrderItem(directAwardSolution.CatalogueItemId) { Created = DateTime.UtcNow };
+
+        var orderItems = new List<OrderItem>() { solutionOrderItem };
+        var associatedServicesOrderItems = directAwardSolution.AssociatedServices
+            .Select(x => new OrderItem(x.CatalogueItemId) { Created = DateTime.UtcNow })
+            .ToList();
+        var additionalServicesOrderItems = directAwardSolution.AdditionalServices
+            .Select(x => new OrderItem(x.CatalogueItemId) { Created = DateTime.UtcNow })
             .ToList();
 
-        orderItems.Add(new OrderItem(directAwardSolution.CatalogueItemId) { Created = DateTime.UtcNow });
+        solutionOrderItem.Services.AddRange(associatedServicesOrderItems);
+
+        orderItems.AddRange(associatedServicesOrderItems);
+        orderItems.AddRange(additionalServicesOrderItems);
 
         return orderItems;
     }
 
     private static IEnumerable<OrderItem> CreateOrderItems(CompetitionSolution winningSolution)
     {
-        var orderItems = winningSolution.Services.Select(
-                x => CreateOrderItem(x.CatalogueItemId, x.Quantity, x.Price, x.Price.Tiers))
+        var associatedServicesOrderItems = winningSolution.AssociatedServices
+            .Select(x => new OrderItem(x.CatalogueItemId) { Created = DateTime.UtcNow })
+            .ToList();
+        var additionalServicesOrderItems = winningSolution.AdditionalServices
+            .Select(x => new OrderItem(x.CatalogueItemId) { Created = DateTime.UtcNow })
             .ToList();
 
-        orderItems.Add(
-            CreateOrderItem(
-                winningSolution.CatalogueItemId,
-                winningSolution.Quantity,
-                winningSolution.Price,
-                winningSolution.Price.Tiers));
+        var winningSolutionOrderItem = CreateOrderItem(
+            winningSolution.CatalogueItemId,
+            winningSolution.Quantity,
+            winningSolution.Price,
+            winningSolution.Price.Tiers);
+        winningSolutionOrderItem.Services.AddRange(associatedServicesOrderItems);
+
+        var orderItems = new List<OrderItem>() { winningSolutionOrderItem };
+        orderItems.AddRange(associatedServicesOrderItems);
+        orderItems.AddRange(additionalServicesOrderItems);
 
         return orderItems;
     }
@@ -157,7 +176,7 @@ public class CompetitionOrderService : ICompetitionOrderService
             OrderItemPrice = new OrderItemPrice(price)
             {
                 OrderItemPriceTiers = priceTiers.Select(
-                        y => new OrderItemPriceTier(y) { CatalogueItemId = catalogueItemId })
+                        y => new OrderItemPriceTier(y))
                     .ToList(),
             },
         };

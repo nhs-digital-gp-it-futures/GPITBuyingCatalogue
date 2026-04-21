@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             order.FlattenedRecipients.ForEach(x => order.OrderItems.ForEach(y =>
                 x.OrderItemSublocationRecipients.Add(
-                    new OrderItemSublocationRecipient(order.Id, x.RecipientOdsCode, y.CatalogueItemId)
+                    new OrderItemSublocationRecipient(order.Id, x.RecipientOdsCode, y)
                     {
                         Quantity = 5, DeliveryDate = new DateTime(2024, 01, 01),
                     })));
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(amendment, [order]));
             amendment.FlattenedRecipients.ForEach(x => amendment.OrderItems.ForEach(y =>
                 x.OrderItemSublocationRecipients.Add(
-                    new OrderItemSublocationRecipient(order.Id, x.RecipientOdsCode, y.CatalogueItemId)
+                    new OrderItemSublocationRecipient(order.Id, x.RecipientOdsCode, y)
                     {
                         Quantity = 5, DeliveryDate = new DateTime(2024, 01, 01),
                     })));

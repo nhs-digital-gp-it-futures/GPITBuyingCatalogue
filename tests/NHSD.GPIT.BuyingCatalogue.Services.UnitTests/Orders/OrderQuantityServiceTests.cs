@@ -116,12 +116,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             IFixture fixture,
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
+            OrderSublocation sublocation,
+            OrderSublocationRecipient recipient,
             OrderQuantityService service)
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             var solution = order.OrderItems.First();
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.FlattenedRecipients.ForEach(r => r.SetQuantityForItem(solution.CatalogueItemId, 1));
+            sublocation.SublocationRecipients = new List<OrderSublocationRecipient> { recipient };
+            order.OrderSublocations = new List<OrderSublocation> { sublocation };
+            order.FlattenedRecipients.ForEach(r =>
+            {
+                r.OrderItemSublocationRecipients.Add(
+                    new OrderItemSublocationRecipient
+                    {
+                        OrderId = order.Id,
+                        RecipientOdsCode = r.RecipientOdsCode,
+                        OrderItem = solution,
+                        Quantity = 1,
+                    });
+            });
+
             context.Orders.Add(order);
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
@@ -162,11 +177,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             int quantity,
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
+            OrderSublocation sublocation,
+            OrderSublocationRecipient recipient,
             OrderQuantityService service)
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             var solution = order.OrderItems.First();
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            sublocation.SublocationRecipients = new List<OrderSublocationRecipient> { recipient };
+            order.OrderSublocations = new List<OrderSublocation> { sublocation };
+            order.FlattenedRecipients.ForEach(r =>
+            {
+                r.OrderItemSublocationRecipients.Add(
+                    new OrderItemSublocationRecipient
+                    {
+                        OrderId = order.Id,
+                        RecipientOdsCode = r.RecipientOdsCode,
+                        OrderItem = solution,
+                    });
+            });
             context.Orders.Add(order);
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
@@ -181,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 .FirstAsync(x => x.Id == order.Id);
 
             dbOrder.FlattenedRecipients.SelectMany(or => or.OrderItemSublocationRecipients)
-                .Where(oir => oir.CatalogueItemId == solution.CatalogueItemId)
+                .Where(oir => oir.OrderItem.CatalogueItemId == solution.CatalogueItemId)
                 .All(oir => oir.Quantity == quantity)
                 .Should()
                 .BeTrue();

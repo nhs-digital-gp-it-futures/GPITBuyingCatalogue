@@ -9,9 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
     {
         public void Configure(EntityTypeBuilder<OrderItemPrice> builder)
         {
-            builder.ToTable("OrderItemPrices", Schemas.Ordering);
+            builder.ToTable("OrderItemPricesV2", Schemas.Ordering);
 
-            builder.HasKey(oipp => new { oipp.OrderId, oipp.CatalogueItemId });
+            builder.HasKey(oipp => oipp.Id).HasName("PK_OrderItemPricesV2");
 
             builder.Property(x => x.CataloguePriceId)
                 .IsRequired();
@@ -53,14 +53,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.HasOne(oipp => oipp.OrderItem)
                 .WithOne(oi => oi.OrderItemPrice)
-                .HasForeignKey<OrderItemPrice>(oip => new { oip.OrderId, oip.CatalogueItemId })
-                .HasConstraintName("FK_OrderItemPrices_OrderItem")
+                .HasForeignKey<OrderItemPrice>(oip => oip.OrderItemId)
+                .HasConstraintName("FK_OrderItemPricesV2_OrderItem")
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(oip => oip.LastUpdatedByUser)
                 .WithMany()
                 .HasForeignKey(oip => oip.LastUpdatedBy)
-                .HasConstraintName("FK_OrderItemPrices_LastUpdatedBy");
+                .HasConstraintName("FK_OrderItemPricesV2_LastUpdatedBy");
         }
     }
 }

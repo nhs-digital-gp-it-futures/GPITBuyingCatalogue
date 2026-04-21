@@ -41,11 +41,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public void SetQuantityForItem(CatalogueItemId catalogueItemId, int? quantity)
         {
             OrderItemSublocationRecipient itemRecipient =
-                OrderItemSublocationRecipients.FirstOrDefault(x => x.CatalogueItemId == catalogueItemId);
+                OrderItemSublocationRecipients.FirstOrDefault(x => x.OrderItem?.CatalogueItemId == catalogueItemId);
 
             if (itemRecipient is null)
             {
-                itemRecipient = new OrderItemSublocationRecipient(OrderId, RecipientOdsCode, catalogueItemId);
+                var orderItem = new OrderItem(catalogueItemId) { OrderId = OrderId };
+                itemRecipient = new OrderItemSublocationRecipient(OrderId, RecipientOdsCode, orderItem);
                 OrderItemSublocationRecipients.Add(itemRecipient);
             }
 
@@ -66,11 +67,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public void SetDeliveryDateForItem(CatalogueItemId catalogueItemId, DateTime deliveryDate)
         {
             OrderItemSublocationRecipient itemRecipient =
-                OrderItemSublocationRecipients.FirstOrDefault(x => x.CatalogueItemId == catalogueItemId);
+                OrderItemSublocationRecipients.FirstOrDefault(x => x.OrderItem?.CatalogueItemId == catalogueItemId);
 
             if (itemRecipient is null)
             {
-                itemRecipient = new OrderItemSublocationRecipient(OrderId, RecipientOdsCode, catalogueItemId);
+                var orderItem = new OrderItem(catalogueItemId);
+                itemRecipient = new OrderItemSublocationRecipient(OrderId, RecipientOdsCode, orderItem);
                 OrderItemSublocationRecipients.Add(itemRecipient);
             }
 
@@ -80,14 +82,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public int? GetQuantityForItem(CatalogueItemId catalogueItemId)
         {
             return OrderItemSublocationRecipients
-                .FirstOrDefault(x => x.CatalogueItemId == catalogueItemId)
+                .FirstOrDefault(x => x.OrderItem?.CatalogueItemId == catalogueItemId)
                 ?.Quantity;
         }
 
         public DateTime? GetDeliveryDateForItem(CatalogueItemId catalogueItemId)
         {
             return OrderItemSublocationRecipients
-                .FirstOrDefault(x => x.CatalogueItemId == catalogueItemId)
+                .FirstOrDefault(x => x.OrderItem?.CatalogueItemId == catalogueItemId)
                 ?.DeliveryDate;
         }
     }

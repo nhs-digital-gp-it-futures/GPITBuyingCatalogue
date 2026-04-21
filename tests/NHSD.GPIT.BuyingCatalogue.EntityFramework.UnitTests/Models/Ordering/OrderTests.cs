@@ -136,7 +136,8 @@ public static class OrderTests
 
         var catalogueItemId = new CatalogueItemId(556, "334");
 
-        var orderItem = new OrderItem { CatalogueItemId = catalogueItemId };
+        var orderItem1 = new OrderItem { CatalogueItemId = catalogueItemId, OrderId = 1001 };
+        var orderItem2 = new OrderItem { CatalogueItemId = catalogueItemId, OrderId = 1002 };
 
         return
         [
@@ -151,7 +152,7 @@ public static class OrderTests
                     Description = "My order",
                     OrderingPartyId = orderingPartyId,
                     SelectedFramework = framework,
-                    OrderItems = [new OrderItem { CatalogueItemId = catalogueItemId, OrderId = 1001 }],
+                    OrderItems = [orderItem1],
                     OrderSublocations =
                     [
                         new OrderSublocation
@@ -183,7 +184,7 @@ public static class OrderTests
                                     ParentSublocationOdsCode = "XXXX",
                                     RecipientOdsCode = "AAAC",
                                     OrderItemSublocationRecipients =
-                                        [new OrderItemSublocationRecipient(1001, "AAAC", catalogueItemId)],
+                                        [new OrderItemSublocationRecipient(1001, "AAAC", orderItem1)],
                                 },
                             ],
                         },
@@ -197,7 +198,7 @@ public static class OrderTests
                     Description = "My order",
                     OrderingPartyId = orderingPartyId,
                     SelectedFramework = framework,
-                    OrderItems = [new OrderItem { CatalogueItemId = catalogueItemId, OrderId = 1002 }],
+                    OrderItems = [orderItem2],
                     OrderSublocations =
                     [
                         new OrderSublocation
@@ -213,7 +214,7 @@ public static class OrderTests
                                     ParentSublocationOdsCode = "XXXX",
                                     RecipientOdsCode = "AAAA",
                                     OrderItemSublocationRecipients =
-                                        [new OrderItemSublocationRecipient(1002, "AAAA", catalogueItemId)],
+                                        [new OrderItemSublocationRecipient(1002, "AAAA", orderItem2)],
                                 },
                                 new OrderSublocationRecipient
                                 {
@@ -221,7 +222,7 @@ public static class OrderTests
                                     ParentSublocationOdsCode = "XXXX",
                                     RecipientOdsCode = "AAAB",
                                     OrderItemSublocationRecipients =
-                                        [new OrderItemSublocationRecipient(1002, "AAAB", catalogueItemId)],
+                                        [new OrderItemSublocationRecipient(1002, "AAAB", orderItem2)],
                                 },
                                 new OrderSublocationRecipient
                                 {
@@ -229,7 +230,7 @@ public static class OrderTests
                                     ParentSublocationOdsCode = "XXXX",
                                     RecipientOdsCode = "AAAC",
                                     OrderItemSublocationRecipients =
-                                        [new OrderItemSublocationRecipient(1002, "AAAC", catalogueItemId)],
+                                        [new OrderItemSublocationRecipient(1002, "AAAC", orderItem2)],
                                 },
                             ],
                         },
@@ -244,7 +245,7 @@ public static class OrderTests
                         ParentSublocationOdsCode = "XXXX",
                         RecipientOdsCode = "AAAA",
                         OrderItemSublocationRecipients =
-                            [new OrderItemSublocationRecipient(1002, "AAAA", catalogueItemId)],
+                            [new OrderItemSublocationRecipient(1002, "AAAA", orderItem2)],
                     },
                     new()
                     {
@@ -252,7 +253,7 @@ public static class OrderTests
                         ParentSublocationOdsCode = "XXXX",
                         RecipientOdsCode = "AAAB",
                         OrderItemSublocationRecipients =
-                            [new OrderItemSublocationRecipient(1002, "AAAB", catalogueItemId)],
+                            [new OrderItemSublocationRecipient(1002, "AAAB", orderItem2)],
                     },
                 },
             ],
@@ -267,7 +268,7 @@ public static class OrderTests
                     Description = "My order",
                     OrderingPartyId = orderingPartyId,
                     SelectedFramework = framework,
-                    OrderItems = [new OrderItem { CatalogueItemId = catalogueItemId, OrderId = 1001 }],
+                    OrderItems = [orderItem1],
                     OrderSublocations =
                     [
                         new OrderSublocation
@@ -283,7 +284,7 @@ public static class OrderTests
                                     ParentSublocationOdsCode = "XXXX",
                                     RecipientOdsCode = "AAAA",
                                     OrderItemSublocationRecipients =
-                                        [new OrderItemSublocationRecipient(1001, "AAAA", catalogueItemId)],
+                                        [new OrderItemSublocationRecipient(1001, "AAAA", orderItem1)],
                                 },
                                 new OrderSublocationRecipient
                                 {
@@ -291,7 +292,7 @@ public static class OrderTests
                                     ParentSublocationOdsCode = "XXXX",
                                     RecipientOdsCode = "AAAB",
                                     OrderItemSublocationRecipients =
-                                        [new OrderItemSublocationRecipient(1001, "AAAB", catalogueItemId)],
+                                        [new OrderItemSublocationRecipient(1001, "AAAB", orderItem1)],
                                 },
                             ],
                         },
@@ -305,7 +306,7 @@ public static class OrderTests
                     Description = "My order",
                     OrderingPartyId = orderingPartyId,
                     SelectedFramework = framework,
-                    OrderItems = [new OrderItem { CatalogueItemId = catalogueItemId, OrderId = 1002 }],
+                    OrderItems = [orderItem2],
                     OrderSublocations =
                     [
                         new OrderSublocation
@@ -321,7 +322,7 @@ public static class OrderTests
                                     ParentSublocationOdsCode = "XXXX",
                                     RecipientOdsCode = "AAAA",
                                     OrderItemSublocationRecipients =
-                                        [new OrderItemSublocationRecipient(1002, "AAAA", catalogueItemId)],
+                                        [new OrderItemSublocationRecipient(1002, "AAAA", orderItem2)],
                                 },
                                 new OrderSublocationRecipient
                                 {
@@ -329,7 +330,7 @@ public static class OrderTests
                                     ParentSublocationOdsCode = "XXXX",
                                     RecipientOdsCode = "AAAB",
                                     OrderItemSublocationRecipients =
-                                        [new OrderItemSublocationRecipient(1002, "AAAB", catalogueItemId)],
+                                        [new OrderItemSublocationRecipient(1002, "AAAB", orderItem2)],
                                 },
                                 new OrderSublocationRecipient
                                 {
@@ -337,7 +338,7 @@ public static class OrderTests
                                     ParentSublocationOdsCode = "XXXX",
                                     RecipientOdsCode = "AAAC",
                                     OrderItemSublocationRecipients =
-                                        [new OrderItemSublocationRecipient(1002, "AAAC", catalogueItemId)],
+                                        [new OrderItemSublocationRecipient(1002, "AAAC", orderItem2)],
                                 },
                             ],
                         },
@@ -352,7 +353,7 @@ public static class OrderTests
                         ParentSublocationOdsCode = "XXXX",
                         RecipientOdsCode = "AAAC",
                         OrderItemSublocationRecipients =
-                            [new OrderItemSublocationRecipient(1002, "AAAC", catalogueItemId)],
+                            [new OrderItemSublocationRecipient(1002, "AAAC", orderItem2)],
                     },
                 },
             ],

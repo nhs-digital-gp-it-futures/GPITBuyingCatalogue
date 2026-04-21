@@ -12,16 +12,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public OrderItemSublocationRecipient(
             int orderId,
             string recipientOdsCode,
-            CatalogueItemId catalogueItemId)
+            OrderItem orderItem)
         {
             OrderId = orderId;
             RecipientOdsCode = recipientOdsCode;
-            CatalogueItemId = catalogueItemId;
+            OrderItem = orderItem;
+            OrderItemId = orderItem.Id;
         }
 
-        public int OrderId { get; set; }
+        public int Id { get; set; }
 
-        public CatalogueItemId CatalogueItemId { get; set; }
+        public int OrderItemId { get; set; }
+
+        public int OrderId { get; set; }
 
         public string ParentSublocationOdsCode { get; set; }
 
@@ -45,10 +48,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             return new OrderItemSublocationRecipient
             {
-                CatalogueItemId = CatalogueItemId,
+                OrderItemId = OrderItemId,
                 RecipientOdsCode = RecipientOdsCode,
                 Quantity = Quantity,
                 DeliveryDate = DeliveryDate,
+                OrderItem = OrderItem,
             };
         }
     }

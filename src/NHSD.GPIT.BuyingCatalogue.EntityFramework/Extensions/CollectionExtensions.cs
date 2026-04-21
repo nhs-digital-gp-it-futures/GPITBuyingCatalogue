@@ -14,7 +14,7 @@ public static class CollectionExtensions
         return recipients == null
             ? []
             : recipients
-                .Where(r => r.OrderItemSublocationRecipients.Any(oir => oir.CatalogueItemId == catalogueItemId))
+                .Where(r => r.OrderItemSublocationRecipients.Any(oir => oir.OrderItem.CatalogueItemId == catalogueItemId))
                 .ToList();
     }
 

@@ -278,7 +278,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             return wrapper.Previous?.FlattenedRecipients
                 ?.Where(x =>
-                    x.OrderItemSublocationRecipients.Any(y => y.CatalogueItemId == orderItem.CatalogueItemId) &&
+                    x.OrderItemSublocationRecipients.Any(y => y.OrderItem.CatalogueItemId == orderItem.CatalogueItemId) &&
                     (parentOdsCode is null || x.ParentSublocationOdsCode == parentOdsCode))
                 .Select(x => new ServiceRecipientQuantityDto(
                     x.ParentSublocationOdsCode,

@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             orderItem.Quantity = null;
 
             IEnumerable<OrderItemSublocationRecipient> toDelete =
-                orderItemSublocationRecipients.Where(i => i.CatalogueItemId == catalogueItemId);
+                orderItemSublocationRecipients.Where(i => i.OrderItemId == orderItem.Id);
             dbContext.OrderItemSublocationRecipients.RemoveRange(toDelete);
 
             await dbContext.SaveChangesAsync();
@@ -66,6 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             List<OrderSublocationRecipient> recipients = await dbContext
                 .OrderSublocationRecipients.Where(x => x.OrderId == orderId)
                 .Include(x => x.OrderItemSublocationRecipients)
+                .ThenInclude(orderItemSublocationRecipient => orderItemSublocationRecipient.OrderItem)
                 .ToListAsync();
 
             if (recipients.Count == 0)
@@ -92,6 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             List<OrderSublocationRecipient> recipients = await dbContext
                 .OrderSublocationRecipients.Where(x => x.OrderId == orderId)
                 .Include(x => x.OrderItemSublocationRecipients)
+                .ThenInclude(orderItemSublocationRecipient => orderItemSublocationRecipient.OrderItem)
                 .ToListAsync();
 
             if (recipients.Count == 0)

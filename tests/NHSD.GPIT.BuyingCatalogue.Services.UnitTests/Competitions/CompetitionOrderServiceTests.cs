@@ -469,7 +469,7 @@ public static class CompetitionOrderServiceTests
         var order = await dbContext.Order(callOffId);
 
         order.FlattenedRecipients.SelectMany(x => x.OrderItemSublocationRecipients)
-            .GroupBy(x => x.CatalogueItemId)
+            .GroupBy(x => x.OrderItem.CatalogueItemId)
             .Should()
             .HaveCount(2);
     }
