@@ -15,7 +15,7 @@ public class SolutionStandardEntityTypeConfiguration : IEntityTypeConfiguration<
         builder.Property(ss => ss.StandardId).HasMaxLength(5);
         builder.Property(ss => ss.SolutionId).HasMaxLength(14);
 
-        builder.HasOne<Standard>().WithMany().HasForeignKey(ss => ss.StandardId);
-        builder.HasOne<Solution>().WithMany().HasForeignKey(ss => ss.SolutionId);
+        builder.HasOne(x => x.Standard).WithMany().HasForeignKey(ss => ss.StandardId);
+        builder.HasOne<Solution>().WithMany(x => x.SolutionStandards).HasForeignKey(ss => ss.SolutionId);
     }
 }

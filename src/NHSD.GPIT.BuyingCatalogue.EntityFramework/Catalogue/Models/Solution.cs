@@ -54,8 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public ICollection<WorkOffPlan> WorkOffPlans { get; set; } = new HashSet<WorkOffPlan>();
 
-        public ICollection<Standard> InProgressStandards { get; set; } = new HashSet<Standard>();
-
         public ICollection<SolutionStandard> SolutionStandards { get; set; } = new HashSet<SolutionStandard>();
 
         public ApplicationTypeDetail EnsureAndGetApplicationType()

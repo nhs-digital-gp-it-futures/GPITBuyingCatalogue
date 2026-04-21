@@ -334,7 +334,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsService service)
         {
-            solution.InProgressStandards = standards;
+            solution.SolutionStandards = standards.Select(x => new SolutionStandard { Standard = x, Status = StandardCompliance.InProgress }).ToList();
             context.Solutions.Add(solution);
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
@@ -345,12 +345,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static async Task GetSolutionLoadingStatuses_With_No_InProgressStandards_Should_be_Status_InProgress(
+        public static async Task GetSolutionLoadingStatuses_With_No_InProgressStandards_Should_be_Status_Completed(
             Solution solution,
+            List<Standard> standards,
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsService service)
         {
-            solution.InProgressStandards = Enumerable.Empty<Standard>().ToList();
+            solution.SolutionStandards = standards.Select(x => new SolutionStandard { Standard = x, Status = StandardCompliance.FullyMet }).ToList();
             context.Solutions.Add(solution);
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
@@ -779,6 +780,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             standards.ForEach(x =>
             {
+                x.StandardType = StandardType.Overarching;
                 x.StandardCapabilities = new List<StandardCapability>();
                 x.LastUpdatedByUser = null;
                 x.LastUpdatedBy = null;
@@ -790,7 +792,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.ChangeTracker.Clear();
 
             var fullyMetStandard = standards.First();
-            var inProgressStandards = standards.Skip(1).ToList();
+            var mappedStandards = standards.Skip(1).ToList();
 
             fullyMetStandard.IsMetByDefault = true;
 
@@ -800,12 +802,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             var catalogueItemId = await service.AddCatalogueSolution(model);
 
-            var solution = await context.Solutions.Include(x => x.InProgressStandards)
+            var solution = await context.Solutions.Include(x => x.SolutionStandards)
                 .FirstAsync(x => x.CatalogueItemId == catalogueItemId);
 
             solution.Should().NotBeNull();
-            solution.InProgressStandards.Should().NotBeEmpty();
-            inProgressStandards.ForEach(x => solution.InProgressStandards.Should().Contain(y => y.Id == x.Id));
+            solution.SolutionStandards.Should().NotBeEmpty();
+            mappedStandards.ForEach(x => solution.SolutionStandards.Should().Contain(y => y.StandardId == x.Id));
         }
 
         [Theory]
@@ -834,11 +836,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             var catalogueItemId = await service.AddCatalogueSolution(model);
 
-            var solution = await context.Solutions.Include(x => x.InProgressStandards)
+            var solution = await context.Solutions.Include(x => x.SolutionStandards)
                 .FirstAsync(x => x.CatalogueItemId == catalogueItemId);
 
             solution.Should().NotBeNull();
-            solution.InProgressStandards.Should().BeEmpty();
+            solution.SolutionStandards.Should().NotContain(x => x.Status != StandardCompliance.NotYetSelected);
         }
 
         [Theory]

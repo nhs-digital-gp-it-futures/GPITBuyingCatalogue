@@ -42,7 +42,7 @@ public static class SolutionStandardsServiceTests
         capability.CatalogueItemCapabilities = new List<CatalogueItemCapability>();
         capability.StandardCapabilities = new List<StandardCapability> { new(otherStandard.Id, capability.Id) };
 
-        solution.InProgressStandards = new List<Standard> { overarchingStandard };
+        solution.SolutionStandards = [new SolutionStandard { Standard = overarchingStandard }];
         solution.CatalogueItem.CatalogueItemCapabilities =
             new List<CatalogueItemCapability> { new(solution.CatalogueItemId, capability.Id) };
 
@@ -75,7 +75,7 @@ public static class SolutionStandardsServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         SolutionStandardsService service)
     {
-        solution.InProgressStandards = new List<Standard> { standard };
+        solution.SolutionStandards = [new SolutionStandard { Standard = standard, Status = StandardCompliance.InProgress }];
 
         standard.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList();
         solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
@@ -104,7 +104,7 @@ public static class SolutionStandardsServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         SolutionStandardsService service)
     {
-        solution.InProgressStandards = Enumerable.Empty<Standard>().ToList();
+        solution.SolutionStandards = [new SolutionStandard { Standard = standard, Status = StandardCompliance.FullyMet }];
         standard.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList();
         solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
 
@@ -132,7 +132,7 @@ public static class SolutionStandardsServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         SolutionStandardsService service)
     {
-        solution.InProgressStandards = standards;
+        solution.SolutionStandards = standards.Select(x => new SolutionStandard { Standard = x, Status = StandardCompliance.InProgress}).ToList();
         standards.ForEach(x => x.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList());
         solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
 
@@ -156,7 +156,7 @@ public static class SolutionStandardsServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         SolutionStandardsService service)
     {
-        solution.InProgressStandards = Enumerable.Empty<Standard>().ToList();
+        solution.SolutionStandards = Enumerable.Empty<SolutionStandard>().ToList();
         standard.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList();
         solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
 
@@ -165,17 +165,17 @@ public static class SolutionStandardsServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        solution.InProgressStandards.Should().BeEmpty();
+        solution.SolutionStandards.Should().BeEmpty();
         dbContext.ChangeTracker.Clear();
 
         await service.SetSolutionStandardStatus(solution.CatalogueItemId, standard.Id, StandardCompliance.InProgress);
 
         var updatedSolution = await dbContext.Solutions.AsNoTracking()
-            .Include(x => x.InProgressStandards)
+            .Include(x => x.SolutionStandards)
             .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        updatedSolution.InProgressStandards.Should().NotBeNullOrEmpty();
-        updatedSolution.InProgressStandards.Should().Contain(x => x.Id == standard.Id);
+        updatedSolution.SolutionStandards.Should().NotBeNullOrEmpty();
+        updatedSolution.SolutionStandards.Should().Contain(x => x.StandardId == standard.Id);
     }
 
     [Theory]
@@ -186,7 +186,7 @@ public static class SolutionStandardsServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         SolutionStandardsService service)
     {
-        solution.InProgressStandards = new List<Standard> { standard };
+        solution.SolutionStandards = [new SolutionStandard { Standard = standard }];
         standard.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList();
         solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
 
@@ -195,17 +195,17 @@ public static class SolutionStandardsServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        solution.InProgressStandards.Should().ContainSingle();
+        solution.SolutionStandards.Should().ContainSingle();
         dbContext.ChangeTracker.Clear();
 
         await service.SetSolutionStandardStatus(solution.CatalogueItemId, standard.Id, StandardCompliance.InProgress);
 
         var updatedSolution = await dbContext.Solutions.AsNoTracking()
-            .Include(x => x.InProgressStandards)
+            .Include(x => x.SolutionStandards)
             .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        updatedSolution.InProgressStandards.Should().NotBeNullOrEmpty();
-        updatedSolution.InProgressStandards.Should().Contain(x => x.Id == standard.Id);
+        updatedSolution.SolutionStandards.Should().NotBeNullOrEmpty();
+        updatedSolution.SolutionStandards.Should().Contain(x => x.StandardId == standard.Id);
     }
 
     [Theory]
@@ -216,7 +216,7 @@ public static class SolutionStandardsServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         SolutionStandardsService service)
     {
-        solution.InProgressStandards = new List<Standard> { standard };
+        solution.SolutionStandards = [new SolutionStandard { Standard = standard }];
         standard.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList();
         solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
 
@@ -225,16 +225,16 @@ public static class SolutionStandardsServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        solution.InProgressStandards.Should().ContainSingle();
+        solution.SolutionStandards.Should().ContainSingle();
         dbContext.ChangeTracker.Clear();
 
         await service.SetSolutionStandardStatus(solution.CatalogueItemId, standard.Id, StandardCompliance.FullyMet);
 
         var updatedSolution = await dbContext.Solutions.AsNoTracking()
-            .Include(x => x.InProgressStandards)
+            .Include(x => x.SolutionStandards)
             .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        updatedSolution.InProgressStandards.Should().BeEmpty();
+        updatedSolution.SolutionStandards.Should().Contain(x => x.StandardId == standard.Id && x.Status == StandardCompliance.FullyMet);
     }
 
     [Theory]
@@ -253,7 +253,7 @@ public static class SolutionStandardsServiceTests
             x.Solution = null;
             x.Standard = null;
         });
-        solution.InProgressStandards = new List<Standard> { standard };
+        solution.SolutionStandards = [new SolutionStandard { Standard = standard, Status = StandardCompliance.InProgress}];
         standard.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList();
         solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
         solution.WorkOffPlans = Enumerable.Empty<WorkOffPlan>().ToList();
@@ -264,21 +264,21 @@ public static class SolutionStandardsServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        solution.InProgressStandards.Should().ContainSingle();
+        solution.SolutionStandards.Should().ContainSingle();
         solution.WorkOffPlans.Should().NotBeEmpty();
         dbContext.ChangeTracker.Clear();
 
         await service.SetSolutionStandardStatus(solution.CatalogueItemId, standard.Id, StandardCompliance.FullyMet);
 
         var updatedSolution = await dbContext.Solutions.AsNoTracking()
-            .Include(x => x.InProgressStandards)
+            .Include(x => x.SolutionStandards)
             .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
 
         var updatedWorkOffPlans = await dbContext.WorkOffPlans
             .Where(x => x.SolutionId == solution.CatalogueItemId && x.StandardId == standard.Id)
             .ToListAsync();
 
-        updatedSolution.InProgressStandards.Should().BeEmpty();
+        updatedSolution.SolutionStandards.Should().Contain(x => x.StandardId == standard.Id && x.Status == StandardCompliance.FullyMet);
         updatedWorkOffPlans.Should().BeEmpty();
     }
 
@@ -290,7 +290,7 @@ public static class SolutionStandardsServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         SolutionStandardsService service)
     {
-        solution.InProgressStandards = Enumerable.Empty<Standard>().ToList();
+        solution.SolutionStandards = Enumerable.Empty<SolutionStandard>().ToList();
         standard.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList();
         solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
 
@@ -299,15 +299,15 @@ public static class SolutionStandardsServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        solution.InProgressStandards.Should().BeEmpty();
+        solution.SolutionStandards.Should().BeEmpty();
         dbContext.ChangeTracker.Clear();
 
         await service.SetSolutionStandardStatus(solution.CatalogueItemId, standard.Id, StandardCompliance.FullyMet);
 
         var updatedSolution = await dbContext.Solutions.AsNoTracking()
-            .Include(x => x.InProgressStandards)
+            .Include(x => x.SolutionStandards)
             .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        updatedSolution.InProgressStandards.Should().BeEmpty();
+        updatedSolution.SolutionStandards.Should().Contain(x => x.StandardId == standard.Id && x.Status == StandardCompliance.FullyMet);
     }
 }

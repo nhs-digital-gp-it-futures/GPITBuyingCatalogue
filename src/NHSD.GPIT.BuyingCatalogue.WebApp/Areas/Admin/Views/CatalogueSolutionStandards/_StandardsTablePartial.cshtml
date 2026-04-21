@@ -1,6 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionStandards.StandardPartialModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionStandards.StandardPartialModel
 
 @{
     var standardTypeName = Model.StandardType.Description();
@@ -17,8 +15,8 @@
             <nhs-table-row-container>
                 <nhs-table-cell>@standard.Name</nhs-table-cell>
                 <nhs-table-cell>
-                    <nhs-tag
-                        colour="@(standard.Compliance is StandardCompliance.FullyMet ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Blue)"
+                    <nhs-tag style="white-space: nowrap;"
+                        colour="@(Model.GetTagColourFor(standard.Compliance))"
                         text="@(standard.Compliance.Description())"></nhs-tag>
                 </nhs-table-cell>
                 <nhs-table-cell>

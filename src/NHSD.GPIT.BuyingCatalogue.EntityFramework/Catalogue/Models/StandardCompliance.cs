@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
-public enum SolutionStandardStatus
+public enum StandardCompliance
 {
     [Description("Not applicable")]
     NotApplicable = 1,

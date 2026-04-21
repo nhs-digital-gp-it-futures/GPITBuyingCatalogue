@@ -9,14 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions;
 public static class StandardComplianceModelTests
 {
     [Theory]
-    [MockInlineAutoData(true, StandardCompliance.InProgress)]
-    [MockInlineAutoData(false, StandardCompliance.FullyMet)]
+    [MockInlineAutoData(StandardCompliance.InProgress)]
+    [MockInlineAutoData(StandardCompliance.FullyMet)]
     public static void Construct_SetsPropertiesAsExpected(
-        bool isInProgress,
         StandardCompliance expectedCompliance,
         Standard standard)
     {
-        var model = new StandardComplianceModel(standard, isInProgress);
+        var model = new StandardComplianceModel(standard, expectedCompliance);
 
         model.Id.Should().Be(standard.Id);
         model.Name.Should().Be(standard.Name);
