@@ -1130,6 +1130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                     x.CatalogueItem.PublishedStatus = PublicationStatus.Published;
                 });
 
+            context.Suppliers.RemoveRange(context.Suppliers);
             context.Solutions.AddRange(solutions);
             context.Suppliers.Add(supplier);
 

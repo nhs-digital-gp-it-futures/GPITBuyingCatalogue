@@ -65,7 +65,8 @@ public class CatalogueSolutionStandardsController(
         if (!ModelState.IsValid)
             return View(model);
 
-        await solutionStandardsService.SetSolutionStandardStatus(solutionId, standardId, model.Compliance);
+        if (model.Compliance.HasValue)
+            await solutionStandardsService.SetSolutionStandardStatus(solutionId, standardId, model.Compliance.Value);
 
         return RedirectToAction(
             nameof(Index),

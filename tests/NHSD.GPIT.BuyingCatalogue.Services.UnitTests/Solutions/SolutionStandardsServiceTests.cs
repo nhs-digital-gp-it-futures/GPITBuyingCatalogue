@@ -6,7 +6,6 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
@@ -17,38 +16,27 @@ public static class SolutionStandardsServiceTests
 {
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task GetSolutionStandards_ReturnsExpectedComplianceModels(
+    public static async Task GetSolutionStandards_WithOverarchingStandard_ReturnsComplianceModelsWithOverarchingStandard(
         Solution solution,
-        Capability capability,
-        List<Standard> otherStandards,
-        List<Standard> overarchingStandards,
+        List<Standard> standards,
         [Frozen] BuyingCatalogueDbContext dbContext,
         SolutionStandardsService service)
     {
+        var otherStandards = standards.Skip(1).ToList();
         otherStandards.ForEach(x =>
         {
             x.StandardType = StandardType.Other;
-            x.StandardCapabilities = new List<StandardCapability>();
         });
 
-        overarchingStandards.ForEach(x =>
-        {
-            x.StandardType = StandardType.Overarching;
-            x.StandardCapabilities = new List<StandardCapability>();
-        });
+        var overarchingStandard = standards.First();
+        overarchingStandard.StandardType = StandardType.Overarching;
 
-        var overarchingStandard = overarchingStandards.First();
-        var otherStandard = otherStandards.First();
-        capability.CatalogueItemCapabilities = new List<CatalogueItemCapability>();
-        capability.StandardCapabilities = new List<StandardCapability> { new(otherStandard.Id, capability.Id) };
+        solution.SolutionStandards = [new SolutionStandard { Standard = overarchingStandard, Status = StandardCompliance.FullyMet }];
+        solution.CatalogueItem.CatalogueItemCapabilities = [];
 
-        solution.SolutionStandards = [new SolutionStandard { Standard = overarchingStandard }];
-        solution.CatalogueItem.CatalogueItemCapabilities =
-            new List<CatalogueItemCapability> { new(solution.CatalogueItemId, capability.Id) };
+        await dbContext.SaveChangesAsync();
 
-        dbContext.AddRange(otherStandards);
-        dbContext.AddRange(overarchingStandards);
-        dbContext.Add(capability);
+        dbContext.AddRange(standards);
         dbContext.Add(solution);
 
         await dbContext.SaveChangesAsync();
@@ -57,14 +45,140 @@ public static class SolutionStandardsServiceTests
         var result = (await service.GetSolutionStandards(solution.CatalogueItemId)).ToList();
 
         result.Should().NotBeNullOrEmpty();
-        result.Should().Contain(x => x.Compliance == StandardCompliance.InProgress && x.Id == overarchingStandard.Id);
-        result.Should().Contain(x => x.Compliance == StandardCompliance.FullyMet && x.Id == otherStandard.Id);
-        otherStandards.Skip(1)
-            .ToList()
-            .ForEach(x => result.Should().NotContain(y => y.Compliance == StandardCompliance.FullyMet && y.Id == x.Id));
-        overarchingStandards.Skip(1)
+        result.Should().Contain(x => x.Compliance == StandardCompliance.FullyMet && x.Id == overarchingStandard.Id);
+        otherStandards
+            .ForEach(x => result.Should().NotContain(y => y.Compliance == StandardCompliance.InProgress && y.Id == x.Id));
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetSolutionStandards_WithNewOverarchingStandard_ReturnsComplianceModelsWithOverarchingStandard(
+        Solution solution,
+        List<Standard> standards,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        SolutionStandardsService service)
+    {
+        standards.ForEach(x =>
+        {
+            x.StandardType = StandardType.Overarching;
+        });
+
+        var overarchingStandard = standards.First();
+        var trackedStandards = standards.Skip(1).ToList();
+
+        solution.SolutionStandards = trackedStandards.Select(x => new SolutionStandard { Standard = x, Status = StandardCompliance.FullyMet }).ToList();
+        solution.CatalogueItem.CatalogueItemCapabilities = [];
+
+        await dbContext.SaveChangesAsync();
+
+        dbContext.AddRange(standards);
+        dbContext.Add(solution);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        var result = (await service.GetSolutionStandards(solution.CatalogueItemId)).ToList();
+
+        result.Should().NotBeNullOrEmpty();
+        result.Should().Contain(x => x.Compliance == StandardCompliance.NotYetSelected && x.Id == overarchingStandard.Id);
+        trackedStandards
             .ToList()
             .ForEach(x => result.Should().Contain(y => y.Compliance == StandardCompliance.FullyMet && y.Id == x.Id));
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetSolutionStandards_WithCapabilityStandards_ReturnsComplianceModelContainingCapabilitySpecificStandards(
+        Solution solution,
+        Capability capability,
+        List<Standard> standards,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        SolutionStandardsService service)
+    {
+        var otherStandards = standards.Skip(1).ToList();
+        otherStandards.ForEach(x =>
+        {
+            x.StandardType = StandardType.Other;
+            x.StandardCapabilities = [new StandardCapability { Capability = capability, }];
+        });
+
+        var overarchingStandard = standards.First();
+        overarchingStandard.StandardType = StandardType.Overarching;
+
+        var solutionStandards = otherStandards
+            .Select(x => new SolutionStandard { Standard = x, Status = StandardCompliance.InProgress })
+            .ToList();
+
+        solutionStandards.Add(new SolutionStandard { Standard = overarchingStandard, Status = StandardCompliance.FullyMet });
+
+        solution.SolutionStandards = solutionStandards;
+        solution.CatalogueItem.CatalogueItemCapabilities = [new CatalogueItemCapability { Capability = capability, }];
+
+        await dbContext.SaveChangesAsync();
+
+        dbContext.AddRange(standards);
+        dbContext.Add(solution);
+        dbContext.Add(capability);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        var result = (await service.GetSolutionStandards(solution.CatalogueItemId)).ToList();
+
+        result.Should().NotBeNullOrEmpty();
+        result.Should().Contain(x => x.Compliance == StandardCompliance.FullyMet && x.Id == overarchingStandard.Id);
+        standards.Skip(1)
+            .ToList()
+            .ForEach(x => result.Should().Contain(y => y.Compliance == StandardCompliance.InProgress && y.Id == x.Id));
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetSolutionStandards_WithNewCapabilityStandard_ReturnsComplianceModelContainingCapabilitySpecificStandards(
+        Solution solution,
+        Capability capability,
+        List<Standard> standards,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        SolutionStandardsService service)
+    {
+        var otherStandards = standards.Skip(1).ToList();
+        otherStandards.ForEach(x =>
+        {
+            x.StandardType = StandardType.Other;
+            x.StandardCapabilities = [new StandardCapability { Capability = capability, }];
+        });
+
+        var nonMappedStandard = otherStandards.First();
+
+        var overarchingStandard = standards.First();
+        overarchingStandard.StandardType = StandardType.Overarching;
+
+        var solutionStandards = otherStandards.Skip(1)
+            .Select(x => new SolutionStandard { Standard = x, Status = StandardCompliance.InProgress })
+            .ToList();
+
+        solutionStandards.Add(new SolutionStandard { Standard = overarchingStandard, Status = StandardCompliance.FullyMet });
+
+        solution.SolutionStandards = solutionStandards;
+        solution.CatalogueItem.CatalogueItemCapabilities = [new CatalogueItemCapability { Capability = capability, }];
+
+        await dbContext.SaveChangesAsync();
+
+        dbContext.AddRange(standards);
+        dbContext.Add(solution);
+        dbContext.Add(capability);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        var result = (await service.GetSolutionStandards(solution.CatalogueItemId)).ToList();
+
+        result.Should().NotBeNullOrEmpty();
+        result.Should().Contain(x => x.Compliance == StandardCompliance.FullyMet && x.Id == overarchingStandard.Id);
+        result.Should().Contain(x => x.Compliance == StandardCompliance.NotYetSelected && x.Id == nonMappedStandard.Id);
+        otherStandards.Skip(1)
+            .ToList()
+            .ForEach(x => result.Should().Contain(y => y.Compliance == StandardCompliance.InProgress && y.Id == x.Id));
     }
 
     [Theory]
@@ -75,7 +189,8 @@ public static class SolutionStandardsServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         SolutionStandardsService service)
     {
-        solution.SolutionStandards = [new SolutionStandard { Standard = standard, Status = StandardCompliance.InProgress }];
+        solution.SolutionStandards =
+            [new SolutionStandard { Standard = standard, Status = StandardCompliance.InProgress }];
 
         standard.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList();
         solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
@@ -104,7 +219,8 @@ public static class SolutionStandardsServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         SolutionStandardsService service)
     {
-        solution.SolutionStandards = [new SolutionStandard { Standard = standard, Status = StandardCompliance.FullyMet }];
+        solution.SolutionStandards =
+            [new SolutionStandard { Standard = standard, Status = StandardCompliance.FullyMet }];
         standard.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList();
         solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
 
@@ -132,7 +248,9 @@ public static class SolutionStandardsServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         SolutionStandardsService service)
     {
-        solution.SolutionStandards = standards.Select(x => new SolutionStandard { Standard = x, Status = StandardCompliance.InProgress}).ToList();
+        solution.SolutionStandards = standards
+            .Select(x => new SolutionStandard { Standard = x, Status = StandardCompliance.InProgress })
+            .ToList();
         standards.ForEach(x => x.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList());
         solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
 
@@ -149,8 +267,12 @@ public static class SolutionStandardsServiceTests
     }
 
     [Theory]
-    [MockInMemoryDbAutoData]
-    public static async Task SetSolutionStandardStatus_InProgress_UpdatesSolutionStandardStatus(
+    [MockInMemoryDbInlineAutoData(StandardCompliance.InProgress)]
+    [MockInMemoryDbInlineAutoData(StandardCompliance.FullyMet)]
+    [MockInMemoryDbInlineAutoData(StandardCompliance.NotMet)]
+    [MockInMemoryDbInlineAutoData(StandardCompliance.NotApplicable)]
+    public static async Task SetSolutionStandardStatus_NewStandard_AddsSolutionStandardStatus(
+        StandardCompliance compliance,
         Solution solution,
         Standard standard,
         [Frozen] BuyingCatalogueDbContext dbContext,
@@ -168,7 +290,7 @@ public static class SolutionStandardsServiceTests
         solution.SolutionStandards.Should().BeEmpty();
         dbContext.ChangeTracker.Clear();
 
-        await service.SetSolutionStandardStatus(solution.CatalogueItemId, standard.Id, StandardCompliance.InProgress);
+        await service.SetSolutionStandardStatus(solution.CatalogueItemId, standard.Id, compliance);
 
         var updatedSolution = await dbContext.Solutions.AsNoTracking()
             .Include(x => x.SolutionStandards)
@@ -234,7 +356,8 @@ public static class SolutionStandardsServiceTests
             .Include(x => x.SolutionStandards)
             .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        updatedSolution.SolutionStandards.Should().Contain(x => x.StandardId == standard.Id && x.Status == StandardCompliance.FullyMet);
+        updatedSolution.SolutionStandards.Should()
+            .Contain(x => x.StandardId == standard.Id && x.Status == StandardCompliance.FullyMet);
     }
 
     [Theory]
@@ -253,7 +376,8 @@ public static class SolutionStandardsServiceTests
             x.Solution = null;
             x.Standard = null;
         });
-        solution.SolutionStandards = [new SolutionStandard { Standard = standard, Status = StandardCompliance.InProgress}];
+        solution.SolutionStandards =
+            [new SolutionStandard { Standard = standard, Status = StandardCompliance.InProgress }];
         standard.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList();
         solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
         solution.WorkOffPlans = Enumerable.Empty<WorkOffPlan>().ToList();
@@ -278,7 +402,8 @@ public static class SolutionStandardsServiceTests
             .Where(x => x.SolutionId == solution.CatalogueItemId && x.StandardId == standard.Id)
             .ToListAsync();
 
-        updatedSolution.SolutionStandards.Should().Contain(x => x.StandardId == standard.Id && x.Status == StandardCompliance.FullyMet);
+        updatedSolution.SolutionStandards.Should()
+            .Contain(x => x.StandardId == standard.Id && x.Status == StandardCompliance.FullyMet);
         updatedWorkOffPlans.Should().BeEmpty();
     }
 
@@ -308,6 +433,7 @@ public static class SolutionStandardsServiceTests
             .Include(x => x.SolutionStandards)
             .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-        updatedSolution.SolutionStandards.Should().Contain(x => x.StandardId == standard.Id && x.Status == StandardCompliance.FullyMet);
+        updatedSolution.SolutionStandards.Should()
+            .Contain(x => x.StandardId == standard.Id && x.Status == StandardCompliance.FullyMet);
     }
 }

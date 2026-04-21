@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -14,19 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 public class SolutionStandardsService(BuyingCatalogueDbContext context) : ISolutionStandardsService
 {
     public async Task<IEnumerable<StandardComplianceModel>> GetSolutionStandards(CatalogueItemId solutionId)
-        => await context.SolutionStandards
-            .AsNoTracking()
-            .Where(x => x.SolutionId == solutionId)
-            .Select(x => new StandardComplianceModel(x.Standard, x.Status))
-            .ToListAsync();
+        => await GetSolutionStandardsBaseQuery(solutionId).ToListAsync();
 
-    public async Task<StandardComplianceModel> GetSolutionStandard(CatalogueItemId solutionId, string standardId) =>
-        await context.SolutionStandards.Where(x => x.StandardId == standardId && x.SolutionId == solutionId)
-            .AsNoTracking()
-            .Select(x => new StandardComplianceModel(
-                x.Standard,
-                x.Status))
-            .FirstOrDefaultAsync();
+    public async Task<StandardComplianceModel> GetSolutionStandard(CatalogueItemId solutionId, string standardId)
+    {
+        var solutionStandards = await GetSolutionStandardsBaseQuery(solutionId).ToListAsync();
+
+        return solutionStandards.SingleOrDefault(x => x.Id == standardId);
+    }
 
     public async Task<IEnumerable<Standard>> GetInProgressStandards(CatalogueItemId solutionId)
         => await context.SolutionStandards
@@ -46,7 +40,7 @@ public class SolutionStandardsService(BuyingCatalogueDbContext context) : ISolut
 
         if (solutionStandard is null)
         {
-            context.SolutionStandards.Add(new SolutionStandard { StandardId = standardId, SolutionId = solutionId, Status = compliance });
+            context.SolutionStandards.Add(new SolutionStandard(standardId, compliance) { SolutionId = solutionId });
             await context.SaveChangesAsync();
 
             return;
@@ -64,5 +58,31 @@ public class SolutionStandardsService(BuyingCatalogueDbContext context) : ISolut
         solutionStandard.Status = compliance;
 
         await context.SaveChangesAsync();
+    }
+
+    private IQueryable<StandardComplianceModel> GetSolutionStandardsBaseQuery(CatalogueItemId solutionId)
+    {
+        var standards = context.CatalogueItemCapabilities
+            .AsNoTracking()
+            .Where(x => x.CatalogueItemId == solutionId)
+            .SelectMany(x => x.Capability.StandardCapabilities)
+            .Select(x => x.Standard)
+            .Union(
+                context.Standards
+                    .AsNoTracking()
+                    .Where(x => x.StandardType == StandardType.Overarching))
+            .Distinct();
+
+        var solutionStandards = context.SolutionStandards
+            .AsNoTracking()
+            .Where(x => x.SolutionId == solutionId);
+
+        return standards.LeftJoin(
+            solutionStandards,
+            standard => standard.Id,
+            solutionStandard => solutionStandard.StandardId,
+            (standard, solutionStandard) => new StandardComplianceModel(
+                standard,
+                solutionStandard != null ? solutionStandard.Status : StandardCompliance.NotYetSelected));
     }
 }
