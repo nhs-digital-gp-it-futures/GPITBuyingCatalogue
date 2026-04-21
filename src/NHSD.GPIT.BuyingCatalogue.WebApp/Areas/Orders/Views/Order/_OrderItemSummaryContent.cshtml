@@ -32,13 +32,15 @@
         @if (Model.IsAmendment)
         {
             <nhs-table-column>Status</nhs-table-column>
-            var previousOrderDictionary = Model.OrderWrapper.PreviousOrders.ToDictionary(order =>
-                order.Id);
-            @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient => OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, recipient)))
+            var orderIdWithCatalogueItem = Model.OrderWrapper.PreviousOrders.SelectMany(o => o.OrderItems).FirstOrDefault(oi => oi.CatalogueItemId == Model.CatalogueItem.Id)?.OrderId;
+            
+            @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient => Model.OrderWrapper.GetCallOffIdForPreviousRecipient(recipient, orderIdWithCatalogueItem)))
             {
-                var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, OrderWrapper.GetCallOffIdForRecipient(previousOrderDictionary, serviceRecipient));
+                var callOffId = Model.OrderWrapper.GetCallOffIdForPreviousRecipient(serviceRecipient, orderIdWithCatalogueItem);
+                var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId);
+
                 <nhs-table-row-container>
-                    <partial name="_OrderItemRecipientRow" model="itemRecipientRowModel" />
+                    <partial name="_OrderItemRecipientRow" model="@itemRecipientRowModel" />
                 </nhs-table-row-container>
             }
         }
