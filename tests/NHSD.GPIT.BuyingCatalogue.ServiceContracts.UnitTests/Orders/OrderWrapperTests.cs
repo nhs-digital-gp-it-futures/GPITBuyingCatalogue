@@ -258,14 +258,19 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
 
         [Theory]
         [MockAutoData]
-        public static void GetCallOffIdForRecipient_Returns_ExpectedCallOffId(
+        public static void GetCallOffIdForPreviousRecipient_Returns_ExpectedCallOffId(
             IFixture fixture,
             CatalogueItem catalogueItem,
+            CatalogueItem catalogueItem2,
             Organisation organisation)
         {
             var sublocationRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id]);
+            var addedRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id, catalogueItem2.Id]);
+            var finalRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id, catalogueItem2.Id]);
+            catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            catalogueItem2.CatalogueItemType = CatalogueItemType.AdditionalService;
             OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
-            OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.MixedFunding);
+            OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem2, OrderItemFundingType.LocalFunding);
 
             Order order = BuildOrder(
                 fixture,
@@ -277,22 +282,41 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                         [sublocationRecipient]),
                 ],
                 organisation);
+            orderItem.OrderId = order.Id;
             Order amendedOrder = order.BuildAmendment(2);
             amendedOrder.Id = 1;
-            amendedOrder.OrderItems = [amendedOrderItem];
+            amendedOrderItem.OrderId = amendedOrder.Id;
+            amendedOrder.OrderItems = [orderItem, amendedOrderItem];
             amendedOrder.OrderSublocations =
             [
                 BuildOrderSublocation(
                     fixture,
                     "XXXX",
-                    [sublocationRecipient]),
+                    [sublocationRecipient, addedRecipient]),
+            ];
+            Order finalAmendedOrder = amendedOrder.BuildAmendment(3);
+            finalAmendedOrder.Id = 3;
+            finalAmendedOrder.OrderItems = [orderItem, amendedOrderItem];
+            finalAmendedOrder.OrderSublocations =
+            [
+                BuildOrderSublocation(
+                    fixture,
+                    "XXXX",
+                    [sublocationRecipient, addedRecipient, finalRecipient]),
             ];
 
-            var orderWrapper = new OrderWrapper(amendedOrder, [order]);
-            var previousOrdersDictionary = orderWrapper.PreviousOrders.ToDictionary(o => o.Id);
+            var orderWrapper = new OrderWrapper(finalAmendedOrder, [order, amendedOrder]);
 
-            OrderWrapper.GetCallOffIdForRecipient(previousOrdersDictionary, sublocationRecipient).Should().Be(order.CallOffId.ToString());
-            OrderWrapper.GetCallOffIdForRecipient(previousOrdersDictionary, sublocationRecipient).Should().NotBe(amendedOrder.CallOffId.ToString());
+            var callOffIdForInitialRecipient = orderWrapper.GetCallOffIdForPreviousRecipient(sublocationRecipient, order.Id);
+            var callOffIdForAddedRecipient = orderWrapper.GetCallOffIdForPreviousRecipient(
+                    addedRecipient,
+                    amendedOrder.OrderItems.FirstOrDefault(oi => oi.CatalogueItemId == catalogueItem2.Id)?.OrderId);
+
+            callOffIdForInitialRecipient.Should().Be(order.CallOffId.ToString());
+            callOffIdForInitialRecipient.Should().NotBe(amendedOrder.CallOffId.ToString());
+
+            callOffIdForAddedRecipient.Should().Be(amendedOrder.CallOffId.ToString());
+            callOffIdForAddedRecipient.Should().NotBe(order.CallOffId.ToString());
         }
 
         private static OrderSublocation BuildOrderSublocation(

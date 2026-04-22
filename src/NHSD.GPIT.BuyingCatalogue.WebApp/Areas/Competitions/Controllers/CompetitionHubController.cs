@@ -93,7 +93,7 @@ public class CompetitionHubController : Controller
         if (solution is null) return BadRequest();
 
         var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(solutionId, PracticeReorganisationTypeEnum.None);
-        var selectedAssociatedServices = solution.AssociatedServices;
+        var selectedAssociatedServices = solution.GetAssociatedServices();
 
         var model = new CompetitionSolutionHubModel(internalOrgId, solution, competition)
         {
@@ -473,7 +473,7 @@ public class CompetitionHubController : Controller
         var solution = competition?.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
         if (solution == null) return BadRequest();
 
-        var service = solution.AssociatedServices.FirstOrDefault(x => x.CatalogueItemId == serviceId);
+        var service = solution.GetAssociatedServices().FirstOrDefault(x => x.CatalogueItemId == serviceId);
         if (service == null) return BadRequest();
 
         var model = new RemoveServiceModel(service.CatalogueItem)
@@ -545,7 +545,7 @@ public class CompetitionHubController : Controller
         var solution = competition.CompetitionSolutions.First(x => x.CatalogueItemId == solutionId);
 
         var currentServices =
-            solution.AssociatedServices.Select(x => x.CatalogueItem);
+            solution.GetAssociatedServices().Select(x => x.CatalogueItem);
 
         var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(solutionId, PracticeReorganisationTypeEnum.None);
 

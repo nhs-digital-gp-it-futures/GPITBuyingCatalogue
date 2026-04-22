@@ -29,11 +29,13 @@ public class CompetitionSolution : CompetitionCatalogueItem
 
     public ICollection<CompetitionCatalogueItem> Services { get; set; } = new HashSet<CompetitionCatalogueItem>();
 
-    public ICollection<CompetitionAdditionalService> AdditionalServices => Services.OfType<CompetitionAdditionalService>().ToList();
-
-    public ICollection<CompetitionAssociatedService> AssociatedServices => Services.OfType<CompetitionAssociatedService>().ToList();
-
     public ICollection<SolutionScore> Scores { get; set; } = new HashSet<SolutionScore>();
+
+    public IEnumerable<CompetitionAdditionalService> GetAdditionalServices() =>
+        Services.OfType<CompetitionAdditionalService>();
+
+    public IEnumerable<CompetitionAssociatedService> GetAssociatedServices() =>
+        Services.OfType<CompetitionAssociatedService>();
 
     public bool HasScoreType(ScoreType type) => Scores.Any(x => x.ScoreType == type);
 
@@ -41,15 +43,16 @@ public class CompetitionSolution : CompetitionCatalogueItem
 
     public decimal? CalculateTotalPrice(int contractLength)
     {
-        var price = Price as IPrice;
+        IPrice price = Price;
 
         var solutionMonthlyCost =
             price?.CalculateCostPerMonth(Quantities.Sum(x => x.Quantity.GetValueOrDefault()));
         var servicesMonthlyCost = Services?.Sum(x =>
             ((IPrice)x.Price)?.CalculateCostPerMonth(x.Quantities.Sum(y => y.Quantity.GetValueOrDefault())));
-        var oneOffCost = AssociatedServices
+        var oneOffCost = Services?
             .Sum(x => ((IPrice)x.Price)?.CalculateOneOffCost(x.Quantities.Sum(y => y.Quantity.GetValueOrDefault())));
 
-        return oneOffCost + ((solutionMonthlyCost + servicesMonthlyCost) * contractLength);
+        return ((solutionMonthlyCost.GetValueOrDefault() + servicesMonthlyCost.GetValueOrDefault()) * contractLength)
+            + oneOffCost.GetValueOrDefault();
     }
 }

@@ -260,7 +260,7 @@
                         <tbody>
                             @foreach (var nonShortlistedSolution in Model.NonShortlistedSolutions.OrderBy(x => x.CatalogueItem.Name))
                             {
-                                var requiredCompetitionServices = nonShortlistedSolution.AdditionalServices.Where(x => x.IsRequired).OrderBy(x => x.CatalogueItem.Name).ToList();
+                                var requiredCompetitionServices = nonShortlistedSolution.GetAdditionalServices().Where(x => x.IsRequired).OrderBy(x => x.CatalogueItem.Name).ToList();
                                 <tr class="alternating">
                                     <td style="width:30%">
                                         @nonShortlistedSolution.CatalogueItem.Name

@@ -21,8 +21,5 @@ public sealed class CompetitionSolutionEntityTypeConfiguration : IEntityTypeConf
             .HasForeignKey(x => x.CompetitionSolutionId)
             .HasConstraintName("FK_SolutionScores_Solution")
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Ignore(x => x.AdditionalServices);
-        builder.Ignore(x => x.AssociatedServices);
     }
 }
