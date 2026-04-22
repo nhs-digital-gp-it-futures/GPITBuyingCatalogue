@@ -70,8 +70,7 @@ public class SolutionStandardsService(BuyingCatalogueDbContext context) : ISolut
             .Union(
                 context.Standards
                     .AsNoTracking()
-                    .Where(x => x.StandardType == StandardType.Overarching))
-            .Distinct();
+                    .Where(x => x.StandardType == StandardType.Overarching));
 
         var solutionStandards = context.SolutionStandards
             .AsNoTracking()
