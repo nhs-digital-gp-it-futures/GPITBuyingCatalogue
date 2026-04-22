@@ -302,13 +302,13 @@ public static class SolutionStandardsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task SetSolutionStandardStatus_InProgressToInProgress_UpdatesSolutionStandardStatus(
+    public static async Task SetSolutionStandardStatus_InProgressToInProgress_NoChange(
         Solution solution,
         Standard standard,
         [Frozen] BuyingCatalogueDbContext dbContext,
         SolutionStandardsService service)
     {
-        solution.SolutionStandards = [new SolutionStandard { Standard = standard }];
+        solution.SolutionStandards = [new SolutionStandard { Standard = standard, Status = StandardCompliance.InProgress }];
         standard.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList();
         solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
 
@@ -327,7 +327,7 @@ public static class SolutionStandardsServiceTests
             .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
 
         updatedSolution.SolutionStandards.Should().NotBeNullOrEmpty();
-        updatedSolution.SolutionStandards.Should().Contain(x => x.StandardId == standard.Id);
+        updatedSolution.SolutionStandards.Should().Contain(x => x.StandardId == standard.Id && x.Status == StandardCompliance.InProgress);
     }
 
     [Theory]
