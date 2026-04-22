@@ -340,8 +340,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 return [];
             }
 
+            var orderItem = OrderItems.FirstOrDefault(item => item.Id == orderItemId);
+
             if (previous == null || (!previous.Exists(orderItemId)
-                && OrderItem(orderItemId).CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService))
+                && orderItem?.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService))
             {
                 // No previous order or this order item is new, all recipients apply
                 return GetOrderRecipients().ToList();
@@ -406,7 +408,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             {
                 return OrderItems.All(item =>
                 {
-                    var recipients = DetermineOrderRecipients(previous, item.CatalogueItemId);
+                    var recipients = DetermineOrderRecipients(previous, item.Id);
                     return allValuesPred(recipients, item);
                 });
             }
