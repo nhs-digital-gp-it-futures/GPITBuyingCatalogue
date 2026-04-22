@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.Id);
 
             List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem);
 
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.Id);
 
             if (orderRecipients.All(x => x.GetQuantityForItem(orderItem.Id) is not null))
                 return RedirectToAction(nameof(ConfirmQuantities), new { internalOrgId, callOffId, catalogueItemId });
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.Id);
 
             List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem, odsCode);
 
@@ -150,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             if (solution?.OrderItemPrice?.ProvisioningType is ProvisioningType.Patient
                 && solution.CatalogueItemId != catalogueItemId)
             {
-                await SetPracticeSizes(model, odsCode, solution, wrapper.DetermineOrderRecipients(solution.CatalogueItemId));
+                await SetPracticeSizes(model, odsCode, solution, wrapper.DetermineOrderRecipients(solution.Id));
             }
             else
             {
@@ -232,7 +232,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.Id);
 
             List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem);
 
@@ -278,7 +278,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             return wrapper.Previous?.FlattenedRecipients
                 ?.Where(x =>
-                    x.OrderItemSublocationRecipients.Any(y => y.OrderItem.CatalogueItemId == orderItem.CatalogueItemId) &&
+                    x.OrderItemSublocationRecipients.Any(y => y.OrderItemId == orderItem.Id) &&
                     (parentOdsCode is null || x.ParentSublocationOdsCode == parentOdsCode))
                 .Select(x => new ServiceRecipientQuantityDto(
                     x.ParentSublocationOdsCode,

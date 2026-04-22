@@ -42,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             }
 
             var solution = order.GetSolutionOrderItem();
+            var orderItem = order.OrderItem(catalogueItemId.Value);
 
             if (order.OrderType.AssociatedServicesOnly
                 || solution == null)
@@ -54,14 +55,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            var solutionDates = orderWrapper.DetermineOrderRecipients(solution.CatalogueItemId)
+            var solutionDates = orderWrapper.DetermineOrderRecipients(solution.Id)
                 .Select(x => x.GetDeliveryDateForItem(solution.Id))
                 .Distinct()
                 .ToList();
 
-            IEnumerable<string> solutionOdsCodes = orderWrapper.DetermineOrderRecipients(solution.CatalogueItemId)
+            IEnumerable<string> solutionOdsCodes = orderWrapper.DetermineOrderRecipients(solution.Id)
                 .Select(x => x.RecipientOdsCode);
-            IEnumerable<string> nextItemOdsCodes = orderWrapper.DetermineOrderRecipients(catalogueItemId.Value)
+            IEnumerable<string> nextItemOdsCodes = orderWrapper.DetermineOrderRecipients(orderItem.Id)
                 .Select(x => x.RecipientOdsCode);
             var crossOver = solutionOdsCodes.Intersect(nextItemOdsCodes);
 

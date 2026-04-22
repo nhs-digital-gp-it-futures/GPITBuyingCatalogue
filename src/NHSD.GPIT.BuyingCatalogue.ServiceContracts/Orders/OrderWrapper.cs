@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                 .FirstOrDefault(x => x.CatalogueItemId == r.CatalogueItemId) == null);
 
         public ICollection<OrderItem> OrderItems =>
-            Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.CatalogueItemId).Count > 0)
+            Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.Id).Count > 0)
                 .ToList();
 
         public Order Last => previous.Any()
@@ -113,9 +113,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             return previousOrders[recipient.OrderId].CallOffId.ToString();
         }
 
-        public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId)
+        public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(int orderItemId)
         {
-            return Order.DetermineOrderRecipients(Previous, catalogueItemId);
+            return Order.DetermineOrderRecipients(Previous, orderItemId);
         }
 
         public bool CanComplete()
@@ -133,10 +133,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                 Order.OrderItems.ToList().ForEach(i =>
                 {
                     if (Previous == null
-                        || !Previous.Exists(i.CatalogueItemId)
+                        || !Previous.Exists(i.Id)
                         || Previous.FlattenedRecipients.All(x => x.RecipientOdsCode != recipientOdsCode))
                     {
-                        newRecipient.SetDeliveryDateForItem(i.CatalogueItemId, Order.DeliveryDate.Value);
+                        newRecipient.SetDeliveryDateForItem(i, Order.DeliveryDate.Value);
                     }
                 });
             }

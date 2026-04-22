@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = orderWrapper.Order;
             var item = order.OrderItems.FirstOrDefault(oi => oi.CatalogueItemId == catalogueItemId);
 
-            if (item.OrderItemFunding is null || !item.IsReadyForReview(callOffId.IsAmendment, orderWrapper.DetermineOrderRecipients(item.CatalogueItemId)))
+            if (item.OrderItemFunding is null || !item.IsReadyForReview(callOffId.IsAmendment, orderWrapper.DetermineOrderRecipients(item.Id)))
                 return;
 
             var newFundingType = item.FundingType;

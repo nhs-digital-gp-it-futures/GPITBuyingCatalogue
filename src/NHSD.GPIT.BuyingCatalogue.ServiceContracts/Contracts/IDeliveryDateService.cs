@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
 
         Task ResetRecipientDeliveryDates(int orderId);
 
-        public Task SetDeliveryDates(int orderId, CatalogueItemId catalogueItemId, List<RecipientDeliveryDateDto> deliveryDates);
+        public Task SetDeliveryDates(int orderId, OrderItem orderItem, List<RecipientDeliveryDateDto> deliveryDates);
 
         public Task ResetDeliveryDates(int orderId, DateTime commencementDate);
     }

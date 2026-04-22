@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 .Any(x =>
                 {
                     ICollection<OrderSublocationRecipient> recipients = wrapper
-                        .DetermineOrderRecipients(x.CatalogueItemId);
+                        .DetermineOrderRecipients(x.Id);
 
                     return recipients.Any(y => y.GetDeliveryDateForItem(x.Id).HasValue);
                 });

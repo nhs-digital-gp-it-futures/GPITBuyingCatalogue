@@ -63,14 +63,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             };
         }
 
-        public void SetDeliveryDateForItem(CatalogueItemId catalogueItemId, DateTime deliveryDate)
+        public void SetDeliveryDateForItem(OrderItem orderItem, DateTime deliveryDate)
         {
             OrderItemSublocationRecipient itemRecipient =
-                OrderItemSublocationRecipients.FirstOrDefault(x => x.OrderItem?.CatalogueItemId == catalogueItemId);
+                OrderItemSublocationRecipients.FirstOrDefault(x => x.OrderItemId == orderItem.Id);
 
             if (itemRecipient is null)
             {
-                var orderItem = new OrderItem(catalogueItemId);
                 itemRecipient = new OrderItemSublocationRecipient(OrderId, RecipientOdsCode, orderItem);
                 OrderItemSublocationRecipients.Add(itemRecipient);
             }
