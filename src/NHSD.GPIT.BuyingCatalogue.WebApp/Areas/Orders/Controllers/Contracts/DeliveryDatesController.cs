@@ -232,13 +232,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.Order;
             var solutionId = order.GetSolutionId();
+            var solutionOrderItem = solutionId.HasValue ? order.OrderItem(solutionId.Value) : null;
 
             var recipients = wrapper.DetermineOrderRecipients(catalogueItemId);
             List<RecipientDeliveryDateDto> dates = model.MatchDates == true && solutionId is not null
                 ? recipients
                     .Select(x => new RecipientDeliveryDateDto(
                         x.RecipientOdsCode,
-                        x.GetDeliveryDateForItem(solutionId.Value)!.Value))
+                        x.GetDeliveryDateForItem(solutionOrderItem.Id)!.Value))
                     .ToList()
                 : recipients
                     .Select(x => new RecipientDeliveryDateDto(x.RecipientOdsCode, order.DeliveryDate!.Value))

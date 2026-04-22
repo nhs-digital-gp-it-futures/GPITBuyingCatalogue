@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             }
 
             var solutionDates = orderWrapper.DetermineOrderRecipients(solution.CatalogueItemId)
-                .Select(x => x.GetDeliveryDateForItem(solution.CatalogueItemId))
+                .Select(x => x.GetDeliveryDateForItem(solution.Id))
                 .Distinct()
                 .ToList();
 

@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
-            if (orderRecipients.All(x => x.GetQuantityForItem(catalogueItemId) is not null))
+            if (orderRecipients.All(x => x.GetQuantityForItem(orderItem.Id) is not null))
                 return RedirectToAction(nameof(ConfirmQuantities), new { internalOrgId, callOffId, catalogueItemId });
 
             return RedirectToAction(
@@ -266,7 +266,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                         orderRecipient.ParentSublocationOdsCode,
                         orderRecipient.RecipientOdsCode,
                         orderRecipient.RecipientOdsOrganisation?.Name,
-                        orderRecipient.GetQuantityForItem(orderItem.CatalogueItemId),
+                        orderRecipient.GetQuantityForItem(orderItem.Id),
                         orderRecipient.ParentSublocation.SublocationOrganisation?.Name))
                 .ToList();
         }
@@ -284,7 +284,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     x.ParentSublocationOdsCode,
                     x.RecipientOdsCode,
                     x.RecipientOdsOrganisation?.Name,
-                    x.GetQuantityForItem(orderItem.CatalogueItemId)));
+                    x.GetQuantityForItem(orderItem.Id)));
         }
 
         private async Task SetPracticeSizes(
@@ -311,11 +311,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                         continue;
                     }
 
-                    var existing = recipients
-                        ?.FirstOrDefault(x =>
-                            x.RecipientOdsCode == serviceRecipient.RecipientOdsCode && x.ParentSublocationOdsCode
-                            == serviceRecipient.ParentSublocationOdsCode)
-                        ?.GetQuantityForItem(solution.CatalogueItemId);
+                    var existing = solution != null
+                        ? recipients
+                            ?.FirstOrDefault(x =>
+                                x.RecipientOdsCode == serviceRecipient.RecipientOdsCode && x.ParentSublocationOdsCode
+                                == serviceRecipient.ParentSublocationOdsCode)
+                            ?.GetQuantityForItem(solution.Id)
+                        : null;
 
                     if (existing.HasValue)
                     {

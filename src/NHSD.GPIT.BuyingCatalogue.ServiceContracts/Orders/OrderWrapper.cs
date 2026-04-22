@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             {
                 Order.OrderItems.ToList().ForEach(i =>
                 {
-                    newRecipient.SetQuantityForItem(i.CatalogueItemId, 1);
+                    newRecipient.SetQuantityForItem(i, 1);
                 });
             }
 

@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool HaveAllDeliveryDates(ICollection<OrderSublocationRecipient> orderRecipients)
         {
-            return OrderItems.All(x => orderRecipients.AllDeliveryDatesEntered(x.CatalogueItemId));
+            return OrderItems.All(x => orderRecipients.AllDeliveryDatesEntered(x.Id));
         }
 
         public CatalogueItemId? GetSolutionId()

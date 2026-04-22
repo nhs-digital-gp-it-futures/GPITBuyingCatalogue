@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             RecipientDateModel[] recipientDates = recipients
                 .Select(x => new RecipientDateModel(
                     x,
-                    x.GetDeliveryDateForItem(orderItem.CatalogueItemId) ?? DeliveryDate,
+                    x.GetDeliveryDateForItem(orderItem.Id) ?? DeliveryDate,
                     order.CommencementDate!.Value))
                 .OrderBy(y => y.Description)
                 .ToArray();

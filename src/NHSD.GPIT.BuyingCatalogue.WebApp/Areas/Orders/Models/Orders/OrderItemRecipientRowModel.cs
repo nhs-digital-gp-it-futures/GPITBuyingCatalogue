@@ -19,7 +19,7 @@ public class OrderItemRecipientRowModel
         ServiceRecipient = recipient;
         IsAmendment = amendOrderItemModel.IsAmendment;
         CallOffId = callOffId;
-        CatalogueItemId = amendOrderItemModel.CatalogueItem.Id;
+        OrderItemId = amendOrderItemModel.OrderItem.Id;
         IsServiceRecipientAdded = amendOrderItemModel.IsServiceRecipientAdded(recipient.RecipientOdsCode);
         OrderType = amendOrderItemModel.OrderType;
     }
@@ -30,7 +30,7 @@ public class OrderItemRecipientRowModel
 
     public string CallOffId { get; init; }
 
-    public CatalogueItemId CatalogueItemId { get; init; }
+    public int OrderItemId { get; init; }
 
     public bool IsServiceRecipientAdded { get; init; }
 

@@ -109,11 +109,11 @@ public class CompetitionOrderService : ICompetitionOrderService
                 nameof(solutionId));
         }
 
-        var orderItems = CreateOrderItems(winningSolution);
+        var orderItems = CreateOrderItems(winningSolution).ToList();
         var nextOrderNumber = await dbContext.NextOrderNumber();
 
         var order = CreateOrder(nextOrderNumber, competition, winningSolution, orderItems);
-        AssignRecipientQuantities(order, winningSolution);
+        AssignRecipientQuantities(order, winningSolution, orderItems);
 
         dbContext.Orders.Add(order);
         await dbContext.SaveChangesAsync();
@@ -204,7 +204,7 @@ public class CompetitionOrderService : ICompetitionOrderService
         };
     }
 
-    private static void AssignRecipientQuantities(Order order, CompetitionSolution winningSolution)
+    private static void AssignRecipientQuantities(Order order, CompetitionSolution winningSolution, List<OrderItem> orderItems)
     {
         var competitionItemQuantities = winningSolution.Quantities
             .Select(x => new { ItemId = winningSolution.CatalogueItemId, x.Quantity, OdsCode = x.RecipientOdsCode })
@@ -221,7 +221,8 @@ public class CompetitionOrderService : ICompetitionOrderService
             OrderSublocationRecipient orderRecipient =
                 order.FlattenedRecipients.FirstOrDefault(x => x.RecipientOdsCode == itemQuantity.OdsCode);
 
-            orderRecipient?.SetQuantityForItem(itemQuantity.ItemId, itemQuantity.Quantity);
+            var orderItem = orderItems.FirstOrDefault(item => item.CatalogueItemId == itemQuantity.ItemId);
+            orderRecipient?.SetQuantityForItem(orderItem, itemQuantity.Quantity);
         }
     }
 }

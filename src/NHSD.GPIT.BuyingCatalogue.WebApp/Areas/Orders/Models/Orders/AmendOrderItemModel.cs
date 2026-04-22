@@ -31,13 +31,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             Previous = previous;
             FundingTypeDescriptionModel = fundingTypeDescription;
             rolledUpRecipients = recipients
-                .ForCatalogueItem(orderItem.CatalogueItemId)
+                .ForCatalogueItem(orderItem.Id)
                 .ToDictionary(
                     x => x.RecipientOdsCode,
                     x => x);
 
             this.previousRecipients =
-                (previousRecipients?.ForCatalogueItem(orderItem.CatalogueItemId) ?? []).ToDictionary(
+                (previousRecipients?.ForCatalogueItem(orderItem.Id) ?? []).ToDictionary(
                     x => x.RecipientOdsCode,
                     x => x);
         }
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public string PracticeReorganisationName { get; set; }
 
-        private OrderItem OrderItem { get; }
+        public OrderItem OrderItem { get; }
 
         private OrderItem Previous { get; }
 

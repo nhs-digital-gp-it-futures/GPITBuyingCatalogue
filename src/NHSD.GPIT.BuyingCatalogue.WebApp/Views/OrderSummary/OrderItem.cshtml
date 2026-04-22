@@ -80,7 +80,7 @@ else
                 <td />
                 <td />
                 <td class="numeric total">
-                    @($"{Model.RolledUpRecipientsForItem.Sum(x => x.GetQuantityForItem(Model.CatalogueItem.Id) ?? 0):N0}")
+                    @($"{Model.RolledUpRecipientsForItem.Sum(x => x.GetQuantityForItem(Model.OrderItem.Id) ?? 0):N0}")
                 </td>
             </tr>
         }
