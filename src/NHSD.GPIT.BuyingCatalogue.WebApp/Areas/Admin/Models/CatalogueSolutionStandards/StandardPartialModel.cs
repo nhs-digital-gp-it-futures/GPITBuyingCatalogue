@@ -16,11 +16,4 @@ public struct StandardPartialModel(
     public StandardType StandardType { get; set; } = standardType;
 
     public ICollection<StandardComplianceModel> Standards { get; set; } = standards;
-
-    public NhsTagsTagHelper.TagColour GetTagColourFor(StandardCompliance compliance) => compliance switch
-    {
-        StandardCompliance.FullyMet => NhsTagsTagHelper.TagColour.Green,
-        StandardCompliance.InProgress => NhsTagsTagHelper.TagColour.Blue,
-        _ => NhsTagsTagHelper.TagColour.Grey,
-    };
 }

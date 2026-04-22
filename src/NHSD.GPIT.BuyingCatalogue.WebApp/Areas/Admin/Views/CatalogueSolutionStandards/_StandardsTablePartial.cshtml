@@ -15,9 +15,7 @@
             <nhs-table-row-container>
                 <nhs-table-cell>@standard.Name</nhs-table-cell>
                 <nhs-table-cell>
-                    <nhs-tag style="white-space: nowrap;"
-                        colour="@(Model.GetTagColourFor(standard.Compliance))"
-                        text="@(standard.Compliance.Description())"></nhs-tag>
+                    <nhs-tag style="white-space: nowrap;" status-enum="@(standard.Compliance)"></nhs-tag>
                 </nhs-table-cell>
                 <nhs-table-cell>
                     <a asp-action="@(nameof(CatalogueSolutionStandardsController.Edit))"

@@ -30,8 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         ISuppliersService suppliersService,
         ICapabilitiesService capabilitiesService,
         IAssociatedServicesService associatedServicesService,
-        ISolutionPublicationStatusService publicationStatusService,
-        ISolutionStandardsService solutionStandardsService)
+        ISolutionPublicationStatusService publicationStatusService)
         : Controller
     {
         private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
@@ -39,7 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly ICapabilitiesService capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
         private readonly IAssociatedServicesService associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
         private readonly ISolutionPublicationStatusService publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
-        private readonly ISolutionStandardsService solutionStandardsService = solutionStandardsService ?? throw new ArgumentNullException(nameof(solutionStandardsService));
 
         [HttpGet]
         public async Task<IActionResult> Index([FromQuery] string search = null)

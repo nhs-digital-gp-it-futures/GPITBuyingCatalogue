@@ -43,12 +43,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public CatalogueItemId SolutionId { get; }
 
         public bool ShowAction { get; }
-
-        public NhsTagsTagHelper.TagColour GetTagColourFor(StandardCompliance compliance) => compliance switch
-        {
-            StandardCompliance.FullyMet => NhsTagsTagHelper.TagColour.Green,
-            StandardCompliance.InProgress => NhsTagsTagHelper.TagColour.Blue,
-            _ => NhsTagsTagHelper.TagColour.Grey,
-        };
     }
 }

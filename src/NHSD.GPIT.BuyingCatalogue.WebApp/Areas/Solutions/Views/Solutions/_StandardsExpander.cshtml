@@ -22,7 +22,7 @@
             <nhs-table-row-container>
                 <nhs-table-cell>@standard.Name</nhs-table-cell>
                 <nhs-table-cell>@standard.Description <p><a href="@standard.Url" target="_blank">More information about this Standard (opens in a new tab)</a></p></nhs-table-cell>
-                <nhs-table-cell><nhs-tag style="white-space:nowrap" colour="@(Model.GetTagColourFor(standard.Compliance))" text="@(standard.Compliance.Description())" /></nhs-table-cell>
+                <nhs-table-cell><nhs-tag style="white-space: nowrap;" status-enum="@(standard.Compliance)"></nhs-tag></nhs-table-cell>
                 @if (Model.StandardsWithWorkOffPlans.Any(swp => swp == standard.Id))
                 {
                     <nhs-table-cell>
