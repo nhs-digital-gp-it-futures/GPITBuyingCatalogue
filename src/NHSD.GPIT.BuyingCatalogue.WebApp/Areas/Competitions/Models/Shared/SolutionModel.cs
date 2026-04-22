@@ -17,7 +17,7 @@ public class SolutionModel
         SolutionId = competitionSolution.CatalogueItemId;
         SolutionName = competitionSolution.CatalogueItem.Name;
         SupplierName = competitionSolution.CatalogueItem.Supplier.Name;
-        RequiredServices = competitionSolution.AdditionalServices.Where(x => x.IsRequired).Select(y => y.CatalogueItem.Name).ToList();
+        RequiredServices = competitionSolution.GetAdditionalServices().Where(x => x.IsRequired).Select(y => y.CatalogueItem.Name).ToList();
         Selected = competitionSolution.IsShortlisted;
         Summary = competitionSolution.CatalogueItem.Solution.Summary;
     }

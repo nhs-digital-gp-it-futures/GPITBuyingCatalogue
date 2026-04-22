@@ -22,6 +22,7 @@ public class OrderItemRecipientRowModel
         OrderItemId = amendOrderItemModel.OrderItem.Id;
         IsServiceRecipientAdded = amendOrderItemModel.IsServiceRecipientAdded(recipient.RecipientOdsCode);
         OrderType = amendOrderItemModel.OrderType;
+        FromPreviousRevision = amendOrderItemModel.FromPreviousRevision;
     }
 
     public OrderSublocationRecipient ServiceRecipient { get; init; }
@@ -35,4 +36,6 @@ public class OrderItemRecipientRowModel
     public bool IsServiceRecipientAdded { get; init; }
 
     public OrderType OrderType { get; init; }
+
+    public bool FromPreviousRevision { get; init; }
 }

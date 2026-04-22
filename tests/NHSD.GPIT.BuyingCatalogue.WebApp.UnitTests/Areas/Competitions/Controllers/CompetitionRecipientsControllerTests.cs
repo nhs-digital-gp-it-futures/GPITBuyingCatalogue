@@ -701,6 +701,7 @@ public static class CompetitionRecipientsControllerTests
     {
         return
         [
+
             // 2 Existing sublocations that should be ticked, and a new one that shouldn't
             [
                 CommonOrganisationFactory(),
@@ -791,6 +792,7 @@ public static class CompetitionRecipientsControllerTests
     {
         return
         [
+
             // 2 existing, 1 unticked and 2 ticked resulting in 2 sublocations and 1 remove
             [
                 CommonOrganisationFactory(),
@@ -855,6 +857,7 @@ public static class CompetitionRecipientsControllerTests
     {
         return
         [
+
             // No removes
             [
                 "AAAA,AAAB,AAAC",
@@ -914,6 +917,7 @@ public static class CompetitionRecipientsControllerTests
 
         return
         [
+
             // 1 existing + repo = 3 rendered with 1 existing selected
             [
                 CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
@@ -1017,6 +1021,7 @@ public static class CompetitionRecipientsControllerTests
 
         return
         [
+
             // Repo + all mode = 3 selected
             [
                 CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
@@ -1129,6 +1134,7 @@ public static class CompetitionRecipientsControllerTests
     {
         return
         [
+
             // no existing sublocation recipients + 2 new selected = 2 adds
             [
                 CommonOrganisationFactory(), CommonCompetitionFactory(), "XXXX",

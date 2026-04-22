@@ -26,6 +26,7 @@ module "webapp" {
   recaptcha_secret_key            = var.recaptcha_secret_key
   backend_subnet_id               = azurerm_subnet.backend.id
   webapp_identity                 = azurerm_user_assigned_identity.web_app_identity
+  calloff_terms_url               = var.calloff_terms_url
 
   # SQL Vars
   sqlserver_name     = join("", module.sql_server_pri[*].sql_server_name)

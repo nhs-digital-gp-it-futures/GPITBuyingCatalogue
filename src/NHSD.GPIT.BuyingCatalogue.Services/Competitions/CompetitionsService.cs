@@ -714,7 +714,7 @@ public class CompetitionsService : ICompetitionsService
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
-        var associatedService = solution?.AssociatedServices.FirstOrDefault(x => x.CatalogueItemId == serviceId);
+        var associatedService = solution?.GetAssociatedServices().FirstOrDefault(x => x.CatalogueItemId == serviceId);
         if (associatedService == null) return;
 
         if (associatedService.Price is not null)

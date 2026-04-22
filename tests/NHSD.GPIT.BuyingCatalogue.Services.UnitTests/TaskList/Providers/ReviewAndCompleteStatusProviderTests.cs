@@ -58,13 +58,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [MockAutoData]
-        public static void Get_DataProcessingCompleted_ReturnsNotStarted(
+        public static void Get_CallOffTermsDeclarationCompleted_ReturnsNotStarted(
             Order order,
             ReviewAndCompleteStatusProvider service)
         {
             var state = new OrderProgress
             {
-                DataProcessingInformation = TaskProgress.Completed,
+                CallOffTermsDeclaration = TaskProgress.Completed,
             };
 
             order.Completed = null;
@@ -76,13 +76,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [MockAutoData]
-        public static void Get_DataProcessingIncomplete_ReturnsCannotStart(
+        public static void Get_CallOffTermsDeclarationIncomplete_ReturnsCannotStart(
             Order order,
             ReviewAndCompleteStatusProvider service)
         {
             var state = new OrderProgress
             {
-                DataProcessingInformation = TaskProgress.InProgress,
+                CallOffTermsDeclaration = TaskProgress.InProgress,
             };
 
             order.Completed = null;

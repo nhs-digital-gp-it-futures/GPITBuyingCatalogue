@@ -37,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 OrderTaskListStatus.AssociatedServicesBilling => new AssociatedServicesMilestonesStatusProvider(),
                 OrderTaskListStatus.AssociatedServicesRequirements => new AssociatedServiceRequirementsStatusProvider(),
                 OrderTaskListStatus.DataProcessing => new DataProcessingStatusProvider(),
+                OrderTaskListStatus.CallOffTermsDeclaration => new DeclarationStatusProvider(),
 
                 OrderTaskListStatus.ReviewAndComplete => new ReviewAndCompleteStatusProvider(),
 

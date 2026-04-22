@@ -212,7 +212,7 @@ public static class OrderTests
                                 {
                                     OrderId = 1002,
                                     ParentSublocationOdsCode = "XXXX",
-                                    RecipientOdsCode = "AAAA",
+                                    RecipientOdsCode = "AAAG",
                                     OrderItemSublocationRecipients =
                                         [new OrderItemSublocationRecipient(1002, "AAAA", orderItem2)],
                                 },
@@ -220,7 +220,7 @@ public static class OrderTests
                                 {
                                     OrderId = 1002,
                                     ParentSublocationOdsCode = "XXXX",
-                                    RecipientOdsCode = "AAAB",
+                                    RecipientOdsCode = "AAAH",
                                     OrderItemSublocationRecipients =
                                         [new OrderItemSublocationRecipient(1002, "AAAB", orderItem2)],
                                 },
@@ -243,7 +243,7 @@ public static class OrderTests
                     {
                         OrderId = 1002,
                         ParentSublocationOdsCode = "XXXX",
-                        RecipientOdsCode = "AAAA",
+                        RecipientOdsCode = "AAAG",
                         OrderItemSublocationRecipients =
                             [new OrderItemSublocationRecipient(1002, "AAAA", orderItem2)],
                     },
@@ -251,7 +251,7 @@ public static class OrderTests
                     {
                         OrderId = 1002,
                         ParentSublocationOdsCode = "XXXX",
-                        RecipientOdsCode = "AAAB",
+                        RecipientOdsCode = "AAAH",
                         OrderItemSublocationRecipients =
                             [new OrderItemSublocationRecipient(1002, "AAAB", orderItem2)],
                     },

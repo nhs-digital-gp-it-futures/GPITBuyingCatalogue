@@ -444,6 +444,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             EntityFramework.Ordering.Models.Order amendment,
+            OrderSublocation sublocation,
             [Frozen] IOrderService orderService,
             QuantityController controller)
         {
@@ -451,18 +452,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             amendment.OrderNumber = order.OrderNumber;
             amendment.Revision = 2;
 
-            var orderItem = order.OrderItems.First();
+            var sublocationRecipient = new OrderSublocationRecipient("r1", sublocation.SublocationOdsCode);
+            sublocation.SublocationRecipients = [sublocationRecipient];
+            order.OrderSublocations = [sublocation];
 
-            orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(amendment, [order]));
+            var amendSublocation = new OrderSublocation();
+            amendSublocation.SublocationOdsCode = sublocation.SublocationOdsCode;
+            var amendSublocationRecipient = new OrderSublocationRecipient("r2", sublocation.SublocationOdsCode);
+            amendSublocation.SublocationRecipients = [sublocationRecipient, amendSublocationRecipient];
+            amendment.OrderSublocations = [amendSublocation];
+
+            var orderItem = order.OrderItems.First();
+            amendment.OrderItems = [orderItem];
+
+            orderService.GetOrderWithOrderItems(amendment.CallOffId, internalOrgId).Returns(new OrderWrapper(amendment, [order]));
 
             var result = await controller.ViewServiceRecipientQuantity(
                 internalOrgId,
                 callOffId,
-                orderItem.CatalogueItemId);
+                orderItem.CatalogueItemId,
+                amendment.CallOffId);
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ViewServiceRecipientQuantityModel(orderItem, order.FlattenedRecipients)
+            var expected = new ViewServiceRecipientQuantityModel(orderItem, [amendSublocationRecipient])
             {
                 InternalOrgId = internalOrgId, CallOffId = callOffId,
             };

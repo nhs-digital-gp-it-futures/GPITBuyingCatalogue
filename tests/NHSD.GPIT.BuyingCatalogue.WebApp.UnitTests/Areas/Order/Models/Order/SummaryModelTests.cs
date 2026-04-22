@@ -238,6 +238,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.ButtonAdviceText.Should().Be("You can download and review your order summary here.");
         }
 
+        [Theory]
+        [MockAutoData]
+        public static void AssociatedServices_PropertiesCorrectlySet(
+            string internalOrgId,
+            OrderItem orderItem,
+            EntityFramework.Ordering.Models.Order order)
+        {
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            orderItem.Order = order;
+            order.Revision = 1;
+            order.OrderItems = [orderItem];
+
+            var newOrder = order.Clone();
+            newOrder.Revision = 2;
+            newOrder.OrderItems = [orderItem];
+
+            var previousOrders = new List<EntityFramework.Ordering.Models.Order> { order };
+
+            var orderWrapper = new OrderWrapper(newOrder, previousOrders);
+
+            var model = new SummaryModel(orderWrapper, internalOrgId, false, new ImplementationPlan());
+
+            model.AssociatedServicesCurrentOrder.Should().BeEquivalentTo([orderItem]);
+            model.PreviousAssociatedServicesGrouping.Should().BeEquivalentTo(new List<OrderItem>() { orderItem }
+                .GroupBy(oi => oi.Order.CallOffId));
+        }
+
         private static void SetInProgressCanCompleteOrder(EntityFramework.Ordering.Models.Order order)
         {
             order.Contract = new Contract() { ContractBilling = new ContractBilling(), ImplementationPlan = new ImplementationPlan(), };

@@ -23,7 +23,7 @@
     @if (Model.IsAmendment && !Model.OrderType.MergerOrSplit)
     {
         <td>
-            @(Model.IsServiceRecipientAdded ? "Added" : "Completed")
+            @(!Model.FromPreviousRevision && Model.IsServiceRecipientAdded ? "Added" : "Completed")
         </td>
     }
 </tr>

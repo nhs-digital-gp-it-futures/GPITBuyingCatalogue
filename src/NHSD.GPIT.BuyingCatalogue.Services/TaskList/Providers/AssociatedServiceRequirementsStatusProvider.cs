@@ -17,7 +17,7 @@ public class AssociatedServiceRequirementsStatusProvider : ITaskProgressProvider
         }
 
         var order = wrapper.Order;
-        if (order.IsAmendment || !HasAssociatedServices(order))
+        if (!HasAssociatedServices(order))
         {
             return TaskProgress.NotApplicable;
         }

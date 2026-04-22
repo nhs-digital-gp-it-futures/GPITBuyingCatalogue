@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
 
-            var order = wrapper.IsAmendment ? wrapper.RolledUp : wrapper.Order;
+            var order = wrapper.Order;
 
             var solutions = order.OrderType.AssociatedServicesOnly
                 ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType, order.SelectedFrameworkId)
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var selectedAssociatedServices = order.GetAssociatedServices();
 
-            return View(new TaskListModel(internalOrgId, callOffId, wrapper)
+            var model = new TaskListModel(internalOrgId, callOffId, wrapper)
             {
                 BackLink = Url.Action(backRoute.ActionName, backRoute.ControllerName, backRoute.RouteValues),
                 OnwardLink = Url.Action(onwardRoute.ActionName, onwardRoute.ControllerName, onwardRoute.RouteValues),
@@ -82,7 +82,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 UnselectedAdditionalServicesAvailable = additionalServices.Any(x => selectedAdditionalServices.All(y => x.Id != y.CatalogueItemId)),
                 AssociatedServicesAvailable = associatedServices.Any(),
                 UnselectedAssociatedServicesAvailable = associatedServices.Any(x => selectedAssociatedServices.All(y => x.Id != y.CatalogueItemId)),
-            });
+            };
+
+            return View(model);
         }
     }
 }

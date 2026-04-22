@@ -55,11 +55,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
 
         public string Description => SolutionId is not null ? EditDescription : AddDescription;
 
-        public SolutionModel WithSelectListItems(IList<Supplier> suppliers)
+        public SolutionModel WithSelectListItems(IEnumerable<Supplier> suppliers)
         {
-            SuppliersSelectList = suppliers == null || !suppliers.Any()
-                ? Enumerable.Empty<SelectOption<string>>()
-                : suppliers.Select(s => new SelectOption<string>($"{s.Name} ({s.Id})", $"{s.Id}"));
+            SuppliersSelectList = suppliers
+                .Select(s => new SelectOption<string>(
+                    $"{s.Name} ({s.Id}) ({(s.IsActive ? "Active" : "Inactive")})",
+                    $"{s.Id}"));
 
             return this;
         }

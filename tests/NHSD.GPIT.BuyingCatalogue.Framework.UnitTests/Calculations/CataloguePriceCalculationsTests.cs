@@ -310,6 +310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
                 .Create();
 
             Order order = fixture.Build<Order>()
+                .With(o => o.Revision, 1)
                 .With(o => o.OrderItems, new HashSet<OrderItem> { orderItem })
                 .With(o => o.OrderSublocations, new List<OrderSublocation> { sublocation })
                 .Create();
@@ -432,7 +433,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
                 .With(o => o.OrderNumber, new Random().Next(0, 999999))
                 .Create();
 
-            var orderWrapper = new OrderWrapper(order);
+            var previous = revision == 1 ? [] : new List<Order>() { new() { Revision = 1 } };
+
+            var orderWrapper = new OrderWrapper(order, previous);
 
             orderWrapper.TotalCostForOrderItem(perMonthOrderItemUsedForTotal.CatalogueItem.Id).Should().Be(total);
         }
@@ -640,6 +643,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             amendedOrder.DeliveryDate = amendmentPlannedDelivery;
             amendedOrder.OrderItems = new HashSet<OrderItem> { orderItem };
             amendedOrder.OrderSublocations.First().SublocationRecipients = [amendedRecipient];
+            amendedOrder.Created = DateTime.Now.AddDays(2);
 
             var orderWrapper = new OrderWrapper(amendedOrder, [order]);
 
@@ -695,11 +699,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             revision2.DeliveryDate = revision2PlannedDelivery;
             revision2.OrderItems = new HashSet<OrderItem> { orderItem };
             revision2.OrderSublocations.First().SublocationRecipients = [revision2Recipient];
+            revision2.Created = DateTime.Now.AddDays(2);
 
             Order revision3 = order.BuildAmendment(3);
             revision3.DeliveryDate = revision3PlannedDelivery;
             revision3.OrderItems = new HashSet<OrderItem> { orderItem };
             revision3.OrderSublocations.First().SublocationRecipients = [revision3Recipient];
+            revision3.Created = DateTime.Now.AddDays(3);
 
             var orderWrapper = new OrderWrapper(revision3, [order, revision2]);
 
@@ -718,6 +724,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         {
             return fixture.Build<Order>()
                 .With(o => o.Revision, 1)
+                .With(o => o.Created, DateTime.UtcNow)
                 .With(o => o.CommencementDate, commencementDate)
                 .With(o => o.OrderNumber, new Random().Next(0, 999999))
                 .With(o => o.OrderItems, new HashSet<OrderItem>(orderItems))

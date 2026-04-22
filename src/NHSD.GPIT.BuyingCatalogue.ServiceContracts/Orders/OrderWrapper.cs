@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
@@ -78,7 +79,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public bool HasNewOrderItems => Order.OrderItems
             .Any(r => Previous?.OrderItems?
-                .FirstOrDefault(x => x.CatalogueItemId == r.CatalogueItemId) == null);
+                .FirstOrDefault(x => x.CatalogueItemId == r.CatalogueItemId) == null) || Order.OrderItems
+            .Any(item => item?.CatalogueItem?.CatalogueItemType == CatalogueItemType.AssociatedService);
 
         public ICollection<OrderItem> OrderItems =>
             Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.Id).Count > 0)
@@ -120,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public bool CanComplete()
         {
-            return Order.CanComplete(RolledUp.GetOrderRecipients().ToList(), OrderItems);
+            return Order.CanComplete(RolledUp.GetOrderRecipients().ToList(), OrderItems, Previous);
         }
 
         public OrderSublocationRecipient CreateRecipientWithExistingOrderContext(

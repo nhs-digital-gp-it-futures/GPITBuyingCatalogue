@@ -40,8 +40,7 @@
             <nhs-tag status-enum="@Model.PriceStatus" />
         </nhs-table-cell>
         <nhs-table-cell>
-            @if (Model.NumberOfPrices == 1 && Model.PriceStatus == TaskProgress.NotStarted
-            && !(Model.IsAmendment && Model.FromPreviousRevision))
+            @if (Model.NumberOfPrices == 1 && Model.PriceStatus == TaskProgress.NotStarted)
             {
                 <a id="Price_@Model.CatalogueItemId" style="float:right;"
                     href="@Url.Action(
@@ -52,7 +51,7 @@
             else
             {
                 string actionName, actionText;
-                if (Model.IsAmendment && Model.FromPreviousRevision)
+                if (Model.FromPreviousRevision && Model.IsAmendment)
                 {
                     (actionName, actionText) = (nameof(PricesController.ViewPrice), "View");
                 }
@@ -79,14 +78,20 @@
         <nhs-table-cell>
             @if (Model.QuantityStatus != TaskProgress.CannotStart)
             {
-                @if ((Model.IsAmendment && Model.FromPreviousRevision && !Model.HasNewRecipients && Model.QuantityStatus != TaskProgress.InProgress)
-                    || (Model.IsAmendment && Model.IsAssociatedService))
+                @if (Model.FromPreviousRevision && Model.IsAmendment 
+                     && Model.QuantityStatus != TaskProgress.InProgress && Model.QuantityStatus != TaskProgress.NotStarted && !Model.HasNewRecipients)
                 {
+                    var viewAction = Model.IsAssociatedService
+                        ? Url.Action(
+                            nameof(QuantityController.ViewServiceRecipientQuantity),
+                            typeof(QuantityController).ControllerName(),
+                            new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.QuantityViewCallOffId })
+                        : Url.Action(
+                            nameof(QuantityController.ViewServiceRecipientQuantity),
+                            typeof(QuantityController).ControllerName(),
+                            new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId });
                     <a id="Quantity_@Model.CatalogueItemId" style="float:right;"
-                        href="@Url.Action(
-                                    nameof(QuantityController.ViewServiceRecipientQuantity),
-                                    typeof(QuantityController).ControllerName(),
-                                    new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId })">View</a>
+                        href="@viewAction">View</a>
                 }
                 else
                 {

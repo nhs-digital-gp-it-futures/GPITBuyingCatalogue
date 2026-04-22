@@ -30,4 +30,5 @@
     SelectedFrameworkId NVARCHAR(36) NULL,
     DeliveryDate DATE NULL,
     [CompetitionId] INT NULL,
+    [AcceptedTermsAndConditions] BIT NOT NULL DEFAULT(0),
 );

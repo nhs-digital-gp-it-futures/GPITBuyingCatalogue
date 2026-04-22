@@ -221,6 +221,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             return View(model);
         }
 
+        [HttpGet("view/{quantityViewCallOffId}")]
+        public async Task<IActionResult> ViewServiceRecipientQuantity(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            CallOffId quantityViewCallOffId)
+        {
+            var orderWrapper = await orderService.GetOrderWithOrderItems(quantityViewCallOffId, internalOrgId);
+            var orderItem = orderWrapper.Order.OrderItem(catalogueItemId);
+            var recipients = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+
+            var model = new ViewServiceRecipientQuantityModel(orderItem, recipients)
+            {
+                BackLink = Url.Action(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            return View(model);
+        }
+
         [HttpGet("confirm")]
         public async Task<IActionResult> ConfirmQuantities(
             string internalOrgId,
