@@ -230,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var orderWrapper = await orderService.GetOrderWithOrderItems(quantityViewCallOffId, internalOrgId);
             var orderItem = orderWrapper.Order.OrderItem(catalogueItemId);
-            var recipients = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var recipients = orderWrapper.DetermineOrderRecipients(orderItem.Id);
 
             var model = new ViewServiceRecipientQuantityModel(orderItem, recipients)
             {

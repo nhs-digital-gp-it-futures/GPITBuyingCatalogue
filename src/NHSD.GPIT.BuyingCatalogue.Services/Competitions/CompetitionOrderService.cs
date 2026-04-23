@@ -126,10 +126,10 @@ public class CompetitionOrderService : ICompetitionOrderService
         var solutionOrderItem = new OrderItem(directAwardSolution.CatalogueItemId) { Created = DateTime.UtcNow };
 
         var orderItems = new List<OrderItem>() { solutionOrderItem };
-        var associatedServicesOrderItems = directAwardSolution.AssociatedServices
+        var associatedServicesOrderItems = directAwardSolution.GetAssociatedServices()
             .Select(x => new OrderItem(x.CatalogueItemId) { Created = DateTime.UtcNow })
             .ToList();
-        var additionalServicesOrderItems = directAwardSolution.AdditionalServices
+        var additionalServicesOrderItems = directAwardSolution.GetAdditionalServices()
             .Select(x => new OrderItem(x.CatalogueItemId) { Created = DateTime.UtcNow })
             .ToList();
 
@@ -143,10 +143,10 @@ public class CompetitionOrderService : ICompetitionOrderService
 
     private static IEnumerable<OrderItem> CreateOrderItems(CompetitionSolution winningSolution)
     {
-        var associatedServicesOrderItems = winningSolution.AssociatedServices
+        var associatedServicesOrderItems = winningSolution.GetAssociatedServices()
             .Select(x => new OrderItem(x.CatalogueItemId) { Created = DateTime.UtcNow })
             .ToList();
-        var additionalServicesOrderItems = winningSolution.AdditionalServices
+        var additionalServicesOrderItems = winningSolution.GetAdditionalServices()
             .Select(x => new OrderItem(x.CatalogueItemId) { Created = DateTime.UtcNow })
             .ToList();
 

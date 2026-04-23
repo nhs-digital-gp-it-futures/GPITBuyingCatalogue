@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             var orderLinkedList = new LinkedList<Order>([.. OrderWrapper.PreviousOrders, OrderWrapper.Order]);
             var previous = orderLinkedList.Find(item.Order)?.Previous;
             var recipients = item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
-                ? item.Order.DetermineOrderRecipients(previous?.Value, item.CatalogueItemId)
+                ? item.Order.DetermineOrderRecipients(previous?.Value, item.Id)
                 : RolledUp.GetOrderRecipients().ToList();
             var previousRecipients = item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
                 ? []

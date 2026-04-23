@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                 Order.OrderItems.ToList().ForEach(i =>
                 {
                     if (Previous == null
-                        || !Previous.Exists(i.Id)
+                        || !Previous.Exists(i.CatalogueItemId)
                         || Previous.FlattenedRecipients.All(x => x.RecipientOdsCode != recipientOdsCode))
                     {
                         newRecipient.SetDeliveryDateForItem(i, Order.DeliveryDate.Value);

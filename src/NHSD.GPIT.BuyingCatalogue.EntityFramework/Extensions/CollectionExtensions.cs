@@ -39,14 +39,12 @@ public static class CollectionExtensions
 
     public static bool SomeButNotAllNewQuantitiesEntered(
         this ICollection<OrderSublocationRecipient> recipients,
-        OrderItem orderItem,
-        int previousRecipients = 0)
+        OrderItem orderItem)
     {
         if (orderItem.OrderItemPrice == null || recipients == null)
             return false;
 
-        var count = recipients.Count(x => x.GetQuantityForItem(orderItem.Id).HasValue)
-            - previousRecipients;
-        return count > 0 && count < recipients.Count - previousRecipients;
+        var count = recipients.Count(x => x.GetQuantityForItem(orderItem.Id).HasValue);
+        return count > 0;
     }
 }

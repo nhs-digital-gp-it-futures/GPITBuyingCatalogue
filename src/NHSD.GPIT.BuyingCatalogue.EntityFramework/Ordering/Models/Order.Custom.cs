@@ -335,14 +335,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             Order previous,
             int orderItemId)
         {
-            if (!Exists(orderItemId))
+            var orderItem = OrderItems.FirstOrDefault(item => item.Id == orderItemId);
+
+            if (orderItem is null || !Exists(orderItem.CatalogueItemId))
             {
                 return [];
             }
 
-            var orderItem = OrderItems.FirstOrDefault(item => item.Id == orderItemId);
-
-            if (previous == null || (!previous.Exists(orderItemId)
+            if (previous == null || (!previous.Exists(orderItem.CatalogueItemId)
                 && orderItem?.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService))
             {
                 // No previous order or this order item is new, all recipients apply
@@ -359,9 +359,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             // it doesn't exist on this order so no recipients apply
         }
 
-        public bool Exists(int orderItemId)
+        public bool Exists(CatalogueItemId catalogueItemId)
         {
-            return OrderItems.Any(x => x.Id == orderItemId);
+            return OrderItems.Any(x => x.CatalogueItemId == catalogueItemId);
         }
 
         private static Func<OrderSublocationRecipient, bool> PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(
