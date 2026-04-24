@@ -74,21 +74,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 ? "You can download a summary of this terminated contract for your records."
                 : "You can download and review your order summary here.";
 
-        public AmendOrderItemModel BuildAmendOrderItemModel(OrderItem item, string solutionName = null)
+        public AmendOrderItemModel BuildAmendOrderItemModel(
+            OrderItem item,
+            string solutionName = null,
+            bool fromPreviousRevision = false)
         {
             var orderLinkedList = new LinkedList<Order>([.. OrderWrapper.PreviousOrders, OrderWrapper.Order]);
             var previous = orderLinkedList.Find(item.Order)?.Previous;
+
             var recipients = item.Order.DetermineOrderRecipients(previous?.Value, item.CatalogueItemId);
+
             var previousRecipients = item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
                 ? []
                 : Previous?.GetOrderRecipients().ToList();
-            var itemName = item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService && solutionName != null
-                ? $"{solutionName} - {item.CatalogueItem.Name}"
-                : item.CatalogueItem.Name;
-            var fromPreviousRevision = item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService && item.Order.Revision < OrderWrapper.Order.Revision;
+
+            var itemName = item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
+                && solutionName != null
+                    ? $"{solutionName} - {item.CatalogueItem.Name}"
+                    : item.CatalogueItem.Name;
+
             var callOffId = item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
                 ? item.Order.CallOffId
                 : CallOffId;
+
             return new AmendOrderItemModel(
                 callOffId,
                 Order.OrderType,
