@@ -10,7 +10,7 @@ type SourceFunction = (
 interface AccessibleAutocompleteOptions {
     element: HTMLElement;
     id: string;
-    source: string[] | SourceFunction;
+    source: (query: string, populateResults: (values: string[]) => void) => void;
     name?: string;
     confirmOnBlur?: boolean;
     onConfirm?(confirmed: string): void;
