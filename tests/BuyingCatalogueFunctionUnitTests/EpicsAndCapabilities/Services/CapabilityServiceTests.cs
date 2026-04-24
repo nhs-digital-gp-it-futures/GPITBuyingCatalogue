@@ -8,13 +8,9 @@ using AutoFixture.Xunit2;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Models;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Services;
 using FluentAssertions;
-using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
 namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
