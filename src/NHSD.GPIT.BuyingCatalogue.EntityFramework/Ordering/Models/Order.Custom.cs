@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             return AllValuesEntered(
                 orderRecipients,
-                (recipients, item) => recipients.AllDeliveryDatesEntered(item.Id),
+                (recipients, item) => recipients.AllDeliveryDatesEntered(item.CatalogueItemId),
                 previous);
         }
 
@@ -333,9 +333,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(
             Order previous,
-            int orderItemId)
+            CatalogueItemId catalogueItemId)
         {
-            var orderItem = OrderItems.FirstOrDefault(item => item.Id == orderItemId);
+            var orderItem = OrderItems.FirstOrDefault(item => item.CatalogueItemId == catalogueItemId);
 
             if (orderItem is null || !Exists(orderItem.CatalogueItemId))
             {
@@ -352,7 +352,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             // only the new recipients or recipients from previous orders with missing values
             // which might happen if we amend migrated order that wasn't global recipient compatible
             return GetOrderRecipients()
-                .Where(PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(previous, orderItemId))
+                .Where(PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(previous, catalogueItemId))
                 .Where(CurrentRecipientDidNotExistInPreviousOrderPredicate(previous, IsAmendment))
                 .ToList();
 
@@ -366,7 +366,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         private static Func<OrderSublocationRecipient, bool> PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(
             Order previous,
-            int orderItemId)
+            CatalogueItemId catalogueItemId)
         {
             return cr =>
             {
@@ -376,7 +376,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
                 return previousRecipient is null
                     || previousRecipient.OrderItemSublocationRecipients.All(oir =>
-                        oir.OrderItemId != orderItemId);
+                        oir.OrderItem.CatalogueItemId != catalogueItemId);
             };
         }
 
@@ -408,7 +408,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             {
                 return OrderItems.All(item =>
                 {
-                    var recipients = DetermineOrderRecipients(previous, item.Id);
+                    var recipients = DetermineOrderRecipients(previous, item.CatalogueItemId);
                     return allValuesPred(recipients, item);
                 });
             }

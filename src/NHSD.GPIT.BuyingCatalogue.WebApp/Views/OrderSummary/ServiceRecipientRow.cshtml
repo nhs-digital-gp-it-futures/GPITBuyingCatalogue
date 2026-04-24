@@ -1,7 +1,7 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.OrderItemRecipientRowModel
 @{
-    var quantity = Model.ServiceRecipient.GetQuantityForItem(Model.OrderItemId);
-    var deliveryDate = Model.ServiceRecipient.GetDeliveryDateForItem(Model.OrderItemId);
+    var quantity = Model.ServiceRecipient.GetQuantityForItem(Model.CatalogueItemId);
+    var deliveryDate = Model.ServiceRecipient.GetDeliveryDateForItem(Model.CatalogueItemId);
     var deliveryDateText = deliveryDate.HasValue
         ? $"{deliveryDate.Value:d MMMM yyyy}"
         : "No date entered";
@@ -12,7 +12,7 @@
         @($"{Model.ServiceRecipient.RecipientOdsOrganisation?.Name} ({Model.ServiceRecipient.RecipientOdsCode})")
     </td>
     <td>
-        @($"{Model.CallOffId}-{Model.ServiceRecipient.RecipientOdsCode}-{Model.OrderItemId}")
+        @($"{Model.CallOffId}-{Model.ServiceRecipient.RecipientOdsCode}-{Model.CatalogueItemId}")
     </td>
     <td>
         @deliveryDateText

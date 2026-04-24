@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.SetupCatalogueSolution();
             order.DeliveryDate = deliveryDate;
             var solution = order.OrderItems.First();
-            order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(solution.CatalogueItemId, deliveryDate));
+            order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(solution, deliveryDate));
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
             var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
@@ -182,7 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
             var solution = order.OrderItems.First();
             order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(
-                solution.CatalogueItemId,
+                solution,
                 deliveryDate.AddDays(1)));
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;

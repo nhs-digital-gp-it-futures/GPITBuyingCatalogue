@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             CatalogueItemType = orderItem.CatalogueItem.CatalogueItemType;
             Description = orderItem.CatalogueItem.Name;
 
-            ICollection<OrderSublocationRecipient> recipients = orderWrapper.DetermineOrderRecipients(orderItem.Id)
+            ICollection<OrderSublocationRecipient> recipients = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId)
                 .Where(x => !string.Equals(
                     x.RecipientOdsCode,
                     order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode))
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             RecipientDateModel[] recipientDates = recipients
                 .Select(x => new RecipientDateModel(
                     x,
-                    x.GetDeliveryDateForItem(orderItem.Id) ?? DeliveryDate,
+                    x.GetDeliveryDateForItem(orderItem.CatalogueItemId) ?? DeliveryDate,
                     order.CommencementDate!.Value))
                 .OrderBy(y => y.Description)
                 .ToArray();

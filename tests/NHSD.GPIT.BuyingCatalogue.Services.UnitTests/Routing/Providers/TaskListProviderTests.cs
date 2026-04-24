@@ -115,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.OrderItems.ForEach(x =>
             {
                 x.Quantity = 1;
-                order.FlattenedRecipients.ForEach(r => r.SetQuantityForItem(x.CatalogueItemId, 1));
+                order.FlattenedRecipients.ForEach(r => r.SetQuantityForItem(x, 1));
                 order.FlattenedRecipients.ForEach(r =>
                     r.OrderItemSublocationRecipients.Where(i => i.OrderItem.CatalogueItemId == x.CatalogueItemId)
                         .ForEach(y => y.DeliveryDate = null));
@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.OrderItems.ForEach(x =>
             {
                 x.Quantity = 0;
-                order.FlattenedRecipients.ForEach(r => r.SetQuantityForItem(x.CatalogueItemId, 0));
+                order.FlattenedRecipients.ForEach(r => r.SetQuantityForItem(x, 0));
                 x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             });
 

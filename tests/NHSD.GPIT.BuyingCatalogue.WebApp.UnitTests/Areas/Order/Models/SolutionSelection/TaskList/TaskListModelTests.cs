@@ -102,8 +102,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             amendment.OrderItems = new List<OrderItem>()
             {
-                new OrderItem() { Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.Solution, Id = solution.CatalogueItemId }, CatalogueItemId = solution.CatalogueItemId },
-                new OrderItem() { Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService, Id = associatedService.CatalogueItemId }, CatalogueItemId = additionalService.CatalogueItemId },
+                new OrderItem() { Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.Solution, Id = solution.CatalogueItemId }, CatalogueItemId = solution.CatalogueItemId, OrderItemPrice = orderItem.OrderItemPrice },
+                new OrderItem() { Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService, Id = associatedService.CatalogueItemId }, CatalogueItemId = additionalService.CatalogueItemId, OrderItemPrice = orderItem.OrderItemPrice },
                 orderItem,
             };
 

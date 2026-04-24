@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.OrderItems.ForEach(x =>
             {
                 x.Quantity = 1;
-                order.FlattenedRecipients.ForEach(r => r.SetQuantityForItem(x.CatalogueItemId, 1));
+                order.FlattenedRecipients.ForEach(r => r.SetQuantityForItem(x, 1));
             });
             context.Orders.Add(order);
             await context.SaveChangesAsync();

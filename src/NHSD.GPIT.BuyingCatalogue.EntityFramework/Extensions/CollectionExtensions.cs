@@ -9,22 +9,22 @@ public static class CollectionExtensions
 {
     public static ICollection<OrderSublocationRecipient> ForCatalogueItem(
         this ICollection<OrderSublocationRecipient> recipients,
-        int orderItemId)
+        CatalogueItemId catalogueItemId)
     {
         return recipients == null
             ? []
             : recipients
-                .Where(r => r.OrderItemSublocationRecipients.Any(oir => oir.OrderItemId == orderItemId))
+                .Where(r => r.OrderItemSublocationRecipients.Any(oir => oir.OrderItem.CatalogueItemId == catalogueItemId))
                 .ToList();
     }
 
     public static bool AllDeliveryDatesEntered(
         this IEnumerable<OrderSublocationRecipient> recipients,
-        int orderItemId)
+        CatalogueItemId catalogueItemId)
     {
         ArgumentNullException.ThrowIfNull(recipients);
 
-        return recipients.All(r => r.GetDeliveryDateForItem(orderItemId).HasValue);
+        return recipients.All(r => r.GetDeliveryDateForItem(catalogueItemId).HasValue);
     }
 
     public static bool AllQuantitiesEntered(this ICollection<OrderSublocationRecipient> recipients, OrderItem orderItem)
@@ -34,7 +34,7 @@ public static class CollectionExtensions
             return false;
         }
 
-        return recipients.All(x => x.GetQuantityForItem(orderItem.Id).HasValue);
+        return recipients.All(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue);
     }
 
     public static bool SomeButNotAllNewQuantitiesEntered(
@@ -44,7 +44,7 @@ public static class CollectionExtensions
         if (orderItem.OrderItemPrice == null || recipients == null)
             return false;
 
-        var count = recipients.Count(x => x.GetQuantityForItem(orderItem.Id).HasValue);
+        var count = recipients.Count(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue);
         return count > 0;
     }
 }

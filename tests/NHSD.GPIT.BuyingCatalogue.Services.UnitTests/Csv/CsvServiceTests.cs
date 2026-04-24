@@ -688,7 +688,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
                 CataloguePriceQuantityCalculationType.PerServiceRecipient);
             OrderSublocationRecipient originalRecipient = amend.FlattenedRecipients.First();
             originalRecipient.OrderItemSublocationRecipients.ForEach(oisr => oisr.OrderItem = addedOrderItem);
-            originalRecipient.SetQuantityForItem(addedCatalogueItem.Id, 1);
+            originalRecipient.SetQuantityForItem(addedOrderItem, 1);
             OrderSublocationRecipient addedRecipient = BuildOrderRecipient(
                 fixture,
                 [orderItem, addedOrderItem]);

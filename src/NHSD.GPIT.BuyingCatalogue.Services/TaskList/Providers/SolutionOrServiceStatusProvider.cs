@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             return orderWrapper.Order.OrderItems.All(x =>
             {
                 ICollection<OrderSublocationRecipient> recipients =
-                    orderWrapper.DetermineOrderRecipients(x.Id);
+                    orderWrapper.DetermineOrderRecipients(x.CatalogueItemId);
                 var allQuantities = recipients.AllQuantitiesEntered(x);
 
                 return x.CatalogueItem != null

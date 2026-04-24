@@ -31,19 +31,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             Previous = previous;
             FundingTypeDescriptionModel = fundingTypeDescription;
             rolledUpRecipients = recipients
-                .ForCatalogueItem(orderItem.Id)
+                .ForCatalogueItem(orderItem.CatalogueItemId)
                 .ToDictionary(
                     x => x.RecipientOdsCode,
                     x => x);
 
             this.previousRecipients = previous is not null
-                ? (previousRecipients?.ForCatalogueItem(previous.Id) ?? []).ToDictionary(
+                ? (previousRecipients?.ForCatalogueItem(previous.CatalogueItemId) ?? []).ToDictionary(
                     x => x.RecipientOdsCode,
                     x => x)
                 : [];
         }
 
-        public CallOffId CallOffId { get; }
+        public CallOffId CallOffId { get; init; }
 
         public OrderWrapper OrderWrapper { get; init; }
 
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public OrderItem OrderItem { get; }
 
-        private OrderItem Previous { get; }
+        public OrderItem Previous { get; }
 
         private FundingTypeDescriptionModel FundingTypeDescriptionModel { get; }
 

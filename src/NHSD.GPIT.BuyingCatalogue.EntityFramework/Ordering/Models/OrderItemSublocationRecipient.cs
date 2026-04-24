@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
@@ -52,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 RecipientOdsCode = RecipientOdsCode,
                 Quantity = Quantity,
                 DeliveryDate = DeliveryDate,
-                OrderItem = OrderItem,
+                OrderItem = OrderItem.Clone(),
             };
         }
     }

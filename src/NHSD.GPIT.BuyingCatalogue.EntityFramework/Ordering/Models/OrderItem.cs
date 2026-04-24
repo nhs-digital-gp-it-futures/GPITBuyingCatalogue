@@ -52,10 +52,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderItem Clone() => new(CatalogueItemId)
         {
-            Id = Id,
             OrderItemPrice = OrderItemPrice?.Clone(),
             EstimationPeriod = EstimationPeriod,
             CatalogueItem = CatalogueItem,
+            CatalogueItemId = CatalogueItemId,
             OrderItemFunding = OrderItemFunding?.Clone(),
         };
     }

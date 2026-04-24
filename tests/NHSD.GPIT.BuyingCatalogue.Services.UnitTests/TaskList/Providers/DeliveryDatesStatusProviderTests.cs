@@ -123,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             var orderItem = order.OrderItems.First();
             MoreEnumerable.ForEach(
                 order.FlattenedRecipients,
-                x => x.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today));
+                x => x.SetDeliveryDateForItem(orderItem, DateTime.Today));
 
             var actual = service.Get(new OrderWrapper(order), state);
 

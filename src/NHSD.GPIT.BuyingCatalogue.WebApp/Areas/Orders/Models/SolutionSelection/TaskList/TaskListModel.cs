@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         internalOrgId,
                         callOffId,
                         OrderType,
-                        wrapper.DetermineOrderRecipients(CatalogueSolution.Id),
+                        wrapper.DetermineOrderRecipients(CatalogueSolution.CatalogueItemId),
                         CatalogueSolution)
                     {
                         FromPreviousRevision = Previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             AdditionalServices.ForEach(x => taskModels.Add(
                 x.CatalogueItemId,
-                new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, wrapper.DetermineOrderRecipients(x.Id), x)
+                new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, wrapper.DetermineOrderRecipients(x.CatalogueItemId), x)
                 {
                     FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
                     HasNewRecipients = wrapper.HasNewOrderRecipients,
@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 internalOrgId,
                 callOffId,
                 x,
-                wrapper.DetermineOrderRecipients(x.Id)
+                wrapper.DetermineOrderRecipients(x.CatalogueItemId)
                     .ToList(),
                 !OrderType.MergerOrSplit));
 
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         internalOrgId,
                         callOffId,
                         item,
-                        wrapper.DetermineOrderRecipients(item.Id).ToList(),
+                        wrapper.DetermineOrderRecipients(item.CatalogueItemId).ToList(),
                         false));
 
                 taskModelsForPrevious.Add(

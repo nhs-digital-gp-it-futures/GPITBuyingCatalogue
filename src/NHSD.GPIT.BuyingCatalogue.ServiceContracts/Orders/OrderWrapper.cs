@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             .Any(item => item?.CatalogueItem?.CatalogueItemType == CatalogueItemType.AssociatedService);
 
         public ICollection<OrderItem> OrderItems =>
-            Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.Id).Count > 0)
+            Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.CatalogueItemId).Count > 0)
                 .ToList();
 
         public Order Last => previous.Any() ? previous.Last().Value : null;
@@ -124,9 +124,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             return callOffId.ToString();
         }
 
-        public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(int orderItemId)
+        public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId)
         {
-            return Order.DetermineOrderRecipients(Previous, orderItemId);
+            return Order.DetermineOrderRecipients(Previous, catalogueItemId);
         }
 
         public bool CanComplete()

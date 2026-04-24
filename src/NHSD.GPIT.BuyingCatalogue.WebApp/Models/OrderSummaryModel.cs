@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
             var orderLinkedList = new LinkedList<Order>([.. OrderWrapper.PreviousOrders, OrderWrapper.Order]);
             var previous = orderLinkedList.Find(solution.Order)?.Previous;
             var recipients = solution.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
-                ? solution.Order.DetermineOrderRecipients(previous?.Value, solution.Id)
+                ? solution.Order.DetermineOrderRecipients(previous?.Value, solution.CatalogueItemId)
                 : RolledUp.GetOrderRecipients().ToList();
             var previousRecipients = solution.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
                 ? []
@@ -74,7 +74,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
                 Previous?.OrderItem(solution.CatalogueItemId),
                 new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(solution.CatalogueItemId)))
             {
-                OrderWrapper = OrderWrapper,
                 ItemName = itemName,
                 FromPreviousRevision = solution.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution
                     && solution.Order.Revision < OrderWrapper.Order.Revision,

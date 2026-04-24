@@ -54,14 +54,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            var solutionDates = orderWrapper.DetermineOrderRecipients(solution.Id)
-                .Select(x => x.GetDeliveryDateForItem(solution.Id))
+            var solutionDates = orderWrapper.DetermineOrderRecipients(solution.CatalogueItemId)
+                .Select(x => x.GetDeliveryDateForItem(solution.CatalogueItemId))
                 .Distinct()
                 .ToList();
 
-            IEnumerable<string> solutionOdsCodes = orderWrapper.DetermineOrderRecipients(solution.Id)
+            IEnumerable<string> solutionOdsCodes = orderWrapper.DetermineOrderRecipients(solution.CatalogueItemId)
                 .Select(x => x.RecipientOdsCode);
-            IEnumerable<string> nextItemOdsCodes = orderWrapper.DetermineOrderRecipients(orderItem.Id)
+            IEnumerable<string> nextItemOdsCodes = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId)
                 .Select(x => x.RecipientOdsCode);
             var crossOver = solutionOdsCodes.Intersect(nextItemOdsCodes);
 

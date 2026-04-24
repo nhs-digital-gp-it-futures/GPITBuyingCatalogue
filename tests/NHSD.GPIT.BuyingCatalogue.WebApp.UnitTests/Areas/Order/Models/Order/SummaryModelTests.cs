@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
 
             var result = model.BuildAmendOrderItemModel(orderItem);
 
-            List<OrderSublocationRecipient> flattenedRecipients = wrapper.RolledUp.FlattenedRecipients.ToList();
+            List<OrderSublocationRecipient> flattenedRecipients = wrapper.Order.FlattenedRecipients.ToList();
 
             result.CallOffId.Should().Be(order.CallOffId);
             result.OrderType.Should().Be(order.OrderType);

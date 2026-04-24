@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             FundingTypeDescriptionModel fundingTypeDescription)
         {
             var amendmentCallOffId = new CallOffId(callOffId.OrderNumber, 2);
-            recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Now));
+            recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem, DateTime.Now));
 
             var model = new AmendOrderItemModel(amendmentCallOffId, OrderTypeEnum.Solution, recipients, null, orderItem, orderItem, fundingTypeDescription);
             recipients.ForEach(x => model.IsServiceRecipientAdded(x.RecipientOdsCode).Should().BeTrue());
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             FundingTypeDescriptionModel fundingTypeDescription)
         {
             var amendmentCallOffId = new CallOffId(callOffId.OrderNumber, 2);
-            recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Now));
+            recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem, DateTime.Now));
 
             var model = new AmendOrderItemModel(amendmentCallOffId, OrderTypeEnum.Solution, recipients, previousRecipients, orderItem, orderItem, fundingTypeDescription);
             recipients.ForEach(x => model.IsServiceRecipientAdded(x.RecipientOdsCode).Should().BeTrue());

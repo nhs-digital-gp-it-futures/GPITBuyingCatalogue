@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task Post_SublocationHub_AllRecipientsCompleted_RedirectsToConfirmationPage(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            Solution solution,
+            OrderItem solution,
             SublocationQuantityHubModel model,
             [Frozen] IOrderService orderService,
             QuantityController controller)
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
-            orderRecipients.ForEach(x => x.SetQuantityForItem(solution.CatalogueItemId, 5));
+            orderRecipients.ForEach(x => x.SetQuantityForItem(solution, 5));
 
             var result = await controller.SublocationHub(
                 internalOrgId,
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task Post_SublocationHub_IncompleteRecipients_RedirectsToOrderTaskList(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            Solution solution,
+            OrderItem solution,
             SublocationQuantityHubModel model,
             [Frozen] IOrderService orderService,
             QuantityController controller)
@@ -127,12 +127,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var orderItem = order.OrderItems.First();
             orderItem.CatalogueItem = solution.CatalogueItem;
+            orderItem.CatalogueItemId = solution.CatalogueItemId;
 
             orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(wrapper);
 
             var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
-            orderRecipients.First().SetQuantityForItem(solution.CatalogueItemId, null);
+            orderRecipients.First().SetQuantityForItem(solution, null);
 
             var result = await controller.SublocationHub(
                 internalOrgId,
@@ -302,7 +303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             solution.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
-            order.FlattenedRecipients.ForEach(r => r.SetQuantityForItem(solution.CatalogueItemId, NumberOfPatients));
+            order.FlattenedRecipients.ForEach(r => r.SetQuantityForItem(solution, NumberOfPatients));
 
             var orderItem = order.OrderItems.ElementAt(1);
 

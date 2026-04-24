@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
         {
             var total = order?.OrderItems.Sum(x =>
                 ((IPrice)x.OrderItemPrice).CalculateOneOffCost(
-                    x.TotalQuantity(order.DetermineOrderRecipients(previous, x.Id)))) ?? decimal.Zero;
+                    x.TotalQuantity(order.DetermineOrderRecipients(previous, x.CatalogueItemId)))) ?? decimal.Zero;
 
             if (roundResult)
             {
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
         {
             var total = order?.OrderItems.Sum(x =>
                 ((IPrice)x.OrderItemPrice).CalculateCostPerYear(
-                    x.TotalQuantity(order.DetermineOrderRecipients(previous, x.Id)))) ?? decimal.Zero;
+                    x.TotalQuantity(order.DetermineOrderRecipients(previous, x.CatalogueItemId)))) ?? decimal.Zero;
 
             if (roundResult)
             {
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             var order = orderWrapper.Order;
             var orderItem = orderWrapper.Order.OrderItem(catalogueItemId);
 
-            var recipients = orderWrapper.DetermineOrderRecipients(orderItem.Id);
+            var recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId);
 
             return CalculateForTerm(orderItem, order.GetTerm(), recipients);
         }
@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
                 foreach (var item in order.OrderItems)
                 {
-                    var qty = item.TotalQuantity(order.DetermineOrderRecipients(previous, item.Id));
+                    var qty = item.TotalQuantity(order.DetermineOrderRecipients(previous, item.CatalogueItemId));
                     if (!cumulativeOffsets.TryAdd(item.CatalogueItemId, qty))
                         cumulativeOffsets[item.CatalogueItemId] += qty;
                 }
@@ -161,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 if (item?.OrderItemPrice is not IPrice price)
                     return decimal.Zero;
 
-                var quantity = item.TotalQuantity(order.DetermineOrderRecipients(previous, item.Id));
+                var quantity = item.TotalQuantity(order.DetermineOrderRecipients(previous, item.CatalogueItemId));
                 var offset = quantityOffsets.TryGetValue(item.CatalogueItemId, out var val) ? val : 0;
 
                 return price.CalculateCostPerMonth(quantity, offset);

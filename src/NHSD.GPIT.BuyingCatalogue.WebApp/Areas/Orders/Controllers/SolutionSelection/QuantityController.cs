@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.Id);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
             List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem);
 
@@ -93,9 +93,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.Id);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
-            if (orderRecipients.All(x => x.GetQuantityForItem(orderItem.Id) is not null))
+            if (orderRecipients.All(x => x.GetQuantityForItem(orderItem.CatalogueItemId) is not null))
                 return RedirectToAction(nameof(ConfirmQuantities), new { internalOrgId, callOffId, catalogueItemId });
 
             return RedirectToAction(
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.Id);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
             List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem, odsCode);
 
@@ -150,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             if (solution?.OrderItemPrice?.ProvisioningType is ProvisioningType.Patient
                 && solution.CatalogueItemId != catalogueItemId)
             {
-                await SetPracticeSizes(model, odsCode, solution, wrapper.DetermineOrderRecipients(solution.Id));
+                await SetPracticeSizes(model, odsCode, solution, wrapper.DetermineOrderRecipients(solution.CatalogueItemId));
             }
             else
             {
@@ -230,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var orderWrapper = await orderService.GetOrderWithOrderItems(quantityViewCallOffId, internalOrgId);
             var orderItem = orderWrapper.Order.OrderItem(catalogueItemId);
-            var recipients = orderWrapper.DetermineOrderRecipients(orderItem.Id);
+            var recipients = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
             var model = new ViewServiceRecipientQuantityModel(orderItem, recipients)
             {
@@ -256,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.Id);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
             List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem);
 
@@ -290,7 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                         orderRecipient.ParentSublocationOdsCode,
                         orderRecipient.RecipientOdsCode,
                         orderRecipient.RecipientOdsOrganisation?.Name,
-                        orderRecipient.GetQuantityForItem(orderItem.Id),
+                        orderRecipient.GetQuantityForItem(orderItem.CatalogueItemId),
                         orderRecipient.ParentSublocation.SublocationOrganisation?.Name))
                 .ToList();
         }
@@ -308,7 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     x.ParentSublocationOdsCode,
                     x.RecipientOdsCode,
                     x.RecipientOdsOrganisation?.Name,
-                    x.GetQuantityForItem(orderItem.Id)));
+                    x.GetQuantityForItem(orderItem.CatalogueItemId)));
         }
 
         private async Task SetPracticeSizes(
@@ -340,7 +340,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                             ?.FirstOrDefault(x =>
                                 x.RecipientOdsCode == serviceRecipient.RecipientOdsCode && x.ParentSublocationOdsCode
                                 == serviceRecipient.ParentSublocationOdsCode)
-                            ?.GetQuantityForItem(solution.Id)
+                            ?.GetQuantityForItem(solution.CatalogueItemId)
                         : null;
 
                     if (existing.HasValue)
