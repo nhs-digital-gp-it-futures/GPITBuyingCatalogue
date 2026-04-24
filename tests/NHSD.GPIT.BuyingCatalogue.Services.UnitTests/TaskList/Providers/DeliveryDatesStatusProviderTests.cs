@@ -149,7 +149,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                     y.OrderItemSublocationRecipients.ForEach(z => z.DeliveryDate = order.DeliveryDate));
             });
 
-
             var state = new OrderProgress { SolutionOrService = TaskProgress.Completed };
 
             var actual = service.Get(new OrderWrapper(order), state);
