@@ -74,6 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
                 Previous?.OrderItem(solution.CatalogueItemId),
                 new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(solution.CatalogueItemId)))
             {
+                OrderWrapper = OrderWrapper,
                 ItemName = itemName,
                 FromPreviousRevision = solution.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution
                     && solution.Order.Revision < OrderWrapper.Order.Revision,
