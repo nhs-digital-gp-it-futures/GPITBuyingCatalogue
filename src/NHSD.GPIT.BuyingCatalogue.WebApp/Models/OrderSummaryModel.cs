@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public bool HasSpecificRequirements => BespokeBilling != null && BespokeBilling.Requirements.Any();
 
-        public AmendOrderItemModel BuildAmendOrderItemModel(OrderItem solution, string solutionName = null)
+        public AmendOrderItemModel BuildAmendOrderItemModel(OrderItem solution, string solutionName = null, bool fromPreviousRevision = false)
         {
             var orderLinkedList = new LinkedList<Order>([.. OrderWrapper.PreviousOrders, OrderWrapper.Order]);
             var previous = orderLinkedList.Find(solution.Order)?.Previous;
@@ -76,8 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
             {
                 OrderWrapper = OrderWrapper,
                 ItemName = itemName,
-                FromPreviousRevision = solution.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution
-                    && solution.Order.Revision < OrderWrapper.Order.Revision,
+                FromPreviousRevision = fromPreviousRevision,
             };
 
             if (Order.OrderType.MergerOrSplit)
