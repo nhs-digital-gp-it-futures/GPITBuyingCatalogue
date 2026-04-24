@@ -6,6 +6,8 @@
     "removeComments": true,
     "sourceMap": true,
     "target": "es6",
+    "strictNullChecks": false,
+    "noImplicitThis": false,
     "outDir": "wwwroot/js",
     "rootDir": "wwwroot/ts",
     "lib": [
