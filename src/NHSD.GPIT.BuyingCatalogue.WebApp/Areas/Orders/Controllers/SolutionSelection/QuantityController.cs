@@ -347,12 +347,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     {
                         serviceRecipient.InputQuantity = $"{existing.Value}";
                     }
-                    else
+                    else if (practiceSizes.TryGetValue(serviceRecipient.RecipientOdsCode, out var quantity))
                     {
-                        if (practiceSizes.TryGetValue(serviceRecipient.RecipientOdsCode, out var quantity))
-                        {
-                            serviceRecipient.InputQuantity = $"{quantity}";
-                        }
+                        serviceRecipient.InputQuantity = $"{quantity}";
                     }
                 }
 

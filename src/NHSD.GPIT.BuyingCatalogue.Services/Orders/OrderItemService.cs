@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
 
-            await SaveOrUpdateOrderItemFunding(item, callOffId, selectedFundingType);
+            await SaveOrUpdateOrderItemFunding(item, selectedFundingType);
         }
 
         public async Task DetectChangesInFundingAndDelete(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)
@@ -170,7 +170,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private async Task SaveOrUpdateOrderItemFunding(
             OrderItem item,
-            CallOffId callOffId,
             OrderItemFundingType selectedFundingType)
         {
             if (item is null)
