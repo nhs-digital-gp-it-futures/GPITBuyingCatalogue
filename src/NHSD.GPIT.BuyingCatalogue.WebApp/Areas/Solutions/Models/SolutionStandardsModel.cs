@@ -14,7 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             CatalogueItemContentStatus contentStatus)
             : base(catalogueItem, contentStatus, true, false)
         {
-            Standards = standards.ToList();
+            Standards = standards
+                .Where(x => x.Compliance is StandardCompliance.InProgress or StandardCompliance.FullyMet)
+                .ToList();
+
             StandardsWithWorkOffPlans = standardsWithWorkOffPlans;
         }
 
