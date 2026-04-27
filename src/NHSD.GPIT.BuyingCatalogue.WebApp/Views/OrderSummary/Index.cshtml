@@ -324,7 +324,7 @@
                                 <h3>@group.Key</h3>
                                 @foreach (var service in group)
                                 {
-                                    var itemModel = Model.BuildAmendOrderItemModel(service, solutionName);
+                                    var itemModel = Model.BuildAmendOrderItemModel(service, solutionName, true);
                                     <partial name="OrderItem" model="@itemModel" />
                                 }
                             }
