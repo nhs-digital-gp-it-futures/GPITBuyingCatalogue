@@ -25,27 +25,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
     [Route("admin/catalogue-solutions")]
-    public sealed class CatalogueSolutionsController : Controller
+    public sealed class CatalogueSolutionsController(
+        ISolutionsService solutionsService,
+        ISuppliersService suppliersService,
+        ICapabilitiesService capabilitiesService,
+        IAssociatedServicesService associatedServicesService,
+        ISolutionPublicationStatusService publicationStatusService)
+        : Controller
     {
-        private readonly ISolutionsService solutionsService;
-        private readonly ISuppliersService suppliersService;
-        private readonly ICapabilitiesService capabilitiesService;
-        private readonly IAssociatedServicesService associatedServicesService;
-        private readonly ISolutionPublicationStatusService publicationStatusService;
-
-        public CatalogueSolutionsController(
-            ISolutionsService solutionsService,
-            ISuppliersService suppliersService,
-            ICapabilitiesService capabilitiesService,
-            IAssociatedServicesService associatedServicesService,
-            ISolutionPublicationStatusService publicationStatusService)
-        {
-            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
-            this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
-            this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
-            this.publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
-        }
+        private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+        private readonly ISuppliersService suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
+        private readonly ICapabilitiesService capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
+        private readonly IAssociatedServicesService associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
+        private readonly ISolutionPublicationStatusService publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
 
         [HttpGet]
         public async Task<IActionResult> Index([FromQuery] string search = null)

@@ -25,6 +25,7 @@
 :r ./InsertEmailNotificationType.sql
 :r ./InsertDefaultImplementationPlan.sql
 :r ./InsertOrganisationTypes.sql
+:r ./InsertSolutionStandardStatuses.sql
 
 -- Organisation Data
 :r ./CreateExecutiveAgency.sql
@@ -76,3 +77,9 @@
 :r ./TestData/InsertTestOrderSeedData.sql
 :r ./TestData/InsertFilters.sql
 :r ./TestData/Competitions/InsertCompetitions.sql
+
+-----------------------------------------------------------------
+--                      MIGRATION SCRIPTS                      --
+-----------------------------------------------------------------
+
+:r ./MigrateSolutionStandards.sql
