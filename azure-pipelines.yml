@@ -160,6 +160,16 @@ jobs:
           OverWrite: true
           flattenFolders: true
 
+      - task: CopyFiles@2
+        displayName: Copy Smoke Test Scripts
+        inputs:
+          SourceFolder: 'tests/SmokeTests'
+          Contents: '**/*.ps1'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/smoke-tests'
+          CleanTargetFolder: false
+          OverWrite: true
+          flattenFolders: false
+
       - publish: $(build.artifactStagingDirectory)/code
         displayName: Publish Code Version
         artifact: code-version
@@ -167,6 +177,10 @@ jobs:
       - publish: $(build.artifactStagingDirectory)/dacpacs
         displayName: Publish DACPAC
         artifact: dacpacs
+
+      - publish: $(Build.ArtifactStagingDirectory)/smoke-tests
+        displayName: Publish Smoke Test Scripts
+        artifact: smoke-tests
 
   - job: createBuildArtifact
     displayName: Publish Terraform
