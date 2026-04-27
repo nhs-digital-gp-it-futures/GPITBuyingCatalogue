@@ -174,9 +174,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                                     || ci.Solution.DataProcessingInformation.SubProcessors.Count != 0)
                                     ? TaskProgress.InProgress
                                     : TaskProgress.NotStarted,
-                        Standards = ci.Solution.InProgressStandards.Count != 0
-                            ? TaskProgress.InProgress
-                            : TaskProgress.Completed,
+                        Standards = ci.Solution.SolutionStandards.All(x => x.Status == StandardCompliance.FullyMet)
+                            ? TaskProgress.Completed
+                            : TaskProgress.InProgress,
                         DevelopmentPlans = ci.Solution.WorkOffPlans.Count != 0
                             ? TaskProgress.Completed
                             : TaskProgress.Optional,
@@ -565,15 +565,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 SupplierId = model.SupplierId,
             };
 
-            var metByDefaultStandards = await dbContext.Standards.Where(x => x.IsMetByDefault)
+            var overarchingStandards = await dbContext.Standards.Where(x => x.StandardType == StandardType.Overarching)
                 .ToListAsync();
 
-            if (metByDefaultStandards.Count > 0)
-            {
-                var inProgressStandards = await dbContext.Standards.Where(x => !x.IsMetByDefault).ToListAsync();
-
-                catalogueItem.Solution.InProgressStandards = inProgressStandards;
-            }
+            catalogueItem.Solution.SolutionStandards = overarchingStandards.Select(x => new SolutionStandard(
+                    x.Id,
+                    x.IsMetByDefault ? StandardCompliance.FullyMet : StandardCompliance.NotYetSelected))
+                .ToHashSet();
 
             dbContext.CatalogueItems.Add(catalogueItem);
 

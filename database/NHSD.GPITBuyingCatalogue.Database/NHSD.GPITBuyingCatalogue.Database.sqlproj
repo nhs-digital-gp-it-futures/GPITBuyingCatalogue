@@ -114,7 +114,6 @@
     <Build Remove="bin/**/*.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="PostDeployment\" />
     <Folder Include="Cache\" />
     <Folder Include="Catalogue\" />
     <Folder Include="Catalogue\Stored Procedures\" />

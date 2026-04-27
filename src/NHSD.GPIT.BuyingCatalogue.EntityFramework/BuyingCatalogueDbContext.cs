@@ -180,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<Integration> Integrations { get; set; }
 
-        public DbSet<InProgressSolutionStandard> InProgressSolutionStandards { get; set; }
+        public DbSet<SolutionStandard> SolutionStandards { get; set; }
 
         public async Task<Order> Order(CallOffId callOffId)
         {

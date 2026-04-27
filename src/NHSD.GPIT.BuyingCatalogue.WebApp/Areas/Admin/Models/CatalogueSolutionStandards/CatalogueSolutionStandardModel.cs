@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
@@ -30,17 +31,13 @@ public class CatalogueSolutionStandardModel : NavBaseModel
 
     public string StandardName { get; set; }
 
-    public StandardCompliance Compliance { get; set; }
+    public StandardCompliance? Compliance { get; set; }
 
     public List<SelectOption<StandardCompliance>> ComplianceOptions =>
     [
-        new(
-            StandardCompliance.FullyMet.Description(),
-            StandardCompliance.FullyMet),
-
-        new(
-            StandardCompliance.InProgress.Description(),
-            StandardCompliance.InProgress),
-
+        new(StandardCompliance.FullyMet.Description(), StandardCompliance.FullyMet),
+        new(StandardCompliance.InProgress.Description(), StandardCompliance.InProgress),
+        new(StandardCompliance.NotMet.Description(), StandardCompliance.NotMet),
+        new(StandardCompliance.NotApplicable.Description(), StandardCompliance.NotApplicable),
     ];
 }

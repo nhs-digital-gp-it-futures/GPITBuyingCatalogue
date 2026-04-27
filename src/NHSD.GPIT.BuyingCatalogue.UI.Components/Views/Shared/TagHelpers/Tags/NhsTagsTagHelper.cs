@@ -3,6 +3,7 @@ using EnumsNET;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
@@ -179,6 +180,19 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
             return (selectedColourClass, tagText);
         }
 
+        private static (TagColour SelectedColourClass, string TagText) GetStatusFromCompliance(
+            StandardCompliance compliance)
+        {
+            var tagColour = compliance switch
+            {
+                StandardCompliance.FullyMet => TagColour.Green,
+                StandardCompliance.InProgress => TagColour.Blue,
+                _ => TagColour.Grey,
+            };
+
+            return (tagColour, compliance.Description());
+        }
+
         private (TagColour SelectedColourClass, string TagText) GetStatusFromEnum()
         {
             return TagStatus switch
@@ -187,6 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
                 AccountStatus status => GetAccountStatus(status),
                 TaskProgress progress => GetTaskProgressStatus(progress),
                 PublicationStatus publicationStatus => GetPublicationStatus(publicationStatus),
+                StandardCompliance compliance => GetStatusFromCompliance(compliance),
                 _ => throw new ArgumentOutOfRangeException(nameof(PublicationStatus)),
             };
         }

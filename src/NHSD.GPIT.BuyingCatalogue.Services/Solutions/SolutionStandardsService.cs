@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -14,61 +13,75 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 public class SolutionStandardsService(BuyingCatalogueDbContext context) : ISolutionStandardsService
 {
     public async Task<IEnumerable<StandardComplianceModel>> GetSolutionStandards(CatalogueItemId solutionId)
-        => await context.CatalogueItemCapabilities.Where(x => x.CatalogueItemId == solutionId)
-            .SelectMany(x => x.Capability.StandardCapabilities)
+        => await GetSolutionStandardsBaseQuery(solutionId).ToListAsync();
+
+    public async Task<StandardComplianceModel> GetSolutionStandard(CatalogueItemId solutionId, string standardId)
+    {
+        var solutionStandards = await GetSolutionStandardsBaseQuery(solutionId).ToListAsync();
+
+        return solutionStandards.SingleOrDefault(x => x.Id == standardId);
+    }
+
+    public async Task<IEnumerable<Standard>> GetInProgressStandards(CatalogueItemId solutionId)
+        => await context.SolutionStandards
+            .AsNoTracking()
+            .Where(x => x.SolutionId == solutionId && x.Status == StandardCompliance.InProgress)
             .Select(x => x.Standard)
-            .Union(context.Standards.Where(x => x.StandardType == StandardType.Overarching))
-            .Distinct()
-            .AsNoTracking()
-            .Select(x => new StandardComplianceModel(
-                x,
-                context.InProgressSolutionStandards.Any(y => y.SolutionId == solutionId && y.StandardId == x.Id)))
             .ToListAsync();
-
-    public async Task<StandardComplianceModel> GetSolutionStandard(CatalogueItemId solutionId, string standardId) =>
-        await context.Standards.Where(x => x.Id == standardId)
-            .AsNoTracking()
-            .Select(x => new StandardComplianceModel(
-                x,
-                context.InProgressSolutionStandards.Any(y => y.SolutionId == solutionId && y.StandardId == x.Id)))
-            .FirstOrDefaultAsync();
-
-    public async Task<IEnumerable<Standard>> GetInProgressStandards(CatalogueItemId solutionId) => await context
-        .InProgressSolutionStandards.Where(x => x.SolutionId == solutionId)
-        .Select(x => x.Standard)
-        .AsNoTracking()
-        .ToListAsync();
 
     public async Task SetSolutionStandardStatus(
         CatalogueItemId solutionId,
         string standardId,
         StandardCompliance compliance)
     {
-        var inProgressSolutionStandard = await context.InProgressSolutionStandards
-            .Where(x => x.SolutionId == solutionId && x.StandardId == standardId)
-            .FirstOrDefaultAsync();
+        var solutionStandard =
+            await context.SolutionStandards.FirstOrDefaultAsync(x =>
+                x.StandardId == standardId && x.SolutionId == solutionId);
 
-        switch (compliance)
+        if (solutionStandard is null)
         {
-            case StandardCompliance.InProgress when inProgressSolutionStandard is not null:
-            case StandardCompliance.FullyMet when inProgressSolutionStandard is null:
-                return;
-            case StandardCompliance.InProgress:
-                context.InProgressSolutionStandards.Add(new InProgressSolutionStandard(solutionId, standardId));
-                break;
-            case StandardCompliance.FullyMet:
-                context.InProgressSolutionStandards.Remove(inProgressSolutionStandard);
+            context.SolutionStandards.Add(new SolutionStandard(standardId, compliance) { SolutionId = solutionId });
+            await context.SaveChangesAsync();
 
-                var workOffPlans =
-                    await context.WorkOffPlans.Where(x => x.SolutionId == solutionId && x.StandardId == standardId)
-                        .ToListAsync();
-
-                context.RemoveRange(workOffPlans);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(compliance), compliance, null);
+            return;
         }
 
+        if (compliance == solutionStandard.Status) return;
+        if (compliance == StandardCompliance.FullyMet)
+        {
+            var workOffPlans = context.WorkOffPlans.Where(x =>
+                x.StandardId == standardId && x.SolutionId == solutionId);
+
+            context.WorkOffPlans.RemoveRange(workOffPlans);
+        }
+
+        solutionStandard.Status = compliance;
+
         await context.SaveChangesAsync();
+    }
+
+    private IQueryable<StandardComplianceModel> GetSolutionStandardsBaseQuery(CatalogueItemId solutionId)
+    {
+        var standards = context.CatalogueItemCapabilities
+            .AsNoTracking()
+            .Where(x => x.CatalogueItemId == solutionId)
+            .SelectMany(x => x.Capability.StandardCapabilities)
+            .Select(x => x.Standard)
+            .Union(
+                context.Standards
+                    .AsNoTracking()
+                    .Where(x => x.StandardType == StandardType.Overarching));
+
+        var solutionStandards = context.SolutionStandards
+            .AsNoTracking()
+            .Where(x => x.SolutionId == solutionId);
+
+        return standards.LeftJoin(
+            solutionStandards,
+            standard => standard.Id,
+            solutionStandard => solutionStandard.StandardId,
+            (standard, solutionStandard) => new StandardComplianceModel(
+                standard,
+                solutionStandard != null ? solutionStandard.Status : StandardCompliance.NotYetSelected));
     }
 }
