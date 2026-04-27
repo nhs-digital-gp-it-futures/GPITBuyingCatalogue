@@ -11,14 +11,9 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 {
-    public sealed class CapabilitiesService : ICapabilitiesService
+    public sealed class CapabilitiesService(BuyingCatalogueDbContext dbContext) : ICapabilitiesService
     {
-        private readonly BuyingCatalogueDbContext dbContext;
-
-        public CapabilitiesService(BuyingCatalogueDbContext dbContext)
-        {
-            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        }
+        private readonly BuyingCatalogueDbContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
         public Task<List<Capability>> GetCapabilities() => dbContext.Capabilities
             .AsNoTracking()
@@ -63,8 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
         public async Task AddCapabilitiesToCatalogueItem(CatalogueItemId catalogueItemId, SaveCatalogueItemCapabilitiesModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var catalogueItemCapabilities = await dbContext.CatalogueItemCapabilities.Where(c => c.CatalogueItemId == catalogueItemId).ToListAsync();
             var catalogueItemEpics = await dbContext.CatalogueItemEpics.Where(e => e.CatalogueItemId == catalogueItemId).ToListAsync();
@@ -128,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
         private void RemoveStaleCapabilities(List<CatalogueItemCapability> existingCapabilities, SaveCatalogueItemCapabilitiesModel model)
         {
-            var staleCapabilities = existingCapabilities.Where(capability => !model.Capabilities.Any(newCapability => newCapability.Key == capability.CapabilityId));
+            var staleCapabilities = existingCapabilities.Where(capability => model.Capabilities.All(newCapability => newCapability.Key != capability.CapabilityId));
             dbContext.CatalogueItemCapabilities.RemoveRange(staleCapabilities);
         }
 
@@ -137,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             var staleEpics = existingEpics
                 .Where(epic => !selectedCapabilitiesAndEpics.GetValueOrDefault(epic.CapabilityId, Array.Empty<string>()).Contains(epic.EpicId)).ToList();
 
-            if (staleEpics.Any())
+            if (staleEpics.Count != 0)
                 dbContext.CatalogueItemEpics.RemoveRange(staleEpics);
         }
     }

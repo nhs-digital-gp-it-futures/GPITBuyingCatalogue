@@ -2017,6 +2017,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 .GetUserId()
                 .Returns(userId);
 
+            context.RemoveRange(context.Suppliers);
             context.Orders.AddRange(orders);
             context.SaveChanges();
 
