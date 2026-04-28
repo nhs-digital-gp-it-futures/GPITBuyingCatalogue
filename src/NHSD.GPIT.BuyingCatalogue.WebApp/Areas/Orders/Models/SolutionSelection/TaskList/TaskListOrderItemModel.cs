@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     return FromPreviousRevision && HasNewRecipients ? TaskProgress.Amended : TaskProgress.Completed;
                 }
 
-                return RolledUpOrderRecipients.SomeButNotAllNewQuantitiesEntered(rolledUpOrderItem)
+                return RolledUpOrderRecipients.SomeNewQuantitiesEntered(rolledUpOrderItem)
                     ? TaskProgress.InProgress
                     : TaskProgress.NotStarted;
             }

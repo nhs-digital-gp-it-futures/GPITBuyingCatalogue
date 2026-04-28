@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         [MockAutoData]
         public static void SomeButNotAllQuantitiesEntered_Returns_False_When_Recipient_Null(OrderItem orderItem)
         {
-            OrderRecipientCollection.CollectionExtensions.SomeButNotAllNewQuantitiesEntered(null, orderItem)
+            OrderRecipientCollection.CollectionExtensions.SomeNewQuantitiesEntered(null, orderItem)
                 .Should().BeFalse();
         }
 
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             OrderItem orderItem)
         {
             orderItem.OrderItemPrice = null;
-            OrderRecipientCollection.CollectionExtensions.SomeButNotAllNewQuantitiesEntered(recipients, orderItem)
+            OrderRecipientCollection.CollectionExtensions.SomeNewQuantitiesEntered(recipients, orderItem)
                 .Should().BeFalse();
         }
     }

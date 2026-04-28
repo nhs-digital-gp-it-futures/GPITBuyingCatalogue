@@ -37,7 +37,7 @@ public static class CollectionExtensions
         return recipients.All(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue);
     }
 
-    public static bool SomeButNotAllNewQuantitiesEntered(
+    public static bool SomeNewQuantitiesEntered(
         this ICollection<OrderSublocationRecipient> recipients,
         OrderItem orderItem)
     {

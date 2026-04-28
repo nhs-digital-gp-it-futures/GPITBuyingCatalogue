@@ -36,11 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                     x => x.RecipientOdsCode,
                     x => x);
 
-            this.previousRecipients = previous is not null
-                ? (previousRecipients?.ForCatalogueItem(previous.CatalogueItemId) ?? []).ToDictionary(
+            this.previousRecipients = (previousRecipients?.ForCatalogueItem(orderItem.CatalogueItemId) ?? []).ToDictionary(
                     x => x.RecipientOdsCode,
-                    x => x)
-                : [];
+                    x => x);
         }
 
         public CallOffId CallOffId { get; init; }
