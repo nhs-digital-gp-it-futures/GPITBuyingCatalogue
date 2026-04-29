@@ -32,6 +32,8 @@ public class CompetitionOrderService : ICompetitionOrderService
             .ThenInclude(x => x.Supplier)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Price)
+            .ThenInclude(x => x.Tiers)
             .Include(x => x.CompetitionSublocations)
             .ThenInclude(y => y.SublocationRecipients)
             .ThenInclude(z => z.RecipientOrganisation)
