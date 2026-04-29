@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Azure.Core;
@@ -15,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 
 namespace BuyingCatalogueFunction;
 
+[ExcludeFromCodeCoverage(Justification = "Bootstraps IHost.")]
 public static class Program
 {
     public static async Task Main(string[] args)
