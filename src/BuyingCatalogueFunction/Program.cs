@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Azure.Storage.Queues;
+using Azure.Core;
+using Azure.Identity;
 using BuyingCatalogueFunction.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 
 namespace BuyingCatalogueFunction;
 
+[ExcludeFromCodeCoverage(Justification = "Bootstraps IHost.")]
 public static class Program
 {
     public static async Task Main(string[] args)
@@ -27,7 +31,29 @@ public static class Program
                 services.AddApplicationInsightsTelemetryWorkerService();
                 services.ConfigureFunctionsApplicationInsights();
 
-                services.AddScoped<QueueServiceClient>(_ => new(configuration.GetValue<string>("AzureWebJobsStorage")));
+                var accountName = configuration.GetValue<string>("AzureWebJobsStorage:AccountName");
+                var clientId = configuration.GetValue<string>("AzureWebJobsStorage:ClientId");
+
+                services.AddAzureClients(builder =>
+                {
+                    if (!string.IsNullOrEmpty(accountName) && !string.IsNullOrEmpty(clientId))
+                    {
+                        TokenCredential credential =
+                            new ManagedIdentityCredential(ManagedIdentityId.FromUserAssignedClientId(clientId));
+
+                        builder.UseCredential(credential);
+
+                        builder.AddQueueServiceClient(
+                                new Uri($"https://{accountName}.queue.core.windows.net"))
+                            .WithCredential(credential);
+                    }
+                    else
+                    {
+                        builder.AddQueueServiceClient(configuration.GetValue<string>("AzureWebJobsStorage"));
+                    }
+                });
+
+
                 services.AddDbContext<BuyingCatalogueDbContext>((_, options) =>
                 {
                     options.UseSqlServer(configuration.GetValue<string>("BUYINGCATALOGUECONNECTIONSTRING"));

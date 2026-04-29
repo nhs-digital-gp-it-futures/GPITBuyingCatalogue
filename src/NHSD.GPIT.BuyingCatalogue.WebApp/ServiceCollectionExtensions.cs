@@ -382,13 +382,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             public void ConfigureStorage(AzureBlobSettings settings)
             {
-                if (!string.IsNullOrEmpty(settings.AccountName) && !string.IsNullOrEmpty(settings.ClientId))
+                services.AddAzureClients(builder =>
                 {
-                    services.AddAzureClients(builder =>
+                    if (!string.IsNullOrEmpty(settings.AccountName) && !string.IsNullOrEmpty(settings.ClientId))
                     {
                         TokenCredential credential = new ManagedIdentityCredential(
-                            settings.ClientId,
-                            new TokenCredentialOptions());
+                            ManagedIdentityId.FromUserAssignedClientId(
+                                settings.ClientId));
 
                         builder.UseCredential(credential);
 
@@ -399,16 +399,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                         builder.AddBlobServiceClient(
                                 new Uri($"https://{settings.AccountName}.blob.core.windows.net"))
                             .WithCredential(credential);
-                    });
-                }
-                else
-                {
-                    services.AddAzureClients(builder =>
+                    }
+                    else
                     {
                         builder.AddQueueServiceClient(settings.ConnectionString);
                         builder.AddBlobServiceClient(settings.ConnectionString);
-                    });
-                }
+                    }
+                });
             }
 
             public IServiceCollection ConfigureRecaptcha(IConfiguration configuration)
