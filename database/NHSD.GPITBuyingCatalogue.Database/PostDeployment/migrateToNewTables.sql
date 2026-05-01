@@ -11,14 +11,10 @@ BEGIN TRY
         SELECT
           o.OrderId,
           o.CatalogueItemId,
-          o.PriceId,
-          o.Price,
           o.EstimationPeriodId,
-          o.DefaultDeliveryDate,
           o.Created,
           o.LastUpdated,
-          o.LastUpdatedBy,
-          o.Quantity
+          o.LastUpdatedBy
         FROM ordering.OrderItems o
     ) AS SOURCE
       ON TARGET.OrderId = SOURCE.OrderId
@@ -27,26 +23,18 @@ BEGIN TRY
       INSERT (
         OrderId,
         CatalogueItemId,
-        PriceId,
-        Price,
         EstimationPeriodId,
-        DefaultDeliveryDate,
         Created,
         LastUpdated,
-        LastUpdatedBy,
-        Quantity
+        LastUpdatedBy
       )
       VALUES (
         SOURCE.OrderId,
         SOURCE.CatalogueItemId,
-        SOURCE.PriceId,
-        SOURCE.Price,
         SOURCE.EstimationPeriodId,
-        SOURCE.DefaultDeliveryDate,
         SOURCE.Created,
         SOURCE.LastUpdated,
-        SOURCE.LastUpdatedBy,
-        SOURCE.Quantity
+        SOURCE.LastUpdatedBy
       );
 
     SET @RowsInserted = @@ROWCOUNT;
