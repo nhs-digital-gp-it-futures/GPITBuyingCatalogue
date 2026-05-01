@@ -200,34 +200,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         CallOffId = or.Order.CallOffId,
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
-                        SubIcbCode = oir.OrderItem.Quantity.HasValue
-                            ? string.Empty
-                            : or.ParentSublocation.SublocationOdsCode,
-                        SubIcbName = oir.OrderItem.Quantity.HasValue
-                            ? string.Empty
-                            : or.ParentSublocation.SublocationOrganisation.Name,
+                        SubIcbCode = or.ParentSublocation.SublocationOdsCode,
+                        SubIcbName = or.ParentSublocation.SublocationOrganisation.Name,
                         CommencementDate = or.Order.CommencementDate,
-                        ServiceRecipientId =
-                            oir.OrderItem.Quantity.HasValue
-                                ? or.Order.OrderingParty.ExternalIdentifier
-                                : or.RecipientOdsCode,
-                        ServiceRecipientName =
-                            oir.OrderItem.Quantity.HasValue
-                                ? or.Order.OrderingParty.Name
-                                : or.RecipientOdsOrganisation.Name,
+                        ServiceRecipientId = or.RecipientOdsCode,
+                        ServiceRecipientName = or.RecipientOdsOrganisation.Name,
                         SupplierId = $"{supplierId}",
                         SupplierName = supplierName,
                         ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                         ProductName = oir.OrderItem.CatalogueItem.Name,
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                         ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
-                        QuantityOrdered =
-                            or.OrderItemSublocationRecipients.FirstOrDefault(x =>
-                                x.OrderItemId == oir.OrderItemId) == null
-                                ? oir.OrderItem.Quantity ?? 0
-                                : or.OrderItemSublocationRecipients
+                        QuantityOrdered = or.OrderItemSublocationRecipients
                                     .FirstOrDefault(x => x.OrderItemId == oir.OrderItemId)
-                                    .Quantity ?? oir.OrderItem.Quantity ?? 0,
+                                    .Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
@@ -310,13 +296,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         ProductName = oir.OrderItem.CatalogueItem.Name,
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                         ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
-                        QuantityOrdered =
-                            or.OrderItemSublocationRecipients.FirstOrDefault(x =>
-                                x.OrderItemId == oir.OrderItemId) == null
-                                ? oir.OrderItem.Quantity ?? 0
-                                : or.OrderItemSublocationRecipients
+                        QuantityOrdered = or.OrderItemSublocationRecipients
                                     .FirstOrDefault(x => x.OrderItemId == oir.OrderItemId)
-                                    .Quantity ?? oir.OrderItem.Quantity ?? 0,
+                                    .Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
@@ -393,13 +375,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         ProductName = oir.OrderItem.CatalogueItem.Name,
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                         ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
-                        QuantityOrdered =
-                            or.OrderItemSublocationRecipients.FirstOrDefault(x =>
-                                x.OrderItemId == oir.OrderItemId) == null
-                                ? oir.OrderItem.Quantity ?? 0
-                                : or.OrderItemSublocationRecipients
+                        QuantityOrdered = or.OrderItemSublocationRecipients
                                     .FirstOrDefault(x => x.OrderItemId == oir.OrderItemId)
-                                    .Quantity ?? oir.OrderItem.Quantity ?? 0,
+                                    .Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),

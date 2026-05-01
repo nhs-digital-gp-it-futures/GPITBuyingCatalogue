@@ -43,7 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.OrderItems = new List<OrderItem> { orderItem };
             order.OrderItems.ForEach(x =>
             {
-                x.Quantity = 1;
                 order.FlattenedRecipients.ForEach(r => r.SetQuantityForItem(x, 1));
             });
             context.Orders.Add(order);
@@ -61,7 +60,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var actual = dbOrder.OrderItems.FirstOrDefault(x => x.CatalogueItemId == orderItem.CatalogueItemId);
 
             actual.Should().NotBeNull();
-            actual!.Quantity.Should().BeNull();
             dbOrder.FlattenedRecipients.ForEach(r => r.GetQuantityForItem(actual.CatalogueItemId).Should().BeNull());
         }
 
@@ -75,7 +73,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.OrderItems.First().Quantity = 1;
 
             context.Orders.Add(order);
             await context.SaveChangesAsync();
@@ -87,15 +84,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 .First(x => x.OrderId == order.Id
                     && x.CatalogueItemId == solutionId);
 
-            expected.Quantity.Should().Be(1);
-
             await service.SetOrderItemQuantity(order.Id, solutionId, quantity);
 
             var actual = context.OrderItems
                 .First(x => x.OrderId == order.Id
                     && x.CatalogueItemId == solutionId);
-
-            actual.Quantity.Should().Be(quantity);
         }
 
         [Theory]

@@ -2080,6 +2080,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             FundingType fundingType,
             Order order,
             OrderItem orderItem,
+            OrderSublocation sublocation,
+            OrderSublocationRecipient sublocationRecipient,
+            OrderItemSublocationRecipient orderItemSublocationRecipient,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
@@ -2087,6 +2090,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.OnDemand;
             orderItem.OrderItemFunding = null;
             order.OrderItems = new List<OrderItem>() { orderItem };
+
+            orderItemSublocationRecipient.OrderItem = orderItem;
+            sublocationRecipient.OrderItemSublocationRecipients =
+                new List<OrderItemSublocationRecipient>() { orderItemSublocationRecipient };
+            sublocation.SublocationRecipients = new List<OrderSublocationRecipient>() { sublocationRecipient };
+            order.OrderSublocations = new List<OrderSublocation>() { sublocation };
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
@@ -2107,6 +2116,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Order order,
             Organisation organisation,
             OrderItem orderItem,
+            OrderSublocation sublocation,
+            OrderSublocationRecipient sublocationRecipient,
+            OrderItemSublocationRecipient orderItemSublocationRecipient,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
@@ -2115,6 +2127,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.OnDemand;
             orderItem.OrderItemFunding = null;
             order.OrderItems = new List<OrderItem>() { orderItem };
+
+            orderItemSublocationRecipient.OrderItem = orderItem;
+            sublocationRecipient.OrderItemSublocationRecipients =
+                new List<OrderItemSublocationRecipient>() { orderItemSublocationRecipient };
+            sublocation.SublocationRecipients = new List<OrderSublocationRecipient>() { sublocationRecipient };
+            order.OrderSublocations = new List<OrderSublocation>() { sublocation };
+
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();

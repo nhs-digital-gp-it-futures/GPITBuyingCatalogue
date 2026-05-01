@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions;
@@ -128,7 +125,7 @@ public class CompetitionOrderService : ICompetitionOrderService
         var solutionOrderItem = new OrderItem(directAwardSolution.CatalogueItemId) { Created = DateTime.UtcNow };
 
         var services = directAwardSolution.Services
-            .Select(x => CreateOrderItem(x.CatalogueItemId, x.Quantity, x.Price, x.Price.Tiers, solutionOrderItem))
+            .Select(x => CreateOrderItem(x.CatalogueItemId, x.Price, x.Price.Tiers, solutionOrderItem))
             .ToList();
         var orderItems = new List<OrderItem>() { solutionOrderItem };
 
@@ -141,12 +138,11 @@ public class CompetitionOrderService : ICompetitionOrderService
     {
         var winningSolutionOrderItem = CreateOrderItem(
             winningSolution.CatalogueItemId,
-            winningSolution.Quantity,
             winningSolution.Price,
             winningSolution.Price.Tiers,
             null);
         var services = winningSolution.Services
-            .Select(x => CreateOrderItem(x.CatalogueItemId, x.Quantity, x.Price, x.Price.Tiers, winningSolutionOrderItem))
+            .Select(x => CreateOrderItem(x.CatalogueItemId, x.Price, x.Price.Tiers, winningSolutionOrderItem))
             .ToList();
 
         var orderItems = new List<OrderItem>() { winningSolutionOrderItem };
@@ -157,14 +153,12 @@ public class CompetitionOrderService : ICompetitionOrderService
 
     private static OrderItem CreateOrderItem(
         CatalogueItemId catalogueItemId,
-        int? globalQuantity,
         IPrice price,
         IEnumerable<IOrderablePriceTier> priceTiers,
         OrderItem parent)
         => new(catalogueItemId)
         {
             Created = DateTime.UtcNow,
-            Quantity = globalQuantity,
             OrderItemPrice = new OrderItemPrice(price)
             {
                 OrderItemPriceTiers = priceTiers.Select(

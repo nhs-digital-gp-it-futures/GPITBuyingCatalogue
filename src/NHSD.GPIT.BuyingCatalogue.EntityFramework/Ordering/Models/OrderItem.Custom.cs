@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             if (OrderItemPrice == null)
                 return 0;
 
-            return Quantity ?? recipients?.Sum(r => r.GetQuantityForItem(CatalogueItemId) ?? 0) ?? 0;
+            return recipients?.Sum(r => r.GetQuantityForItem(CatalogueItemId) ?? 0) ?? 0;
         }
 
         public bool IsReadyForReview(bool isAmendment, ICollection<OrderSublocationRecipient> recipients)

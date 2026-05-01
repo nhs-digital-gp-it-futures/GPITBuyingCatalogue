@@ -672,7 +672,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             OrderSublocation workingSublocation = order.OrderSublocations.First();
 
             workingSublocation.Order = order;
-            orderItem.Quantity = null;
 
             order.OrderItems = new HashSet<OrderItem> { orderItem };
 
@@ -854,7 +853,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
 
             var orderItem = fixture.Build<OrderItem>()
                 .Without(i => i.Order)
-                .Without(i => i.Quantity)
                 .With(i => i.CatalogueItem, catalogueItem)
                 .With(i => i.CatalogueItemId, catalogueItem.Id)
                 .With(i => i.OrderItemPrice, itemPrice)

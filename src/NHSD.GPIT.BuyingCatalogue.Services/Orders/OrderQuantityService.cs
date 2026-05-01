@@ -34,8 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 return;
             }
 
-            orderItem.Quantity = null;
-
             IEnumerable<OrderItemSublocationRecipient> toDelete =
                 orderItemSublocationRecipients.Where(i => i.OrderItemId == orderItem.Id);
             dbContext.OrderItemSublocationRecipients.RemoveRange(toDelete);
@@ -53,8 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             {
                 return;
             }
-
-            orderItem.Quantity = quantity;
 
             dbContext.OrderItems.Update(orderItem);
 

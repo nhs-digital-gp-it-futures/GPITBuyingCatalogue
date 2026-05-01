@@ -114,7 +114,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x =>
             {
-                x.Quantity = 1;
                 order.FlattenedRecipients.ForEach(r => r.SetQuantityForItem(x, 1));
                 order.FlattenedRecipients.ForEach(r =>
                     r.OrderItemSublocationRecipients.Where(i => i.OrderItem.CatalogueItemId == x.CatalogueItemId)
@@ -151,7 +150,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x =>
             {
-                x.Quantity = 0;
                 order.FlattenedRecipients.ForEach(r => r.SetQuantityForItem(x, 0));
                 x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             });

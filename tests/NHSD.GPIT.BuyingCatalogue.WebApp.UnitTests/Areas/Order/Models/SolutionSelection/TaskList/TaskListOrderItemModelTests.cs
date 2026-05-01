@@ -85,7 +85,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             OrderSublocationRecipient[] recipients)
         {
-            orderItem.Quantity = null;
             recipients.ForEach(x => x.OrderItemSublocationRecipients.Clear());
 
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
@@ -111,7 +110,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = cataloguePriceQuantityCalculationType.Value;
             }
 
-            orderItem.Quantity = 1;
             recipients.ForEach(x => x.OrderItemSublocationRecipients.Clear());
 
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
@@ -137,7 +135,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = cataloguePriceQuantityCalculationType.Value;
             }
 
-            orderItem.Quantity = null;
             recipients.ForEach(x => x.SetQuantityForItem(orderItem, 1));
 
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, null, orderItem);
@@ -166,7 +163,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = cataloguePriceQuantityCalculationType.Value;
             }
 
-            orderItem.Quantity = null;
             recipients.ForEach(x => x.SetQuantityForItem(orderItem, 1));
 
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem)
@@ -196,7 +192,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = cataloguePriceQuantityCalculationType.Value;
             }
 
-            orderItem.Quantity = null;
             recipients.ForEach(x => x.OrderItemSublocationRecipients.Clear());
             recipients.First().SetQuantityForItem(orderItem, 1);
 
@@ -213,8 +208,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderSublocationRecipient[] recipients)
         {
             var callOffId = new CallOffId(1, 2);
-
-            orderItem.Quantity = null;
 
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem)
             {
