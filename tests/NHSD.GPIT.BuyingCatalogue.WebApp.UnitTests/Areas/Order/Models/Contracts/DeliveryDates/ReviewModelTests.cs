@@ -60,7 +60,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             order.OrderItems.Clear();
 
             orderItemSublocationRecipient.DeliveryDate = date;
-            orderItemSublocationRecipient.CatalogueItemId = solution.CatalogueItemId;
+            orderItemSublocationRecipient.OrderItem = solution;
+            orderItemSublocationRecipient.OrderItemId = solution.Id;
 
             recipient.OrderItemSublocationRecipients.Add(orderItemSublocationRecipient);
             sublocation.SublocationRecipients.Add(recipient);

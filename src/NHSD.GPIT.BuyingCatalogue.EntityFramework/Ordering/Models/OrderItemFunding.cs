@@ -6,9 +6,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
     [Serializable]
     public sealed class OrderItemFunding : IAudited, ICloneable<OrderItemFunding>
     {
-        public int OrderId { get; set; }
+        public int Id { get; set; }
 
-        public CatalogueItemId CatalogueItemId { get; set; }
+        public int OrderItemId { get; set; }
 
         public OrderItemFundingType OrderItemFundingType { get; set; }
 
@@ -21,6 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public OrderItem OrderItem { get; set; }
 
         public OrderItemFunding Clone() =>
-            new() { CatalogueItemId = CatalogueItemId, OrderItemFundingType = OrderItemFundingType };
+            new() { OrderItemId = OrderItemId, OrderItemFundingType = OrderItemFundingType };
     }
 }

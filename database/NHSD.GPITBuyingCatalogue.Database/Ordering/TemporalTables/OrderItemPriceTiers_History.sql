@@ -1,8 +1,9 @@
 ﻿CREATE TABLE [ordering].[OrderItemPriceTiers_History]
 (
     Id INT NOT NULL,
-    OrderId INT NOT NULL,
-    CatalogueItemId NVARCHAR(14) NOT NULL,
+    OrderItemPriceId INT NULL,
+    OrderId INT NULL,
+    CatalogueItemId NVARCHAR(14) NULL,
     Price DECIMAL(18,4) NOT NULL,
     LowerRange INT NOT NULL,
     UpperRange INT NULL,

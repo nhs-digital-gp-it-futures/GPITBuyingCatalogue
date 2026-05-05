@@ -19,14 +19,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public OrderItemPrice(OrderItem item, CataloguePrice cataloguePrice)
             : this(cataloguePrice)
         {
-            OrderId = item.OrderId;
+            OrderItemId = item.Id;
             OrderItem = item;
         }
 
         public OrderItemPrice(CataloguePrice cataloguePrice)
             : this()
         {
-            CatalogueItemId = cataloguePrice.CatalogueItemId;
             CataloguePriceId = cataloguePrice.CataloguePriceId;
             ProvisioningType = cataloguePrice.ProvisioningType;
             CataloguePriceType = cataloguePrice.CataloguePriceType;
@@ -59,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         private OrderItemPrice(OrderItemPrice existingPrice)
             : this()
         {
-            CatalogueItemId = existingPrice.CatalogueItemId;
+            OrderItemId = existingPrice.OrderItemId;
             CataloguePriceId = existingPrice.CataloguePriceId;
             ProvisioningType = existingPrice.ProvisioningType;
             CataloguePriceType = existingPrice.CataloguePriceType;
@@ -78,9 +77,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public ICollection<IPriceTier> PriceTiers => OrderItemPriceTiers.Cast<IPriceTier>().ToList();
 
-        public int OrderId { get; set; }
+        public int Id { get; set; }
 
-        public CatalogueItemId CatalogueItemId { get; set; }
+        public int OrderItemId { get; set; }
 
         public int CataloguePriceId { get; set; }
 

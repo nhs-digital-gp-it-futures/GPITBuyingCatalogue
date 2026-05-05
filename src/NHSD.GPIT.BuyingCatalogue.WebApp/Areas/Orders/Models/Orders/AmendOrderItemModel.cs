@@ -36,13 +36,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                     x => x.RecipientOdsCode,
                     x => x);
 
-            this.previousRecipients =
-                (previousRecipients?.ForCatalogueItem(orderItem.CatalogueItemId) ?? []).ToDictionary(
+            this.previousRecipients = (previousRecipients?.ForCatalogueItem(orderItem.CatalogueItemId) ?? []).ToDictionary(
                     x => x.RecipientOdsCode,
                     x => x);
         }
 
-        public CallOffId CallOffId { get; }
+        public CallOffId CallOffId { get; init; }
 
         public OrderWrapper OrderWrapper { get; init; }
 
@@ -85,9 +84,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public string PracticeReorganisationName { get; set; }
 
-        private OrderItem OrderItem { get; }
+        public OrderItem OrderItem { get; }
 
-        private OrderItem Previous { get; }
+        public OrderItem Previous { get; }
 
         private FundingTypeDescriptionModel FundingTypeDescriptionModel { get; }
 

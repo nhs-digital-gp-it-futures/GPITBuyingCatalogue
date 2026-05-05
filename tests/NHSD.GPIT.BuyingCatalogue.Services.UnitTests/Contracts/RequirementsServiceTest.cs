@@ -157,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             var output = actual.ContractBilling.Requirements.First();
 
             output.Details.Should().Be(details);
-            output.CatalogueItemId.Should().Be(catalogueItemId);
+            output.OrderItem.CatalogueItemId.Should().Be(catalogueItemId);
             output.RequiresExplanation.Should().Be(requiresExplanation);
         }
 
@@ -187,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             orderItem.Order = order;
             dbContext.OrderItems.Add(orderItem);
 
-            requirement.OrderId = order.Id;
+            requirement.OrderItemId = orderItem.Id;
             requirement.OrderItem = orderItem;
 
             dbContext.Requirements.Add(requirement);
@@ -198,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             var output = await service.GetRequirement(order.Id, requirement.Id);
 
             output.Id.Should().Be(requirement.Id);
-            output.CatalogueItemId.Should().Be(requirement.CatalogueItemId);
+            output.OrderItem.CatalogueItemId.Should().Be(requirement.OrderItem.CatalogueItemId);
             output.Details.Should().Be(requirement.Details);
             output.RequiresExplanation.Should().Be(requirement.RequiresExplanation);
         }
@@ -250,16 +250,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             context.OrderItems.Add(orderItem);
 
-            item.OrderId = order.Id;
             item.OrderItem = orderItem;
+            item.OrderItemId = orderItem.Id;
 
             context.Requirements.Add(item);
 
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var before = await context.Requirements.FirstAsync(f => f.Id == item.Id);
-            before.CatalogueItemId.Should().Be(item.CatalogueItemId);
+            var before = await context.Requirements
+                .Include(requirement => requirement.OrderItem)
+                .FirstAsync(f => f.Id == item.Id);
+            before.OrderItem.CatalogueItemId.Should().Be(item.OrderItem.CatalogueItemId);
             before.Details.Should().Be(item.Details);
 
             await service.EditRequirement(
@@ -269,8 +271,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                 details,
                 requiresExplanation);
 
-            var after = await context.Requirements.FirstAsync(f => f.Id == item.Id);
-            after.CatalogueItemId.Should().Be(catalogueItemId);
+            var after = await context.Requirements
+                .Include(requirement => requirement.OrderItem)
+                .FirstAsync(f => f.Id == item.Id);
+            after.OrderItem.CatalogueItemId.Should().Be(catalogueItemId);
             after.Details.Should().Be(details);
             after.RequiresExplanation.Should().Be(requiresExplanation);
         }
@@ -289,7 +293,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             orderItem.Order = order;
             context.OrderItems.Add(orderItem);
 
-            item.OrderId = order.Id;
+            item.OrderItemId = orderItem.Id;
             item.OrderItem = orderItem;
 
             context.Requirements.Add(item);
@@ -328,23 +332,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             orderItem.CatalogueItemId = catalogueItemId;
             context.OrderItems.Add(orderItem);
 
-            item.OrderId = order.Id;
+            item.OrderItemId = orderItem.Id;
             item.OrderItem = orderItem;
-            item.CatalogueItemId = catalogueItemId;
+            item.OrderItem.CatalogueItemId = catalogueItemId;
 
             context.Requirements.Add(item);
 
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var before = await context.Requirements.FirstOrDefaultAsync(f => f.CatalogueItemId == catalogueItemId);
+            var before = await context.Requirements.FirstOrDefaultAsync(f => f.OrderItem.CatalogueItemId == catalogueItemId);
             before.Should().NotBeNull();
 
             await service.DeleteRequirements(
                 order.Id,
                 new List<CatalogueItemId>() { catalogueItemId, });
 
-            var actual = await context.Requirements.FirstOrDefaultAsync(f => f.CatalogueItemId == catalogueItemId);
+            var actual = await context.Requirements.FirstOrDefaultAsync(f => f.OrderItem.CatalogueItemId == catalogueItemId);
             actual.Should().BeNull();
         }
     }
