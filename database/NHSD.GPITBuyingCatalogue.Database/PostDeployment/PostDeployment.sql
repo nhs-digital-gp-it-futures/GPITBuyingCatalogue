@@ -83,4 +83,4 @@
 -----------------------------------------------------------------
 
 -- Migrate OrderItems, OrderItemFunding, OrderItemPrices, OrderItemSublocationRecipients To V2 Tables
-:r ./MigrateToNewTables.sql
+:r ./migrateToNewTables.sql
