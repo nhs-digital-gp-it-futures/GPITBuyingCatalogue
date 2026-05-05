@@ -65,34 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static async Task SetOrderItemQuantity_OrderItemInDatabase_UpdatesQuantity(
-            [Frozen] BuyingCatalogueDbContext context,
-            Order order,
-            int quantity,
-            OrderQuantityService service)
-        {
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-
-            context.Orders.Add(order);
-            await context.SaveChangesAsync();
-            context.ChangeTracker.Clear();
-
-            var solutionId = order.OrderItems.First().CatalogueItemId;
-
-            var expected = context.OrderItems
-                .First(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == solutionId);
-
-            await service.SetOrderItemQuantity(order.Id, solutionId, quantity);
-
-            var actual = context.OrderItems
-                .First(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == solutionId);
-        }
-
-        [Theory]
-        [MockInMemoryDbAutoData]
         public static void SetServiceRecipientQuantities_QuantitiesIsNull_ThrowsException(
             int orderId,
             CatalogueItemId catalogueItemId,
