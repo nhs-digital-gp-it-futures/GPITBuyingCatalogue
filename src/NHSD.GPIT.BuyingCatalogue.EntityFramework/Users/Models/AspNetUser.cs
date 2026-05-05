@@ -60,8 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 
         public ICollection<AspNetUserLoginEvent> LoginEvents { get; set; }
 
-        [NotMapped]
-        public ICollection<DateTime> Logins => LoginEvents.Select(le => le.Date).ToList();
+        public ICollection<DateTime> GetLogins() => LoginEvents.Select(le => le.Date).ToList();
 
         public bool HasAcceptedLatestTermsOfUse(DateTime revisionDate)
             => AcceptedTermsOfUseDate.GetValueOrDefault() >= revisionDate;
