@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
             AspNetUserRoles = new HashSet<AspNetUserRole>();
             AspNetUserTokens = new HashSet<AspNetUserToken>();
             Events = new HashSet<AspNetUserEvent>();
+            LoginEvents = new HashSet<AspNetUserLoginEvent>();
         }
 
         public int PrimaryOrganisationId { get; set; }
@@ -55,6 +57,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
         public ICollection<AspNetUserToken> AspNetUserTokens { get; set; }
 
         public ICollection<AspNetUserEvent> Events { get; set; }
+
+        public ICollection<AspNetUserLoginEvent> LoginEvents { get; set; }
+
+        [NotMapped]
+        public ICollection<DateTime> Logins => LoginEvents.Select(le => le.Date).ToList();
 
         public bool HasAcceptedLatestTermsOfUse(DateTime revisionDate)
             => AcceptedTermsOfUseDate.GetValueOrDefault() >= revisionDate;
