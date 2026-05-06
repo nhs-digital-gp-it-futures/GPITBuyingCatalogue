@@ -1,0 +1,22 @@
+CREATE TABLE ordering.OrderItemsV2
+(
+    Id INT IDENTITY(1, 1) NOT NULL,
+    OrderId INT NOT NULL,
+    CatalogueItemId NVARCHAR(14) NOT NULL,
+    ParentId INT NULL,
+    EstimationPeriodId INT NULL,
+    Created DATETIME2 CONSTRAINT DF_OrderItemV2_Created DEFAULT GETUTCDATE() NOT NULL,
+    LastUpdated DATETIME2 CONSTRAINT DF_OrderItemV2_LastUpdated DEFAULT GETUTCDATE() NOT NULL,
+    LastUpdatedBy INT NULL, 
+    SysStartTime DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
+    SysEndTime DATETIME2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+    PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
+    CONSTRAINT PK_OrderItemsV2 PRIMARY KEY (Id),
+    CONSTRAINT FK_OrderItemsV2_Order FOREIGN KEY (OrderId) REFERENCES ordering.Orders (Id) ON DELETE CASCADE,
+    CONSTRAINT FK_OrderItemsV2_CatalogueItem FOREIGN KEY (CatalogueItemId) REFERENCES catalogue.CatalogueItems (Id),
+    CONSTRAINT FK_OrderItemsV2_Parent FOREIGN KEY (ParentId) REFERENCES ordering.OrderItemsV2 (Id) ON DELETE NO ACTION,
+    CONSTRAINT FK_OrderItemsV2_EstimationPeriod FOREIGN KEY (EstimationPeriodId) REFERENCES catalogue.TimeUnits (Id),
+    CONSTRAINT FK_OrderItemsV2_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers (Id),
+    CONSTRAINT UQ_OrderItemsV2_OrderId_CatalogueItemId_ParentId UNIQUE (OrderId, CatalogueItemId, ParentId),
+    CONSTRAINT OrderItemV2_LastUpdatedNotBeforeCreated CHECK (LastUpdated >= Created),
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.OrderItemsV2_History));

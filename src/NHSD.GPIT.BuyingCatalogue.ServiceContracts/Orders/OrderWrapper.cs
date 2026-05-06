@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                         || !Previous.Exists(i.CatalogueItemId)
                         || Previous.FlattenedRecipients.All(x => x.RecipientOdsCode != recipientOdsCode))
                     {
-                        newRecipient.SetDeliveryDateForItem(i.CatalogueItemId, Order.DeliveryDate.Value);
+                        newRecipient.SetDeliveryDateForItem(i, Order.DeliveryDate.Value);
                     }
                 });
             }
@@ -156,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             {
                 Order.OrderItems.ToList().ForEach(i =>
                 {
-                    newRecipient.SetQuantityForItem(i.CatalogueItemId, 1);
+                    newRecipient.SetQuantityForItem(i, 1);
                 });
             }
 

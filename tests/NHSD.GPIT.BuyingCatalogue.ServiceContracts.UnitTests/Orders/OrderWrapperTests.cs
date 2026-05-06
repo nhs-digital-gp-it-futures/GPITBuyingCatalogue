@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                     BuildOrderSublocation(
                         fixture,
                         "XXXX",
-                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem.CatalogueItemId])]),
+                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem])]),
                 ],
                 organisation);
 
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                     BuildOrderSublocation(
                         fixture,
                         "XXXX",
-                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem.CatalogueItemId])]),
+                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem])]),
                 ],
                 organisation);
             var amendedOrder = order.BuildAmendment(2);
@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                     BuildOrderSublocation(
                         fixture,
                         "XXXX",
-                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem.CatalogueItemId])]),
+                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem])]),
                 ],
                 organisation);
             var amendedOrder = order.BuildAmendment(2);
@@ -163,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                     BuildOrderSublocation(
                         fixture,
                         "XXXX",
-                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem.CatalogueItemId])]),
+                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem])]),
                 ],
                 organisation);
             var amendedOrder = order.BuildAmendment(2);
@@ -174,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                     fixture,
                     "XXXX",
                     [
-                        BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id]),
+                        BuildOrderSublocationRecipient(fixture, "XXXX", [amendedOrderItem]),
                     ]),
             ];
 
@@ -210,11 +210,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                     BuildOrderSublocation(
                         fixture,
                         "XXXX",
-                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem.CatalogueItemId])]),
+                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem])]),
                     BuildOrderSublocation(
                         fixture,
                         "XXXY",
-                        [BuildOrderSublocationRecipient(fixture, "XXXY", [orderItem.CatalogueItemId])]),
+                        [BuildOrderSublocationRecipient(fixture, "XXXY", [orderItem])]),
                 ],
                 organisation);
             Order amendedOrder = order.BuildAmendment(2);
@@ -225,19 +225,19 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                     fixture,
                     "XXXX",
                     [
-                        BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id]),
+                        BuildOrderSublocationRecipient(fixture, "XXXX", [amendedOrderItem]),
                     ]),
                 BuildOrderSublocation(
                     fixture,
                     "XXXY",
                     [
-                        BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id]),
+                        BuildOrderSublocationRecipient(fixture, "XXXX", [amendedOrderItem]),
                     ]),
                 BuildOrderSublocation(
                     fixture,
                     "XXXZ",
                     [
-                        BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id]),
+                        BuildOrderSublocationRecipient(fixture, "XXXX", [amendedOrderItem]),
                     ]),
             ];
 
@@ -260,17 +260,17 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
         [MockAutoData]
         public static void GetCallOffIdForPreviousRecipient_Returns_ExpectedCallOffId(
             IFixture fixture,
-            CatalogueItem catalogueItem,
-            CatalogueItem catalogueItem2,
+            OrderItem orderItem1,
+            OrderItem orderItem2,
             Organisation organisation)
         {
-            var sublocationRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id]);
-            var addedRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id, catalogueItem2.Id]);
-            var finalRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id, catalogueItem2.Id]);
-            catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            catalogueItem2.CatalogueItemType = CatalogueItemType.AdditionalService;
-            OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
-            OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem2, OrderItemFundingType.LocalFunding);
+            var sublocationRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem1]);
+            var addedRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem1, orderItem2]);
+            var finalRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem1, orderItem2]);
+            orderItem1.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            orderItem2.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            OrderItem orderItem = BuildOrderItem(fixture, orderItem1.CatalogueItem, OrderItemFundingType.LocalFunding);
+            OrderItem amendedOrderItem = BuildOrderItem(fixture, orderItem2.CatalogueItem, OrderItemFundingType.LocalFunding);
 
             Order order = BuildOrder(
                 fixture,
@@ -310,7 +310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             var callOffIdForInitialRecipient = orderWrapper.GetCallOffIdForPreviousRecipient(sublocationRecipient, order.Id);
             var callOffIdForAddedRecipient = orderWrapper.GetCallOffIdForPreviousRecipient(
                     addedRecipient,
-                    amendedOrder.OrderItems.FirstOrDefault(oi => oi.CatalogueItemId == catalogueItem2.Id)?.OrderId);
+                    amendedOrder.OrderItems.FirstOrDefault(oi => oi.CatalogueItemId == orderItem2.CatalogueItemId)?.OrderId);
 
             callOffIdForInitialRecipient.Should().Be(order.CallOffId.ToString());
             callOffIdForInitialRecipient.Should().NotBe(amendedOrder.CallOffId.ToString());
@@ -335,7 +335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
         private static OrderSublocationRecipient BuildOrderSublocationRecipient(
             IFixture fixture,
             string sublocationOdsCode,
-            CatalogueItemId[] catalogueItemIds = null,
+            OrderItem[] orderItems = null,
             int id = 0)
         {
             OrderSublocationRecipient recipient = fixture.Build<OrderSublocationRecipient>()
@@ -344,20 +344,20 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                 .With(r => r.OrderId, id)
                 .Create();
 
-            UpdateRecipientToItem(recipient, catalogueItemIds);
+            UpdateRecipientToItem(recipient, orderItems);
 
             return recipient;
         }
 
         private static void UpdateRecipientToItem(
             OrderSublocationRecipient recipient,
-            CatalogueItemId[] catalogueItemIds)
+            OrderItem[] orderItems)
         {
-            if (catalogueItemIds != null)
+            if (orderItems != null)
             {
-                foreach (var catalogueItemId in catalogueItemIds)
+                foreach (var orderItem in orderItems)
                 {
-                    recipient.SetQuantityForItem(catalogueItemId, 1);
+                    recipient.SetQuantityForItem(orderItem, 1);
                 }
             }
         }

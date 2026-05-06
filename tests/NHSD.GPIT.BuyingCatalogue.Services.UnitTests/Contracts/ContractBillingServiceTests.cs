@@ -170,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             actual.ContractBilling.ContractBillingItems.Count.Should().Be(1);
 
             var newMilestone = actual.ContractBilling.ContractBillingItems.First();
-            newMilestone.CatalogueItemId.Should().Be(catalogueItemId);
+            newMilestone.OrderItem.CatalogueItemId.Should().Be(catalogueItemId);
             newMilestone.Milestone.Title.Should().Be(name);
             newMilestone.Milestone.PaymentTrigger.Should().Be(paymentTrigger);
         }
@@ -241,8 +241,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             orderItem.Order = order;
             dbContext.OrderItems.Add(orderItem);
 
-            contractBillingItem.OrderId = order.Id;
             contractBillingItem.OrderItem = orderItem;
+            contractBillingItem.OrderItem.OrderId = order.Id;
 
             dbContext.ContractBillingItems.Add(contractBillingItem);
 
@@ -252,7 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             var output = await service.GetContractBillingItem(order.Id, contractBillingItem.Id);
 
             output.Id.Should().Be(contractBillingItem.Id);
-            output.CatalogueItemId.Should().Be(contractBillingItem.CatalogueItemId);
+            output.OrderItem.CatalogueItemId.Should().Be(contractBillingItem.OrderItem.CatalogueItemId);
             output.Milestone.Title.Should().Be(contractBillingItem.Milestone.Title);
             output.Milestone.PaymentTrigger.Should().Be(contractBillingItem.Milestone.PaymentTrigger);
         }
@@ -328,16 +328,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             context.OrderItems.Add(orderItem);
 
-            item.OrderId = order.Id;
             item.OrderItem = orderItem;
+            item.OrderItem.OrderId = order.Id;
 
             context.ContractBillingItems.Add(item);
 
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var before = await context.ContractBillingItems.Include(x => x.Milestone).FirstAsync(f => f.Id == item.Id);
-            before.CatalogueItemId.Should().Be(item.CatalogueItemId);
+            var before = await context.ContractBillingItems.Include(x => x.Milestone)
+                .Include(x => x.OrderItem)
+                .FirstAsync(f => f.Id == item.Id);
+            before.OrderItem.CatalogueItemId.Should().Be(item.OrderItem.CatalogueItemId);
             before.Milestone.Title.Should().Be(item.Milestone.Title);
             before.Milestone.PaymentTrigger.Should().Be(item.Milestone.PaymentTrigger);
 
@@ -348,8 +350,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                 name,
                 paymentTrigger);
 
-            var after = await context.ContractBillingItems.Include(x => x.Milestone).FirstAsync(f => f.Id == item.Id);
-            after.CatalogueItemId.Should().Be(catalogueItemId);
+            var after = await context.ContractBillingItems.Include(x => x.Milestone)
+                .Include(x => x.OrderItem)
+                .FirstAsync(f => f.Id == item.Id);
+            after.OrderItem.CatalogueItemId.Should().Be(catalogueItemId);
             after.Milestone.Title.Should().Be(name);
             after.Milestone.PaymentTrigger.Should().Be(paymentTrigger);
         }
@@ -368,8 +372,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             orderItem.Order = order;
             context.OrderItems.Add(orderItem);
 
-            item.OrderId = order.Id;
             item.OrderItem = orderItem;
+            item.OrderItem.OrderId = order.Id;
 
             context.ContractBillingItems.Add(item);
 
@@ -407,23 +411,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             orderItem.CatalogueItemId = catalogueItemId;
             context.OrderItems.Add(orderItem);
 
-            item.OrderId = order.Id;
             item.OrderItem = orderItem;
-            item.CatalogueItemId = catalogueItemId;
+            item.OrderItem.OrderId = order.Id;
+            item.OrderItem.CatalogueItemId = catalogueItemId;
 
             context.ContractBillingItems.Add(item);
 
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var before = await context.ContractBillingItems.FirstOrDefaultAsync(f => f.CatalogueItemId == catalogueItemId);
+            var before = await context.ContractBillingItems.FirstOrDefaultAsync(f => f.OrderItem.CatalogueItemId == catalogueItemId);
             before.Should().NotBeNull();
 
             await service.DeleteContractBillingItems(
                 order.Id,
                 new List<CatalogueItemId>() { catalogueItemId, });
 
-            var actual = await context.ContractBillingItems.FirstOrDefaultAsync(f => f.CatalogueItemId == catalogueItemId);
+            var actual = await context.ContractBillingItems.FirstOrDefaultAsync(f => f.OrderItem.CatalogueItemId == catalogueItemId);
             actual.Should().BeNull();
         }
     }

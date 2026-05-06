@@ -9,13 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
     {
         public void Configure(EntityTypeBuilder<OrderItemFunding> builder)
         {
-            builder.ToTable("OrderItemFunding", Schemas.Ordering);
+            builder.ToTable("OrderItemFundingV2", Schemas.Ordering);
 
-            builder.HasKey(oif => new { oif.OrderId, oif.CatalogueItemId });
-
-            builder.Property(oif => oif.CatalogueItemId)
-                .HasMaxLength(14)
-                .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+            builder.HasKey(oif => oif.Id).HasName("PK_OrderItemFundingV2");
 
             builder.Property(oif => oif.OrderItemFundingType)
                 .IsRequired()
@@ -31,12 +27,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.HasOne(oif => oif.LastUpdatedByUser)
                 .WithMany()
                 .HasForeignKey(oif => oif.LastUpdatedBy)
-                .HasConstraintName("FK_OrderItemFunding_LastUpdatedBy");
+                .HasConstraintName("FK_OrderItemFunding_LastUpdatedByV2");
 
             builder.HasOne(oif => oif.OrderItem)
                 .WithOne(oi => oi.OrderItemFunding)
-                .HasForeignKey<OrderItemFunding>(oif => new { oif.OrderId, oif.CatalogueItemId })
-                .HasConstraintName("FK_OrderItemFunding_OrderItems")
+                .HasForeignKey<OrderItemFunding>(oif => oif.OrderItemId)
+                .HasConstraintName("FK_OrderItemFunding_OrderItemV2")
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

@@ -16,9 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<OrderItemPrice> composer) => composer
                 .FromFactory(new OrderItemPriceSpeciminBuilder())
                 .Without(oip => oip.OrderItem)
-                .Without(oip => oip.OrderId)
+                .Without(oip => oip.OrderItemId)
                 .Without(oip => oip.OrderItemPriceTiers)
-                .Without(oip => oip.CatalogueItemId)
                 .With(oip => oip.BillingPeriod, TimeUnit.PerMonth)
                 .With(oip => oip.CurrencyCode, "GBP");
 
@@ -48,8 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 
                 tier.LowerRange = 1;
                 tier.UpperRange = null;
-                tier.OrderId = price.OrderId;
-                tier.CatalogueItemId = price.CatalogueItemId;
+                tier.OrderItemPriceId = price.Id;
                 tier.OrderItemPrice = price;
                 price.OrderItemPriceTiers.Add(tier);
             }
@@ -66,8 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                         ? null :
                         (lastUpperRange = context.CreateIntWithRange(1, 500) + lastUpperRange);
 
-                    tiers[i].OrderId = price.OrderId;
-                    tiers[i].CatalogueItemId = price.CatalogueItemId;
+                    tiers[i].OrderItemPriceId = price.Id;
                     tiers[i].OrderItemPrice = price;
                     price.OrderItemPriceTiers.Add(tiers[i]);
                 }

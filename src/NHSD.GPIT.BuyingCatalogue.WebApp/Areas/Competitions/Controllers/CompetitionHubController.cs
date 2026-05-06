@@ -291,7 +291,7 @@ public class CompetitionHubController : Controller
         string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
-        SelectOrderItemQuantityModel model,
+        SublocationQuantityHubModel model,
         CatalogueItemId? serviceId = null)
     {
         var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);

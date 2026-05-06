@@ -6,9 +6,7 @@
 
         public int ContractBillingId { get; set; }
 
-        public int OrderId { get; set; }
-
-        public CatalogueItemId CatalogueItemId { get; set; }
+        public int OrderItemId { get; set; }
 
         public ContractBilling ContractBilling { get; set; }
 

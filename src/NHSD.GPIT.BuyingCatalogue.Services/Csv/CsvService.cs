@@ -180,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var previousRecipients =
                 dbContext.OrderItemSublocationRecipients.Where(or => previousOrderIds.Contains(or.OrderId))
                     .Select(or =>
-                        new { or.CatalogueItemId, OdsCode = or.RecipientOdsCode });
+                        new { or.OrderItem.CatalogueItemId, OdsCode = or.RecipientOdsCode });
 
             List<FullOrderCsvModel> items = await dbContext.OrderSublocationRecipients
                 .Include(x => x.OrderItemSublocationRecipients)
@@ -194,40 +194,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .SelectMany(
                     or => or.OrderItemSublocationRecipients.Where(y =>
                         !previousRecipients.Any(z =>
-                            z.OdsCode == y.RecipientOdsCode && z.CatalogueItemId == y.CatalogueItemId)),
+                            z.OdsCode == y.RecipientOdsCode && z.CatalogueItemId == y.OrderItem.CatalogueItemId)),
                     (or, oir) => new FullOrderCsvModel
                     {
                         CallOffId = or.Order.CallOffId,
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
-                        SubIcbCode = oir.OrderItem.Quantity.HasValue
-                            ? string.Empty
-                            : or.ParentSublocation.SublocationOdsCode,
-                        SubIcbName = oir.OrderItem.Quantity.HasValue
-                            ? string.Empty
-                            : or.ParentSublocation.SublocationOrganisation.Name,
+                        SubIcbCode = or.ParentSublocation.SublocationOdsCode,
+                        SubIcbName = or.ParentSublocation.SublocationOrganisation.Name,
                         CommencementDate = or.Order.CommencementDate,
-                        ServiceRecipientId =
-                            oir.OrderItem.Quantity.HasValue
-                                ? or.Order.OrderingParty.ExternalIdentifier
-                                : or.RecipientOdsCode,
-                        ServiceRecipientName =
-                            oir.OrderItem.Quantity.HasValue
-                                ? or.Order.OrderingParty.Name
-                                : or.RecipientOdsOrganisation.Name,
+                        ServiceRecipientId = or.RecipientOdsCode,
+                        ServiceRecipientName = or.RecipientOdsOrganisation.Name,
                         SupplierId = $"{supplierId}",
                         SupplierName = supplierName,
                         ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                         ProductName = oir.OrderItem.CatalogueItem.Name,
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                         ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
-                        QuantityOrdered =
-                            or.OrderItemSublocationRecipients.FirstOrDefault(x =>
-                                x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
-                                ? oir.OrderItem.Quantity ?? 0
-                                : or.OrderItemSublocationRecipients
-                                    .FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
-                                    .Quantity ?? oir.OrderItem.Quantity ?? 0,
+                        QuantityOrdered = or.OrderItemSublocationRecipients
+                                    .FirstOrDefault(x => x.OrderItemId == oir.OrderItemId)
+                                    .Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
@@ -238,10 +224,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                             : prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
                         M1Planned = or.OrderItemSublocationRecipients.FirstOrDefault(x =>
-                            x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                            x.OrderItemId == oir.OrderItemId) == null
                             ? null
                             : or.OrderItemSublocationRecipients
-                                .FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
+                                .FirstOrDefault(x => x.OrderItemId == oir.OrderItemId)
                                 .DeliveryDate,
                         FundingType =
                             fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
@@ -260,7 +246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                                 ? GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers)
                                 : string.Empty,
                         HasBespokeMilestones = or.Order.Contract.ContractBilling.ContractBillingItems.Any(x =>
-                                x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
+                                x.OrderItemId == oir.OrderItemId)
                             || (oir.OrderItem.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService
                                 && or.Order.Contract.ImplementationPlan.Milestones.Count > 0),
                     })
@@ -310,13 +296,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         ProductName = oir.OrderItem.CatalogueItem.Name,
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                         ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
-                        QuantityOrdered =
-                            or.OrderItemSublocationRecipients.FirstOrDefault(x =>
-                                x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
-                                ? oir.OrderItem.Quantity ?? 0
-                                : or.OrderItemSublocationRecipients
-                                    .FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
-                                    .Quantity ?? oir.OrderItem.Quantity ?? 0,
+                        QuantityOrdered = or.OrderItemSublocationRecipients
+                                    .FirstOrDefault(x => x.OrderItemId == oir.OrderItemId)
+                                    .Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
@@ -326,10 +308,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                             : prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
                         M1Planned = or.OrderItemSublocationRecipients.FirstOrDefault(x =>
-                            x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                            x.OrderItemId == oir.OrderItemId) == null
                             ? null
                             : or.OrderItemSublocationRecipients
-                                .FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
+                                .FirstOrDefault(x => x.OrderItemId == oir.OrderItemId)
                                 .DeliveryDate,
                         FundingType =
                             fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
@@ -393,13 +375,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         ProductName = oir.OrderItem.CatalogueItem.Name,
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                         ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
-                        QuantityOrdered =
-                            or.OrderItemSublocationRecipients.FirstOrDefault(x =>
-                                x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
-                                ? oir.OrderItem.Quantity ?? 0
-                                : or.OrderItemSublocationRecipients
-                                    .FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
-                                    .Quantity ?? oir.OrderItem.Quantity ?? 0,
+                        QuantityOrdered = or.OrderItemSublocationRecipients
+                                    .FirstOrDefault(x => x.OrderItemId == oir.OrderItemId)
+                                    .Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
@@ -409,10 +387,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                             : prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
                         M1Planned = or.OrderItemSublocationRecipients.FirstOrDefault(x =>
-                            x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                            x.OrderItemId == oir.OrderItemId) == null
                             ? null
                             : or.OrderItemSublocationRecipients
-                                .FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
+                                .FirstOrDefault(x => x.OrderItemId == oir.OrderItemId)
                                 .DeliveryDate,
                         FundingType =
                             fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),

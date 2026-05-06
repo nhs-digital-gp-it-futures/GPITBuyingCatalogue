@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             order.FlattenedRecipients.ForEach(x => order.OrderItems.ForEach(y =>
                 x.OrderItemSublocationRecipients.Add(
-                    new OrderItemSublocationRecipient(order.Id, x.RecipientOdsCode, y.CatalogueItemId)
+                    new OrderItemSublocationRecipient(order.Id, x.RecipientOdsCode, y)
                     {
                         Quantity = 5, DeliveryDate = new DateTime(2024, 01, 01),
                     })));
@@ -102,15 +102,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             amendment.OrderItems = new List<OrderItem>()
             {
-                new OrderItem() { Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.Solution, Id = solution.CatalogueItemId }, CatalogueItemId = solution.CatalogueItemId },
-                new OrderItem() { Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService, Id = associatedService.CatalogueItemId }, CatalogueItemId = additionalService.CatalogueItemId },
+                new OrderItem() { Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.Solution, Id = solution.CatalogueItemId }, CatalogueItemId = solution.CatalogueItemId, OrderItemPrice = orderItem.OrderItemPrice },
+                new OrderItem() { Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService, Id = associatedService.CatalogueItemId }, CatalogueItemId = additionalService.CatalogueItemId, OrderItemPrice = orderItem.OrderItemPrice },
                 orderItem,
             };
 
             var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(amendment, [order]));
             amendment.FlattenedRecipients.ForEach(x => amendment.OrderItems.ForEach(y =>
                 x.OrderItemSublocationRecipients.Add(
-                    new OrderItemSublocationRecipient(order.Id, x.RecipientOdsCode, y.CatalogueItemId)
+                    new OrderItemSublocationRecipient(order.Id, x.RecipientOdsCode, y)
                     {
                         Quantity = 5, DeliveryDate = new DateTime(2024, 01, 01),
                     })));

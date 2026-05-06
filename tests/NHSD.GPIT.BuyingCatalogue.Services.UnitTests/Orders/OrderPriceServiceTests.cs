@@ -66,8 +66,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await service.UpsertPrice(order.Id, price, new List<PricingTierDto>());
 
             var actual = context.OrderItemPrices
-                .FirstOrDefault(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == price.CatalogueItemId);
+                .FirstOrDefault(x => x.OrderItem.OrderId == order.Id
+                    && x.OrderItem.CatalogueItemId == price.CatalogueItemId);
 
             actual.Should().BeNull();
         }
@@ -91,12 +91,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await service.UpsertPrice(order.Id, price, new List<PricingTierDto>());
 
             var actual = context.OrderItemPrices
-                .FirstOrDefault(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == price.CatalogueItemId);
+                .FirstOrDefault(x => x.OrderItem.OrderId == order.Id
+                    && x.OrderItem.CatalogueItemId == price.CatalogueItemId);
 
             actual.Should().NotBeNull();
-            actual!.OrderId.Should().Be(order.Id);
-            actual.CatalogueItemId.Should().Be(price.CatalogueItemId);
+            actual!.OrderItem.OrderId.Should().Be(order.Id);
+            actual.OrderItem.CatalogueItemId.Should().Be(price.CatalogueItemId);
             actual.CataloguePriceId.Should().Be(price.CataloguePriceId);
             actual.CataloguePriceCalculationType.Should().Be(price.CataloguePriceCalculationType);
             actual.CataloguePriceType.Should().Be(price.CataloguePriceType);
@@ -138,8 +138,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
 
             var existingPrice = context.OrderItemPrices
-                .FirstOrDefault(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == orderItem.CatalogueItemId);
+                .FirstOrDefault(x => x.OrderItem.OrderId == order.Id
+                    && x.OrderItem.CatalogueItemId == orderItem.CatalogueItemId);
 
             existingPrice.Should().NotBeNull();
 
@@ -150,14 +150,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await mockOrderQuantityService.Received().ResetItemQuantities(order.Id, orderItem.CatalogueItemId);
 
             var actual = context.OrderItemPrices
-                .FirstOrDefault(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == orderItem.CatalogueItemId);
+                .FirstOrDefault(x => x.OrderItem.OrderId == order.Id
+                    && x.OrderItem.CatalogueItemId == orderItem.CatalogueItemId);
 
             actual.Should().NotBeNull();
             actual.Should().NotBe(existingPrice);
 
-            actual!.OrderId.Should().Be(order.Id);
-            actual.CatalogueItemId.Should().Be(price.CatalogueItemId);
+            actual!.OrderItem.OrderId.Should().Be(order.Id);
+            actual.OrderItem.CatalogueItemId.Should().Be(price.CatalogueItemId);
             actual.CataloguePriceId.Should().Be(price.CataloguePriceId);
             actual.CataloguePriceCalculationType.Should().Be(price.CataloguePriceCalculationType);
             actual.CataloguePriceType.Should().Be(price.CataloguePriceType);
@@ -204,12 +204,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await service.UpsertPrice(order.Id, price, agreedPrices);
 
             var actual = context.OrderItemPrices
-                .FirstOrDefault(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == price.CatalogueItemId);
+                .FirstOrDefault(x => x.OrderItem.OrderId == order.Id
+                    && x.OrderItem.CatalogueItemId == price.CatalogueItemId);
 
             actual.Should().NotBeNull();
-            actual!.OrderId.Should().Be(order.Id);
-            actual.CatalogueItemId.Should().Be(price.CatalogueItemId);
+            actual!.OrderItem.OrderId.Should().Be(order.Id);
+            actual.OrderItem.CatalogueItemId.Should().Be(price.CatalogueItemId);
             actual.CataloguePriceCalculationType.Should().Be(price.CataloguePriceCalculationType);
             actual.CataloguePriceType.Should().Be(price.CataloguePriceType);
             actual.CurrencyCode.Should().Be(price.CurrencyCode);
@@ -263,8 +263,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await service.UpdatePrice(order.Id, solutionId, new List<PricingTierDto>());
 
             var actual = context.OrderItemPrices
-                .FirstOrDefault(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == solutionId);
+                .FirstOrDefault(x => x.OrderItem.OrderId == order.Id
+                    && x.OrderItem.CatalogueItemId == solutionId);
 
             actual.Should().BeNull();
         }
@@ -286,14 +286,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var solutionId = order.GetSolutionOrderItem().CatalogueItemId;
 
             var expected = context.OrderItemPrices
-                .First(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == solutionId);
+                .First(x => x.OrderItem.OrderId == order.Id
+                    && x.OrderItem.CatalogueItemId == solutionId);
 
             await service.UpdatePrice(order.Id, solutionId, new List<PricingTierDto>());
 
             var actual = context.OrderItemPrices
-                .First(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == solutionId);
+                .First(x => x.OrderItem.OrderId == order.Id
+                    && x.OrderItem.CatalogueItemId == solutionId);
 
             actual.Should().BeEquivalentTo(expected);
         }
@@ -326,8 +326,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await service.UpdatePrice(order.Id, solution.CatalogueItemId, agreedPrices);
 
             var actual = context.OrderItemPrices
-                .First(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == solution.CatalogueItemId);
+                .First(x => x.OrderItem.OrderId == order.Id
+                    && x.OrderItem.CatalogueItemId == solution.CatalogueItemId);
 
             for (var i = 0; i < actual.OrderItemPriceTiers.Count; i++)
             {

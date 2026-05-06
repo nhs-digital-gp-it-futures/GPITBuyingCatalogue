@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using LinqKit;
@@ -122,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             var orderItem = order.OrderItems.First();
             MoreEnumerable.ForEach(
                 order.FlattenedRecipients,
-                x => x.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today));
+                x => x.SetDeliveryDateForItem(orderItem, DateTime.Today));
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -133,8 +134,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void Get_AllDeliveryDatesEntered_ReturnsCompleted(
             Order order,
+            OrderSublocation orderSublocation,
+            OrderSublocationRecipient orderSublocationRecipient,
             DeliveryDatesStatusProvider service)
         {
+            var orderItemSublocationRecipients = order.OrderItems.Select(orderItem =>
+                new OrderItemSublocationRecipient(order.Id, orderSublocationRecipient.RecipientOdsCode, orderItem));
+            orderSublocation.SublocationRecipients = new List<OrderSublocationRecipient> { orderSublocationRecipient };
+            orderSublocationRecipient.OrderItemSublocationRecipients = orderItemSublocationRecipients.ToList();
+            order.OrderSublocations = new List<OrderSublocation> { orderSublocation };
             order.OrderSublocations.ForEach(x =>
             {
                 x.SublocationRecipients.ForEach(y =>

@@ -10,15 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
     {
         public void Configure(EntityTypeBuilder<OrderItemSublocationRecipient> builder)
         {
-            builder.ToTable("OrderItemSublocationRecipients", Schemas.Ordering);
+            builder.ToTable("OrderItemSublocationRecipientsV2", Schemas.Ordering);
 
-            builder.HasKey(x => new { x.OrderId, x.CatalogueItemId, x.ParentSublocationOdsCode, x.RecipientOdsCode });
+            builder.HasKey(x => x.Id).HasName("PK_OrderItemSublocationRecipientsV2");
 
             builder.Property(x => x.OrderId).IsRequired();
-
-            builder.Property(x => x.CatalogueItemId)
-                .HasMaxLength(14)
-                .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
             builder.Property(x => x.ParentSublocationOdsCode).HasMaxLength(10);
 
@@ -29,19 +25,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.HasOne(x => x.LastUpdatedByUser)
                 .WithMany()
                 .HasForeignKey(x => x.LastUpdatedBy)
-                .HasConstraintName("FK_OrderItemSublocationRecipients_LastUpdatedBy");
+                .HasConstraintName("FK_OrderItemSublocationRecipientsV2_LastUpdatedBy");
 
             builder.HasOne(x => x.Recipient)
                 .WithMany(y => y.OrderItemSublocationRecipients)
                 .HasForeignKey(x => new { x.OrderId, x.ParentSublocationOdsCode, x.RecipientOdsCode })
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_OrderItemSublocationRecipients_SublocationRecipient");
+                .HasConstraintName("FK_OrderItemSublocationRecipientsV2_SublocationRecipient");
 
             builder.HasOne(x => x.OrderItem)
                 .WithMany()
-                .HasForeignKey(x => new { x.OrderId, x.CatalogueItemId })
+                .HasForeignKey(x => x.OrderItemId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_OrderItemSublocationRecipients_OrderItem");
+                .HasConstraintName("FK_OrderItemSublocationRecipientsV2_OrderItem");
         }
     }
 }

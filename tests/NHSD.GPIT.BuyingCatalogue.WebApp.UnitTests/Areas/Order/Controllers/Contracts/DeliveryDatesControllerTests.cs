@@ -576,7 +576,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         {
             order.SetupCatalogueSolution();
 
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+            var orderItem = order.OrderItems.First();
+            var catalogueItemId = orderItem.CatalogueItemId;
 
             var orderWrapper = new OrderWrapper(order);
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(orderWrapper);
@@ -584,7 +585,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             var deliveryDates = new List<RecipientDeliveryDateDto>();
             var routeValues = new RouteValues();
 
-            deliveryDatesService.SetDeliveryDates(order.Id, catalogueItemId, Arg.Any<List<RecipientDeliveryDateDto>>())
+            deliveryDatesService.SetDeliveryDates(order.Id, orderItem, Arg.Any<List<RecipientDeliveryDateDto>>())
                 .Returns(Task.CompletedTask)
                 .AndDoes(callInfo =>
                 {
@@ -605,7 +606,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var result = await controller.EditDates(internalOrgId, callOffId, catalogueItemId, model);
 
-            await deliveryDatesService.Received().SetDeliveryDates(order.Id, catalogueItemId, Arg.Any<List<RecipientDeliveryDateDto>>());
+            await deliveryDatesService.Received().SetDeliveryDates(order.Id, orderItem, Arg.Any<List<RecipientDeliveryDateDto>>());
             await orderService.Received().GetOrderWithOrderItems(callOffId, internalOrgId);
             routingService.Received().GetRoute(RoutingPoint.EditDeliveryDates, orderWrapper, Arg.Any<RouteValues>());
 
@@ -690,11 +691,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             order.SetupCatalogueSolution();
 
             var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
-            var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
+            var orderItem = order.OrderItems.ElementAt(1);
+            var catalogueItemId = orderItem.CatalogueItemId;
 
             var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
 
-            var recipientDates = await VerifyMatching(catalogueItemId, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
+            var recipientDates = await VerifyMatching(orderItem, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
 
             recipientDates.Select(x => x.DeliveryDate).Should().BeEquivalentTo(recipients.Select(x => x.GetDeliveryDateForItem(solutionId)!.Value));
         }
@@ -717,15 +719,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             order.FlattenedRecipients.ToList()
                 .ForEach(x => x.OrderItemSublocationRecipients
-                    .Where(y => y.CatalogueItemId != solutionId)
+                    .Where(y => y.OrderItem.CatalogueItemId != solutionId)
                     .ToList()
                     .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
 
-            var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
+            var orderItem = order.OrderItems.ElementAt(1);
+            var catalogueItemId = orderItem.CatalogueItemId;
 
             var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
 
-            var recipientDates = await VerifyMatching(catalogueItemId, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
+            var recipientDates = await VerifyMatching(orderItem, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
 
             recipientDates.Select(x => x.DeliveryDate).Should().BeEquivalentTo(recipients.Select(x => x.GetDeliveryDateForItem(solutionId)!.Value));
         }
@@ -744,11 +747,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             model.MatchDates = false;
             order.SetupCatalogueSolution();
 
-            var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
+            var orderItem = order.OrderItems.ElementAt(1);
+            var catalogueItemId = orderItem.CatalogueItemId;
 
             var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
 
-            var recipientDates = await VerifyMatching(catalogueItemId, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
+            var recipientDates = await VerifyMatching(orderItem, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
 
             recipientDates.ForEach(x => x.DeliveryDate.Should().Be(order.DeliveryDate));
         }
@@ -771,15 +775,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             order.FlattenedRecipients.ToList()
                 .ForEach(x => x.OrderItemSublocationRecipients
-                    .Where(y => y.CatalogueItemId != solutionId)
+                    .Where(y => y.OrderItem.CatalogueItemId != solutionId)
                     .ToList()
                     .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
 
-            var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
+            var orderItem = order.OrderItems.ElementAt(1);
+            var catalogueItemId = orderItem.CatalogueItemId;
 
             var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
 
-            var recipientDates = await VerifyMatching(catalogueItemId, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
+            var recipientDates = await VerifyMatching(orderItem, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
 
             recipientDates.ForEach(x => x.DeliveryDate.Should().Be(order.DeliveryDate));
         }
@@ -802,11 +807,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             order.GetSolutionId().Should().BeNull();
 
-            var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
+            var orderItem = order.OrderItems.ElementAt(1);
+            var catalogueItemId = orderItem.CatalogueItemId;
 
             var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
 
-            var recipientDates = await VerifyMatching(catalogueItemId, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
+            var recipientDates = await VerifyMatching(orderItem, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
 
             recipientDates.ForEach(x => x.DeliveryDate.Should().Be(order.DeliveryDate));
         }
@@ -833,7 +839,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         private static async Task<List<RecipientDeliveryDateDto>> VerifyMatching(
-            CatalogueItemId catalogueItemId,
+            OrderItem orderItem,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
@@ -845,9 +851,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         {
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
+            var catalogueItemId = orderItem.CatalogueItemId;
             var recipientDates = new List<RecipientDeliveryDateDto>();
 
-            deliveryDateService.SetDeliveryDates(order.Id, catalogueItemId, Arg.Any<List<RecipientDeliveryDateDto>>())
+            deliveryDateService.SetDeliveryDates(order.Id, orderItem, Arg.Any<List<RecipientDeliveryDateDto>>())
                 .Returns(Task.CompletedTask)
                 .AndDoes(callInfo =>
                 {
@@ -868,7 +875,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             });
 
             await orderService.Received().GetOrderWithOrderItems(callOffId, internalOrgId);
-            await deliveryDateService.Received().SetDeliveryDates(order.Id, catalogueItemId, Arg.Any<List<RecipientDeliveryDateDto>>());
+            await deliveryDateService.Received().SetDeliveryDates(order.Id, orderItem, Arg.Any<List<RecipientDeliveryDateDto>>());
 
             recipientDates.Count.Should().Be(recipients.Count);
             recipientDates.Select(x => x.OdsCode).Should().BeEquivalentTo(recipients.Select(x => x.RecipientOdsCode));

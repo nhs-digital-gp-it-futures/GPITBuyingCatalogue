@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         {
             order.DeliveryDate = null;
             order.OrderItems.ForEach(x =>
-                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
+                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x, initialDate)));
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         {
             order.DeliveryDate = null;
             order.OrderItems.ForEach(x =>
-                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
+                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x, initialDate)));
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             order.DeliveryDate = initialDate;
             order.OrderItems.ForEach(x =>
-                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
+                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x, initialDate)));
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
@@ -144,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             mockOrderService.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier).Returns(new OrderWrapper(order));
 
-            await service.SetDeliveryDates(order.Id, catalogueItemId, deliveryDates);
+            await service.SetDeliveryDates(order.Id, orderItem, deliveryDates);
             context.ChangeTracker.Clear();
 
             Order dbOrder = await context.Orders.Include(x => x.OrderItems)
@@ -177,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         {
             order.DeliveryDate = DateTime.Today;
             order.OrderItems.ForEach(x =>
-                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, DateTime.Today)));
+                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x, DateTime.Today)));
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
@@ -204,10 +204,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         {
             order.DeliveryDate = DateTime.Today;
             order.OrderItems.ForEach(x =>
-                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, DateTime.Today)));
+                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x, DateTime.Today)));
             var orderItem = order.OrderItems.First();
             order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(
-                orderItem.CatalogueItemId,
+                orderItem,
                 DateTime.Today.AddDays(1)));
             context.Orders.Add(order);
             await context.SaveChangesAsync();
