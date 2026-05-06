@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using MoreLinq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
@@ -157,6 +159,132 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.RolledUpTotalQuantity.Should().Be(orderItem.TotalQuantity(null));
             model.PreviousTotalQuantity.Should().Be(previousOrderItem.TotalQuantity(null));
             model.FundingTypeDescription.Should().Be(fundingTypeDescription.Value(orderItem.CatalogueItem.CatalogueItemType.DisplayName()));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void ShouldShowPrice_EmptyPriceTiers_ReturnsFalse(
+            EntityFramework.Ordering.Models.Order order,
+            OrderItem orderItem)
+        {
+            orderItem.OrderItemPrice.OrderItemPriceTiers.Clear();
+
+            var model = new AmendOrderItemModel(order.CallOffId, order.OrderType, [], null, orderItem, null, null);
+
+            model.ShouldShowPrice.Should().BeFalse();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void ShouldShowPrice_AssociatedServiceOrderItem_ReturnsTrue(
+            EntityFramework.Ordering.Models.Order order,
+            OrderItem orderItem,
+            AssociatedService associatedService,
+            List<OrderItemPriceTier> priceTiers)
+        {
+            orderItem.CatalogueItem = associatedService.CatalogueItem;
+            orderItem.OrderItemPrice.OrderItemPriceTiers = priceTiers;
+
+            var model = new AmendOrderItemModel(order.CallOffId, order.OrderType, [], null, orderItem, null, null);
+
+            model.ShouldShowPrice.Should().BeTrue();
+        }
+
+        [Theory]
+        [MockInlineAutoData(CataloguePriceCalculationType.Cumulative, CatalogueItemType.Solution)]
+        [MockInlineAutoData(CataloguePriceCalculationType.Volume, CatalogueItemType.Solution)]
+        [MockInlineAutoData(CataloguePriceCalculationType.SingleFixed, CatalogueItemType.Solution)]
+        [MockInlineAutoData(CataloguePriceCalculationType.Cumulative, CatalogueItemType.AdditionalService)]
+        [MockInlineAutoData(CataloguePriceCalculationType.Volume, CatalogueItemType.AdditionalService)]
+        [MockInlineAutoData(CataloguePriceCalculationType.SingleFixed, CatalogueItemType.AdditionalService)]
+        public static void ShouldShowPrice_AllPriceTypesOnOriginalOrder_ReturnsTrue(
+            CataloguePriceCalculationType calculationType,
+            CatalogueItemType catalogueItemType,
+            EntityFramework.Ordering.Models.Order order,
+            CatalogueItem catalogueItem,
+            OrderItem orderItem,
+            List<OrderItemPriceTier> priceTiers)
+        {
+            catalogueItem.CatalogueItemType = catalogueItemType;
+            orderItem.CatalogueItem = catalogueItem;
+            orderItem.OrderItemPrice.CataloguePriceCalculationType = calculationType;
+            orderItem.OrderItemPrice.OrderItemPriceTiers = priceTiers;
+
+            var model = new AmendOrderItemModel(order.CallOffId, order.OrderType, [], null, orderItem, null, null);
+
+            model.ShouldShowPrice.Should().BeTrue();
+        }
+
+        [Theory]
+        [MockInlineAutoData(CataloguePriceCalculationType.Cumulative, CatalogueItemType.Solution)]
+        [MockInlineAutoData(CataloguePriceCalculationType.Volume, CatalogueItemType.Solution)]
+        [MockInlineAutoData(CataloguePriceCalculationType.Cumulative, CatalogueItemType.AdditionalService)]
+        [MockInlineAutoData(CataloguePriceCalculationType.Volume, CatalogueItemType.AdditionalService)]
+        public static void ShouldShowPrice_NonSingleFixedOnAmendmentExistingItem_ReturnsTrue(
+            CataloguePriceCalculationType calculationType,
+            CatalogueItemType catalogueItemType,
+            EntityFramework.Ordering.Models.Order order,
+            CatalogueItem catalogueItem,
+            OrderItem orderItem,
+            List<OrderItemPriceTier> priceTiers)
+        {
+            catalogueItem.CatalogueItemType = catalogueItemType;
+            orderItem.CatalogueItem = catalogueItem;
+            orderItem.OrderItemPrice.CataloguePriceCalculationType = calculationType;
+            orderItem.OrderItemPrice.OrderItemPriceTiers = priceTiers;
+
+            var amendment = order.BuildAmendment(2);
+
+            var model = new AmendOrderItemModel(amendment.CallOffId, amendment.OrderType, [], null, orderItem, orderItem, null);
+
+            model.ShouldShowPrice.Should().BeTrue();
+        }
+
+        [Theory]
+        [MockInlineAutoData(CataloguePriceCalculationType.SingleFixed, CatalogueItemType.Solution)]
+        [MockInlineAutoData(CataloguePriceCalculationType.SingleFixed, CatalogueItemType.AdditionalService)]
+        public static void ShouldShowPrice_SingleFixedOnAmendmentExistingItem_ReturnsFalse(
+            CataloguePriceCalculationType calculationType,
+            CatalogueItemType catalogueItemType,
+            EntityFramework.Ordering.Models.Order order,
+            CatalogueItem catalogueItem,
+            OrderItem orderItem,
+            List<OrderItemPriceTier> priceTiers)
+        {
+            catalogueItem.CatalogueItemType = catalogueItemType;
+            orderItem.CatalogueItem = catalogueItem;
+            orderItem.OrderItemPrice.CataloguePriceCalculationType = calculationType;
+            orderItem.OrderItemPrice.OrderItemPriceTiers = priceTiers;
+
+            var amendment = order.BuildAmendment(2);
+
+            var model = new AmendOrderItemModel(amendment.CallOffId, amendment.OrderType, [], null, orderItem, orderItem, null);
+
+            model.ShouldShowPrice.Should().BeFalse();
+        }
+
+        [Theory]
+        [MockInlineAutoData(CataloguePriceCalculationType.Cumulative, CatalogueItemType.AdditionalService)]
+        [MockInlineAutoData(CataloguePriceCalculationType.Volume, CatalogueItemType.AdditionalService)]
+        [MockInlineAutoData(CataloguePriceCalculationType.SingleFixed, CatalogueItemType.AdditionalService)]
+        public static void ShouldShowPrice_AllPriceTypesAmendmentNewItem_ReturnsTrue(
+            CataloguePriceCalculationType calculationType,
+            CatalogueItemType catalogueItemType,
+            EntityFramework.Ordering.Models.Order order,
+            CatalogueItem catalogueItem,
+            OrderItem orderItem,
+            List<OrderItemPriceTier> priceTiers)
+        {
+            catalogueItem.CatalogueItemType = catalogueItemType;
+            orderItem.CatalogueItem = catalogueItem;
+            orderItem.OrderItemPrice.CataloguePriceCalculationType = calculationType;
+            orderItem.OrderItemPrice.OrderItemPriceTiers = priceTiers;
+
+            var amendment = order.BuildAmendment(2);
+
+            var model = new AmendOrderItemModel(amendment.CallOffId, amendment.OrderType, [], null, orderItem, null, null);
+
+            model.ShouldShowPrice.Should().BeTrue();
         }
     }
 }

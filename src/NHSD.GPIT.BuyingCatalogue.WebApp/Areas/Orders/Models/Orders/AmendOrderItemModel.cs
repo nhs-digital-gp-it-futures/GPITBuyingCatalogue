@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public OrderType OrderType { get; }
 
-        public bool IsAmendment => FromPreviousRevision || CallOffId.IsAmendment;
+        public bool IsAmendment => CallOffId.IsAmendment;
 
         public bool CanEdit { get; set; }
 
@@ -58,6 +58,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public bool IsCardView { get; set; }
 
         public bool FromPreviousRevision { get; init; }
+
+        /// <summary>
+        /// Gets a value indicating whether the price should be shown for the order item.
+        /// </summary>
+        /// <remarks>
+        /// The price will be shown in the following scenarios:<br/>
+        /// * The item is an Associated Service.<br/>
+        /// * The order is an original order with any price type.<br/>
+        /// * The order is an amendment, and an adjustment has been made to the quantity of an existing item which is not using a single-fixed price.<br/>
+        /// * The order is an amendment, and the item did not exist on a previous amendment.<br/>
+        /// </remarks>
+        public bool ShouldShowPrice => OrderItemPrice is { PriceTiers.Count: > 0 }
+            && (CatalogueItem is { CatalogueItemType: CatalogueItemType.AssociatedService }
+                || !(OrderItemPrice is { CataloguePriceCalculationType: CataloguePriceCalculationType.SingleFixed }
+                    && IsAmendment
+                    && !IsOrderItemAdded));
 
         public OrderItemPrice OrderItemPrice => OrderItem.OrderItemPrice;
 

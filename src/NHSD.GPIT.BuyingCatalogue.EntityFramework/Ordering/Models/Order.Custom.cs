@@ -318,11 +318,29 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 if (existingOrderItem == null)
                 {
                     OrderItems.Add(
-                        InitialiseOrderItem(
+                        InitialiseAmendOrderItem(
                             item.CatalogueItem.Id,
                             item.OrderItemPrice?.Clone(),
                             item.EstimationPeriod));
                 }
+            }
+
+            return;
+
+            OrderItem InitialiseAmendOrderItem(
+                CatalogueItemId catalogueItemId,
+                OrderItemPrice orderItemPrice,
+                TimeUnit? estimationPeriod)
+            {
+                var orderItem = InitialiseOrderItem(catalogueItemId);
+                if (orderItemPrice is { CataloguePriceCalculationType: CataloguePriceCalculationType.SingleFixed })
+                {
+                    orderItemPrice.PriceTiers.ToList().ForEach(tier => tier.Price = 0m);
+                }
+
+                orderItem.OrderItemPrice = orderItemPrice;
+                orderItem.EstimationPeriod = estimationPeriod;
+                return orderItem;
             }
         }
 
@@ -386,17 +404,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             return cr => previous == null || (isAmendment
                 && previous.FlattenedRecipients.All(previousRecipient => previousRecipient.RecipientOdsCode != cr.RecipientOdsCode));
-        }
-
-        private OrderItem InitialiseOrderItem(
-            CatalogueItemId catalogueItemId,
-            OrderItemPrice orderItemPrice,
-            TimeUnit? estimationPeriod)
-        {
-            var orderItem = InitialiseOrderItem(catalogueItemId);
-            orderItem.OrderItemPrice = orderItemPrice;
-            orderItem.EstimationPeriod = estimationPeriod;
-            return orderItem;
         }
 
         private bool AllValuesEntered(

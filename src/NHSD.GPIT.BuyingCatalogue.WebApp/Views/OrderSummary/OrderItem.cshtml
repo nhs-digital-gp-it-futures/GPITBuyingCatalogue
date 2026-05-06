@@ -84,7 +84,7 @@
     @{
         var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
 
-        if (Model.OrderItemPrice?.OrderItemPriceTiers.Any() ?? false)
+        if (Model.ShouldShowPrice)
         {
             <h4>Pricing and quantities</h4>
             <table>

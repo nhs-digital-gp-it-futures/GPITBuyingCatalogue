@@ -56,7 +56,7 @@
     </nhs-table>
 }
 
-@if (Model.OrderItemPrice?.OrderItemPriceTiers.Any() ?? false)
+@if (Model.ShouldShowPrice)
 {
     var billingPeriod = Model.OrderItemPrice.BillingPeriod?.Description() ?? "one-off";
 
@@ -118,4 +118,3 @@
     <h3>Total indicative costs excluding VAT</h3>
     <partial name="_OrderTotal" model="@Model.OrderTotals" />
 }
-
