@@ -8,7 +8,7 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-page-title title="@ViewBag.Title" advice="Before you create a competition you should have:" />
+            <nhs-page-title title="@ViewBag.Title" advice="Before you create a competition you should have:"/>
 
             <ul>
                 <li>used filters that match the requirements identified in your business case to create a shortlist</li>
@@ -21,10 +21,12 @@
                 <li>changed to a direct award if your filters returned only 1 solution</li>
             </ul>
 
+            <partial name="Partials/_BuyersGuideInset"/>
+
             <form method="post">
-                <input type="hidden" asp-for="BackLink" />
-                <input type="hidden" asp-for="BackLinkText" />
-                <nhs-submit-button text="Create competition" />
+                <input type="hidden" asp-for="BackLink"/>
+                <input type="hidden" asp-for="BackLinkText"/>
+                <nhs-submit-button text="Create competition"/>
             </form>
 
             <h2>Need help?</h2>
@@ -35,10 +37,13 @@
             <vc:nhs-action-link url="@Url.Action(
                                          nameof(ProcurementHubController.Index),
                                          typeof(ProcurementHubController).ControllerName(),
-                                         new { returnUrl = Url.Action(
-                                             nameof(CompetitionsDashboardController.BeforeYouStart),
-                                             typeof(CompetitionsDashboardController).ControllerName()) })"
-                                text="Contact procurement hub for support" />
+                                         new
+                                         {
+                                             returnUrl = Url.Action(
+                                                 nameof(CompetitionsDashboardController.BeforeYouStart),
+                                                 typeof(CompetitionsDashboardController).ControllerName())
+                                         })"
+                                text="Contact procurement hub for support"/>
         </div>
     </div>
 </div>

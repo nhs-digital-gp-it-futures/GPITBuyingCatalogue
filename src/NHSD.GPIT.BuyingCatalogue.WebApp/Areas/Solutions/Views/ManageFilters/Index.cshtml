@@ -14,6 +14,9 @@
         <nhs-validation-summary/>
 
         <nhs-page-title title="@ViewBag.Title" caption="@Model.OrganisationName" />
+
+        <partial name="Partials/_BuyersGuideInset"/>
+
         <partial name="Dashboard/_ShortlistCardPartial" model="@(new DashboardCardBaseModel<Filter>(Model.InternalOrgId, Model.Shortlists))" />
     </div>
 </div>

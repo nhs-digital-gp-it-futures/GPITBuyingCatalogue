@@ -18,6 +18,9 @@
                                 caption="@Model!.OrganisationName" />
                 <partial name="Partials/_FrameworkExpiredAlert"
                          model="@(new NavBaseModel { BackLink = Url.Action(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { area = typeof(OrderController).AreaName(), internalOrgId = Model.InternalOrgId }) })"/>
+
+                <partial name="Partials/_BuyersGuideInset"/>
+
                 <nhs-page-title advice="Before you start your order, you should know:" />
                 <ul>
                     <li>the contracting vehicle you’re ordering from</li>
