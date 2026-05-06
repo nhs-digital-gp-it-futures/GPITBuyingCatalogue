@@ -139,6 +139,7 @@ public static class CompetitionOrderServiceTests
         CompetitionSolution competitionSolution,
         AdditionalService additionalService,
         CompetitionAdditionalService solutionService,
+        CompetitionCatalogueItemPrice price,
         [Frozen] BuyingCatalogueDbContext dbContext,
         CompetitionOrderService service)
     {
@@ -146,6 +147,7 @@ public static class CompetitionOrderServiceTests
 
         competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.Services = [solutionService];
+        solutionService.Price = price;
 
         competition.OrganisationId = organisation.Id;
         competition.Organisation = organisation;
@@ -469,7 +471,7 @@ public static class CompetitionOrderServiceTests
         var order = await dbContext.Order(callOffId);
 
         order.FlattenedRecipients.SelectMany(x => x.OrderItemSublocationRecipients)
-            .GroupBy(x => x.CatalogueItemId)
+            .GroupBy(x => x.OrderItem.CatalogueItemId)
             .Should()
             .HaveCount(2);
     }

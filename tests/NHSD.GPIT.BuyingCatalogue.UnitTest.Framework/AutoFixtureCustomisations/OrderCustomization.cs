@@ -77,7 +77,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                     OrderItemSublocationRecipient orderItemRecipient = fixture.Build<OrderItemSublocationRecipient>()
                         .With(oisr => oisr.OrderId, order.Id)
                         .With(oisr => oisr.OrderItem, item)
-                        .With(oisr => oisr.CatalogueItemId, item.CatalogueItemId)
                         .With(oisr => oisr.RecipientOdsCode, recipient.RecipientOdsCode)
                         .With(oisr => oisr.Recipient, recipient)
                         .Create();

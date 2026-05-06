@@ -23,16 +23,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         [MockAutoData]
         public static void ForCatalogueItem_Returns_Recipients_With_Link_To_CatalogueItemId(
             OrderSublocationRecipient recipient1,
-            CatalogueItemId catalogueItemId1,
+            OrderItem orderItem1,
             OrderSublocationRecipient recipient2,
-            CatalogueItemId catalogueItemId2)
+            OrderItem orderItem2)
         {
-            recipient1.SetDeliveryDateForItem(catalogueItemId1, DateTime.Now);
-            recipient2.SetDeliveryDateForItem(catalogueItemId2, DateTime.Now);
+            recipient1.SetDeliveryDateForItem(orderItem1, DateTime.Now);
+            recipient2.SetDeliveryDateForItem(orderItem2, DateTime.Now);
 
             OrderRecipientCollection.CollectionExtensions.ForCatalogueItem(
                     new List<OrderSublocationRecipient> { recipient1, recipient2 },
-                    catalogueItemId1)
+                    orderItem1.CatalogueItemId)
                 .Should()
                 .BeEquivalentTo(new List<OrderSublocationRecipient> { recipient1 });
         }
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         [MockAutoData]
         public static void SomeButNotAllQuantitiesEntered_Returns_False_When_Recipient_Null(OrderItem orderItem)
         {
-            OrderRecipientCollection.CollectionExtensions.SomeButNotAllNewQuantitiesEntered(null, orderItem)
+            OrderRecipientCollection.CollectionExtensions.SomeNewQuantitiesEntered(null, orderItem)
                 .Should().BeFalse();
         }
 
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             OrderItem orderItem)
         {
             orderItem.OrderItemPrice = null;
-            OrderRecipientCollection.CollectionExtensions.SomeButNotAllNewQuantitiesEntered(recipients, orderItem)
+            OrderRecipientCollection.CollectionExtensions.SomeNewQuantitiesEntered(recipients, orderItem)
                 .Should().BeFalse();
         }
     }

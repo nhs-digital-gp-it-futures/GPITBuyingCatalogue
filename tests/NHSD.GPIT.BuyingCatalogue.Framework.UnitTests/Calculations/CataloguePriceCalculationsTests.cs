@@ -303,7 +303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.OrderItemPrice.BillingPeriod = billingPeriod;
             OrderSublocationRecipient recipient = fixture.Build<OrderSublocationRecipient>()
                 .Create();
-            recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
+            recipient.SetQuantityForItem(orderItem, 1);
 
             OrderSublocation sublocation = fixture.Build<OrderSublocation>()
                 .With(o => o.SublocationRecipients, new List<OrderSublocationRecipient> { recipient })
@@ -339,7 +339,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.OrderItemPrice.BillingPeriod = billingPeriod;
             OrderSublocationRecipient recipient = fixture.Build<OrderSublocationRecipient>()
                 .Create();
-            recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
+            recipient.SetQuantityForItem(orderItem, 1);
 
             OrderSublocation sublocation = fixture.Build<OrderSublocation>()
                 .With(o => o.SublocationRecipients, new List<OrderSublocationRecipient> { recipient })
@@ -374,8 +374,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             perMonthOrderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
             OrderSublocationRecipient recipient = fixture.Build<OrderSublocationRecipient>()
                 .Create();
-            recipient.SetQuantityForItem(oneOffCostOrderItem.CatalogueItemId, 1);
-            recipient.SetQuantityForItem(perMonthOrderItem.CatalogueItemId, 1);
+            recipient.SetQuantityForItem(oneOffCostOrderItem, 1);
+            recipient.SetQuantityForItem(perMonthOrderItem, 1);
 
             OrderSublocation sublocation = fixture.Build<OrderSublocation>()
                 .With(o => o.SublocationRecipients, new List<OrderSublocationRecipient> { recipient })
@@ -416,8 +416,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderSublocationRecipient recipient = fixture.Build<OrderSublocationRecipient>()
                 .Create();
-            recipient.SetQuantityForItem(perMonthOrderItemUsedForTotal.CatalogueItemId, 1);
-            recipient.SetDeliveryDateForItem(perMonthOrderItemUsedForTotal.CatalogueItemId, amendmentPlannedDelivery);
+            recipient.SetQuantityForItem(perMonthOrderItemUsedForTotal, 1);
+            recipient.SetDeliveryDateForItem(perMonthOrderItemUsedForTotal, amendmentPlannedDelivery);
 
             OrderSublocation sublocation = fixture.Build<OrderSublocation>()
                 .With(o => o.SublocationRecipients, new List<OrderSublocationRecipient> { recipient })
@@ -460,7 +460,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         {
             order.Revision = revision;
             var orderItem = order.OrderItems.First();
-            orderItem.Quantity = null;
             order.OrderSublocations.ForEach(sl =>
                 sl.SublocationRecipients.ForEach(sr => sr.OrderItemSublocationRecipients.Clear()));
             var orderWrapper = new OrderWrapper(order);
@@ -485,10 +484,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             OrderItemPrice orderItemPrice)
         {
             orderItemPrice.BillingPeriod = TimeUnit.PerMonth;
-            orderItem.Quantity = null;
             orderItem.OrderItemPrice = orderItemPrice;
             recipient.OrderItemSublocationRecipients.Clear();
-            recipient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
+            recipient.SetQuantityForItem(orderItem, quantity);
 
             var expectedResult = ((IPrice)orderItemPrice).CalculateCostPerMonth(quantity);
 
@@ -504,10 +502,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             OrderItemPrice orderItemPrice)
         {
             orderItemPrice.BillingPeriod = TimeUnit.PerYear;
-            orderItem.Quantity = null;
             orderItem.OrderItemPrice = orderItemPrice;
             recipient.OrderItemSublocationRecipients.Clear();
-            recipient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
+            recipient.SetQuantityForItem(orderItem, quantity);
 
             var expectedResult = ((IPrice)orderItemPrice).CalculateCostPerYear(quantity);
 
@@ -523,72 +520,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             OrderItemPrice orderItemPrice)
         {
             orderItemPrice.BillingPeriod = null;
-            orderItem.Quantity = null;
             orderItem.OrderItemPrice = orderItemPrice;
             recipient.OrderItemSublocationRecipients.Clear();
-            recipient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
+            recipient.SetQuantityForItem(orderItem, quantity);
 
             var expectedResult = ((IPrice)orderItemPrice).CalculateOneOffCost(quantity);
-
-            orderItem.TotalCost([recipient]).Should().Be(expectedResult);
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void OrderItem_TotalCost_GlobalQuantity_PerMonth_ReturnsExpected(
-            OrderSublocationRecipient recipient,
-            int globalQuantity,
-            int recipientQuantity,
-            OrderItem orderItem,
-            OrderItemPrice orderItemPrice)
-        {
-            orderItemPrice.BillingPeriod = TimeUnit.PerMonth;
-            orderItem.Quantity = globalQuantity;
-            orderItem.OrderItemPrice = orderItemPrice;
-            recipient.OrderItemSublocationRecipients.Clear();
-            recipient.SetQuantityForItem(orderItem.CatalogueItemId, recipientQuantity);
-
-            var expectedResult = ((IPrice)orderItemPrice).CalculateCostPerMonth(globalQuantity);
-
-            orderItem.TotalCost([recipient]).Should().Be(expectedResult);
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void OrderItem_TotalCost_GlobalQuantity_PerYear_ReturnsExpected(
-            OrderSublocationRecipient recipient,
-            int globalQuantity,
-            int recipientQuantity,
-            OrderItem orderItem,
-            OrderItemPrice orderItemPrice)
-        {
-            orderItemPrice.BillingPeriod = TimeUnit.PerYear;
-            orderItem.Quantity = globalQuantity;
-            orderItem.OrderItemPrice = orderItemPrice;
-            recipient.OrderItemSublocationRecipients.Clear();
-            recipient.SetQuantityForItem(orderItem.CatalogueItemId, recipientQuantity);
-
-            var expectedResult = ((IPrice)orderItemPrice).CalculateCostPerYear(globalQuantity);
-
-            orderItem.TotalCost([recipient]).Should().Be(expectedResult);
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void OrderItem_TotalCost_GlobalQuantity_OneOff_ReturnsExpected(
-            OrderSublocationRecipient recipient,
-            int globalQuantity,
-            int recipientQuantity,
-            OrderItem orderItem,
-            OrderItemPrice orderItemPrice)
-        {
-            orderItemPrice.BillingPeriod = null;
-            orderItem.Quantity = globalQuantity;
-            orderItem.OrderItemPrice = orderItemPrice;
-            recipient.OrderItemSublocationRecipients.Clear();
-            recipient.SetQuantityForItem(orderItem.CatalogueItemId, recipientQuantity);
-
-            var expectedResult = ((IPrice)orderItemPrice).CalculateOneOffCost(globalQuantity);
 
             orderItem.TotalCost([recipient]).Should().Be(expectedResult);
         }
@@ -626,7 +562,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
                 .With(r => r.ParentSublocationOdsCode, sublocation.SublocationOdsCode)
                 .Without(r => r.OrderItemSublocationRecipients)
                 .Create();
-            recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
+            recipient.SetQuantityForItem(orderItem, 1);
 
             sublocation.SublocationRecipients = [recipient];
 
@@ -636,8 +572,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
                 .With(r => r.ParentSublocationOdsCode, sublocation.SublocationOdsCode)
                 .Without(i => i.OrderItemSublocationRecipients)
                 .Create();
-            amendedRecipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
-            amendedRecipient.SetDeliveryDateForItem(orderItem.CatalogueItemId, amendmentPlannedDelivery);
+            amendedRecipient.SetQuantityForItem(orderItem, 1);
+            amendedRecipient.SetDeliveryDateForItem(orderItem, amendmentPlannedDelivery);
 
             Order amendedOrder = order.BuildAmendment(2);
             amendedOrder.DeliveryDate = amendmentPlannedDelivery;
@@ -675,21 +611,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
                 .With(r => r.ParentSublocationOdsCode, sublocation.SublocationOdsCode)
                 .Without(i => i.OrderItemSublocationRecipients)
                 .Create();
-            recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
+            recipient.SetQuantityForItem(orderItem, 1);
 
             OrderSublocationRecipient revision2Recipient = fixture.Build<OrderSublocationRecipient>()
                 .With(r => r.ParentSublocationOdsCode, sublocation.SublocationOdsCode)
                 .Without(i => i.OrderItemSublocationRecipients)
                 .Create();
-            revision2Recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
-            revision2Recipient.SetDeliveryDateForItem(orderItem.CatalogueItemId, revision2PlannedDelivery);
+            revision2Recipient.SetQuantityForItem(orderItem, 1);
+            revision2Recipient.SetDeliveryDateForItem(orderItem, revision2PlannedDelivery);
 
             OrderSublocationRecipient revision3Recipient = fixture.Build<OrderSublocationRecipient>()
                 .With(r => r.ParentSublocationOdsCode, sublocation.SublocationOdsCode)
                 .Without(i => i.OrderItemSublocationRecipients)
                 .Create();
-            revision3Recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
-            revision3Recipient.SetDeliveryDateForItem(orderItem.CatalogueItemId, revision3PlannedDelivery);
+            revision3Recipient.SetQuantityForItem(orderItem, 1);
+            revision3Recipient.SetDeliveryDateForItem(orderItem, revision3PlannedDelivery);
 
             sublocation.SublocationRecipients = [recipient];
 

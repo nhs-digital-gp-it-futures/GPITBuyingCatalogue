@@ -14,8 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderItemPriceTier(OrderItemPrice price, CataloguePriceTier tier)
         {
-            OrderId = price.OrderId;
-            CatalogueItemId = price.CatalogueItemId;
+            OrderItemPriceId = price.Id;
             Price = tier.Price;
             ListPrice = tier.Price;
             LowerRange = tier.LowerRange;
@@ -33,8 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         internal OrderItemPriceTier(OrderItemPrice price, IOrderablePriceTier tier)
         {
-            OrderId = price.OrderId;
-            CatalogueItemId = price.CatalogueItemId;
+            OrderItemPriceId = price.Id;
             Price = tier.Price;
             ListPrice = tier.Price;
             LowerRange = tier.LowerRange;
@@ -44,9 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int Id { get; set; }
 
-        public int OrderId { get; set; }
-
-        public CatalogueItemId CatalogueItemId { get; set; }
+        public int OrderItemPriceId { get; set; }
 
         public decimal Price { get; set; }
 

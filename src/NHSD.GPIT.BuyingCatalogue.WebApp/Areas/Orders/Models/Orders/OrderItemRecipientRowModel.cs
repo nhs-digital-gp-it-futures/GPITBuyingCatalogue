@@ -19,7 +19,6 @@ public class OrderItemRecipientRowModel
         ServiceRecipient = recipient;
         IsAmendment = amendOrderItemModel.IsAmendment;
         CallOffId = callOffId;
-        CatalogueItemId = amendOrderItemModel.CatalogueItem.Id;
         IsServiceRecipientAdded = amendOrderItemModel.IsServiceRecipientAdded(recipient.RecipientOdsCode);
         OrderType = amendOrderItemModel.OrderType;
         FromPreviousRevision = amendOrderItemModel.FromPreviousRevision;

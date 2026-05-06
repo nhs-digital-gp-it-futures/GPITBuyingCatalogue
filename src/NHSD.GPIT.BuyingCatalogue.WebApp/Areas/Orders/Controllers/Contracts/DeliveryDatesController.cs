@@ -151,9 +151,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> EditDates(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RoutingSource? source = null)
         {
             var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var orderItem = orderWrapper.Order.OrderItem(catalogueItemId);
 
             // If there are no new recipients for this item (e.g. the original solution in an amend)
-            if (orderWrapper.DetermineOrderRecipients(catalogueItemId) is null or { Count: 0 })
+            if (orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId) is null or { Count: 0 })
             {
                 RoutingResult next = routingService.GetRoute(
                     RoutingPoint.EditDeliveryDates,
@@ -186,6 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 
             var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = orderWrapper.Order;
+            var orderItem = order.OrderItem(catalogueItemId);
 
             var recipients = model.Recipients.SelectMany(x => x.Value).ToList();
 
@@ -193,7 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 .Select(x => new RecipientDeliveryDateDto(x.OdsCode, x.Date!.Value))
                 .ToList();
 
-            await deliveryDateService.SetDeliveryDates(order.Id, catalogueItemId, deliveryDates);
+            await deliveryDateService.SetDeliveryDates(order.Id, orderItem, deliveryDates);
 
             var route = routingService.GetRoute(
                 RoutingPoint.EditDeliveryDates,
@@ -232,19 +234,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.Order;
             var solutionId = order.GetSolutionId();
+            var solutionOrderItem = solutionId.HasValue ? order.OrderItem(solutionId.Value) : null;
+            var orderItem = order.OrderItem(catalogueItemId);
 
-            var recipients = wrapper.DetermineOrderRecipients(catalogueItemId);
+            var recipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
             List<RecipientDeliveryDateDto> dates = model.MatchDates == true && solutionId is not null
                 ? recipients
                     .Select(x => new RecipientDeliveryDateDto(
                         x.RecipientOdsCode,
-                        x.GetDeliveryDateForItem(solutionId.Value)!.Value))
+                        x.GetDeliveryDateForItem(solutionOrderItem.CatalogueItemId)!.Value))
                     .ToList()
                 : recipients
                     .Select(x => new RecipientDeliveryDateDto(x.RecipientOdsCode, order.DeliveryDate!.Value))
                     .ToList();
 
-            await deliveryDateService.SetDeliveryDates(order.Id, catalogueItemId, dates);
+            await deliveryDateService.SetDeliveryDates(order.Id, orderItem, dates);
 
             return RedirectToAction(
                 nameof(EditDates),

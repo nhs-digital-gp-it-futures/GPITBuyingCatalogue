@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
-            if (orderRecipients.All(x => x.GetQuantityForItem(catalogueItemId) is not null))
+            if (orderRecipients.All(x => x.GetQuantityForItem(orderItem.CatalogueItemId) is not null))
                 return RedirectToAction(nameof(ConfirmQuantities), new { internalOrgId, callOffId, catalogueItemId });
 
             return RedirectToAction(
@@ -302,7 +302,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             return wrapper.Previous?.FlattenedRecipients
                 ?.Where(x =>
-                    x.OrderItemSublocationRecipients.Any(y => y.CatalogueItemId == orderItem.CatalogueItemId) &&
+                    x.OrderItemSublocationRecipients.Any(y => y.OrderItemId == orderItem.Id) &&
                     (parentOdsCode is null || x.ParentSublocationOdsCode == parentOdsCode))
                 .Select(x => new ServiceRecipientQuantityDto(
                     x.ParentSublocationOdsCode,
@@ -335,22 +335,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                         continue;
                     }
 
-                    var existing = recipients
-                        ?.FirstOrDefault(x =>
-                            x.RecipientOdsCode == serviceRecipient.RecipientOdsCode && x.ParentSublocationOdsCode
-                            == serviceRecipient.ParentSublocationOdsCode)
-                        ?.GetQuantityForItem(solution.CatalogueItemId);
+                    var existing = solution != null
+                        ? recipients
+                            ?.FirstOrDefault(x =>
+                                x.RecipientOdsCode == serviceRecipient.RecipientOdsCode && x.ParentSublocationOdsCode
+                                == serviceRecipient.ParentSublocationOdsCode)
+                            ?.GetQuantityForItem(solution.CatalogueItemId)
+                        : null;
 
                     if (existing.HasValue)
                     {
                         serviceRecipient.InputQuantity = $"{existing.Value}";
                     }
-                    else
+                    else if (practiceSizes.TryGetValue(serviceRecipient.RecipientOdsCode, out var quantity))
                     {
-                        if (practiceSizes.TryGetValue(serviceRecipient.RecipientOdsCode, out var quantity))
-                        {
-                            serviceRecipient.InputQuantity = $"{quantity}";
-                        }
+                        serviceRecipient.InputQuantity = $"{quantity}";
                     }
                 }
 

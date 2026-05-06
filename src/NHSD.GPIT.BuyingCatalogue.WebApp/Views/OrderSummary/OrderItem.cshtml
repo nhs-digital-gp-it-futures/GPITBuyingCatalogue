@@ -52,13 +52,13 @@
                           Model.OrderWrapper.GetCallOffIdForPreviousRecipient(recipient, orderIdWithCatalogueItem)))
             {
                 var callOffId = Model.OrderWrapper.GetCallOffIdForPreviousRecipient(serviceRecipient, orderIdWithCatalogueItem);
-                var recipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId);
+                var recipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId) { CatalogueItemId = Model.Previous.CatalogueItemId };
                 <partial name="ServiceRecipientRow" model="recipientRowModel" />
             }
         }
         @foreach (var recipient in Model.RolledUpRecipientsForItem.Where(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)))
         {
-            var recipientRowModel = new OrderItemRecipientRowModel(recipient, Model, Model.CallOffId.ToString());
+            var recipientRowModel = new OrderItemRecipientRowModel(recipient, Model, Model.CallOffId.ToString()) { CatalogueItemId = Model.OrderItem.CatalogueItemId };
             <partial name="ServiceRecipientRow" model="recipientRowModel" />
         }
     @if (!Model.OrderType.MergerOrSplit
@@ -73,7 +73,7 @@
                 <td />
                 <td />
                 <td class="numeric total">
-                    @($"{Model.RolledUpRecipientsForItem.Sum(x => x.GetQuantityForItem(Model.CatalogueItem.Id) ?? 0):N0}")
+                    @($"{Model.RolledUpRecipientsForItem.Sum(x => x.GetQuantityForItem(Model.OrderItem.CatalogueItemId) ?? 0):N0}")
                 </td>
             </tr>
         }

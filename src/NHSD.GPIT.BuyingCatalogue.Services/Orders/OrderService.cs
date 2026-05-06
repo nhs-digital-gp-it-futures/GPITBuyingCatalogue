@@ -112,6 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.OrderItemSublocationRecipients)
+                .ThenInclude(z => z.OrderItem)
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.RecipientOdsOrganisation)
@@ -147,6 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.OrderItemSublocationRecipients)
+                .ThenInclude(z => z.OrderItem)
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.RecipientOdsOrganisation)
@@ -180,6 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.OrderItemSublocationRecipients)
+                .ThenInclude(z => z.OrderItem)
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.RecipientOdsOrganisation)
@@ -282,6 +285,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.OrderItemSublocationRecipients)
+                .ThenInclude(z => z.OrderItem)
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.RecipientOdsOrganisation)
@@ -678,9 +682,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             dbContext.OrderDeletionApprovals.RemoveRange(dbContext.OrderDeletionApprovals.Where(x => x.OrderId == order.Id));
             dbContext.OrderSublocations.RemoveRange(dbContext.OrderSublocations.Where(x => x.OrderId == order.Id));
             dbContext.OrderItems.RemoveRange(dbContext.OrderItems.Where(x => x.OrderId == order.Id));
-            dbContext.OrderItemFunding.RemoveRange(dbContext.OrderItemFunding.Where(x => x.OrderId == order.Id));
-            dbContext.OrderItemPriceTiers.RemoveRange(dbContext.OrderItemPriceTiers.Where(x => x.OrderId == order.Id));
-            dbContext.OrderItemPrices.RemoveRange(dbContext.OrderItemPrices.Where(x => x.OrderId == order.Id));
+            dbContext.OrderItemFunding.RemoveRange(dbContext.OrderItemFunding.Where(x => x.OrderItem.OrderId == order.Id));
+            dbContext.OrderItemPriceTiers.RemoveRange(dbContext.OrderItemPriceTiers.Where(x => x.OrderItemPrice.OrderItem.OrderId == order.Id));
+            dbContext.OrderItemPrices.RemoveRange(dbContext.OrderItemPrices.Where(x => x.OrderItem.OrderId == order.Id));
             dbContext.Orders.Remove(order);
 
             await dbContext.SaveChangesAsync();
@@ -719,6 +723,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.OrderItemSublocationRecipients)
+                .ThenInclude(z => z.OrderItem)
                 .AsSplitQuery()
                 .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
 
@@ -777,6 +782,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.OrderItemSublocationRecipients)
+                .ThenInclude(z => z.OrderItem)
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.RecipientOdsOrganisation)
@@ -798,12 +804,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
                 if (selectedFundingType == OrderItemFundingType.None) continue;
 
-                var orderId = await dbContext.OrderId(internalOrgId, callOffId);
-
                 orderItem.OrderItemFunding = new OrderItemFunding
                 {
-                    OrderId = orderId,
-                    CatalogueItemId = orderItem.CatalogueItemId,
+                    OrderItemId = orderItem.Id,
                     OrderItemFundingType = selectedFundingType,
                 };
             }
@@ -919,6 +922,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.OrderItemSublocationRecipients)
+                .ThenInclude(z => z.OrderItem)
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.RecipientOdsOrganisation)

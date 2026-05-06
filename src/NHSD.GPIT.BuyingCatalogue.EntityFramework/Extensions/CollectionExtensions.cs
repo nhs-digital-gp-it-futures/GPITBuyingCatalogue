@@ -14,7 +14,7 @@ public static class CollectionExtensions
         return recipients == null
             ? []
             : recipients
-                .Where(r => r.OrderItemSublocationRecipients.Any(oir => oir.CatalogueItemId == catalogueItemId))
+                .Where(r => r.OrderItemSublocationRecipients.Any(oir => oir.OrderItem.CatalogueItemId == catalogueItemId))
                 .ToList();
     }
 
@@ -37,16 +37,14 @@ public static class CollectionExtensions
         return recipients.All(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue);
     }
 
-    public static bool SomeButNotAllNewQuantitiesEntered(
+    public static bool SomeNewQuantitiesEntered(
         this ICollection<OrderSublocationRecipient> recipients,
-        OrderItem orderItem,
-        int previousRecipients = 0)
+        OrderItem orderItem)
     {
         if (orderItem.OrderItemPrice == null || recipients == null)
             return false;
 
-        var count = recipients.Count(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue)
-            - previousRecipients;
-        return count > 0 && count < recipients.Count - previousRecipients;
+        var count = recipients.Count(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue);
+        return count > 0;
     }
 }

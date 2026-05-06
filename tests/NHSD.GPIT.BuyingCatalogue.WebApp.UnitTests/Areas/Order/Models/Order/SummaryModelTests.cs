@@ -276,7 +276,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             {
                 order.OrderSublocations.ForEach(y => y.SublocationRecipients.ForEach(z =>
                     z.OrderItemSublocationRecipients.Add(
-                        new OrderItemSublocationRecipient(order.Id, z.RecipientOdsCode, x.CatalogueItemId)
+                        new OrderItemSublocationRecipient(order.Id, z.RecipientOdsCode, x)
                         {
                             Quantity = 5, DeliveryDate = DateTime.Now.AddMonths(6),
                         })));

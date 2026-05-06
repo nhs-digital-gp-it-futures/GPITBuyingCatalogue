@@ -40,8 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             OrderType = rolledUpOrder.OrderType;
-            CatalogueSolution = rolledUpOrder.GetSolutionOrderItem();
-            AdditionalServices = rolledUpOrder.GetAdditionalServices();
+            CatalogueSolution = wrapper.Order.GetSolutionOrderItem();
+            AdditionalServices = wrapper.Order.GetAdditionalServices();
             AssociatedServices = wrapper.Order.GetAssociatedServices() ?? new List<OrderItem>();
             PreviousAssociatedServices = wrapper.PreviousOrders
                 .SelectMany(order => order.GetAssociatedServices() ?? new List<OrderItem>())
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         internalOrgId,
                         callOffId,
                         OrderType,
-                        rolledUpOrder.FlattenedRecipients,
+                        wrapper.DetermineOrderRecipients(CatalogueSolution.CatalogueItemId),
                         CatalogueSolution)
                     {
                         FromPreviousRevision = Previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             AdditionalServices.ForEach(x => taskModels.Add(
                 x.CatalogueItemId,
-                new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.FlattenedRecipients, x)
+                new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, wrapper.DetermineOrderRecipients(x.CatalogueItemId), x)
                 {
                     FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
                     HasNewRecipients = wrapper.HasNewOrderRecipients,
