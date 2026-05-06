@@ -15,7 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests
         {
             await Page.GotoAsync(Fixture.BaseUrl);
             await Page.GetByRole(AriaRole.Link, new() { Name = "Log in" }).ClickAsync();
-            await Page.GetByRole(AriaRole.Heading, new() { Name = "Buying Catalogue log in" }).WaitForAsync();
+            
+            var heading = Page.GetByRole(AriaRole.Heading, new() { Name = "Buying Catalogue log in" });
+            await heading.WaitForAsync();
+
+            Assert.True(await heading.IsVisibleAsync());
         }
 
         [Fact]
@@ -34,7 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests
             await Page.GetByRole(AriaRole.Button, new() { Name = "Log in" }).ClickAsync();
             Assert.True(await Page.GetByRole(AriaRole.Heading, new() { Name = "Your organisation's dashboard" }).IsVisibleAsync());
 
-            await Page.Locator("a").Filter(new() { HasTextRegex = new Regex("^View orders$") }).ClickAsync();
+            await Page.Locator("li.nhsuk-card-group__item").Filter(new() { HasText = "orders" })
+                      .GetByRole(AriaRole.Link, new() { Name = "View orders" })
+                      .ClickAsync();
             await Page.GetByRole(AriaRole.Heading, new() { Name = "Your organisation's orders" }).IsVisibleAsync();
 
             await Page.GetByRole(AriaRole.Link, new() { Name = "Create new order" }).ClickAsync();
@@ -161,12 +167,9 @@ namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests
             //Review and complete order
             await Page.GetByRole(AriaRole.Link, new() { Name = "Review and complete order" }).ClickAsync();
             await Page.GetByRole(AriaRole.Heading, new() { Name = "Review and complete order" }).IsVisibleAsync();
-            //await Page.GetByRole(AriaRole.Button, new() { Name = "Complete order" }).ClickAsync();
-            //await Page.GetByRole(AriaRole.Heading, new() { Name = "Order completed" }).IsVisibleAsync();
-
         }
 
-        private async Task SelectAndConfirmSupplier(IPage Page, string supplierName)
+        private static async Task SelectAndConfirmSupplier(IPage Page, string supplierName)
         {
             var supplierInput = Page.Locator("input[role='combobox']:visible");
             var suggestionsList = Page.Locator("ul[role='listbox']:visible");
