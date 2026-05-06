@@ -1,0 +1,28 @@
+CREATE TABLE [ordering].[OrderItemPricesV2]
+(
+    Id INT IDENTITY(1, 1) NOT NULL,
+    OrderItemId INT NOT NULL,
+    CataloguePriceId INT NOT NULL, 
+    BillingPeriodId INT NULL,
+    ProvisioningTypeId INT NOT NULL,
+    CataloguePriceTypeId INT NOT NULL,
+    CataloguePriceCalculationTypeId INT NOT NULL,
+    CataloguePriceQuantityCalculationTypeId INT NULL,
+    CurrencyCode NVARCHAR(3) NOT NULL,
+    [Description] NVARCHAR(100) NOT NULL,
+    [RangeDescription] NVARCHAR(100) NULL,
+    LastUpdated DATETIME2(0) NOT NULL CONSTRAINT DF_OrderItemPricesV2_LastUpdated DEFAULT GETUTCDATE(),
+    LastUpdatedBy INT NULL,
+    SysStartTime DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
+    SysEndTime DATETIME2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+    PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
+    CONSTRAINT PK_OrderItemPricesV2 PRIMARY KEY (Id),
+    CONSTRAINT UQ_OrderItemPricesV2_OrderItem UNIQUE (OrderItemId),
+    CONSTRAINT FK_OrderItemPricesV2_OrderItem FOREIGN KEY (OrderItemId) REFERENCES ordering.OrderItemsV2(Id) ON DELETE CASCADE,
+    CONSTRAINT FK_OrderItemPricesV2_EstimationPeriod FOREIGN KEY (BillingPeriodId) REFERENCES catalogue.TimeUnits (Id),
+    CONSTRAINT FK_OrderItemPricesV2_CataloguePriceType FOREIGN KEY (CataloguePriceTypeId) REFERENCES catalogue.CataloguePriceTypes (Id),
+    CONSTRAINT FK_OrderItemPricesV2_ProvisioningType FOREIGN KEY (ProvisioningTypeId) REFERENCES catalogue.ProvisioningTypes (Id),
+    CONSTRAINT FK_OrderItemPricesV2_CataloguePriceCalculationType FOREIGN KEY (CataloguePriceCalculationTypeId) REFERENCES catalogue.CataloguePriceCalculationTypes (Id),
+    CONSTRAINT FK_OrderItemPricesV2_CataloguePriceQuantityCalculationType FOREIGN KEY (CataloguePriceQuantityCalculationTypeId) REFERENCES catalogue.CataloguePriceQuantityCalculationTypes(Id),
+    CONSTRAINT FK_OrderItemPricesV2_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers (Id)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.OrderItemPricesV2_History));

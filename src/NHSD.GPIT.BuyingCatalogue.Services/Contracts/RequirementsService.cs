@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             return await dbContext.Requirements
                 .Include(x => x.OrderItem)
                     .ThenInclude(x => x.CatalogueItem)
-                .FirstOrDefaultAsync(x => x.Id == requirementId && x.OrderId == orderId);
+                .FirstOrDefaultAsync(x => x.Id == requirementId && x.OrderItem.OrderId == orderId);
         }
 
         public async Task EditRequirement(
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
         public async Task DeleteRequirements(int orderId, IEnumerable<CatalogueItemId> catalogueItemIds)
         {
             var requirements = await dbContext.Requirements
-                .Where(x => x.OrderId == orderId && catalogueItemIds.Contains(x.CatalogueItemId))
+                .Where(x => x.OrderItem.OrderId == orderId && catalogueItemIds.Contains(x.OrderItem.CatalogueItemId))
                 .ToListAsync();
 
             if (!requirements.Any())

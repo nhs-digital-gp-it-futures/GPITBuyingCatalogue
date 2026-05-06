@@ -10,8 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
         public void Customize(IFixture fixture)
         {
             static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<OrderItemFunding> composer) => composer
-                .Without(oif => oif.CatalogueItemId)
-                .Without(oif => oif.OrderId)
+                .Without(oif => oif.OrderItemId)
                 .Without(oif => oif.OrderItem);
 
             fixture.Customize<OrderItemFunding>(ComposerTransformation);

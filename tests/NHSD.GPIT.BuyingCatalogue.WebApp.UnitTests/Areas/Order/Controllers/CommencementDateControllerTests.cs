@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             };
 
             order.OrderItems.ForEach(i =>
-                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(i.CatalogueItemId, DateTime.Today)));
+                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(i, DateTime.Today)));
 
             orderService
                 .GetOrderWithOrderItems(order.CallOffId, internalOrgId)

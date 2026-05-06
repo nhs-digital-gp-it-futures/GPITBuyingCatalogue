@@ -47,9 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             {
                 var funding = context.Create<OrderItemFunding>();
 
-                funding.CatalogueItemId = item.CatalogueItemId;
-                funding.OrderId = item.OrderId;
                 funding.OrderItem = item;
+                funding.OrderItemId = item.Id;
 
                 item.OrderItemFunding = funding;
             }
@@ -58,10 +57,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             {
                 var price = context.Create<OrderItemPrice>();
 
-                price.CatalogueItemId = item.CatalogueItemId;
-                price.OrderId = item.OrderId;
                 price.OrderItem = item;
-                price.OrderItemPriceTiers.ForEach(x => x.CatalogueItemId = price.CatalogueItemId);
+                price.OrderItemId = item.Id;
+                price.OrderItemPriceTiers.ForEach(x => x.OrderItemPriceId = price.Id);
 
                 item.OrderItemPrice = price;
             }

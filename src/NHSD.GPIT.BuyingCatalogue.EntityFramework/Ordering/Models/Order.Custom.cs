@@ -242,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                              .OrderItemSublocationRecipients)
                 {
                     if (existingRecipient.OrderItemSublocationRecipients.All(x =>
-                            x.CatalogueItemId != newOrderItemSublocationRecipient.CatalogueItemId))
+                            x.OrderItemId != newOrderItemSublocationRecipient.OrderItemId))
                     {
                         existingRecipient.OrderItemSublocationRecipients.Add(newOrderItemSublocationRecipient);
                     }
@@ -335,13 +335,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             Order previous,
             CatalogueItemId catalogueItemId)
         {
-            if (!Exists(catalogueItemId))
+            var orderItem = OrderItems.FirstOrDefault(item => item.CatalogueItemId == catalogueItemId);
+
+            if (orderItem is null || !Exists(orderItem.CatalogueItemId))
             {
                 return [];
             }
 
-            if (previous == null || (!previous.Exists(catalogueItemId)
-                && OrderItem(catalogueItemId).CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService))
+            if (previous == null || (!previous.Exists(orderItem.CatalogueItemId)
+                && orderItem.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService))
             {
                 // No previous order or this order item is new, all recipients apply
                 return GetOrderRecipients().ToList();
@@ -374,7 +376,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
                 return previousRecipient is null
                     || previousRecipient.OrderItemSublocationRecipients.All(oir =>
-                        oir.CatalogueItemId != catalogueItemId);
+                        oir.OrderItem.CatalogueItemId != catalogueItemId);
             };
         }
 

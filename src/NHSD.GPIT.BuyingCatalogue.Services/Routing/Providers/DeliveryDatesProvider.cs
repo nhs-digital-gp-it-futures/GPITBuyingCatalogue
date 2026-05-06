@@ -41,6 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             }
 
             var solution = order.GetSolutionOrderItem();
+            var orderItem = order.OrderItem(catalogueItemId.Value);
 
             if (order.OrderType.AssociatedServicesOnly
                 || solution == null)
@@ -60,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 
             IEnumerable<string> solutionOdsCodes = orderWrapper.DetermineOrderRecipients(solution.CatalogueItemId)
                 .Select(x => x.RecipientOdsCode);
-            IEnumerable<string> nextItemOdsCodes = orderWrapper.DetermineOrderRecipients(catalogueItemId.Value)
+            IEnumerable<string> nextItemOdsCodes = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId)
                 .Select(x => x.RecipientOdsCode);
             var crossOver = solutionOdsCodes.Intersect(nextItemOdsCodes);
 

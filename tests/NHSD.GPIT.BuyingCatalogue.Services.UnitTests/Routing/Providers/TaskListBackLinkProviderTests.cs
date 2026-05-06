@@ -113,7 +113,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.Clear());
             order.OrderItems.ForEach(x =>
             {
-                x.Quantity = 0;
                 x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             });
 

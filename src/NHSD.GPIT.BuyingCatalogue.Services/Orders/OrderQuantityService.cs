@@ -34,10 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 return;
             }
 
-            orderItem.Quantity = null;
-
             IEnumerable<OrderItemSublocationRecipient> toDelete =
-                orderItemSublocationRecipients.Where(i => i.CatalogueItemId == catalogueItemId);
+                orderItemSublocationRecipients.Where(i => i.OrderItemId == orderItem.Id);
             dbContext.OrderItemSublocationRecipients.RemoveRange(toDelete);
 
             await dbContext.SaveChangesAsync();
@@ -54,8 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 return;
             }
 
-            orderItem.Quantity = quantity;
-
             dbContext.OrderItems.Update(orderItem);
 
             await dbContext.SaveChangesAsync();
@@ -66,7 +62,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             List<OrderSublocationRecipient> recipients = await dbContext
                 .OrderSublocationRecipients.Where(x => x.OrderId == orderId)
                 .Include(x => x.OrderItemSublocationRecipients)
+                .ThenInclude(orderItemSublocationRecipient => orderItemSublocationRecipient.OrderItem)
                 .ToListAsync();
+            OrderItem orderItem = await dbContext.OrderItems
+                .FirstOrDefaultAsync(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId);
 
             if (recipients.Count == 0)
             {
@@ -74,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     $"No recipients exist for the provided {nameof(orderId)}: {orderId}");
             }
 
-            recipients.ForEach(x => x.SetQuantityForItem(catalogueItemId, quantity));
+            recipients.ForEach(x => x.SetQuantityForItem(orderItem, quantity));
 
             await dbContext.SaveChangesAsync();
         }
@@ -92,7 +91,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             List<OrderSublocationRecipient> recipients = await dbContext
                 .OrderSublocationRecipients.Where(x => x.OrderId == orderId)
                 .Include(x => x.OrderItemSublocationRecipients)
+                .ThenInclude(orderItemSublocationRecipient => orderItemSublocationRecipient.OrderItem)
                 .ToListAsync();
+            OrderItem orderItem = await dbContext.OrderItems
+                .FirstOrDefaultAsync(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId);
 
             if (recipients.Count == 0)
             {
@@ -106,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     x.RecipientOdsCode == quantity.RecipientOdsCode
                     && x.ParentSublocationOdsCode == quantity.ParentSublocationOdsCode);
 
-                recipient.SetQuantityForItem(catalogueItemId, quantity.Quantity);
+                recipient.SetQuantityForItem(orderItem, quantity.Quantity);
             }
 
             await dbContext.SaveChangesAsync();

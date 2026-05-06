@@ -12,6 +12,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using FluentAssertions;
+using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
@@ -342,7 +343,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             [Frozen] BuyingCatalogueDbContext dbContext,
             IFixture fixture)
         {
-            contractBillingItems.ForEach(x => x.CatalogueItemId = associatedService.CatalogueItemId);
             contractBilling.ContractBillingItems = contractBillingItems;
 
             order.OrderType = OrderTypeEnum.Solution;
@@ -361,6 +361,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
                 OrderItemFundingType.LocalFunding,
                 provisioningType,
                 CataloguePriceQuantityCalculationType.PerServiceRecipient);
+            contractBilling.ContractBillingItems.Last().OrderItem = associatedServiceOrderItem;
 
             OrderSublocationRecipient recipient = BuildOrderRecipient(
                 fixture,
@@ -613,6 +614,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             Order amend = order.BuildAmendment(2);
 
             OrderSublocationRecipient addedRecipient = BuildOrderRecipient(fixture, [orderItem]);
+            addedRecipient.OrderId = amend.Id;
             var amendSublocation = amend.OrderSublocations.First();
             amendSublocation.SublocationOrganisation = workingSublocation.SublocationOrganisation;
             amendSublocation.SublocationRecipients.Add(addedRecipient);
@@ -670,7 +672,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             OrderSublocation workingSublocation = order.OrderSublocations.First();
 
             workingSublocation.Order = order;
-            orderItem.Quantity = null;
 
             order.OrderItems = new HashSet<OrderItem> { orderItem };
 
@@ -685,10 +686,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
                 provisioningType,
                 CataloguePriceQuantityCalculationType.PerServiceRecipient);
             OrderSublocationRecipient originalRecipient = amend.FlattenedRecipients.First();
-            originalRecipient.SetQuantityForItem(addedCatalogueItem.Id, 1);
+            originalRecipient.OrderItemSublocationRecipients.ForEach(oisr => oisr.OrderItem = addedOrderItem);
+            originalRecipient.SetQuantityForItem(addedOrderItem, 1);
             OrderSublocationRecipient addedRecipient = BuildOrderRecipient(
                 fixture,
                 [orderItem, addedOrderItem]);
+            addedRecipient.OrderId = amend.Id;
             var amendSublocation = amend.OrderSublocations.First();
             amendSublocation.SublocationOrganisation = workingSublocation.SublocationOrganisation;
             amendSublocation.SublocationRecipients.Add(addedRecipient);
@@ -770,6 +773,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             Order amend = order.BuildAmendment(2);
 
             OrderSublocationRecipient addedRecipient = BuildOrderRecipient(fixture, [orderItem]);
+            addedRecipient.OrderId = amend.Id;
             var amendSublocation = amend.OrderSublocations.First();
             amendSublocation.SublocationOrganisation = workingSublocation.SublocationOrganisation;
             amendSublocation.SublocationRecipients.Add(addedRecipient);
@@ -849,7 +853,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
 
             var orderItem = fixture.Build<OrderItem>()
                 .Without(i => i.Order)
-                .Without(i => i.Quantity)
                 .With(i => i.CatalogueItem, catalogueItem)
                 .With(i => i.CatalogueItemId, catalogueItem.Id)
                 .With(i => i.OrderItemPrice, itemPrice)
@@ -892,7 +895,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
                     {
                         OrderId = recipient.OrderId,
                         RecipientOdsCode = recipient.RecipientOdsCode,
-                        CatalogueItemId = orderItem.CatalogueItemId,
+                        OrderItemId = orderItem.Id,
                         Quantity = 1,
                         Recipient = recipient,
                         OrderItem = orderItem,

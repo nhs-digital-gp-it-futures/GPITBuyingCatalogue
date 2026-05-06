@@ -22,7 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.ServiceRecipient.Should().Be(orderSublocationRecipient);
             model.IsAmendment.Should().Be(amendOrderItemModel.IsAmendment);
             model.CallOffId.Should().Be(callOffId);
-            model.CatalogueItemId.Should().Be(amendOrderItemModel.CatalogueItem.Id);
             model.IsServiceRecipientAdded.Should().Be(
                 amendOrderItemModel.IsServiceRecipientAdded(orderSublocationRecipient.RecipientOdsCode));
         }

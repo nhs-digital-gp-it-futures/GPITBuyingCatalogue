@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 .Include(x => x.Milestone)
                 .Include(x => x.OrderItem)
                     .ThenInclude(x => x.CatalogueItem)
-                .FirstOrDefaultAsync(x => x.Id == itemId && x.OrderId == orderId);
+                .FirstOrDefaultAsync(x => x.Id == itemId && x.OrderItem.OrderId == orderId);
         }
 
         public async Task EditContractBillingItem(int orderId, int itemId, CatalogueItemId catalogueItemId, string name, string paymentTrigger)
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
         public async Task DeleteContractBillingItems(int orderId, IEnumerable<CatalogueItemId> catalogueItemIds)
         {
             var items = await dbContext.ContractBillingItems
-                .Where(x => x.OrderId == orderId && catalogueItemIds.Contains(x.CatalogueItemId))
+                .Where(x => x.OrderItem.OrderId == orderId && catalogueItemIds.Contains(x.OrderItem.CatalogueItemId))
                 .ToListAsync();
 
             if (!items.Any())
