@@ -51,7 +51,7 @@
             else
             {
                 string actionName, actionText;
-                if (Model.IsAmendment)
+                if (Model.IsAmendment && Model.FromPreviousRevision)
                 {
                     (actionName, actionText) = (nameof(PricesController.ViewPrice), "View");
                 }
