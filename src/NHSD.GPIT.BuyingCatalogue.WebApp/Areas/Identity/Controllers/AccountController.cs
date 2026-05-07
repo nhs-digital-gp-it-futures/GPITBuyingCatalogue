@@ -30,7 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         private readonly IPasswordService passwordService;
         private readonly IPasswordResetCallback passwordResetCallback;
         private readonly DisabledErrorMessageSettings disabledErrorMessageSettings;
-        private readonly PasswordSettings passwordSettings;
 
         public AccountController(
             SignInManager<AspNetUser> signInManager,
@@ -38,8 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             IOdsService odsService,
             IPasswordService passwordService,
             IPasswordResetCallback passwordResetCallback,
-            DisabledErrorMessageSettings disabledErrorMessageSettings,
-            PasswordSettings passwordSettings)
+            DisabledErrorMessageSettings disabledErrorMessageSettings)
         {
             this.signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
@@ -47,7 +45,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
             this.passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
             this.disabledErrorMessageSettings = disabledErrorMessageSettings ?? throw new ArgumentNullException(nameof(disabledErrorMessageSettings));
-            this.passwordSettings = passwordSettings ?? throw new ArgumentNullException(nameof(passwordSettings));
         }
 
         [HttpGet("Login")]
@@ -94,6 +91,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
             if (!signinResult.Succeeded)
                 return BadLogin();
+
+            user.LoginEvents.Add(new AspNetUserLoginEvent(DateTime.UtcNow));
+            await userManager.UpdateAsync(user);
 
             await odsService.UpdateOrganisationDetails(user.PrimaryOrganisation.ExternalIdentifier);
             return Redirect(await GetLogonReturnUrl(viewModel.ReturnUrl, user));

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -119,6 +120,27 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Users
             user.PasswordUpdatedDate = changedDate;
 
             user.DetermineEventToRaise(today).Should().Be(PasswordExpiryEventTypeEnum.Nothing);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void GetLogins_WithPreviousLogins_ReturnsLoginDates(
+            List<DateTime> dates,
+            AspNetUser user)
+        {
+            user.LoginEvents = dates.Select(x => new AspNetUserLoginEvent(x)).ToList();
+
+            user.GetLogins().Should().BeEquivalentTo(dates);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void GetLogins_WithNoLogins_ReturnsNoLoginDates(
+            AspNetUser user)
+        {
+            user.LoginEvents = [];
+
+            user.GetLogins().Should().BeEmpty();
         }
     }
 }
