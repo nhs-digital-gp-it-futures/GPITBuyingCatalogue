@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
             AspNetUserRoles = new HashSet<AspNetUserRole>();
             AspNetUserTokens = new HashSet<AspNetUserToken>();
             Events = new HashSet<AspNetUserEvent>();
+            LoginEvents = new HashSet<AspNetUserLoginEvent>();
         }
 
         public int PrimaryOrganisationId { get; set; }
@@ -55,6 +56,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
         public ICollection<AspNetUserToken> AspNetUserTokens { get; set; }
 
         public ICollection<AspNetUserEvent> Events { get; set; }
+
+        public ICollection<AspNetUserLoginEvent> LoginEvents { get; set; }
+
+        public ICollection<DateTime> GetLogins() => LoginEvents.Select(le => le.Date).ToList();
 
         public bool HasAcceptedLatestTermsOfUse(DateTime revisionDate)
             => AcceptedTermsOfUseDate.GetValueOrDefault() >= revisionDate;

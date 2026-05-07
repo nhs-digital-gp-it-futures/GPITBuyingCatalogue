@@ -1,0 +1,9 @@
+BEGIN TRANSACTION
+
+IF NOT EXISTS(SELECT 1 FROM users.AspNetUserLoginEvents)
+    INSERT INTO users.AspNetUserLoginEvents
+    SELECT Id, GETUTCDATE()
+    FROM users.AspNetUsers;
+GO
+
+COMMIT TRANSACTION

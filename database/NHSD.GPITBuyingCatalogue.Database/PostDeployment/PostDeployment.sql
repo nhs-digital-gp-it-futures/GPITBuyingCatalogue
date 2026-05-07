@@ -82,5 +82,6 @@
 --                      MIGRATION SCRIPTS                      --
 -----------------------------------------------------------------
 
+:r ./InsertUserLoginEvents.sql
 -- Migrate OrderItems, OrderItemFunding, OrderItemPrices, OrderItemSublocationRecipients To V2 Tables
 :r ./migrateToNewTables.sql

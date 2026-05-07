@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -347,6 +348,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             var actualResult = result.Should().BeAssignableTo<RedirectResult>().Subject;
 
             actualResult.Url.Should().Be(adminUrl);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_Login_RecordsLoginDate(
+            string odsCode,
+            AspNetUser user,
+            LoginViewModel model,
+            [Frozen] UserManager<AspNetUser> mockUserManager,
+            [Frozen] SignInManager<AspNetUser> mockSignInManager,
+            AccountController controller)
+        {
+            model.ReturnUrl = string.Empty;
+
+            user.Disabled = false;
+            user.PrimaryOrganisation = new Organisation { ExternalIdentifier = odsCode };
+
+            mockUserManager
+                .FindByNameAsync(model.EmailAddress)
+                .Returns(user);
+
+            mockUserManager
+                .IsInRoleAsync(user, OrganisationFunction.Authority.Name)
+                .Returns(true);
+
+            mockSignInManager
+                .PasswordSignInAsync(user, model.Password, false, true)
+                .Returns(SignInResult.Success);
+
+            user.LoginEvents.Should().BeEmpty();
+
+            var result = await controller.Login(model);
+
+            result.Should().BeOfType<RedirectResult>();
+
+            user.LoginEvents.Should().ContainSingle();
         }
 
         [Theory]
@@ -827,8 +864,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 odsService ?? Substitute.For<IOdsService>(),
                 passwordService ?? Substitute.For<IPasswordService>(),
                 passwordResetCallback ?? Substitute.For<IPasswordResetCallback>(),
-                new DisabledErrorMessageSettings(),
-                new PasswordSettings());
+                new DisabledErrorMessageSettings());
         }
     }
 }
