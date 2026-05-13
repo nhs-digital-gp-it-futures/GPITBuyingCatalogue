@@ -9,14 +9,14 @@ public class OrderingDashboardPage : BasePage
     public OrderingDashboardPage(IPage page) : base(page) { }
 
     public async Task AssertOnDashboardAsync() =>
-        await AssertHeadingAsync("Your organisation's dashboard");
+        await AssertHeadingAsync("Your organisation’s dashboard");
 
     public async Task GoToOrdersAsync()
     {        
         await Page.Locator("li.nhsuk-card-group__item").Filter(new() { HasText = "orders" })
                       .GetByRole(AriaRole.Link, new() { Name = "View orders" })
                       .ClickAsync();
-        await AssertHeadingAsync("Your organisation's orders");
+        await AssertHeadingAsync("Your organisation’s orders");
     }
 
     public async Task CreateNewOrderAsync()
