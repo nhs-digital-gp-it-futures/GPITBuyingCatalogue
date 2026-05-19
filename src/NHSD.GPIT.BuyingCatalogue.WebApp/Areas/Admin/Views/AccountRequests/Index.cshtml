@@ -1,0 +1,150 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AccountRequestsModels.AccountRequestsDashboardModel
+
+@{
+    ViewBag.Title = "Account creation requests";
+}
+
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(HomeController.Index)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
+                       class="nhsuk-breadcrumb__link">Home</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="View all account requests that have been submitted on the Buying Catalogue."/>
+
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-full">
+                <ul class="nhsuk-grid-row nhs-grid-row__no-padding nhsuk-u-margin-bottom-0">
+                    <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+                        <nhs-card-v2>
+                            <nhs-card-content>
+                                <h3 class="nhsuk-card__heading">
+                                    Total requests
+                                    <span class="nhsuk-caption-m nhsuk-caption--bottom">
+                                        <span class="nhsuk-u-visually-hidden"> - </span>
+                                        @Model.AccountRequestsModel.TotalNumberOfRequests
+                                    </span>
+                                </h3>
+                            </nhs-card-content>
+                        </nhs-card-v2>
+                    </li>
+                    <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+                        <nhs-card-v2>
+                            <nhs-card-content>
+                                <h3 class="nhsuk-card__heading">
+                                    Pending requests
+                                    <span class="nhsuk-caption-m nhsuk-caption--bottom">
+                                        <span class="nhsuk-u-visually-hidden"> - </span>
+                                        @Model.AccountRequestsModel.TotalNumberOfPendingRequests
+                                    </span>
+                                </h3>
+                            </nhs-card-content>
+                        </nhs-card-v2>
+                    </li>
+                </ul>
+                <ul class="nhsuk-grid-row nhs-grid-row__no-padding nhsuk-u-margin-bottom-0">
+                    <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+                        <nhs-card-v2>
+                            <nhs-card-content>
+                                <h3 class="nhsuk-card__heading">
+                                    Approved requests
+                                    <span class="nhsuk-caption-m nhsuk-caption--bottom">
+                                        <span class="nhsuk-u-visually-hidden"> - </span>
+                                        @Model.AccountRequestsModel.TotalNumberOfApprovedRequests
+                                    </span>
+                                </h3>
+                            </nhs-card-content>
+                        </nhs-card-v2>
+                    </li>
+                    <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+                        <nhs-card-v2>
+                            <nhs-card-content>
+                                <h3 class="nhsuk-card__heading">
+                                    Rejected requests
+                                    <span class="nhsuk-caption-m nhsuk-caption--bottom">
+                                        <span class="nhsuk-u-visually-hidden"> - </span>
+                                        @Model.AccountRequestsModel.TotalNumberOfRejectedRequests
+                                    </span>
+                                </h3>
+                            </nhs-card-content>
+                        </nhs-card-v2>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <form method="post">
+            <nhs-expander label-text="Filter account requests">
+                <nhs-fieldset-form-label asp-for="@Model"
+                                         label-hint="Select one option.">
+                    <nhs-radio-buttons asp-for="SelectedStatus"
+                                       values="@Model.AccountRequestStatuses.Cast<object>()"
+                                       value-name="Value"
+                                       display-name="Text"/>
+                </nhs-fieldset-form-label>
+                <nhs-submit-button text="Apply filter"/>
+                <br/>
+                <a asp-action="@nameof(AccountRequestsController.Index)"
+                   asp-controller="@typeof(AccountRequestsController).ControllerName()">
+                    Clear filter
+                </a>
+            </nhs-expander>
+        </form>
+
+        <nhs-card-v2>
+            <nhs-card-content centre-alignment="@(!Model.HasItems)">
+                @if (Model.HasItems)
+                {
+                    <h2 class="nhsuk-card__heading nhsuk-heading-s">Account requests</h2>
+                    <nhs-table data-test-id="orders-table">
+                        <nhs-table-column>Name</nhs-table-column>
+                        <nhs-table-column>Organisation</nhs-table-column>
+                        <nhs-table-column>Request date</nhs-table-column>
+                        <nhs-table-column>@(Model.StatusColumnHeading)</nhs-table-column>
+                        <nhs-table-column>Action</nhs-table-column>
+
+                        @foreach (var accountRequest in Model.AccountRequestsModel.AccountRequests)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>@accountRequest.FullName</nhs-table-cell>
+                                <nhs-table-cell>@accountRequest.Organisation.Name</nhs-table-cell>
+                                <nhs-table-cell>@accountRequest.RequestedOn.ToShortDateString()</nhs-table-cell>
+                                <nhs-table-cell>@(Model.SelectedStatus is AccountRequestStatus.Pending ? DateTime.UtcNow.Subtract(accountRequest.RequestedOn).Days : accountRequest.RequestedOn.ToShortDateString())</nhs-table-cell>
+                                <nhs-table-cell><a asp-action="ViewAccountRequest"
+                                                   asp-route-requestId="@accountRequest.Id">View</a></nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+
+                    </nhs-table>
+                    <div id="pagination">
+                        <govuk-pagination current-page-number="@Model.AccountRequestsModel.Options.PageNumber"
+                                          total-number-of-pages="@Model.AccountRequestsModel.Options.NumberOfPages"/>
+                    </div>
+                }
+                else
+                {
+                    <img src="~/images/orders-splash-with-shadow.svg" alt="Order image"
+                         class="splash-intro-img nhsuk-u-margin-top-2"/>
+                    <h3 class="nhsuk-heading-m">No account requests found</h3>
+                    <p class="nhsuk-body">
+                        No account requests have been found for the specified criteria.
+                    </p>
+                }
+
+            </nhs-card-content>
+        </nhs-card-v2>
+    </div>
+
+</div>

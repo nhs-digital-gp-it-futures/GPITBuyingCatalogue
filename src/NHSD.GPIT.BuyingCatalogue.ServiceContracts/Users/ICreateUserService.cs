@@ -11,6 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
             string lastName,
             string emailAddress,
             string organisationFunction,
-            bool isDisabled = false);
+            bool isDisabled = false,
+            bool optedInUserResearch = false);
     }
 }

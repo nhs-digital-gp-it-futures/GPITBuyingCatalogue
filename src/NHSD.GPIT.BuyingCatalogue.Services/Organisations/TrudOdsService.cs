@@ -53,7 +53,7 @@ public class TrudOdsService : IOdsService
         if (!organisation.IsActive || !IsBuyerOrganisation(organisation))
             return (null, InvalidOrgTypeError);
 
-        var mappedOrganisation = MapOrganisation(organisation);
+        var mappedOrganisation = OdsOrganisation.From(organisation);
 
         return (mappedOrganisation, null);
     }
@@ -114,7 +114,7 @@ public class TrudOdsService : IOdsService
             .AsNoTracking()
             .Where(
                 SublocationsForOrganisationExternalIdentifierPredicate(parentOdsCode))
-            .Select(x => MapOrganisation(x.TargetOrganisation))
+            .Select(x => OdsOrganisation.From(x.TargetOrganisation))
             .ToListAsync();
 
         return subLocations;
@@ -187,27 +187,8 @@ public class TrudOdsService : IOdsService
             return;
         }
 
-        await organisationsService.UpdateOrganisation(MapOrganisation(trudOrganisation));
+        await organisationsService.UpdateOrganisation(OdsOrganisation.From(trudOrganisation));
     }
-
-    internal static OdsOrganisation
-        MapOrganisation(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation) => new()
-    {
-        IsActive = organisation.IsActive,
-        OdsCode = organisation.Id,
-        OrganisationName = organisation.Name,
-        PrimaryRoleId = GetPrimaryRoleId(organisation),
-        Address = new()
-        {
-            Line1 = organisation.AddressLine1,
-            Line2 = organisation.AddressLine2,
-            Line3 = organisation.AddressLine3,
-            Town = organisation.Town,
-            County = organisation.County,
-            Postcode = organisation.Postcode,
-            Country = organisation.Country,
-        },
-    };
 
     private static Expression<Func<OrganisationRelationship, ServiceRecipient>>
         SelectServiceRecipientFromRelationshipPredicate()

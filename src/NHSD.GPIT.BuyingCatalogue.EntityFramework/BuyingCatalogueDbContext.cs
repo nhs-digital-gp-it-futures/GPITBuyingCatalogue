@@ -18,7 +18,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 {
-    public class BuyingCatalogueDbContext : IdentityDbContext<AspNetUser, AspNetRole, int, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserToken>, IDataProtectionKeyContext
+    public class BuyingCatalogueDbContext :
+        IdentityDbContext<AspNetUser, AspNetRole, int, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim
+            , AspNetUserToken>, IDataProtectionKeyContext
     {
         private readonly IIdentityService identityService;
 
@@ -31,7 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         {
         }
 
-        public BuyingCatalogueDbContext(DbContextOptions<BuyingCatalogueDbContext> options, IIdentityService identityService)
+        public BuyingCatalogueDbContext(
+            DbContextOptions<BuyingCatalogueDbContext> options,
+            IIdentityService identityService)
             : base(options)
         {
             this.identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
@@ -182,6 +186,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<SolutionStandard> SolutionStandards { get; set; }
 
+        public DbSet<AccountRequest> AccountRequests { get; set; }
+
         public async Task<Order> Order(CallOffId callOffId)
         {
             return await Orders
@@ -230,7 +236,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             return maxRevision + 1;
         }
 
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        public override Task<int> SaveChangesAsync(
+            bool acceptAllChangesOnSuccess,
+            CancellationToken cancellationToken = default)
         {
             UpdateAuditFields();
 
@@ -242,13 +250,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             UpdateAuditFields();
 
             return base.SaveChanges();
-        }
-
-        public void SaveChangesAs(int userId)
-        {
-            UpdateAuditFields(userId);
-
-            base.SaveChanges();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -272,9 +273,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
                 switch (entry.State)
                 {
+                    case EntityState.Deleted:
                     case EntityState.Detached:
                     case EntityState.Unchanged:
                         continue;
+                    case EntityState.Added:
+                    case EntityState.Modified:
                     default:
                         auditedEntity.LastUpdatedBy = userId ?? auditedEntity.LastUpdatedBy;
                         auditedEntity.LastUpdated = DateTime.UtcNow;

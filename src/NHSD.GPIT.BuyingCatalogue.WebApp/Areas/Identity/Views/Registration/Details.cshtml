@@ -5,50 +5,62 @@
 }
 
 <div data-test-id="registration-details-page">
-    <partial name="Partials/_BackLink" model="@Model" />
+    <partial name="Partials/_BackLink" model="@Model"/>
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-validation-summary />
+            <nhs-validation-summary/>
             <nhs-page-title title="@ViewBag.Title"
-                            advice="Provide the following details and the Buying Catalogue Team will respond to your request within 5 working days." />
+                            advice="Enter your details on this form to request an account. The Buying Catalogue team will respond to you within 5 working days.."/>
 
             <form method="post">
-                <div class="nhsuk-u-margin-bottom-9">
-                    <nhs-input asp-for="FullName"
-                               label-text="Full name"
-                               label-hint="We'll use the name you provide in any replies to your message. It will also be assigned to your user account."/>
-                    <nhs-input asp-for="EmailAddress"
-                               label-text="Email address"
-                               label-hint="You must provide a valid NHS email address. It’ll be used to contact you if necessary and to log in to your account." />
-                    <nhs-input asp-for="OrganisationName"
-                               label-text="Your organisation's name"
-                               label-hint="We currently only support accounts for staff from Integrated Care Boards, Commissioning Support Units or GP practices that are involved in procurement." />
-                    <nhs-input asp-for="OdsCode"
-                               label-text="Your organisation's ODS code (optional)"
-                               label-hint="Provide the ODS code for your organisation if you know it."/>
-                </div>
+                <nhs-input asp-for="FirstName"
+                           label-text="First name"
+                           label-hint=" We'll use the name you provide in any replies to your message. We'll not use it for any other purpose. "/>
+                <nhs-input asp-for="LastName"
+                           label-text="Last name"
+                           label-hint=" We'll use the name you provide in any replies to your message. We'll not use it for any other purpose. "/>
+                <nhs-input asp-for="EmailAddress"
+                           label-text="Email address"
+                           label-hint="We’ll use your NHS email address to contact you about your account request and to send you your sign-in details. We’ll not use it for any other purpose. "/>
+                <nhs-input asp-for="OdsCode"
+                           label-text="Your organisation's ODS code (optional)" input-width="Five">
+                    <nhs-hint-text>
+                        Provide the ODS code for your organisation. If you don't know your ODS code, you can use the
+                        <a href="https://www.odsdatasearchandexport.nhs.uk/" target="_blank">ODS
+                            data search and export website (opens in a new tab)</a> to find it.<br><br>Enter ODS
+                        code
+                    </nhs-hint-text>
+                </nhs-input>
+                <nhs-textarea asp-for="Justification" label-text="Reason for account request"
+                              label-hint="Tell us why you need a Buying Catalogue account."/>
 
                 <div class="nhsuk-u-margin-bottom-9">
-                    <h2>Privacy policy agreement</h2>
-                    <p>
-                        You must confirm you have read and understood our <a href='~/privacy-policy' target="_blank">privacy policy (opens in a new tab)</a> before sending.
-                    </p>
-                    <nhs-fieldset-form-label asp-for="@Model">
+                    <nhs-fieldset-form-label asp-for="HasReadPrivacyPolicy"
+                                             label-text="Sign up for user research"
+                                             label-hint="Select this option if you would like to take part in user research to help us improve the Buying Catalogue. We may contact you about research opportunities in the future, but you can opt out at any time."
+                                             size="Large">
                         <nhs-checkbox-container>
                             <nhs-checkbox asp-for="HasReadPrivacyPolicy"
                                           label-text="I have read and understood the privacy policy"/>
                         </nhs-checkbox-container>
                     </nhs-fieldset-form-label>
-                    <nhs-checkbox-container>
-                        <nhs-checkbox asp-for="HasGivenUserResearchConsent"
-                                      label-text="I am happy to be contacted to take part in user research"/>
-                    </nhs-checkbox-container>
+                    <nhs-fieldset-form-label asp-for="HasReadPrivacyPolicy" label-text="Privacy policy agreement"
+                                             size="Large">
+                        <nhs-hint-text>
+                            You must confirm you have read and understood our <a href="~/privacy-policy" target="_blank">privacy
+                                policy (opens in a new tab)</a> before sending.
+                        </nhs-hint-text>
+                        <nhs-checkbox-container>
+                            <nhs-checkbox asp-for="HasGivenUserResearchConsent"
+                                          label-text="I am happy to be contacted to take part in user research"/>
+                        </nhs-checkbox-container>
+                    </nhs-fieldset-form-label>
                 </div>
 
                 <input type="hidden" asp-for="BackLink"/>
                 <input type="hidden" asp-for="BackLinkText"/>
 
-                <recaptcha />
+                <recaptcha/>
                 <br/>
                 <nhs-submit-button text="Submit"/>
             </form>
