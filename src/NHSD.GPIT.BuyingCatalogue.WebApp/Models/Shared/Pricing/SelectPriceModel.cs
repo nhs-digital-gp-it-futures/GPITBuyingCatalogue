@@ -27,5 +27,7 @@ public sealed class SelectPriceModel : NavBaseModel
 
     public string SolutionType { get; set; }
 
+    public int? OrderItemId { get; set; }
+
     public RoutingSource? Source { get; set; }
 }

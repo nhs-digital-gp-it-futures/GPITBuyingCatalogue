@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
@@ -21,29 +21,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
     public class AssociatedServicesController : Controller
     {
         private const string SelectViewName = "Services/SelectAssociatedServices";
-        private const char Separator = ',';
+        private const string ManageAssociatedServicesViewName = "Services/ManageAssociatedServices";
 
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly IOrderItemService orderItemService;
         private readonly IOrderService orderService;
         private readonly IOrderQuantityService orderQuantityService;
-        private readonly IContractBillingService contractBillingService;
-        private readonly IRequirementsService requirementsService;
 
         public AssociatedServicesController(
             IAssociatedServicesService associatedServicesService,
             IOrderItemService orderItemService,
             IOrderService orderService,
-            IOrderQuantityService orderQuantityService,
-            IContractBillingService contractBillingService,
-            IRequirementsService requirementsService)
+            IOrderQuantityService orderQuantityService)
         {
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderQuantityService = orderQuantityService ?? throw new ArgumentNullException(nameof(orderQuantityService));
-            this.contractBillingService = contractBillingService ?? throw new ArgumentNullException(nameof(contractBillingService));
-            this.requirementsService = requirementsService ?? throw new ArgumentNullException(nameof(requirementsService));
         }
 
         [HttpGet("add")]
@@ -78,12 +72,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View(SelectViewName, model);
             }
 
+            var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = wrapper.Order;
+
             var serviceIds = model.Services
                 .Where(x => x.IsSelected)
                 .Select(x => x.CatalogueItemId)
                 .ToList();
 
-            await AddOrderItems(internalOrgId, callOffId, serviceIds);
+            await AddOrderItems(internalOrgId, callOffId, serviceIds, order.GetSolutionOrderItem().Id);
 
             return RedirectToAction(
                     nameof(TaskListController.TaskList),
@@ -91,11 +88,109 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     new { internalOrgId, callOffId });
         }
 
-        private async Task AddOrderItems(string internalOrgId, CallOffId callOffId, List<CatalogueItemId> serviceIds)
+        [HttpGet("add/additionalService/{catalogueItemId}")]
+        public async Task<IActionResult> SelectAssociatedServices(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId)
+        {
+            var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = wrapper.Order;
+            var additionalService = order.OrderItem(catalogueItemId);
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(
+                catalogueItemId,
+                PracticeReorganisationTypeEnum.None);
+            var existingAssociatedServices = additionalService.Services.Select(service => service.CatalogueItem).ToList();
+            var model = new SelectServicesModel(existingAssociatedServices, associatedServices)
+            {
+                SolutionId = catalogueItemId,
+                BackLink = Url.Action(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+                InternalOrgId = internalOrgId,
+                AssociatedServicesOnly = false,
+                SolutionName = additionalService.CatalogueItem.Name,
+                ParentItem = CatalogueItemType.AdditionalService,
+            };
+
+            return View(SelectViewName, model);
+        }
+
+        [HttpPost("add/additionalService/{catalogueItemId}")]
+        public async Task<IActionResult> SelectAssociatedServices(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            SelectServicesModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(SelectViewName, model);
+            }
+
+            var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = wrapper.Order;
+            var additionalService = order.OrderItem(catalogueItemId);
+
+            var serviceIds = model.Services
+                .Where(x => x.IsSelected)
+                .Select(x => x.CatalogueItemId)
+                .ToList();
+
+            await AddOrderItems(internalOrgId, callOffId, serviceIds, additionalService.Id);
+
+            return RedirectToAction(
+                nameof(ManageAssociatedServices),
+                typeof(AssociatedServicesController).ControllerName(),
+                new { internalOrgId, callOffId, catalogueItemId });
+        }
+
+        [HttpGet("manage/additionalService/{catalogueItemId}")]
+        public async Task<IActionResult> ManageAssociatedServices(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId)
+        {
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
+            var additionalService = order.OrderItem(catalogueItemId);
+            var services = additionalService.Services.ToList();
+            var allAvailableServices = await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(catalogueItemId, order.OrderType.ToPracticeReorganisationType);
+
+            if (services.IsNullOrEmpty())
+            {
+                return RedirectToAction(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
+            var recipients = wrapper.DetermineOrderRecipients(catalogueItemId);
+
+            var model = new ManageAssociatedServicesModel(
+                services,
+                additionalService.CatalogueItem.Name,
+                recipients,
+                callOffId,
+                internalOrgId,
+                catalogueItemId)
+            {
+                UnselectedAssociatedServicesAvailable = allAvailableServices.Count != services.Count,
+                BackLink = Url.Action(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+            };
+
+            return View(ManageAssociatedServicesViewName, model);
+        }
+
+        private async Task AddOrderItems(string internalOrgId, CallOffId callOffId, List<CatalogueItemId> serviceIds, int? parentId = null)
         {
             if (serviceIds.Any())
             {
-                await orderItemService.AddOrderItems(internalOrgId, callOffId, serviceIds);
+                await orderItemService.AddOrderItems(internalOrgId, callOffId, serviceIds, parentId);
             }
         }
 

@@ -41,5 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
         public CatalogueItemId? SolutionId { get; set; }
 
         public List<ServiceModel> Services { get; set; }
+
+        public CatalogueItemType? ParentItem { get; set; }
     }
 }

@@ -8,9 +8,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
     {
         public RoutingResult Process(OrderWrapper orderWrapper, RouteValues routeValues)
         {
-            if (routeValues == null)
+            ArgumentNullException.ThrowIfNull(orderWrapper);
+            ArgumentNullException.ThrowIfNull(routeValues);
+
+            if (routeValues.Source == RoutingSource.ManageAssociatedServices)
             {
-                throw new ArgumentNullException(nameof(routeValues));
+                var associatedService = orderWrapper.Order.OrderItem(routeValues.OrderItemId.GetValueOrDefault());
+                var catalogueItemId = associatedService.Parent.CatalogueItemId;
+                return new RoutingResult
+                {
+                    ActionName = Constants.Actions.ManageAssociatedServices,
+                    ControllerName = Constants.Controllers.AssociatedServices,
+                    RouteValues = new
+                    {
+                        routeValues.InternalOrgId, routeValues.CallOffId, catalogueItemId,
+                    },
+                };
             }
 
             return new RoutingResult

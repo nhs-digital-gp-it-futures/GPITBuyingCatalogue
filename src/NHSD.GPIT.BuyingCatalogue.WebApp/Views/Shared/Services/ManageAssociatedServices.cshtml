@@ -1,0 +1,51 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.ManageAssociatedServicesModel
+
+@{
+    ViewBag.Title = "Associated Services";
+    var catalogueItemId = Model.AdditionalServiceId;
+    var addAssociatedServicesLink = Url.Action(
+        nameof(AssociatedServicesController.SelectAssociatedServices), 
+        typeof(AssociatedServicesController).ControllerName(), 
+        new { Model.InternalOrgId, Model.CallOffId, catalogueItemId });
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CatalogueItemName"/>
+    </div>
+    <div class="nhsuk-grid-column-two-thirds">
+        <h2 class="nhsuk-u-margin-bottom-6">Associated services for your additional service</h2>
+        <nhs-card-v2>
+            @foreach (var service in Model.AssociatedServices)
+            {
+                var model = Model.BuildAssociatedServiceOrderItemModel(service);
+                <nhs-card-content>
+                    <partial name="../TaskList/TaskListOrderItem"
+                             model="model" />
+                </nhs-card-content>
+            }
+            <nhs-card-footer>
+                @if (Model.UnselectedAssociatedServicesAvailable)
+                {
+                    <vc:add-or-change href="@addAssociatedServicesLink" noun-phrase="Additional services" />
+                }
+                else
+                {
+                    <vc:inline-information text="All the associated services available for this additional service have already been added." />
+                }
+            </nhs-card-footer>
+        </nhs-card-v2>
+        
+        <vc:nhs-anchor-button text="Save and continue"
+                              url="@Url.Action(
+                                       nameof(TaskListController.TaskList),
+                                       typeof(TaskListController).ControllerName(),
+                                       new { Model.InternalOrgId, Model.CallOffId })"
+                              type="Primary" /> 
+    </div>
+</div>

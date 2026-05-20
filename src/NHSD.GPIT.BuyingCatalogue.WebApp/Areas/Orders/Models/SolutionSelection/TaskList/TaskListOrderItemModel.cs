@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList
 {
@@ -64,15 +65,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool IsAssociatedService { get; set; }
 
+        public List<CatalogueItem> AssociatedServicesCatalogueItems { get; set; } = new();
+
+        public List<OrderItem> AssociatedServicesOrderItems { get; set; } = new();
+
         public bool CanBeRemoved { get; set; }
+
+        public int? OrderItemId { get; set; }
+
+        public RoutingSource Source { get; set; }
 
         public TaskProgress PriceStatus
         {
             get
             {
-                return (rolledUpOrderItem?.OrderItemPrice?.OrderItemPriceTiers?.Count ?? 0) == 0
-                    ? TaskProgress.NotStarted
-                    : TaskProgress.Completed;
+                return GetPriceStatus(rolledUpOrderItem);
             }
         }
 
@@ -99,6 +106,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     ? TaskProgress.InProgress
                     : TaskProgress.NotStarted;
             }
+        }
+
+        public TaskProgress AssociatedServicesStatus
+        {
+            get
+            {
+                if (AssociatedServicesOrderItems.Count > 0)
+                {
+                    return AssociatedServicesOrderItems.All(orderItem =>
+                        GetPriceStatus(orderItem) == TaskProgress.Completed
+                    && RolledUpOrderRecipients.AllQuantitiesEntered(orderItem))
+                        ? TaskProgress.Completed
+                        : TaskProgress.InProgress;
+                }
+
+                return TaskProgress.Optional;
+            }
+        }
+
+        private TaskProgress GetPriceStatus(OrderItem orderItem)
+        {
+            return (orderItem?.OrderItemPrice?.OrderItemPriceTiers?.Count ?? 0) == 0
+                ? TaskProgress.NotStarted
+                : TaskProgress.Completed;
         }
     }
 }

@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
 {
@@ -31,5 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
         public string EntityType { get; set; } = "Order";
 
         public bool? ConfirmRemoveService { get; set; }
+
+        public RoutingSource? Source { get; set; }
     }
 }

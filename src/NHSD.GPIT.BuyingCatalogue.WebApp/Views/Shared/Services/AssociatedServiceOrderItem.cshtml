@@ -1,7 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
-@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList.TaskListOrderItemModel;
+
 @{
     var progress = 0;
     if (Model.PriceStatus is not (TaskProgress.NotStarted or TaskProgress.CannotStart))
@@ -12,25 +12,17 @@
     {
         progress++;
     }
-    if (Model.AssociatedServicesStatus is (TaskProgress.Completed))
-    {
-        progress++;
-    }
 
-    var marginBottom = (Model.CanBeRemoved ? "16px" : "48px");
+    var marginBottom = "16px";
 }
 
 <div style="display:block; align-items:center;">
     <h3 class="header-with-detail">
         @Model.Name
     </h3>
-    @if(!Model.IsAmendment)
-    {
-        var progressEnd = Model.AssociatedServicesCatalogueItems.Count > 0 ? '3' : '2';
-        <span class="detail">
-            <strong>@progress</strong> of <strong>@progressEnd</strong> started
-        </span>
-    }
+    <span class="detail">
+        <strong>@progress</strong> of <strong>2</strong> started
+    </span>
 </div>
 
 <nhs-table style="margin-bottom:@marginBottom">
@@ -47,10 +39,10 @@
             @if (Model.NumberOfPrices == 1 && Model.PriceStatus == TaskProgress.NotStarted)
             {
                 <a id="Price_@Model.CatalogueItemId" style="float:right;"
-                    href="@Url.Action(
-                                nameof(PricesController.ConfirmPrice),
-                                typeof(PricesController).ControllerName(),
-                                new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.PriceId, Model.OrderItemId, Model.Source })">Start</a>
+                   href="@Url.Action(
+                             nameof(PricesController.ConfirmPrice),
+                             typeof(PricesController).ControllerName(),
+                             new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.PriceId })">Start</a>
             }
             else
             {
@@ -66,10 +58,10 @@
                         (nameof(PricesController.SelectPrice), "Start");
                 }
                 <a id="Price_@Model.CatalogueItemId" style="float:right;"
-                    href="@Url.Action(
-                                actionName,
-                                typeof(PricesController).ControllerName(),
-                                new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.OrderItemId, Model.Source })">@actionText</a>
+                   href="@Url.Action(
+                             actionName,
+                             typeof(PricesController).ControllerName(),
+                             new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId })">@actionText</a>
             }
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -111,48 +103,18 @@
                        href="@Url.Action(
                                  nameof(QuantityController.SublocationHub),
                                  typeof(QuantityController).ControllerName(),
-                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.OrderItemId, Model.Source })">@action</a>
+                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId })">@action</a>
                 }
             }
         </nhs-table-cell>
     </nhs-table-row-container>
-    
-    @if (Model.AssociatedServicesCatalogueItems.Count > 0)
-    {
-        <nhs-table-row-container>
-            <nhs-table-cell>Associated Services</nhs-table-cell>
-            <nhs-table-cell>
-                <nhs-tag status-enum="@Model.AssociatedServicesStatus" />
-            </nhs-table-cell>
-            <nhs-table-cell>
-                @{
-                    string actionText = null;
-                    string action = null;
-                    if (Model.QuantityStatus == TaskProgress.Completed)
-                    {
-                        (actionText, action) = Model.AssociatedServicesStatus switch
-                        {
-                            TaskProgress.Completed or TaskProgress.InProgress => ("Change", nameof(AssociatedServicesController.ManageAssociatedServices)),
-                            TaskProgress.Optional => ("Start", nameof(AssociatedServicesController.SelectAssociatedServices)),
-                            _ => (null, null),
-                        };
-                    }
-                    <a id="AssociatedServices_@Model.CatalogueItemId" style="float:right;"
-                       href="@Url.Action(
-                                 action, 
-                                 typeof(AssociatedServicesController).ControllerName(),
-                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId})">@actionText</a>
-                }
-            </nhs-table-cell>
-        </nhs-table-row-container>
-    }
 </nhs-table>
 
 @if (Model.CanBeRemoved)
 {
     <vc:nhs-delete-button url="@Url.Action(nameof(CatalogueSolutionsController.RemoveService),
-        typeof(CatalogueSolutionsController).ControllerName(),
-        new { Model.InternalOrgId, Model.CallOffId, orderItemId = Model.OrderItemId, source = Model.Source })"
-        text="Remove @Model.Name" />
+                                   typeof(CatalogueSolutionsController).ControllerName(),
+                                   new { Model.InternalOrgId, Model.CallOffId, catalogueItemId = Model.CatalogueItemId })"
+                          text="Remove @Model.Name" />
     <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
 }

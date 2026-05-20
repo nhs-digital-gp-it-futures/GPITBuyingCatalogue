@@ -1,7 +1,13 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.RemoveServiceModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.RemoveServiceModel;
 
 @{
     ViewBag.Title = $"Remove {Model.ServiceType}";
+    var removeTextPrefix = $"Removing an {Model.ServiceType} will also remove any quantities and prices you've previously entered for it";
+    var removeText = Model.ServiceType == CatalogueItemType.AdditionalService.DisplayName()
+        ? $"{removeTextPrefix}. You will also remove any associated services that have been added to this additional service."
+        : $"{removeTextPrefix}.";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -14,7 +20,7 @@
                         advice="Confirm you want to remove this @Model.ServiceType from your @Model.EntityType.ToLowerInvariant()." />
 
         <nhs-warning-callout label-text="Removing an @Model.ServiceType">
-            <p>Removing an @Model.ServiceType will also remove any quantities and prices you've previously entered for it.</p>
+            <p>@removeText</p>
         </nhs-warning-callout>
 
         <form method="post">

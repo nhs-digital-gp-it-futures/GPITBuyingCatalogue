@@ -34,7 +34,7 @@ public static class CollectionExtensions
             return false;
         }
 
-        return recipients.All(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue);
+        return recipients.All(x => x.GetQuantityForItem(orderItem.Id).HasValue);
     }
 
     public static bool SomeNewQuantitiesEntered(

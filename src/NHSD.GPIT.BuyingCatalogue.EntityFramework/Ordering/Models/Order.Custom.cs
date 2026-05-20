@@ -123,6 +123,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return OrderItems.FirstOrDefault(x => x.CatalogueItem.Id == catalogueItemId);
         }
 
+        public OrderItem OrderItem(int orderItemId)
+        {
+            return OrderItems.FirstOrDefault(item => item.Id == orderItemId);
+        }
+
         public OrderItem GetSolutionOrderItem()
         {
             return OrderItems
@@ -139,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public IEnumerable<OrderItem> GetAdditionalServices()
         {
             return OrderItems
-                .Where(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService)
+                .Where(x => x.CatalogueItem?.CatalogueItemType == CatalogueItemType.AdditionalService)
                 .OrderBy(x => x.CatalogueItem.Name);
         }
 
@@ -151,6 +156,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         }
 
         public IEnumerable<OrderItem> GetAssociatedServices()
+        {
+            return OrderItems
+                .Where(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService && x.ParentId == GetSolutionOrderItem().Id)
+                .OrderBy(x => x.CatalogueItem.Name);
+        }
+
+        public IEnumerable<OrderItem> GetAllAssociatedServices()
         {
             return OrderItems
                 .Where(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService)
@@ -344,9 +356,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             }
         }
 
-        public OrderItem InitialiseOrderItem(CatalogueItemId catalogueItemId)
+        public OrderItem InitialiseOrderItem(CatalogueItemId catalogueItemId, int? parentId = null)
         {
-            return new OrderItem { OrderId = Id, CatalogueItemId = catalogueItemId, Created = DateTime.UtcNow };
+            return new OrderItem { OrderId = Id, CatalogueItemId = catalogueItemId, Created = DateTime.UtcNow, ParentId = parentId };
         }
 
         public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(

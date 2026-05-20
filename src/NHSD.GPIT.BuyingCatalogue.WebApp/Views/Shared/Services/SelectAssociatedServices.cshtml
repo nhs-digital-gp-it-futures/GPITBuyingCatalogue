@@ -1,9 +1,12 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.SelectServicesModel
 @{
     ViewBag.Title = "Add associated services";
 
     Model.Services.RemoveAll(x => x.IsSelected);
+    var itemText = Model.ParentItem == CatalogueItemType.AdditionalService ? "an additional service" : "a solution";
+    var entityType = Model.ParentItem == CatalogueItemType.AdditionalService ? "additional service" : Model.EntityType.ToLowerInvariant();
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -15,7 +18,7 @@
         @{
             var advice = Model.AssociatedServicesOnly
             ? "These are all the associated services available for your chosen catalogue solution. Select any you want to order."
-            : $"Select any associated services you want to add to this {Model.EntityType.ToLowerInvariant()} or continue if you do not want to add any.";
+            : $"Select any associated services you want to add to this {entityType} or continue if you do not want to add any.";
         }
 
         <nhs-page-title title="@ViewBag.Title"
@@ -27,12 +30,13 @@
             <input type="hidden" asp-for="@Model.AssociatedServicesOnly" />
             <input type="hidden" asp-for="@Model.EntityType" />
             <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.ParentItem" />
 
             @if (Model.Services.Any())
             {
                 <div id="services-to-select">
                     <h3>Select associated services</h3>
-                    <p>These are products that support the implementation of a solution, for example, training or data migration. To order a merger or split for any of your practices, you’ll need to create a separate associated services only order</p>
+                    <p>These are products that support the implementation of @itemText, for example, training or data migration. To order a merger or split for any of your practices, you’ll need to create a separate associated services only order</p>
                     <p>
                         <a href="@Url.Action(
                                       nameof(SolutionsController.AssociatedServices),

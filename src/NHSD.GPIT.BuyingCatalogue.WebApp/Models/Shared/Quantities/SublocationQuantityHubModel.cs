@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 
@@ -34,4 +35,6 @@ public sealed class SublocationQuantityHubModel : NavBaseModel
     public string OrderingPartyName { get; init; }
 
     public SubLocationModel[] SubLocations { get; set; }
+
+    public RoutingSource? Source { get; set; }
 }
