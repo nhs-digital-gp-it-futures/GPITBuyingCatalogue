@@ -33,4 +33,27 @@ public class QuantityPage : BasePage
         await AssertHeadingAsync("Edit solutions and services");
         await ClickSaveAndContinueLinkAsync();
     }
+
+    // Associated Service
+    public async Task EnterAssociatedServiceQuantitiesAsync(Dictionary<string, string> practiceQuantities)
+    {
+        await AssertHeadingAsync("Catalogue solution and services");
+        await StartLink.ClickAsync();
+        await AssertHeadingAsync("Quantity of associated service");
+        await SelectLink.ClickAsync();
+
+        foreach (var (practice, quantity) in practiceQuantities)
+            await Page.GetByRole(AriaRole.Row)
+                .Filter(new() { HasText = practice })
+                .GetByRole(AriaRole.Textbox)
+                .FillAsync(quantity);
+
+        await ClickSaveAndContinueAsync();
+        await AssertHeadingAsync("Quantity of associated service");
+        await ClickSaveAndContinueAsync();
+        await AssertHeadingAsync("Confirm quantities");
+        await ClickContinueLinkAsync();
+        await AssertHeadingAsync("Edit solutions and services");
+        await ClickSaveAndContinueLinkAsync();
+    }
 }

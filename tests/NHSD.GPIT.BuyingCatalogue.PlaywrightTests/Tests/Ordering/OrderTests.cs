@@ -26,4 +26,47 @@ public class OrderTests : BaseTest
         await orderPages.StepThreeCompleteContractAsync();
         await orderPages.StepFourReviewAndCompleteOrderAsync();
     }
+
+    [Fact]
+    [Trait("Category", Categories.OrderJourney)]
+    public async Task AssociatedServiceOnlyOrder_SomethingElse()
+    {
+        var data = new AssociatedServiceTestDataBuilder()
+            .WithBaseUrl(Fixture.BaseUrl)
+            .WithServiceCategory("Something else")
+            .WithSupplier("EMIS Health")
+            .WithCatalogueSolutionAndAssociatedService("Emis Web GP", "Engineering")
+            .WithFundingFilter("Engineering")
+            .Build();
+
+        await orderPages.LoginAsync(data);
+        await orderPages.CreateNewAssociatedServiceOrderAsync(data);
+        await orderPages.StepOnePrepareAssociatedServiceOrderAsync(data);
+        await orderPages.StepTwoAddAssociatedServiceAsync(data);
+        await orderPages.StepThreeCompleteAssociatedServiceContractAsync();
+        await orderPages.StepFourReviewAndCompleteOrderAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.OrderJourney)]
+    public async Task AssociatedServiceOnlyOrder_Merger()
+    {
+        var data = new AssociatedServiceTestDataBuilder()
+            .WithBaseUrl(Fixture.BaseUrl)
+            .WithServiceCategory("Merger")
+            .WithSupplier("EMIS Health", isMerger: true)
+            .WithCatalogueSolutionForMerger("Video Consult")
+            .WithPracticesAndRecipientToBeMerged(
+                new[] { "BANKFIELD SURGERY", "BEECHWOOD MEDICAL CENTRE", "BRIG ROYD SURGERY" },
+                "BANKFIELD SURGERY")
+            .WithFundingFilter("Merger")
+            .Build();
+
+        await orderPages.LoginAsync(data);
+        await orderPages.CreateNewAssociatedServiceOrderAsync(data);
+        await orderPages.StepOnePrepareAssociatedServiceOrderAsync(data);
+        await orderPages.StepTwoAddAssociatedServiceAsync(data);
+        await orderPages.StepThreeCompleteAssociatedServiceContractAsync();
+        await orderPages.StepFourReviewAndCompleteOrderAsync();
+    }
 }

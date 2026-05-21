@@ -10,7 +10,7 @@ public class OrderTypePage : BasePage
 {
     private ILocator StartOrderButton => Page.GetByRole(AriaRole.Button, new() { Name = "Start order" });
     private ILocator CatalogueOptionLink => Page.GetByText("Catalogue solution and other");
-    private ILocator AssociatedOptionLink => Page.GetByText("Associated service only");
+    private ILocator AssociatedOptionRadio => Page.GetByRole(AriaRole.Radio, new() { Name = "Associated service only" });
 
     public OrderTypePage(IPage page) : base(page) { }
 
@@ -21,7 +21,7 @@ public class OrderTypePage : BasePage
         switch (orderType)
         {
             case OrderTypeOption.CatalogueSolution: await CatalogueOptionLink.ClickAsync(); break;
-            case OrderTypeOption.AssociatedService: await AssociatedOptionLink.ClickAsync(); break;
+            case OrderTypeOption.AssociatedService: await AssociatedOptionRadio.CheckAsync(); break;
         }
 
         await ClickSaveAndContinueAsync();

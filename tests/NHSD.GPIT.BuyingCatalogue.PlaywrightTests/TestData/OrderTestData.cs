@@ -20,8 +20,8 @@ public class OrderTestData
 
     // Order details
     public string Description { get; set; } = "Test Order";
-    public string Supplier { get; set; } = "AccuRx Limited";
-    public string Solution { get; set; } = "AccuRx";
+    public string Supplier { get; set; } = "EMIS Health";
+    public string Solution { get; set; } = "Emis Web GP";
     public string FundingType { get; set; } = "Local funding";
 
     // Primary contact — auto-generated per test run
@@ -48,7 +48,7 @@ public class OrderTestData
     // Quantities
     public Dictionary<string, string> Quantities { get; set; } = new()
     {
-        { "BANKFIELD SURGERY B84016", "2"  },
+        { "BANKFIELD SURGERY", "2"  },
         { "BEECHWOOD MEDICAL CENTRE", "20" }
     };
 
