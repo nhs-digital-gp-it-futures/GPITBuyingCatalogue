@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
@@ -324,8 +325,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var newSolution = await solutionsService.GetSolutionThin(catalogueItemId);
 
-            var toRemoveOrderItem = order.OrderItem(order.AssociatedServicesOnlyDetails.Solution.Id);
-
             var toAdd = new[]
             {
                 new ServiceModel
@@ -340,7 +339,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new()
                 {
                     CatalogueItemId = order.AssociatedServicesOnlyDetails.Solution.Id,
-                    OrderItemId = toRemoveOrderItem.Id,
                     Description = order.AssociatedServicesOnlyDetails.Solution.Name,
                 },
             };
@@ -455,7 +453,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                         nameof(AssociatedServicesController.ManageAssociatedServices),
                         typeof(AssociatedServicesController).ControllerName(),
                         new { internalOrgId, callOffId, catalogueItemId = service.Parent.CatalogueItemId }),
-                    "Additional service");
+                    CatalogueItemType.AdditionalService.Name());
             }
 
             return (Url.Action(

@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            await service.ResetItemQuantities(order.Id, orderItem.CatalogueItemId);
+            await service.ResetItemQuantities(orderItem.Id);
             Order dbOrder = await context.Orders
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
@@ -57,21 +57,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 .Include(x => x.OrderItems)
                 .FirstAsync(x => x.Id == order.Id);
 
-            var actual = dbOrder.OrderItems.FirstOrDefault(x => x.CatalogueItemId == orderItem.CatalogueItemId);
+            var actual = dbOrder.OrderItems.FirstOrDefault(x => x.Id == orderItem.Id);
 
             actual.Should().NotBeNull();
-            dbOrder.FlattenedRecipients.ForEach(r => r.GetQuantityForItem(actual.CatalogueItemId).Should().BeNull());
+            dbOrder.FlattenedRecipients.ForEach(r => r.GetQuantityForItem(actual.Id).Should().BeNull());
         }
 
         [Theory]
         [MockInMemoryDbAutoData]
         public static void SetServiceRecipientQuantities_QuantitiesIsNull_ThrowsException(
             int orderId,
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             OrderQuantityService service)
         {
             FluentActions
-                .Awaiting(() => service.SetServiceRecipientQuantities(orderId, catalogueItemId, null))
+                .Awaiting(() => service.SetServiceRecipientQuantities(orderId, orderItemId, null))
                 .Should().ThrowAsync<ArgumentNullException>();
         }
 
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                     })
                 .ToList();
 
-            await service.SetServiceRecipientQuantities(order.Id, solution.CatalogueItemId, quantities);
+            await service.SetServiceRecipientQuantities(order.Id, solution.Id, quantities);
 
             Order dbOrder = await context.Orders
                 .Include(x => x.OrderSublocations)
@@ -125,14 +125,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 .Include(x => x.OrderItems)
                 .FirstAsync(x => x.Id == order.Id);
 
-            var actual = dbOrder.OrderItems.First(x => x.CatalogueItemId == solution.CatalogueItemId);
+            var actual = dbOrder.OrderItems.First(x => x.Id == solution.Id);
 
             foreach (OrderSublocationRecipient i in dbOrder.FlattenedRecipients)
             {
                 OrderItemRecipientQuantityDto quantity = quantities.First(x =>
                     x.RecipientOdsCode == i.RecipientOdsCode
                     && x.ParentSublocationOdsCode == i.ParentSublocationOdsCode);
-                i.GetQuantityForItem(actual.CatalogueItemId).Should().Be(quantity.Quantity);
+                i.GetQuantityForItem(actual.Id).Should().Be(quantity.Quantity);
             }
         }
 

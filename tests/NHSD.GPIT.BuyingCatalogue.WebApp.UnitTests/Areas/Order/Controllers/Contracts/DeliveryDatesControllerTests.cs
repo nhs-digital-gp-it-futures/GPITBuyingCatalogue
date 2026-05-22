@@ -826,6 +826,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             [Frozen] IOrderService orderService,
             DeliveryDatesController controller)
         {
+            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.Review(internalOrgId, callOffId);

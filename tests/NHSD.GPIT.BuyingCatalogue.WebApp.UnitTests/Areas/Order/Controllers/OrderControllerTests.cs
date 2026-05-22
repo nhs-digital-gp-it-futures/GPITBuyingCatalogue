@@ -195,9 +195,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             OrderController controller)
         {
             order.Contract = new Contract() { ContractBilling = new ContractBilling(), ImplementationPlan = new ImplementationPlan(), };
-            order.ContractFlags.UseDefaultDataProcessing = true;
             order.Completed = null;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.ForEach(x =>
+            {
+                x.Id = 0;
+                order.OrderSublocations.ForEach(y => y.SublocationRecipients.ForEach(z =>
+                    z.OrderItemSublocationRecipients.Add(
+                        new OrderItemSublocationRecipient(order.Id, z.RecipientOdsCode, x)
+                        {
+                            Quantity = 5,
+                            DeliveryDate = DateTime.Now.AddMonths(6),
+                        })));
+
+                x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            });
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             orderService.GetOrderForSummary(order.CallOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));

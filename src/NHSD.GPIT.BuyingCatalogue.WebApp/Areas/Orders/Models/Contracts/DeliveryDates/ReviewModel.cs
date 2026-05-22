@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
             SolutionId = order.GetSolutionOrderItem().Id;
             AdditionalServiceIds = order.GetAdditionalServices().Select(x => x.Id).ToList();
-            AssociatedServiceIds = order.GetAllAssociatedServices().Select(x => x.Id).ToList();
+            AssociatedServiceIds = order.GetAssociatedServices().Select(x => x.Id).ToList();
         }
 
         public string InternalOrgId { get; set; }
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             var orderItem = OrderWrapper.OrderItems.FirstOrDefault(x => x.Id == orderItemId);
             if (orderItem == null) return [];
 
-            var item = orderItem.Parent.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+            var item = orderItem.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
                 ? orderItem.Parent
                 : orderItem;
             return OrderWrapper.DetermineOrderRecipients(item.CatalogueItemId)

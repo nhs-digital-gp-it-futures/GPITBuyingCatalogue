@@ -26,11 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         [MockAutoData]
         public void Process_FromTaskList_ExpectedResult(
             string internalOrgId,
+            Order order,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             SelectPriceBackLinkProvider provider)
         {
-            var result = provider.Process(null, new RouteValues(internalOrgId, callOffId, catalogueItemId)
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId)
             {
                 Source = RoutingSource.TaskList,
             });

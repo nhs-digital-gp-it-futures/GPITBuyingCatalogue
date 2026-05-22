@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var orderItem = order.OrderItem(orderItemId);
 
             var item = source == RoutingSource.ManageAssociatedServices ? orderItem.Parent : orderItem;
-            var caption = GetCaption(source, orderItem);
+            var caption = GetCaption(source, orderItem, callOffId);
 
             var orderRecipients = wrapper.DetermineOrderRecipients(item.CatalogueItemId);
 
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.Order;
             var orderItem = order.OrderItem(orderItemId);
             var item = source == RoutingSource.ManageAssociatedServices ? orderItem.Parent : orderItem;
-            var caption = GetCaption(source, orderItem);
+            var caption = GetCaption(source, orderItem, callOffId);
 
             var orderRecipients = wrapper.DetermineOrderRecipients(item.CatalogueItemId);
 
@@ -278,7 +278,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.Order;
             var orderItem = order.OrderItem(orderItemId);
             var item = source == RoutingSource.ManageAssociatedServices ? orderItem.Parent : orderItem;
-            var caption = GetCaption(source, orderItem);
+            var caption = GetCaption(source, orderItem, callOffId);
 
             var orderRecipients = wrapper.DetermineOrderRecipients(item.CatalogueItemId);
 
@@ -325,13 +325,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 .ToList();
         }
 
-        private static string GetCaption(RoutingSource? source, OrderItem orderItem)
+        private static string GetCaption(RoutingSource? source, OrderItem orderItem, CallOffId callOffId)
         {
-            var defaultCaption = $"{orderItem.CatalogueItem.Name}";
-            var caption = source == RoutingSource.ManageAssociatedServices
-                ? $"{orderItem.Parent.CatalogueItem.Name} - {defaultCaption}"
-                : defaultCaption;
-            return caption;
+            return source == RoutingSource.ManageAssociatedServices
+                ? $"{orderItem.Parent.CatalogueItem.Name} - {orderItem.CatalogueItem.Name}"
+                : $"Order {callOffId}";
         }
 
         private static IEnumerable<ServiceRecipientQuantityDto> GetPreviousRecipients(

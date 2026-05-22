@@ -112,9 +112,10 @@ public class CompetitionOrderService : ICompetitionOrderService
         var nextOrderNumber = await dbContext.NextOrderNumber();
 
         var order = CreateOrder(nextOrderNumber, competition, winningSolution, orderItems);
+        dbContext.Orders.Add(order);
+
         AssignRecipientQuantities(order, winningSolution, orderItems);
 
-        dbContext.Orders.Add(order);
         await dbContext.SaveChangesAsync();
 
         return order.CallOffId;
