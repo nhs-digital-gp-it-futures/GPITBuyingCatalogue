@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 associatedServicesGroupedByAdditionalService[additionalServiceId] = await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(additionalServiceId, order.OrderType.ToPracticeReorganisationType);
             }
 
-            var selectedAssociatedServices = order.GetAssociatedServicesForSolution();
+            var selectedAssociatedServices = order.GetAssociatedServices();
 
             var model = new TaskListModel(internalOrgId, callOffId, wrapper, associatedServicesGroupedByAdditionalService)
             {

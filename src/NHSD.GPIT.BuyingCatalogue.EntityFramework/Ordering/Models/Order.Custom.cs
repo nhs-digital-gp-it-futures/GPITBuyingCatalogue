@@ -155,17 +155,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                     && x.CatalogueItem.Id == catalogueItemId);
         }
 
-        public IEnumerable<OrderItem> GetAssociatedServicesForSolution()
-        {
-            return OrderItems
-                .Where(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService && x.ParentId == GetSolutionOrderItem().Id)
-                .OrderBy(x => x.CatalogueItem.Name);
-        }
-
         public IEnumerable<OrderItem> GetAssociatedServices()
         {
             return OrderItems
-                .Where(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService)
+                .Where(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService && x.ParentId == GetSolutionOrderItem().Id)
                 .OrderBy(x => x.CatalogueItem.Name);
         }
 
