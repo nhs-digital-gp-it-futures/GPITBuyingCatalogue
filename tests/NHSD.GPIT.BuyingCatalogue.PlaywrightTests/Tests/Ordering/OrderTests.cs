@@ -1,11 +1,17 @@
-﻿using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Builders;
+﻿using System.Threading.Tasks;
+using Xunit;
 using Xunit.Abstractions;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Builders;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Tests.Ordering;
 
 public class OrderTests : BaseTest
 {
+    private const string SolutionName = "Emis Web GP";
+    private const string AssociatedService = "Engineering";
+    private const string AdditionalService = "Automated Arrivals";
+
     public OrderTests(TestServerFixture fixture, ITestOutputHelper output)
         : base(fixture, output)
     {
@@ -13,23 +19,58 @@ public class OrderTests : BaseTest
 
     [Fact]
     [Trait("Category", Categories.OrderJourney)]
-    public async Task CatalogueSolutionOrder()
+    public async Task CatalogueSolutionOnly()
     {
-        var data = new OrderTestDataBuilder()
-            .WithBaseUrl(Fixture.BaseUrl)
-            .Build();
-
-        await orderPages.LoginAsync(data);
-        await orderPages.CreateNewOrderAsync(data);
-        await orderPages.StepOnePrepareOrderAsync(data);
-        await orderPages.StepTwoAddSolutionsAndServicesAsync(data);
+        await orderPages.LoginAsync();
+        await orderPages.CreateNewOrderAsync();
+        await orderPages.StepOnePrepareOrderAsync();
+        await orderPages.StepTwoAddSolutionsAndServicesAsync(solutionName: SolutionName);
         await orderPages.StepThreeCompleteContractAsync();
         await orderPages.StepFourReviewAndCompleteOrderAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.OrderJourney)]
-    public async Task AssociatedServiceOnlyOrder_SomethingElse()
+    public async Task CatalogueSolutionWithAssociatedService()
+    {
+        await orderPages.LoginAsync();
+        await orderPages.CreateNewOrderAsync();
+        await orderPages.StepOnePrepareOrderAsync();
+        await orderPages.StepTwoAddSolutionsAndServicesAsync(solutionName: SolutionName, associatedService: AssociatedService);
+        await orderPages.StepThreeCompleteContractAsync(associatedService: AssociatedService);
+        await orderPages.StepFourReviewAndCompleteOrderAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.OrderJourney)]
+    public async Task CatalogueSolutionWithAdditionalService()
+    {
+        await orderPages.LoginAsync();
+        await orderPages.CreateNewOrderAsync();
+        await orderPages.StepOnePrepareOrderAsync();
+        await orderPages.StepTwoAddSolutionsAndServicesAsync(solutionName: SolutionName, additionalService: AdditionalService);
+        await orderPages.StepThreeCompleteContractAsync();
+        await orderPages.StepFourReviewAndCompleteOrderAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.OrderJourney)]
+    public async Task CatalogueSolutionWithAssociatedAndAdditionalService()
+    {
+        await orderPages.LoginAsync();
+        await orderPages.CreateNewOrderAsync();
+        await orderPages.StepOnePrepareOrderAsync();
+        await orderPages.StepTwoAddSolutionsAndServicesAsync(
+            solutionName: SolutionName,
+            associatedService: AssociatedService,
+            additionalService: AdditionalService);
+        await orderPages.StepThreeCompleteContractAsync(associatedService: AssociatedService);
+        await orderPages.StepFourReviewAndCompleteOrderAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.OrderJourney)]
+    public async Task AssociatedServiceOnly_SomethingElse()
     {
         var data = new AssociatedServiceTestDataBuilder()
             .WithBaseUrl(Fixture.BaseUrl)
@@ -39,7 +80,7 @@ public class OrderTests : BaseTest
             .WithFundingFilter("Engineering")
             .Build();
 
-        await orderPages.LoginAsync(data);
+        await orderPages.LoginAsync();
         await orderPages.CreateNewAssociatedServiceOrderAsync(data);
         await orderPages.StepOnePrepareAssociatedServiceOrderAsync(data);
         await orderPages.StepTwoAddAssociatedServiceAsync(data);
@@ -49,7 +90,7 @@ public class OrderTests : BaseTest
 
     [Fact]
     [Trait("Category", Categories.OrderJourney)]
-    public async Task AssociatedServiceOnlyOrder_Merger()
+    public async Task AssociatedServiceOnly_Merger()
     {
         var data = new AssociatedServiceTestDataBuilder()
             .WithBaseUrl(Fixture.BaseUrl)
@@ -62,7 +103,7 @@ public class OrderTests : BaseTest
             .WithFundingFilter("Merger")
             .Build();
 
-        await orderPages.LoginAsync(data);
+        await orderPages.LoginAsync();
         await orderPages.CreateNewAssociatedServiceOrderAsync(data);
         await orderPages.StepOnePrepareAssociatedServiceOrderAsync(data);
         await orderPages.StepTwoAddAssociatedServiceAsync(data);

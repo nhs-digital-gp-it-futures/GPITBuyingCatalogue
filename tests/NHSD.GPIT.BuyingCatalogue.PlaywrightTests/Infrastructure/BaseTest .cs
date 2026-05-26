@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData;
 using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
@@ -33,7 +34,10 @@ public abstract class BaseTest : IAsyncLifetime
         _context = await CreateContextAsync();
 
         Page = await _context.NewPageAsync();
-        orderPages = new OrderingPages(Page, Output);
+
+        var data = new OrderTestData { BaseUrl = Fixture.BaseUrl };
+        //Pages = new OrderingPages(Page, Output, new OrderTestData());
+        orderPages = new OrderingPages(Page, Output, new OrderTestData());
 
         Output.WriteLine($"Test started: {_testName}");
     }

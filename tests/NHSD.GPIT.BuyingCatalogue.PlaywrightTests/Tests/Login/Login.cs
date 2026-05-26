@@ -20,7 +20,7 @@ public class LoginTests : BaseTest
             .WithBaseUrl(Fixture.BaseUrl)
             .Build();
 
-        await orderPages.LoginAsync(data);
+        await orderPages.LoginAsync();
     }
 
     [Fact]

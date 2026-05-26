@@ -1,4 +1,5 @@
-﻿using Microsoft.Playwright;
+﻿using System.Threading.Tasks;
+using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Base;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Login;
@@ -24,9 +25,6 @@ public class LoginPage : BasePage
         await PasswordInput.FillAsync(password);
         await LoginButton.ClickAsync();
     }
-
-    public async Task AssertOnLoginPageAsync() =>
-        await AssertUrlContainsAsync("login");
 
     public async Task AssertLoginSuccessfulAsync() =>
         await AssertHeadingAsync("Your organisation's dashboard");

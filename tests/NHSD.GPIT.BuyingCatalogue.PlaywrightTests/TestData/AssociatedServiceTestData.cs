@@ -4,7 +4,6 @@ namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData;
 
 public class AssociatedServiceTestData : OrderTestData
 {
-
     public string AssociatedServiceCategory { get; set; } = "Something else";
     public string SolutionWithAssociatedService { get; set; } = "Emis Web GP";
     public bool HasServiceVariant { get; set; } = true;
