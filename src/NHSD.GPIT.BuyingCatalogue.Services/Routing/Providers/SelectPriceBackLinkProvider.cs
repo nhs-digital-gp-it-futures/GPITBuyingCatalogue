@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 
             if (routeValues.Source == RoutingSource.ManageAssociatedServices)
             {
-                var associatedService = orderWrapper.Order.OrderItem(routeValues.OrderItemId.GetValueOrDefault());
+                var associatedService = orderWrapper.Order.OrderItem(routeValues.OrderItemId!.Value);
                 var catalogueItemId = associatedService.Parent.CatalogueItemId;
                 return new RoutingResult
                 {

@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 
             if (routeValues.Source == RoutingSource.ManageAssociatedServices)
             {
-                var associatedService = order.OrderItem(routeValues.OrderItemId.GetValueOrDefault());
+                var associatedService = order.OrderItem(routeValues.OrderItemId!.Value);
                 var catalogueItemId = associatedService.Parent.CatalogueItemId;
                 return new RoutingResult
                 {
