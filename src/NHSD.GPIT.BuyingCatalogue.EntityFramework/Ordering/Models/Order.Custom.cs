@@ -158,7 +158,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public IEnumerable<OrderItem> GetAssociatedServices()
         {
             return OrderItems
-                .Where(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService && x.ParentId == GetSolutionOrderItem().Id)
+                .Where(x => (x.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService)
+                    && (GetSolutionOrderItem() == null || x.ParentId == GetSolutionOrderItem().Id))
                 .OrderBy(x => x.CatalogueItem.Name);
         }
 

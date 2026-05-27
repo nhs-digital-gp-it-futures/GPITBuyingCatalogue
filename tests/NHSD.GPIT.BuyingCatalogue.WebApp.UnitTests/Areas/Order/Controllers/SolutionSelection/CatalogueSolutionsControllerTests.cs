@@ -636,9 +636,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] ISolutionsService mockSolutionsService,
             CatalogueSolutionsController controller)
         {
+            var associatedService = order.OrderItems.ElementAt(2);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.ElementAt(1).CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
-            order.OrderItems.ElementAt(2).CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            associatedService.ParentId = order.OrderItems.First().Id;
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
@@ -844,6 +846,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 ToRemove = order.OrderItems.Select(
                         x => new ServiceModel
                         {
+                            OrderItemId = x.Id,
                             CatalogueItemId = x.CatalogueItemId,
                             Description = x.CatalogueItem.Name,
                         })

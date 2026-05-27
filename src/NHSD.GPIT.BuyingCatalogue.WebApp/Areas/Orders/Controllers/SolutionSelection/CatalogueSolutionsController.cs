@@ -345,6 +345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             toRemove.AddRange(order.GetAssociatedServices().Select(x => new ServiceModel
             {
+                OrderItemId = x.Id,
                 CatalogueItemId = x.CatalogueItemId,
                 Description = x.CatalogueItem.Name,
             }));

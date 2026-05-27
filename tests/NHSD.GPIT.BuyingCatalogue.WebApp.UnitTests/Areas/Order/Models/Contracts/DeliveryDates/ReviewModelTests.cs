@@ -23,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             additionalService.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            associatedService.ParentId = solution.Id;
 
             order.OrderItems.Clear();
             order.OrderItems.Add(additionalService);

@@ -39,6 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var solution = order.OrderItems.ElementAt(0);
             var additionalService = order.OrderItems.ElementAt(1);
             var associatedService = order.OrderItems.ElementAt(2);
+            associatedService.ParentId = solution.Id;
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             additionalService.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
@@ -70,6 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void WithValidArguments_Amendment_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
+            int parentId,
             EntityFramework.Ordering.Models.Order order,
             OrderItem orderItem)
         {
@@ -97,6 +99,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             additionalService.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
 
+            associatedService.ParentId = solution.Id;
+
             orderItem.CatalogueItem = new CatalogueItem()
             {
                 CatalogueItemType = CatalogueItemType.AssociatedService,
@@ -104,10 +108,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             };
             orderItem.CatalogueItemId = orderItem.CatalogueItem.Id;
             orderItem.Order = order;
+            orderItem.ParentId = parentId;
 
             amendment.OrderItems = new List<OrderItem>()
             {
-                new OrderItem() { Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.Solution, Id = solution.CatalogueItemId }, CatalogueItemId = solution.CatalogueItemId, OrderItemPrice = orderItem.OrderItemPrice },
+                new OrderItem() { Id = parentId, Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.Solution, Id = solution.CatalogueItemId }, CatalogueItemId = solution.CatalogueItemId, OrderItemPrice = orderItem.OrderItemPrice },
                 new OrderItem() { Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService, Id = associatedService.CatalogueItemId }, CatalogueItemId = additionalService.CatalogueItemId, OrderItemPrice = orderItem.OrderItemPrice },
                 orderItem,
             };
@@ -155,7 +160,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             order.AssociatedServicesOnlyDetails.Solution = serviceSolution;
 
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             var model = new TaskListModel(
                 internalOrgId,
@@ -167,10 +171,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.CallOffId.Should().BeEquivalentTo(callOffId);
             model.OrderType.Should().Be(order.OrderType);
             model.SolutionName.Should().Be(serviceSolution.Name);
-            model.CatalogueSolution.CatalogueItemId.Should().BeEquivalentTo(order.OrderItems.First().CatalogueItemId);
+            model.CatalogueSolution.Should().BeNull();
             model.AdditionalServices.Should().BeEmpty();
             model.AssociatedServices.Select(s => s.CatalogueItemId).Should().BeEquivalentTo(new[]
             {
+                order.OrderItems.First().CatalogueItemId,
                 order.OrderItems.ElementAt(1).CatalogueItemId,
                 order.OrderItems.ElementAt(2).CatalogueItemId,
             });

@@ -49,8 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 await dbContext.SaveChangesAsync();
             }
 
-            catalogueItems.Where(ci => ci.Id != solutionItem.CatalogueItemId)
-                .ForEach(catalogueItem => dbContext.OrderItems.Add(order.InitialiseOrderItem(catalogueItem.Id, parentId ?? solutionItem.Id)));
+            catalogueItems.Where(ci => solutionItem == null || ci.Id != solutionItem.CatalogueItemId)
+                .ForEach(catalogueItem => dbContext.OrderItems.Add(order.InitialiseOrderItem(catalogueItem.Id, parentId ?? solutionItem?.Id)));
 
             await dbContext.SaveChangesAsync();
         }

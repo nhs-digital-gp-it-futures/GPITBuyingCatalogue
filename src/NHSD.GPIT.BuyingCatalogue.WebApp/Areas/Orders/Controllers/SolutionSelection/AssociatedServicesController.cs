@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 .Select(x => x.CatalogueItemId)
                 .ToList();
 
-            await AddOrderItems(internalOrgId, callOffId, serviceIds, order.GetSolutionOrderItem().Id);
+            await AddOrderItems(internalOrgId, callOffId, serviceIds, order.GetSolutionOrderItem()?.Id);
 
             return RedirectToAction(
                     nameof(TaskListController.TaskList),
