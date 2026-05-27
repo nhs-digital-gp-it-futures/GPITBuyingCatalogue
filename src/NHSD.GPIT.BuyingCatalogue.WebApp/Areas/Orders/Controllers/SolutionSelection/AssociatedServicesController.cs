@@ -105,9 +105,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             {
                 SolutionId = catalogueItemId,
                 BackLink = Url.Action(
-                    nameof(TaskListController.TaskList),
-                    typeof(TaskListController).ControllerName(),
-                    new { internalOrgId, callOffId }),
+                    nameof(ManageAssociatedServices),
+                    typeof(AssociatedServicesController).ControllerName(),
+                    new { internalOrgId, callOffId, catalogueItemId }),
                 InternalOrgId = internalOrgId,
                 AssociatedServicesOnly = false,
                 SolutionName = additionalService.CatalogueItem.Name,
