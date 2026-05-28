@@ -955,7 +955,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CatalogueSolutionsController controller,
             OrderItem orderItem)
         {
-            orderItemService.GetOrderItem(order.CallOffId, internalOrgId, orderItem.Id).Returns(orderItem);
+            orderItemService.GetOrderItem(internalOrgId, orderItem.Id).Returns(orderItem);
 
             var result = await controller.RemoveService(internalOrgId, order.CallOffId, orderItem.Id);
 
@@ -975,7 +975,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CatalogueSolutionsController controller,
             OrderItem orderItem)
         {
-            orderItemService.GetOrderItem(order.CallOffId, internalOrgId, orderItem.Id).ReturnsNull();
+            orderItemService.GetOrderItem(internalOrgId, orderItem.Id).ReturnsNull();
 
             var result = await controller.RemoveService(internalOrgId, order.CallOffId, orderItem.Id);
 
@@ -1002,7 +1002,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var source = RoutingSource.ManageAssociatedServices;
 
             orderItem.Parent = parent;
-            orderItemService.GetOrderItem(order.CallOffId, internalOrgId, orderItem.Id).Returns(orderItem);
+            orderItemService.GetOrderItem(internalOrgId, orderItem.Id).Returns(orderItem);
 
             var result = await controller.RemoveService(internalOrgId, order.CallOffId, orderItem.Id, source);
 
@@ -1026,7 +1026,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] IOrderItemService mockOrderItemService,
             CatalogueSolutionsController controller)
         {
-            mockOrderItemService.GetOrderItem(callOffId, internalOrgId, orderItem.Id).Returns(orderItem);
+            mockOrderItemService.GetOrderItem(internalOrgId, orderItem.Id).Returns(orderItem);
 
             var result = await controller.RemoveService(internalOrgId, callOffId, orderItem.Id, model);
 
@@ -1056,7 +1056,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             model.Source = RoutingSource.ManageAssociatedServices;
 
             orderItem.Parent = parent;
-            mockOrderItemService.GetOrderItem(callOffId, internalOrgId, orderItem.Id).Returns(orderItem);
+            mockOrderItemService.GetOrderItem(internalOrgId, orderItem.Id).Returns(orderItem);
 
             var result = await controller.RemoveService(internalOrgId, callOffId, orderItem.Id, model);
 

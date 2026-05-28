@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, int orderItemId)
+        public async Task<OrderItem> GetOrderItem(string internalOrgId, int orderItemId)
         {
             return await dbContext.OrderItems
                 .AsNoTracking()

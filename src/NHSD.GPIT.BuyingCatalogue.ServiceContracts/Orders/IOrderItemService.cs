@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         Task DeleteOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<int> itemIds);
 
-        public Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, int orderItemId);
+        public Task<OrderItem> GetOrderItem(string internalOrgId, int orderItemId);
 
         public Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId);
 
