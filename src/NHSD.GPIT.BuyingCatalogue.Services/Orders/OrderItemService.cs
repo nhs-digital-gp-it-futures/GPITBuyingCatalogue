@@ -89,6 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return await dbContext.OrderItems
                 .AsNoTracking()
                 .Include(oi => oi.Parent)
+                .Include(oi => oi.Services)
                 .Include(oi => oi.OrderItemFunding)
                 .Include(oi => oi.CatalogueItem)
                 .Include(oi => oi.OrderItemPrice)

@@ -275,7 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 Description = x.CatalogueItem.Name,
             }));
 
-            toRemove.AddRange(order.GetAssociatedServices().Select(x => new ServiceModel
+            toRemove.AddRange(order.GetAllAssociatedServices().Select(x => new ServiceModel
             {
                 CatalogueItemId = x.CatalogueItemId,
                 OrderItemId = x.Id,
@@ -425,11 +425,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             }
 
             var service = await orderItemService.GetOrderItem(callOffId, internalOrgId, orderItemId);
-            var additionalService = service.Parent;
+            var parent = service.Parent;
 
             if (model.ConfirmRemoveService ?? false)
             {
-                await orderItemService.DeleteOrderItems(internalOrgId, callOffId, new List<int> { orderItemId });
+                var toRemove = service.Services.Select(item => item.Id).ToList();
+                toRemove.Add(orderItemId);
+                await orderItemService.DeleteOrderItems(internalOrgId, callOffId, toRemove);
             }
 
             if (model.Source == RoutingSource.ManageAssociatedServices)
@@ -437,7 +439,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return RedirectToAction(
                     nameof(AssociatedServicesController.ManageAssociatedServices),
                     typeof(AssociatedServicesController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId = additionalService.CatalogueItemId });
+                    new { internalOrgId, callOffId, catalogueItemId = parent.CatalogueItemId });
             }
 
             return RedirectToAction(
