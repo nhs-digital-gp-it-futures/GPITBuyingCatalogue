@@ -19,8 +19,8 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 {
     public class BuyingCatalogueDbContext :
-        IdentityDbContext<AspNetUser, AspNetRole, int, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim
-            , AspNetUserToken>, IDataProtectionKeyContext
+        IdentityDbContext<AspNetUser, AspNetRole, int, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserToken>,
+        IDataProtectionKeyContext
     {
         private readonly IIdentityService identityService;
 
