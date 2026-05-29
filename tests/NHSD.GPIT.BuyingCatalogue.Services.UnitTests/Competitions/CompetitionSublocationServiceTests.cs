@@ -256,6 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
         {
             return
             [
+
                 // Adds
                 [
                     CommonOrganisationFactory(45), CommonCompetitionFactory(32, 45),

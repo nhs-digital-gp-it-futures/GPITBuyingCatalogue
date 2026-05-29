@@ -4,7 +4,10 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.Registration;
 using Xunit;
@@ -82,20 +85,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         [MockAutoData]
         public static async Task Post_Details_ValidModelState_RedirectsToConfirmation(
             RegistrationDetailsModel expected,
-            [Frozen] IRequestAccountService mockRequestAccountService,
             RegistrationController systemUnderTest)
         {
-            NewAccountDetails actual = null;
-
-            mockRequestAccountService
-                .When(x => x.RequestAccount(Arg.Any<NewAccountDetails>()))
-                .Do(x => actual = x.Arg<NewAccountDetails>());
-
             var result = await systemUnderTest.Details(expected);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(RegistrationController.Confirmation));
-
         }
     }
 }
