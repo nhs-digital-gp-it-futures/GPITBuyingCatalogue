@@ -13,12 +13,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
     {
         public TaskProgress Get(OrderWrapper wrapper, OrderProgress state)
         {
-            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
-
             if (wrapper?.Order is null
                 || state is null
-                || !okToProgress.Contains(state.ServiceRecipients)
-                || !okToProgress.Contains(state.SupplierStatus))
+                || !TaskListStatusService.IsTaskCompleted(state.ServiceRecipients)
+                || !TaskListStatusService.IsTaskCompleted(state.SupplierStatus))
             {
                 return TaskProgress.CannotStart;
             }
@@ -31,13 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             }
 
             return SolutionsCompleted(wrapper)
-                ? CompletedOrAmended(order.IsAmendment)
+                ? TaskListStatusService.CompletedOrAmended(order.IsAmendment)
                 : TaskProgress.InProgress;
-        }
-
-        private static TaskProgress CompletedOrAmended(bool isAmendment)
-        {
-            return isAmendment ? TaskProgress.Amended : TaskProgress.Completed;
         }
 
         private static bool ValidCatalogueItems(OrderWrapper orderWrapper)

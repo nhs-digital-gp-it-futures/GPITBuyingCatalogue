@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 
@@ -18,14 +16,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             var order = wrapper.Order;
 
-            if (!HasAssociatedServices(order))
+            if (!TaskListStatusService.HasAssociatedServices(order))
             {
                 return TaskProgress.NotApplicable;
             }
 
-            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
-
-            if (!okToProgress.Contains(state.SolutionOrService))
+            if (!TaskListStatusService.IsTaskCompleted(state.SolutionOrService))
             {
                 return TaskProgress.CannotStart;
             }
@@ -36,9 +32,5 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 ? TaskProgress.Completed
                 : TaskProgress.NotStarted;
         }
-
-        private static bool HasAssociatedServices(Order order) =>
-            order.OrderType.AssociatedServicesOnly
-            || order.HasAssociatedService();
     }
 }

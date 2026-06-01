@@ -19,22 +19,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             var anyFundingSourcesEntered = AnyFundingSourcesEntered(wrapper.OrderItems);
 
-            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
-
-            if (!okToProgress.Contains(state.SolutionOrService)
+            if (!TaskListStatusService.IsTaskCompleted(state.SolutionOrService)
                 && !anyFundingSourcesEntered)
             {
                 return TaskProgress.CannotStart;
             }
 
             return AllFundingSourcesEntered(wrapper)
-                ? CompletedOrAmended(wrapper.IsAmendment)
+                ? TaskListStatusService.CompletedOrAmended(wrapper.IsAmendment)
                 : (anyFundingSourcesEntered ? TaskProgress.InProgress : TaskProgress.NotStarted);
-        }
-
-        private static TaskProgress CompletedOrAmended(bool isAmendment)
-        {
-            return isAmendment ? TaskProgress.Amended : TaskProgress.Completed;
         }
 
         private static bool AllFundingSourcesEntered(OrderWrapper wrapper)

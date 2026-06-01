@@ -27,16 +27,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
         private static bool DependentTasksComplete(OrderProgress state)
         {
-            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
-            return !(!okToProgress.Contains(state.DescriptionStatus)
-                || !okToProgress.Contains(state.OrderingPartyStatus)
-                || !okToProgress.Contains(state.SupplierStatus)
-                || !okToProgress.Contains(state.CommencementDateStatus)
-                || !okToProgress.Contains(state.ServiceRecipients)
-                || !okToProgress.Contains(state.SolutionOrService)
-                || !okToProgress.Contains(state.DeliveryDates)
-                || !okToProgress.Contains(state.FundingSource)
-                || !okToProgress.Contains(state.ImplementationPlan)
+            return !(!TaskListStatusService.IsTaskCompleted(state.DescriptionStatus)
+                || !TaskListStatusService.IsTaskCompleted(state.OrderingPartyStatus)
+                || !TaskListStatusService.IsTaskCompleted(state.SupplierStatus)
+                || !TaskListStatusService.IsTaskCompleted(state.CommencementDateStatus)
+                || !TaskListStatusService.IsTaskCompleted(state.ServiceRecipients)
+                || !TaskListStatusService.IsTaskCompleted(state.SolutionOrService)
+                || !TaskListStatusService.IsTaskCompleted(state.DeliveryDates)
+                || !TaskListStatusService.IsTaskCompleted(state.FundingSource)
+                || !TaskListStatusService.IsTaskCompleted(state.ImplementationPlan)
                 || !AssociatedServiceTaskComplete(state.AssociatedServiceBilling)
                 || !AssociatedServiceTaskComplete(state.AssociatedServiceRequirements));
         }
