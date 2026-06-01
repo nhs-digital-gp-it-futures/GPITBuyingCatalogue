@@ -11,8 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
     {
         public TaskProgress Get(OrderWrapper wrapper, OrderProgress state)
         {
-            if (wrapper?.Order == null
-                || state == null)
+            if (wrapper?.Order is null
+                || state is null)
             {
                 return TaskProgress.CannotStart;
             }
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
 
-            if (!okToProgress.Contains(state.DeliveryDates)
+            if (!okToProgress.Contains(state.SolutionOrService)
                 && !anyFundingSourcesEntered)
             {
                 return TaskProgress.CannotStart;
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
         private static bool AllFundingSourcesEntered(OrderWrapper wrapper)
         {
             return wrapper.Order.SelectedFramework != null
-                && wrapper.OrderItems.Any()
+                && wrapper.OrderItems.Count != 0
                 && wrapper.OrderItems.All(x => x.OrderItemFunding != null);
         }
 

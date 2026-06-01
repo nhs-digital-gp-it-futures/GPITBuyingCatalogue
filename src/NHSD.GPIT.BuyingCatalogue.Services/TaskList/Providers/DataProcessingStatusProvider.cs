@@ -9,32 +9,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
     {
         public TaskProgress Get(OrderWrapper wrapper, OrderProgress state)
         {
-            if (wrapper?.Order == null
-                || state == null)
+            if (wrapper?.Order is null
+                || state is null)
             {
                 return TaskProgress.CannotStart;
             }
 
-            var order = wrapper.Order;
+            if (!DependentTasksComplete(state))
+            {
+                return TaskProgress.CannotStart;
+            }
 
+            return wrapper.Order.ContractFlags?.UseDefaultDataProcessing == true
+                ? TaskProgress.Completed
+                : TaskProgress.NotStarted;
+        }
+
+        private static bool DependentTasksComplete(OrderProgress state)
+        {
             var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
+            return !(!okToProgress.Contains(state.DescriptionStatus)
+                || !okToProgress.Contains(state.OrderingPartyStatus)
+                || !okToProgress.Contains(state.SupplierStatus)
+                || !okToProgress.Contains(state.CommencementDateStatus)
+                || !okToProgress.Contains(state.ServiceRecipients)
+                || !okToProgress.Contains(state.SolutionOrService)
+                || !okToProgress.Contains(state.DeliveryDates)
+                || !okToProgress.Contains(state.FundingSource)
+                || !okToProgress.Contains(state.ImplementationPlan)
+                || !AssociatedServiceTaskComplete(state.AssociatedServiceBilling)
+                || !AssociatedServiceTaskComplete(state.AssociatedServiceRequirements));
+        }
 
-            if ((!okToProgress.Contains(state.FundingSource)
-                || (state.AssociatedServiceRequirements != TaskProgress.Completed && state.AssociatedServiceRequirements != TaskProgress.NotApplicable))
-                && order.ContractFlags?.UseDefaultDataProcessing == true)
-            {
-                return TaskProgress.InProgress;
-            }
-
-            if ((state.AssociatedServiceRequirements == TaskProgress.Completed)
-                || (state.AssociatedServiceRequirements == TaskProgress.NotApplicable && okToProgress.Contains(state.ImplementationPlan)))
-            {
-                return order.ContractFlags?.UseDefaultDataProcessing == true
-                    ? TaskProgress.Completed
-                    : TaskProgress.NotStarted;
-            }
-
-            return TaskProgress.CannotStart;
+        private static bool AssociatedServiceTaskComplete(TaskProgress associatedServiceTaskState)
+        {
+            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.NotApplicable };
+            return okToProgress.Contains(associatedServiceTaskState);
         }
     }
 }

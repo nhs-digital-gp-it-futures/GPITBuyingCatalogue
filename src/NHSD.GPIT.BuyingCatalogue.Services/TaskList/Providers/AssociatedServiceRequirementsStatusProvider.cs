@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -10,29 +10,27 @@ public class AssociatedServiceRequirementsStatusProvider : ITaskProgressProvider
 {
     public TaskProgress Get(OrderWrapper wrapper, OrderProgress state)
     {
-        if (wrapper?.Order == null
-            || state == null)
+        if (wrapper?.Order is null
+            || state is null)
         {
             return TaskProgress.CannotStart;
         }
 
         var order = wrapper.Order;
+
         if (!HasAssociatedServices(order))
         {
             return TaskProgress.NotApplicable;
         }
 
-        var planStatus = new[] { TaskProgress.Completed, TaskProgress.NotApplicable };
-        var requirementsEntered = order.Contract?.ContractBilling?.HasConfirmedRequirements ?? false;
+        var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
 
-        if (!planStatus.Contains(state.AssociatedServiceBilling)
-            && requirementsEntered)
+        if (!okToProgress.Contains(state.SolutionOrService))
         {
-            return TaskProgress.InProgress;
+            return TaskProgress.CannotStart;
         }
 
-        if (state.AssociatedServiceBilling != TaskProgress.Completed)
-            return TaskProgress.CannotStart;
+        var requirementsEntered = order.Contract?.ContractBilling?.HasConfirmedRequirements ?? false;
 
         return requirementsEntered
             ? TaskProgress.Completed

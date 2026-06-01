@@ -9,8 +9,11 @@ public class ServiceRecipientsStatusProvider : ITaskProgressProvider
 {
     public TaskProgress Get(OrderWrapper wrapper, OrderProgress state)
     {
+        var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
+
         if (wrapper?.Order is null
-            || state is null || state.CommencementDateStatus != TaskProgress.Completed)
+            || state is null
+            || !okToProgress.Contains(state.DescriptionStatus))
         {
             return TaskProgress.CannotStart;
         }

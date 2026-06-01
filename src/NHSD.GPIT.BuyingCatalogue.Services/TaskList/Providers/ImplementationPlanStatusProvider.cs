@@ -9,8 +9,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
     {
         public TaskProgress Get(OrderWrapper wrapper, OrderProgress state)
         {
-            if (wrapper?.Order == null
-                || state == null)
+            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
+
+            if (wrapper?.Order is null
+                || state is null
+                || !okToProgress.Contains(state.DescriptionStatus))
             {
                 return TaskProgress.CannotStart;
             }
@@ -22,16 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.NotApplicable;
             }
 
-            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
-
-            if (!okToProgress.Contains(state.FundingSource))
-            {
-                return order.Contract?.ImplementationPlan != null
-                    ? TaskProgress.InProgress
-                    : TaskProgress.CannotStart;
-            }
-
-            return order.Contract?.ImplementationPlan != null
+            return order.Contract?.ImplementationPlan is not null
                 ? order.IsAmendment ? TaskProgress.Amended : TaskProgress.Completed
                 : TaskProgress.NotStarted;
         }
