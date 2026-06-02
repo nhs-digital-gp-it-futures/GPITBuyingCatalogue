@@ -2,6 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.ReviewModel
 @{
     ViewBag.Title = "Review planned delivery dates";
@@ -76,27 +77,8 @@
             var url = Url.Action(nameof(DeliveryDatesController.EditDates), typeof(DeliveryDatesController).ControllerName(),
                 new { Model.InternalOrgId, Model.CallOffId, orderItemId, source = RoutingSource.TaskList });
             
-            <nhs-expander-v2 open="true">
-                <nhs-expander-summary label-text="@itemName" bold-title="true">
-                </nhs-expander-summary>
-                <nhs-expander-content>
-                <nhs-table>
-                    <nhs-table-column>Organisation</nhs-table-column>
-                    <nhs-table-column>ODS code</nhs-table-column>
-                    <nhs-table-column>Planned delivery date</nhs-table-column>
-                    <nhs-table-column></nhs-table-column>
-                    @foreach (var (odsCode, name, deliveryDate) in Model.OrderItemRecipients(solutionItemId))
-                    {
-                        <nhs-table-row-container>
-                            <nhs-table-cell>@name</nhs-table-cell>
-                            <nhs-table-cell>@odsCode</nhs-table-cell>
-                            <nhs-table-cell>@GetFormattedDate(deliveryDate)</nhs-table-cell>
-                            <nhs-table-cell><a class="nhsuk-link nhsuk-link--no-visited-state" style="float: right;" href="@url">Change</a></nhs-table-cell>
-                        </nhs-table-row-container>
-                    }
-                </nhs-table>
-               </nhs-expander-content>
-            </nhs-expander-v2>
+            <partial name="DeliveryDatesReviewItemTable"
+                     model="new DeliveryDatesReviewItemTableModel(itemName, url, Model.OrderItemRecipients(solutionItemId))" />
         }
 
         @if (Model.AdditionalServiceIds.Any())
@@ -111,27 +93,8 @@
                     typeof(DeliveryDatesController).ControllerName(),
                     new { Model.InternalOrgId, Model.CallOffId, orderItemId = itemId, source = RoutingSource.TaskList });
                 
-                <nhs-expander-v2 open="true">
-                    <nhs-expander-summary label-text="@itemName" bold-title="true">
-                    </nhs-expander-summary>
-                    <nhs-expander-content>
-                    <nhs-table>
-                        <nhs-table-column>Organisation</nhs-table-column>
-                        <nhs-table-column>ODS code</nhs-table-column>
-                        <nhs-table-column>Planned delivery date</nhs-table-column>
-                        <nhs-table-column></nhs-table-column>
-                        @foreach (var (odsCode, name, deliveryDate) in Model.OrderItemRecipients(itemId))
-                        {
-                            <nhs-table-row-container>
-                                <nhs-table-cell>@name</nhs-table-cell>
-                                <nhs-table-cell>@odsCode</nhs-table-cell>
-                                <nhs-table-cell>@GetFormattedDate(deliveryDate)</nhs-table-cell>
-                                <nhs-table-cell><a class="nhsuk-link nhsuk-link--no-visited-state" style="float: right;" href="@url">Change</a></nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    </nhs-table>
-                    </nhs-expander-content>
-                </nhs-expander-v2>
+                <partial name="DeliveryDatesReviewItemTable"
+                         model="new DeliveryDatesReviewItemTableModel(itemName, url, Model.OrderItemRecipients(itemId))" />
             }
         }
         
@@ -151,27 +114,8 @@
                         typeof(DeliveryDatesController).ControllerName(),
                         new { Model.InternalOrgId, Model.CallOffId, orderItemId = associatedServiceId, source = RoutingSource.TaskList });
                     
-                    <nhs-expander-v2 open="true">
-                        <nhs-expander-summary label-text="@itemName" bold-title="true">
-                        </nhs-expander-summary>
-                        <nhs-expander-content>
-                            <nhs-table>
-                                <nhs-table-column>Organisation</nhs-table-column>
-                                <nhs-table-column>ODS code</nhs-table-column>
-                                <nhs-table-column>Planned delivery date</nhs-table-column>
-                                <nhs-table-column></nhs-table-column>
-                                @foreach (var (odsCode, name, deliveryDate) in Model.OrderItemRecipients(associatedServiceId))
-                                {
-                                    <nhs-table-row-container>
-                                        <nhs-table-cell>@name</nhs-table-cell>
-                                        <nhs-table-cell>@odsCode</nhs-table-cell>
-                                        <nhs-table-cell>@GetFormattedDate(deliveryDate)</nhs-table-cell>
-                                        <nhs-table-cell><a class="nhsuk-link nhsuk-link--no-visited-state" style="float: right;" href="@url">Change</a></nhs-table-cell>
-                                    </nhs-table-row-container>
-                                }
-                            </nhs-table>
-                        </nhs-expander-content>
-                    </nhs-expander-v2>
+                    <partial name="DeliveryDatesReviewItemTable"
+                             model="new DeliveryDatesReviewItemTableModel(itemName, url, Model.OrderItemRecipients(associatedServiceId))" />
                 }
             }
         }
@@ -194,33 +138,8 @@
                     ? $"Planned delivery date: {GetFormattedDate(Model.OrderItemDates(orderItemId).First())}"
                     : itemName;
 
-                <nhs-expander-v2 open="true">
-                    <nhs-expander-summary label-text="@label" bold-title="true">
-                    </nhs-expander-summary>
-                    <nhs-expander-content>
-                    <nhs-table>
-                        <nhs-table-column>Organisation</nhs-table-column>
-                        <nhs-table-column>ODS code</nhs-table-column>
-                        @if (!mergerSplit)
-                        {
-                            <nhs-table-column>Planned delivery date</nhs-table-column>
-                        }
-                        <nhs-table-column></nhs-table-column>
-                        @foreach (var (odsCode, name, deliveryDate) in Model.OrderItemRecipients(orderItemId))
-                        {
-                            <nhs-table-row-container>
-                                <nhs-table-cell>@name</nhs-table-cell>
-                                <nhs-table-cell>@odsCode</nhs-table-cell>
-                                @if (!mergerSplit)
-                                {
-                                    <nhs-table-cell>@GetFormattedDate(deliveryDate)</nhs-table-cell>
-                                }
-                                <nhs-table-cell><a class="nhsuk-link nhsuk-link--no-visited-state" style="float: right;" href="@url">Change</a></nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    </nhs-table>
-                    </nhs-expander-content>
-                </nhs-expander-v2>
+                <partial name="DeliveryDatesReviewItemTable"
+                         model="new DeliveryDatesReviewItemTableModel(label, url, Model.OrderItemRecipients(orderItemId), !mergerSplit)" />
             }
         }
 
