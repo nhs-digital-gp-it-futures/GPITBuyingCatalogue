@@ -70,23 +70,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 : GetSolutionOrderItem()?.CatalogueItemId;
         }
 
-        public List<CatalogueItemId> GetOrderItemIds()
+        public List<int> GetOrderItemIds()
         {
-            var output = new List<CatalogueItemId>();
+            var output = new List<int>();
             var solution = GetSolutionOrderItem();
 
             if (solution != null)
             {
-                output.Add(solution.CatalogueItemId);
+                output.Add(solution.Id);
             }
 
-            output.AddRange(GetAdditionalServices().Select(x => x.CatalogueItemId));
-            output.AddRange(GetAssociatedServices().Select(x => x.CatalogueItemId));
+            output.AddRange(GetAdditionalServices().Select(x => x.Id));
+            output.AddRange(GetAssociatedServices().Select(x => x.Id));
 
             return output;
         }
 
-        public CatalogueItemId? GetNextOrderItemId(CatalogueItemId current)
+        public int? GetNextOrderItemId(int current)
         {
             var allIds = GetOrderItemIds();
 
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 : null;
         }
 
-        public CatalogueItemId? GetPreviousOrderItemId(CatalogueItemId current)
+        public int? GetPreviousOrderItemId(int current)
         {
             var allIds = GetOrderItemIds();
 

@@ -89,8 +89,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         {
             order.SetupCatalogueSolution();
 
-            var catalogueItemId = order.GetAdditionalServices().Last().CatalogueItemId;
-            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
+            var orderItem = order.GetAdditionalServices().Last();
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, orderItem.CatalogueItemId) { OrderItemId = orderItem.Id });
 
             var expected = new
             {
@@ -117,16 +117,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.OrderItems.ElementAt(1).CatalogueItem.Name = "B";
             order.OrderItems.ElementAt(2).CatalogueItem.Name = "C";
 
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
-            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
-
-            catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
+            var orderItem = order.OrderItems.First();
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, orderItem.CatalogueItemId) { OrderItemId = orderItem.Id });
 
             var expected = new
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
-                catalogueItemId,
+                orderItemId = order.OrderItems.ElementAt(1).Id,
             };
 
             result.ActionName.Should().Be(Constants.Actions.EditDeliveryDates);
@@ -149,16 +147,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             var solution = order.OrderItems.First();
             order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(solution, deliveryDate));
 
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
-            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
-
-            catalogueItemId = order.GetAdditionalServices().First().CatalogueItemId;
+            var orderItem = order.OrderItems.First();
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, orderItem.CatalogueItemId) { OrderItemId = orderItem.Id });
 
             var expected = new
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
-                catalogueItemId,
+                orderItemId = order.GetAdditionalServices().First().Id,
             };
 
             result.ActionName.Should().Be(Constants.Actions.EditDeliveryDates);
@@ -185,16 +181,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 solution,
                 deliveryDate.AddDays(1)));
 
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
-            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
-
-            catalogueItemId = order.GetAdditionalServices().First().CatalogueItemId;
+            var orderItem = order.OrderItems.First();
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, orderItem.CatalogueItemId) { OrderItemId = orderItem.Id });
 
             var expected = new
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
-                catalogueItemId,
+                orderItemId = order.GetAdditionalServices().First().Id,
             };
 
             result.ActionName.Should().Be(Constants.Actions.MatchDeliveryDates);

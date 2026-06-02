@@ -35,6 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             SolutionId = order.GetSolutionOrderItem().Id;
             AdditionalServiceIds = order.GetAdditionalServices().Select(x => x.Id).ToList();
             AssociatedServiceIds = order.GetAssociatedServices().Select(x => x.Id).ToList();
+            AssociatedServiceIdsForAdditionalServices = order.GetAdditionalServices()
+                .ToDictionary(
+                    additionalService => additionalService.CatalogueItemId,
+                    additionalService => additionalService.Services.Select(service => service.Id).ToList());
         }
 
         public string InternalOrgId { get; set; }
@@ -53,6 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public List<int> AdditionalServiceIds { get; set; } = new();
 
+        public Dictionary<CatalogueItemId, List<int>> AssociatedServiceIdsForAdditionalServices { get; set; } = new();
+
         public List<int> AssociatedServiceIds { get; set; } = new();
 
         public OrderWrapper OrderWrapper { get; set; } = new();
@@ -70,12 +76,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
                 .ToList();
         }
 
-        public List<(string OdsCode, string Name)> OrderItemRecipients(int orderItemId, DateTime? deliveryDate)
+        public List<(string OdsCode, string Name, DateTime? DeliveryDate)> OrderItemRecipients(int orderItemId)
         {
             return GetRecipientsForItem(orderItemId)
-                .Where(x => x.DeliveryDate == deliveryDate)
                 .OrderBy(x => x.RecipientName)
-                .Select(x => (x.OdsCode, x.RecipientName))
+                .Select(x => (x.OdsCode, x.RecipientName, x.DeliveryDate))
                 .ToList();
         }
 
@@ -88,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
                 ? orderItem.Parent
                 : orderItem;
             return OrderWrapper.DetermineOrderRecipients(item.CatalogueItemId)
-                .Select(x => new OrderItemRecipientModel(x, orderItem.CatalogueItemId))
+                .Select(x => new OrderItemRecipientModel(x, orderItem.Id))
                 .ToList();
         }
     }

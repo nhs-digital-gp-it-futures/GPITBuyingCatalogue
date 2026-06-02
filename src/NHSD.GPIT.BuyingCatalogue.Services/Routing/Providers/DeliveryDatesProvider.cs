@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
@@ -28,9 +29,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            var catalogueItemId = order.GetNextOrderItemId(routeValues.CatalogueItemId.Value);
+            var orderItemId = order.GetNextOrderItemId(routeValues.OrderItemId!.Value);
 
-            if (catalogueItemId == null)
+            if (orderItemId == null)
             {
                 return new RoutingResult
                 {
@@ -41,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             }
 
             var solution = order.GetSolutionOrderItem();
-            var orderItem = order.OrderItem(catalogueItemId.Value);
+            var orderItem = order.OrderItem(orderItemId.Value);
 
             if (order.OrderType.AssociatedServicesOnly
                 || solution == null)
@@ -50,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 {
                     ActionName = Constants.Actions.EditDeliveryDates,
                     ControllerName = Constants.Controllers.DeliveryDates,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, catalogueItemId },
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, orderItemId },
                 };
             }
 
@@ -73,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 {
                     ActionName = Constants.Actions.EditDeliveryDates,
                     ControllerName = Constants.Controllers.DeliveryDates,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, catalogueItemId },
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, orderItemId },
                 };
             }
 
@@ -81,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             {
                 ActionName = Constants.Actions.MatchDeliveryDates,
                 ControllerName = Constants.Controllers.DeliveryDates,
-                RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, catalogueItemId },
+                RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, orderItemId },
             };
         }
     }

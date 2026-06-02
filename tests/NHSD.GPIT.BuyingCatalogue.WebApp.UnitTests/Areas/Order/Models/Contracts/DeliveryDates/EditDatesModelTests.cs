@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using FluentAssertions;
 using LinqKit;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
@@ -15,16 +17,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         public static void WithValidArguments_PropertiesCorrectlySet(
             EntityFramework.Ordering.Models.Order order)
         {
-            CatalogueItemId catalogueItemId = order.OrderItems.First().CatalogueItemId;
+            var orderItem = order.OrderItems.First();
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
+            var model = new EditDatesModel(new OrderWrapper(order), orderItem.Id);
 
             model.InternalOrgId.Should().Be(order.OrderingParty.InternalIdentifier);
             model.CallOffId.Should().Be(order.CallOffId);
             model.OrderType.Should().Be(order.OrderType);
             model.SolutionName.Should().Be(order.OrderType.GetSolutionNameFromOrder(order));
-            model.CatalogueItemId.Should().Be(catalogueItemId);
+            model.OrderItemId.Should().Be(orderItem.Id);
             model.DeliveryDate.Should().Be(order.DeliveryDate);
+            model.CatalogueItemType.Should().Be(orderItem.CatalogueItem.CatalogueItemType);
+            model.Description.Should().Be(orderItem.CatalogueItem.Name);
+            model.CatalogueItemTypeSuffix.Should().Be("Catalogue solution");
         }
 
         [Theory]
@@ -34,9 +40,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceMerger;
 
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+            var orderItemId = order.OrderItems.First().Id;
 
-            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
+            var model = new EditDatesModel(new OrderWrapper(order), orderItemId);
 
             model.Recipients.Count.Should().Be(1);
             model.Recipients.First().Key.Should().Be("Service recipients to be merged");
@@ -50,9 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceSplit;
 
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+            var orderItemId = order.OrderItems.First().Id;
 
-            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
+            var model = new EditDatesModel(new OrderWrapper(order), orderItemId);
 
             model.Recipients.Count.Should().Be(1);
             model.Recipients.First().Key.Should().Be("Service recipients receiving patients");
@@ -66,11 +72,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         {
             order.OrderType = OrderTypeEnum.Solution;
 
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+            var orderItemId = order.OrderItems.First().Id;
 
             var expectedTotalRecipientCount = order.FlattenedRecipients.Count();
 
-            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
+            var model = new EditDatesModel(new OrderWrapper(order), orderItemId);
             model.Recipients.Count.Should().Be(order.OrderItems.Count);
             model.Recipients.Select(x => x.Key)
                 .Should()
@@ -89,9 +95,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             order.FlattenedRecipients.ForEach(x =>
                 x.OrderItemSublocationRecipients.ForEach(y => y.DeliveryDate = null));
 
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+            var orderItemId = order.OrderItems.First().Id;
 
-            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
+            var model = new EditDatesModel(new OrderWrapper(order), orderItemId);
 
             model.Recipients.Count.Should().Be(1);
             model.Recipients.First().Value.ForEach(x => x.Day.Should().Be($"{order.DeliveryDate.Value.Day:00}"));
