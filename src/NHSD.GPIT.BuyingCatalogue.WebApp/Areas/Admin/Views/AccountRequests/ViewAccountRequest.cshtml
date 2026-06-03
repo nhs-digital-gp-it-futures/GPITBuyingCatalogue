@@ -1,0 +1,85 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AccountRequestsModels.AccountRequestModel
+
+@{
+    ViewBag.Title = "User account request";
+}
+
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(HomeController.Index)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
+                       class="nhsuk-breadcrumb__link">Home</a>
+                </li>
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="Index"
+                       class="nhsuk-breadcrumb__link">Account creation requests</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary RadioId="SelectedStatus"/>
+        <nhs-page-title title="@ViewBag.Title"/>
+
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Name">@Model.FullName</nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Email address">@Model.Email</nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Organisation">@Model.OrganisationName</nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Opt-in to user research">@Model.OptInUserResearch.ToYesNo()</nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Request date">@Model.RequestDate.ToShortDateString()</nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Reason">@Model.RequestJustification</nhs-summary-list-row>
+        </nhs-summary-list>
+
+        @if (Model.Status is AccountRequestStatus.Pending)
+        {
+            <form method="post">
+                <input type="hidden" asp-for="FullName" />
+                <input type="hidden" asp-for="Email" />
+                <input type="hidden" asp-for="OrganisationName" />
+                <input type="hidden" asp-for="OptInUserResearch" />
+                <input type="hidden" asp-for="RequestDate" />
+                <input type="hidden" asp-for="RequestJustification" />
+                <input type="hidden" asp-for="Status" />
+
+                <nhs-fieldset-form-label asp-for="@Model"
+                                         label-text="Account request status"
+                                         label-hint="Select one option.">
+                    <nhs-radio-buttons asp-for="SelectedStatus"
+                                       values="@Model.StatusOptions"
+                                       value-name="Value"
+                                       display-name="Text"/>
+                </nhs-fieldset-form-label>
+
+                <nhs-textarea asp-for="DecisionJustification" label-text="Justification" label-hint="Provide a justification for your decision."/>
+
+                <nhs-submit-button/>
+            </form>
+        }
+        else
+        {
+            <h2>Account request status</h2>
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Status">@Model.Status.ToString()</nhs-summary-list-row>
+                <nhs-summary-list-row label-text="@($"{Model.Status.ToString()} by")">@Model.DecidingUserName</nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Decision date">@Model.DecisionDate.GetValueOrDefault().ToShortDateString()</nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Justification">@Model.DecisionJustification</nhs-summary-list-row>
+            </nhs-summary-list>
+
+            @if (Model.Status is AccountRequestStatus.Approved)
+            {
+                <vc:nhs-action-link text="View user account"
+                                    url="@(Url.Action(nameof(UsersController.Edit), typeof(UsersController).ControllerName(), new { userId = Model.UserId.GetValueOrDefault() }))"/>
+            }
+
+            <vc:nhs-anchor-button text="Save and Continue" type="Primary" url="@Url.Action(nameof(AccountRequestsController.Index), typeof(AccountRequestsController).ControllerName())"/>
+        }
+    </div>
+
+</div>

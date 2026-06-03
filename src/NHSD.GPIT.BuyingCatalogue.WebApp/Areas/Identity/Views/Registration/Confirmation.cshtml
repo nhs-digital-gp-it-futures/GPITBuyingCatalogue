@@ -5,22 +5,26 @@
 }
 
 <div data-test-id="registration-confirmation-page">
-    <partial name="Partials/_BackLink" model="@Model" />
+    <partial name="Partials/_BackLink" model="@Model"/>
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-page-title title="@ViewBag.Title"
-                            advice="Your request has been sent to the Buying Catalogue Team." />
+                            advice="Your request has been sent to the Buying Catalogue Team."/>
             <div data-test-id="registration-confirmation-details">
-                <h3>What next?</h3>
+                <h2 class="nhsuk-heading-m">What happens next?</h2>
                 <p>
-                    Once we've set up your account, you'll be sent a link to the email address you provide so you can create a password. Remember to check your 'Junk' or 'Spam' folder.
+                    Once we’ve set up your account, we’ll email you a link to create a password. Check your junk or spam
+                    folder.
                 </p>
                 <p>
-                    The link can be used only once to set up one account, and will be valid for 24 hours from the time you receive the email.
+                    You can only use the link once. It will expire 24 hours after you receive the email.
                 </p>
                 <p>
-                    The Buying Catalogue Team aims to respond to account requests within 5 working days.
+                    We aim to respond within 5 working days.
                 </p>
+                <p>You can still <a asp-action="Index" asp-controller="Solutions" asp-area="Solutions" target="_blank">view
+                        products and
+                        services (opens in a new tab)</a> without an account.</p>
             </div>
         </div>
     </div>

@@ -365,7 +365,7 @@ public class TrudOdsServiceTests
 
         await organisationsService.Received().UpdateOrganisation(Arg.Do<MappedOdsOrganisation>(x => actual = x));
 
-        actual.Should().BeEquivalentTo(TrudOdsService.MapOrganisation(trudOrganisation));
+        actual.Should().BeEquivalentTo(MappedOdsOrganisation.From(trudOrganisation));
     }
 
     [Theory]

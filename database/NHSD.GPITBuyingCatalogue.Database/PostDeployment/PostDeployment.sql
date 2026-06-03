@@ -26,6 +26,7 @@
 :r ./InsertDefaultImplementationPlan.sql
 :r ./InsertOrganisationTypes.sql
 :r ./InsertSolutionStandardStatuses.sql
+:r ./InsertAccountRequestStatuses.sql
 
 -- Organisation Data
 :r ./CreateExecutiveAgency.sql
@@ -49,6 +50,7 @@
 
 -- Insert Test Users
 :r ./TestData/CreateTestUsers.sql
+:r ./TestData/InsertAccountRequests.sql
 
 -- Insert lookup test data (required for Solutions)
 :r ./TestData/InsertFrameworks.sql

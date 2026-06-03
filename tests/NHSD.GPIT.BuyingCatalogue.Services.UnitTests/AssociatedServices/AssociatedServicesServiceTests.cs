@@ -133,9 +133,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         [MockInMemoryDbAutoData]
         public static async Task AddAssociatedService_UpdatesDatabase(
             int supplierId,
-           AssociatedServicesDetailsModel model,
-           [Frozen] BuyingCatalogueDbContext context,
-           AssociatedServicesService service)
+            AssociatedServicesDetailsModel model,
+            [Frozen] BuyingCatalogueDbContext context,
+            AssociatedServicesService service)
         {
             var result = await service.AddAssociatedService(supplierId, model);
 

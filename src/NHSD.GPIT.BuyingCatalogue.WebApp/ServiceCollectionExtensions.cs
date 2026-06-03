@@ -327,7 +327,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             public void ConfigureRegistration(IConfiguration configuration)
             {
-                var registrationSettings = configuration.GetSection("Registration").Get<RegistrationSettings>();
+                var registrationSettings = configuration.GetSection("accountTemplates").Get<AccountTemplateSettings>();
                 services.AddSingleton(registrationSettings);
             }
 

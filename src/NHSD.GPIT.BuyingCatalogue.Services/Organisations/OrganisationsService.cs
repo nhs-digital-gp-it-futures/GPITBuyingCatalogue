@@ -38,7 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             if (odsOrganisation is null)
                 throw new ArgumentNullException(nameof(odsOrganisation));
 
-            return await dbContext.Organisations.AnyAsync(o => o.ExternalIdentifier == odsOrganisation.OdsCode || o.Name == odsOrganisation.OrganisationName);
+            return await dbContext.Organisations.AnyAsync(o =>
+                o.ExternalIdentifier == odsOrganisation.OdsCode || o.Name == odsOrganisation.OrganisationName);
         }
 
         public async Task<(int OrganisationId, string Error)> AddOrganisation(OdsOrganisation odsOrganisation)
@@ -63,6 +64,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             await dbContext.SaveChangesAsync();
 
             return (organisation.Id, null);
+        }
+
+        public async Task<int> GetOrAddOrganisation(string odsCode)
+        {
+            var organisation = await dbContext.Organisations.FirstOrDefaultAsync(o => o.ExternalIdentifier == odsCode);
+            int organisationId;
+            if (organisation is null)
+            {
+                var odsOrganisation = await dbContext.OdsOrganisations.Include(x => x.Roles).FirstOrDefaultAsync(o => o.Id == odsCode);
+                (organisationId, _) = await AddOrganisation(OdsOrganisation.From(odsOrganisation));
+            }
+            else
+            {
+                organisationId = organisation.Id;
+            }
+
+            return organisationId;
         }
 
         public async Task UpdateOrganisation(OdsOrganisation organisation)
@@ -106,7 +124,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task<List<Organisation>> GetOrganisationsByInternalIdentifiers(string[] internalIdentifiers)
         {
-            return await dbContext.Organisations.Where(o => internalIdentifiers.Contains(o.InternalIdentifier)).OrderBy(o => o.Name).ToListAsync();
+            return await dbContext.Organisations.Where(o => internalIdentifiers.Contains(o.InternalIdentifier))
+                .OrderBy(o => o.Name)
+                .ToListAsync();
         }
 
         public async Task<List<Organisation>> GetOrganisationsBySearchTerm(string searchTerm)
@@ -121,10 +141,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
         public async Task<List<Organisation>> GetUnrelatedOrganisations(int organisationId)
         {
             return await dbContext.Organisations
-                 .Where(o =>
+                .Where(o =>
                     o.Id != organisationId
-                    && o.RelatedOrganisationRelatedOrganisationNavigations.All(roron => roron.OrganisationId != organisationId))
-                 .ToListAsync();
+                    && o.RelatedOrganisationRelatedOrganisationNavigations.All(roron =>
+                        roron.OrganisationId != organisationId))
+                .ToListAsync();
         }
 
         public async Task<List<Organisation>> GetRelatedOrganisations(int organisationId)
@@ -134,7 +155,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 .ThenInclude(ro => ro.RelatedOrganisationNavigation)
                 .FirstAsync(o => o.Id == organisationId);
 
-            return organisation.RelatedOrganisationOrganisations.Select(ro => ro.RelatedOrganisationNavigation).OrderBy(o => o.Name).ToList();
+            return organisation.RelatedOrganisationOrganisations.Select(ro => ro.RelatedOrganisationNavigation)
+                .OrderBy(o => o.Name)
+                .ToList();
         }
 
         public async Task AddRelatedOrganisations(int organisationId, int relatedOrganisationId)
@@ -144,7 +167,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 .ThenInclude(ro => ro.RelatedOrganisationNavigation)
                 .FirstAsync(o => o.Id == organisationId);
 
-            if (organisation.RelatedOrganisationOrganisations.Any(ro => ro.RelatedOrganisationId == relatedOrganisationId))
+            if (organisation.RelatedOrganisationOrganisations.Any(ro =>
+                    ro.RelatedOrganisationId == relatedOrganisationId))
                 return;
 
             dbContext.RelatedOrganisations.Add(new RelatedOrganisation(organisationId, relatedOrganisationId));
@@ -159,7 +183,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 .ThenInclude(ro => ro.RelatedOrganisationNavigation)
                 .FirstAsync(o => o.Id == organisationId);
 
-            var relatedItem = organisation.RelatedOrganisationOrganisations.FirstOrDefault(ro => ro.RelatedOrganisationId == relatedOrganisationId);
+            var relatedItem =
+                organisation.RelatedOrganisationOrganisations.FirstOrDefault(ro =>
+                    ro.RelatedOrganisationId == relatedOrganisationId);
 
             if (relatedItem is null)
                 return;

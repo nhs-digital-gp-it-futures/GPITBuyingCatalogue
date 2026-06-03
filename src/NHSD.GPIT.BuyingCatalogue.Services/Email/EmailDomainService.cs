@@ -52,7 +52,7 @@ public class EmailDomainService : IEmailDomainService
             throw new ArgumentNullException(nameof(emailAddress));
 
         var allowedDomains = (await GetAllowedDomains()).ToList();
-        if (!allowedDomains.Any())
+        if (allowedDomains.Count == 0)
             return false;
 
         var emailDomain = emailAddress[emailAddress.IndexOf(EmailConstants.AddressCharacter, StringComparison.OrdinalIgnoreCase)..];

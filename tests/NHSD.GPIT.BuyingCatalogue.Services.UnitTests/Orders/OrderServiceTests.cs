@@ -603,6 +603,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         {
             return
             [
+
                 // Adds
                 [
                     CommonOrganisationFactory(78), CommonOrderFactory(33, 78, 6887, 0, []),
@@ -988,6 +989,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         {
             return
             [
+
                 // Blank order
                 [
                     CommonOrganisationFactory(45), CommonOrderFactory(65, 45),
