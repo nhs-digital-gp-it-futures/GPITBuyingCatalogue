@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -14,6 +13,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 {
     public static class FundingSourceStatusProviderTests
     {
+        private static readonly OrderProgress ValidOrderState = new()
+        {
+            SolutionOrService = TaskProgress.Completed,
+        };
+
         [Theory]
         [MockAutoData]
         public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
@@ -51,14 +55,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.NotApplicable)]
         [MockInlineAutoData(TaskProgress.NotStarted)]
         [MockInlineAutoData(TaskProgress.Optional)]
-        public static void Get_DeliveryDatesNotComplete_ReturnsCannotStart(
+        public static void Get_SolutionOrServiceNotComplete_ReturnsCannotStart(
             TaskProgress status,
             Order order,
             FundingSourceStatusProvider service)
         {
             var state = new OrderProgress
             {
-                DeliveryDates = status,
+                SolutionOrService = status,
             };
 
             order.OrderItems.ForEach(x => x.OrderItemFunding = null);
@@ -74,14 +78,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             FundingSourceStatusProvider service)
         {
-            var state = new OrderProgress
-            {
-                DeliveryDates = TaskProgress.Completed,
-            };
-
             order.OrderItems.ForEach(x => x.OrderItemFunding = null);
 
-            var actual = service.Get(new OrderWrapper(order), state);
+            var actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
             actual.Should().Be(TaskProgress.NotStarted);
         }
@@ -93,12 +92,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             FundingSourceStatusProvider service)
         {
-            var state = new OrderProgress { DeliveryDates = TaskProgress.Completed };
-
             order.OrderItems.ForEach(x => x.OrderItemFunding = null);
             order.OrderItems.First().OrderItemFunding = funding;
 
-            var actual = service.Get(new OrderWrapper(order), state);
+            var actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
             actual.Should().Be(TaskProgress.InProgress);
         }
@@ -111,12 +108,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             FundingSourceStatusProvider service)
         {
-            var state = new OrderProgress { DeliveryDates = TaskProgress.Completed };
-
             order.Revision = revision;
             var wrapper = new OrderWrapper(order);
 
-            var actual = service.Get(wrapper, state);
+            var actual = service.Get(wrapper, ValidOrderState);
 
             actual.Should().Be(expectedTaskProgress);
         }
@@ -129,13 +124,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             FundingSourceStatusProvider service)
         {
-            var state = new OrderProgress { DeliveryDates = TaskProgress.Completed };
             var previous = new Order { Revision = 1 };
 
             order.Revision = revision;
             var wrapper = new OrderWrapper(order, [previous]);
 
-            var actual = service.Get(wrapper, state);
+            var actual = service.Get(wrapper, ValidOrderState);
 
             actual.Should().Be(expectedTaskProgress);
         }

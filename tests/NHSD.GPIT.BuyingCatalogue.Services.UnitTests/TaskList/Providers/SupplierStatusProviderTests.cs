@@ -51,14 +51,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.NotApplicable)]
         [MockInlineAutoData(TaskProgress.NotStarted)]
         [MockInlineAutoData(TaskProgress.Optional)]
-        public static void Get_OrderingPartyStatusNotComplete_ReturnsCannotStart(
-            TaskProgress orderingPartyStatus,
+        public static void Get_DescriptionStatusNotComplete_ReturnsCannotStart(
+            TaskProgress descriptionStatus,
             Order order,
             SupplierStatusProvider service)
         {
             var state = new OrderProgress
             {
-                OrderingPartyStatus = orderingPartyStatus,
+                DescriptionStatus = descriptionStatus,
             };
 
             var actual = service.Get(new OrderWrapper(order), state);
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress
             {
-                OrderingPartyStatus = TaskProgress.Completed,
+                DescriptionStatus = TaskProgress.Completed,
             };
 
             order.Supplier = null;
@@ -88,14 +88,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.Completed)]
         [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_OrderHasNoSupplierContact_ReturnsInProgress(
-            TaskProgress orderingPartyStatus,
+            TaskProgress descriptionStatus,
             Supplier supplier,
             Order order,
             SupplierStatusProvider service)
         {
             var state = new OrderProgress
             {
-                OrderingPartyStatus = orderingPartyStatus,
+                DescriptionStatus = descriptionStatus,
             };
 
             order.Supplier = supplier;
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.Completed)]
         [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_OrderHasSupplierAndSupplierContact_ReturnsCompleted(
-            TaskProgress orderingPartyStatus,
+            TaskProgress descriptionStatus,
             Supplier supplier,
             Contact contact,
             Order order,
@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress
             {
-                OrderingPartyStatus = orderingPartyStatus,
+                DescriptionStatus = descriptionStatus,
             };
 
             order.Supplier = supplier;
@@ -133,13 +133,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.Completed)]
         [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_OrderIsAnAmendment_SupplierContactTheSame_ReturnsCompleted(
-            TaskProgress orderingPartyStatus,
+            TaskProgress descriptionStatus,
             List<Order> orders,
             SupplierStatusProvider service)
         {
             var state = new OrderProgress
             {
-                OrderingPartyStatus = orderingPartyStatus,
+                DescriptionStatus = descriptionStatus,
             };
 
             orders[0].Revision = 1;
@@ -157,13 +157,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.Completed)]
         [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_OrderIsAnAmendment_SupplierContactDifferent_ReturnsAmended(
-            TaskProgress orderingPartyStatus,
+            TaskProgress descriptionStatus,
             List<Order> orders,
             SupplierStatusProvider service)
         {
             var state = new OrderProgress
             {
-                OrderingPartyStatus = orderingPartyStatus,
+                DescriptionStatus = descriptionStatus,
             };
 
             orders[0].Revision = 1;
