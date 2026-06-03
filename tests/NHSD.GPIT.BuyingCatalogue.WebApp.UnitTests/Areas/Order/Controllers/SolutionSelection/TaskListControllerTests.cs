@@ -154,11 +154,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                         .Excluding(m => m.AdditionalServices));
         }
 
-        private static Dictionary<CatalogueItemId, List<CatalogueItem>> AssociatedServicesForAdditionalServices(
+        private static Dictionary<CatalogueItemId, int> AssociatedServicesForAdditionalServices(
             EntityFramework.Ordering.Models.Order order)
         {
             return order.GetAdditionalServices()
-                .ToDictionary(x => x.CatalogueItemId, _ => new List<CatalogueItem>());
+                .ToDictionary(x => x.CatalogueItemId, _ => Arg.Any<int>());
         }
     }
 }

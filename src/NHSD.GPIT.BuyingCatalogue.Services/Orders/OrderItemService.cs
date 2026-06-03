@@ -39,8 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var solutionItem = order.GetSolutionOrderItem();
 
-            var catalogueItems = itemIds.Select(id => dbContext.CatalogueItems.First(c => c.Id == id))
-                .ToList();
+            var catalogueItems = await dbContext.CatalogueItems.Where(catalogueItem => itemIds.Contains(catalogueItem.Id)).ToListAsync();
             var solutionCatalogueItem = catalogueItems.FirstOrDefault(catalogueItem => catalogueItem.CatalogueItemType == CatalogueItemType.Solution);
             if (solutionCatalogueItem != null && solutionItem == null)
             {
@@ -49,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 await dbContext.SaveChangesAsync();
             }
 
-            catalogueItems.Where(ci => solutionItem == null || ci.Id != solutionItem.CatalogueItemId)
+            catalogueItems.Where(ci => ci.CatalogueItemType != CatalogueItemType.Solution)
                 .ForEach(catalogueItem => dbContext.OrderItems.Add(order.InitialiseOrderItem(catalogueItem.Id, parentId ?? solutionItem?.Id)));
 
             await dbContext.SaveChangesAsync();
@@ -84,8 +83,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<OrderItem> GetOrderItem(string internalOrgId, int orderItemId)
+        public async Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, int orderItemId)
         {
+            var orderId = await dbContext.OrderId(internalOrgId, callOffId);
+
             return await dbContext.OrderItems
                 .AsNoTracking()
                 .Include(oi => oi.Parent)
@@ -94,7 +95,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(oi => oi.CatalogueItem)
                 .Include(oi => oi.OrderItemPrice)
                     .ThenInclude(ip => ip.OrderItemPriceTiers)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(oi => oi.Id == orderItemId
+                    && oi.Order.Id == orderId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
         }
 
@@ -146,14 +149,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task SetOrderItemEstimationPeriod(int orderItemId, CataloguePrice price)
+        public async Task SetOrderItemEstimationPeriod(CallOffId callOffId, string internalOrgId, int orderItemId, CataloguePrice price)
         {
             if (price is null)
                 throw new ArgumentNullException(nameof(price));
 
+            var orderId = await dbContext.OrderId(internalOrgId, callOffId);
+
             var orderItem = await dbContext.OrderItems
                 .FirstAsync(oi =>
-                    oi.Id == orderItemId);
+                    oi.Id == orderItemId
+                    && oi.Order.Id == orderId
+                    && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
 
             orderItem.EstimationPeriod = price.ProvisioningType switch
             {

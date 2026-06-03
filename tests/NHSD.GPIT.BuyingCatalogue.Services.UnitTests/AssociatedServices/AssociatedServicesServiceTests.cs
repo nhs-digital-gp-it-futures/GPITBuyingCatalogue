@@ -302,6 +302,63 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetCountOfAssociatedServicesForCatalogueItems_ReturnsCountsForRequestedCatalogueItems(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext context,
+            AssociatedServicesService service)
+        {
+            var firstCatalogueItemId = new CatalogueItemId(orderId, "001");
+            var secondCatalogueItemId = new CatalogueItemId(orderId, "002");
+            var catalogueItemIdWithNoAssociations = new CatalogueItemId(orderId, "003");
+            var ignoredCatalogueItemId = new CatalogueItemId(orderId, "004");
+
+            context.SupplierServiceAssociations.AddRange(
+                new SupplierServiceAssociation(firstCatalogueItemId, new CatalogueItemId(orderId, "S-001")),
+                new SupplierServiceAssociation(firstCatalogueItemId, new CatalogueItemId(orderId, "S-002")),
+                new SupplierServiceAssociation(secondCatalogueItemId, new CatalogueItemId(orderId, "S-003")),
+                new SupplierServiceAssociation(ignoredCatalogueItemId, new CatalogueItemId(orderId, "S-004")));
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var result = await service.GetCountOfAssociatedServicesForCatalogueItems(
+                new HashSet<CatalogueItemId>
+                {
+                    firstCatalogueItemId,
+                    secondCatalogueItemId,
+                    catalogueItemIdWithNoAssociations,
+                });
+
+            var expected = new Dictionary<CatalogueItemId, int>
+            {
+                { firstCatalogueItemId, 2 }, { secondCatalogueItemId, 1 },
+            };
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetCountOfAssociatedServicesForCatalogueItems_EmptyCatalogueItems_ReturnsEmptyDictionary(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext context,
+            AssociatedServicesService service)
+        {
+            context.SupplierServiceAssociations.Add(
+                new SupplierServiceAssociation(
+                    new CatalogueItemId(orderId, "001"),
+                    new CatalogueItemId(orderId, "S-001")));
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var result = await service.GetCountOfAssociatedServicesForCatalogueItems(new HashSet<CatalogueItemId>());
+
+            result.Should().BeEmpty();
+        }
+
+        [Theory]
         [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
         [MockInMemoryDbInlineAutoData(null)]
         public static async Task GetPublishedAssociatedServicesForSolution_NullCatalogueItemId_ReturnsEmptySet(

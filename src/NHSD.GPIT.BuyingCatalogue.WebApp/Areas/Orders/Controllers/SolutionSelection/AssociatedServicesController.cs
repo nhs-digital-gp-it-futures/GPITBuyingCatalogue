@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -158,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var services = additionalService.Services.ToList();
             var allAvailableServices = await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(catalogueItemId, order.OrderType.ToPracticeReorganisationType);
 
-            if (services.IsNullOrEmpty())
+            if (services is null or { Count: 0 })
             {
                 return RedirectToAction(
                     nameof(TaskListController.TaskList),

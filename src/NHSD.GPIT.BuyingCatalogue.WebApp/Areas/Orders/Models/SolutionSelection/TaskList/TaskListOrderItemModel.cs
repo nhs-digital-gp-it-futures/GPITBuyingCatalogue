@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool IsAssociatedService { get; set; }
 
-        public List<CatalogueItem> AssociatedServicesCatalogueItems { get; set; } = new();
+        public int AssociatedServicesCatalogueItemsCount { get; set; } = new();
 
         public List<OrderItem> AssociatedServicesOrderItems { get; set; } = new();
 
@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         : TaskProgress.InProgress;
                 }
 
-                return TaskProgress.Optional;
+                return QuantityStatus != TaskProgress.Completed ? TaskProgress.Optional : TaskProgress.NotStarted;
             }
         }
 

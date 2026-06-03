@@ -950,12 +950,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [MockAutoData]
         public static async Task Get_RemoveService_ReturnsExpectedResult(
             string internalOrgId,
+            CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderItemService orderItemService,
             CatalogueSolutionsController controller,
             OrderItem orderItem)
         {
-            orderItemService.GetOrderItem(internalOrgId, orderItem.Id).Returns(orderItem);
+            orderItemService.GetOrderItem(callOffId, internalOrgId, orderItem.Id).Returns(orderItem);
 
             var result = await controller.RemoveService(internalOrgId, order.CallOffId, orderItem.Id);
 
@@ -970,12 +971,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [MockAutoData]
         public static async Task Get_RemoveService_IncorrectCatalogueItemId_ReturnsRedirect(
             string internalOrgId,
+            CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderItemService orderItemService,
             CatalogueSolutionsController controller,
             OrderItem orderItem)
         {
-            orderItemService.GetOrderItem(internalOrgId, orderItem.Id).ReturnsNull();
+            orderItemService.GetOrderItem(callOffId, internalOrgId, orderItem.Id).ReturnsNull();
 
             var result = await controller.RemoveService(internalOrgId, order.CallOffId, orderItem.Id);
 
@@ -993,6 +995,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [MockAutoData]
         public static async Task Get_RemoveService_From_ManageAssociatedServices_ReturnsExpected(
             string internalOrgId,
+            CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderItemService orderItemService,
             CatalogueSolutionsController controller,
@@ -1002,7 +1005,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var source = RoutingSource.ManageAssociatedServices;
 
             orderItem.Parent = parent;
-            orderItemService.GetOrderItem(internalOrgId, orderItem.Id).Returns(orderItem);
+            orderItemService.GetOrderItem(callOffId, internalOrgId, orderItem.Id).Returns(orderItem);
 
             var result = await controller.RemoveService(internalOrgId, order.CallOffId, orderItem.Id, source);
 
@@ -1026,7 +1029,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] IOrderItemService mockOrderItemService,
             CatalogueSolutionsController controller)
         {
-            mockOrderItemService.GetOrderItem(internalOrgId, orderItem.Id).Returns(orderItem);
+            mockOrderItemService.GetOrderItem(callOffId, internalOrgId, orderItem.Id).Returns(orderItem);
 
             var result = await controller.RemoveService(internalOrgId, callOffId, orderItem.Id, model);
 
@@ -1056,7 +1059,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             model.Source = RoutingSource.ManageAssociatedServices;
 
             orderItem.Parent = parent;
-            mockOrderItemService.GetOrderItem(internalOrgId, orderItem.Id).Returns(orderItem);
+            mockOrderItemService.GetOrderItem(callOffId, internalOrgId, orderItem.Id).Returns(orderItem);
 
             var result = await controller.RemoveService(internalOrgId, callOffId, orderItem.Id, model);
 

@@ -162,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             await orderPriceService.UpsertPrice(orderItem.Id, price, model.AgreedPrices);
 
-            await orderItemService.SetOrderItemEstimationPeriod(orderItemId, price);
+            await orderItemService.SetOrderItemEstimationPeriod(callOffId, internalOrgId, orderItemId, price);
 
             var route = routingService.GetRoute(
                 RoutingPoint.ConfirmPrice,

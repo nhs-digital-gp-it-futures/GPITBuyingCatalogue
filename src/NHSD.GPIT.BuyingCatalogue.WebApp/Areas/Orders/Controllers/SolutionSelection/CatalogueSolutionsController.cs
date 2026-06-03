@@ -394,7 +394,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         [HttpGet("remove-service/{orderItemId}")]
         public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, int orderItemId, RoutingSource? source = null)
         {
-            var service = await orderItemService.GetOrderItem(internalOrgId, orderItemId);
+            var service = await orderItemService.GetOrderItem(callOffId, internalOrgId, orderItemId);
 
             if (service == null)
             {
@@ -424,7 +424,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View("Services/RemoveService", model);
             }
 
-            var service = await orderItemService.GetOrderItem(internalOrgId, orderItemId);
+            var service = await orderItemService.GetOrderItem(callOffId, internalOrgId, orderItemId);
             var parent = service.Parent;
 
             if (model.ConfirmRemoveService ?? false)
