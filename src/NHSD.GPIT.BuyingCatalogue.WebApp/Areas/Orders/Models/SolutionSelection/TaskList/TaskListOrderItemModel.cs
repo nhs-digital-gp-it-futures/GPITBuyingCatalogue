@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             }
         }
 
-        private TaskProgress GetPriceStatus(OrderItem orderItem)
+        private static TaskProgress GetPriceStatus(OrderItem orderItem)
         {
             return (orderItem?.OrderItemPrice?.OrderItemPriceTiers?.Count ?? 0) == 0
                 ? TaskProgress.NotStarted
