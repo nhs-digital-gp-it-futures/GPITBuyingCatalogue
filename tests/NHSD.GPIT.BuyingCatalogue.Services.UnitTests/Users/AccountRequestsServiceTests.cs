@@ -261,11 +261,15 @@ public static class AccountRequestsServiceTests
         AccountRequest accountRequest,
         RoutingResult confirmationRoute,
         [Frozen] IEmailDomainService emailDomainService,
+        [Frozen] IGovNotifyEmailService govNotifyEmailService,
         AccountRequestsService service)
     {
         emailDomainService.IsAllowed(Arg.Any<string>()).Returns(false);
 
         await service.SubmitAccountRequest(accountRequest, confirmationRoute);
+
+        await govNotifyEmailService.DidNotReceive()
+            .SendEmailAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Dictionary<string, dynamic>>());
     }
 
     [Theory]
