@@ -38,7 +38,7 @@ public class AccountRequestEntityTypeConfiguration : IEntityTypeConfiguration<Ac
 
         builder.Property(x => x.OdsCode)
             .IsRequired()
-            .HasMaxLength(8);
+            .HasMaxLength(10);
 
         builder.Property(x => x.Status)
             .IsRequired()
