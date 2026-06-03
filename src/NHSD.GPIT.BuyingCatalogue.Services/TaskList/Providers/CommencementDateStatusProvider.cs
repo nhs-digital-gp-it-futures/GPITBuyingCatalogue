@@ -9,14 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
     {
         public TaskProgress Get(OrderWrapper wrapper, OrderProgress state)
         {
-            if (wrapper?.Order == null
-                || state == null)
-            {
-                return TaskProgress.CannotStart;
-            }
-
-            if (state.SupplierStatus != TaskProgress.Completed
-                && state.SupplierStatus != TaskProgress.Amended)
+            if (wrapper?.Order is null
+                || state is null
+                || !TaskListStatusService.IsTaskCompleted(state.DescriptionStatus))
             {
                 return TaskProgress.CannotStart;
             }

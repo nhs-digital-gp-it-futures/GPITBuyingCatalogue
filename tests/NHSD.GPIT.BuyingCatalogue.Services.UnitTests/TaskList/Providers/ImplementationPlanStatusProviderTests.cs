@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress
             {
-                FundingSource = TaskProgress.Completed,
+                DescriptionStatus = TaskProgress.Completed,
             };
 
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
@@ -66,14 +66,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.NotApplicable)]
         [MockInlineAutoData(TaskProgress.NotStarted)]
         [MockInlineAutoData(TaskProgress.Optional)]
-        public static void Get_FundingSourceNotComplete_NullContract_ReturnsCannotStart(
+        public static void Get_DescriptionStatusNotComplete_ReturnsCannotStart(
             TaskProgress status,
             Order order,
             ImplementationPlanStatusProvider service)
         {
             var state = new OrderProgress
             {
-                FundingSource = status,
+                DescriptionStatus = status,
             };
 
             order.Contract = null;
@@ -89,14 +89,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.NotApplicable)]
         [MockInlineAutoData(TaskProgress.NotStarted)]
         [MockInlineAutoData(TaskProgress.Optional)]
-        public static void Get_FundingSourceNotComplete_NullImplementationPlan_ReturnsCannotStart(
+        public static void Get_DescriptionNotComplete_NullImplementationPlan_ReturnsCannotStart(
             TaskProgress status,
             Order order,
             ImplementationPlanStatusProvider service)
         {
             var state = new OrderProgress
             {
-                FundingSource = status,
+                DescriptionStatus = status,
             };
 
             order.Contract = new Contract() { ImplementationPlan = null };
@@ -107,39 +107,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [MockInlineAutoData(TaskProgress.CannotStart)]
-        [MockInlineAutoData(TaskProgress.InProgress)]
-        [MockInlineAutoData(TaskProgress.NotApplicable)]
-        [MockInlineAutoData(TaskProgress.NotStarted)]
-        [MockInlineAutoData(TaskProgress.Optional)]
-        public static void Get_FundingSourceNotComplete_ContractInfoAlreadyEntered_ReturnsInProgress(
+        [MockInlineAutoData(TaskProgress.Completed)]
+        [MockInlineAutoData(TaskProgress.Amended)]
+        public static void Get_ContractNull_ReturnsNotStarted(
             TaskProgress status,
             Order order,
             ImplementationPlanStatusProvider service)
         {
             var state = new OrderProgress
             {
-                FundingSource = status,
-            };
-
-            order.Contract = new Contract() { ImplementationPlan = new ImplementationPlan() };
-
-            var actual = service.Get(new OrderWrapper(order), state);
-
-            actual.Should().Be(TaskProgress.InProgress);
-        }
-
-        [Theory]
-        [MockInlineAutoData(TaskProgress.Completed)]
-        [MockInlineAutoData(TaskProgress.Amended)]
-        public static void Get_ContractNull_ReturnsNotStarted(
-            TaskProgress fundingTaskProgress,
-            Order order,
-            ImplementationPlanStatusProvider service)
-        {
-            var state = new OrderProgress
-            {
-                FundingSource = fundingTaskProgress,
+                DescriptionStatus = status,
             };
 
             order.Contract = null;
@@ -153,13 +130,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.Completed)]
         [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_ImplementationPlanNull_ReturnsNotStarted(
-            TaskProgress fundingTaskProgress,
+            TaskProgress status,
             Order order,
             ImplementationPlanStatusProvider service)
         {
             var state = new OrderProgress
             {
-                FundingSource = fundingTaskProgress,
+                DescriptionStatus = status,
             };
 
             order.Contract = new Contract() { ImplementationPlan = null };
@@ -173,13 +150,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.Completed)]
         [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_ContractInfoEntered_ReturnsCompleted(
-            TaskProgress fundingTaskProgress,
+            TaskProgress status,
             Order order,
             ImplementationPlanStatusProvider service)
         {
             var state = new OrderProgress
             {
-                FundingSource = fundingTaskProgress,
+                DescriptionStatus = status,
             };
 
             order.Contract = new Contract() { ImplementationPlan = new ImplementationPlan() };

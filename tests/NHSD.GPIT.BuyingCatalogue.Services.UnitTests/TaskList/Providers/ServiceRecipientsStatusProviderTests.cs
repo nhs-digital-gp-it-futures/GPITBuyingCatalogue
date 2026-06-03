@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
     {
         private static readonly OrderProgress ValidOrderState = new()
         {
-            CommencementDateStatus = TaskProgress.Completed,
+            DescriptionStatus = TaskProgress.Completed,
         };
 
         [Theory]
@@ -51,14 +51,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [MockAutoData]
-        public static void Get_CommencementDateStatus_NotCompleted_Returns_CannotStart(
+        [MockInlineAutoData(TaskProgress.CannotStart)]
+        [MockInlineAutoData(TaskProgress.InProgress)]
+        [MockInlineAutoData(TaskProgress.NotApplicable)]
+        [MockInlineAutoData(TaskProgress.NotStarted)]
+        [MockInlineAutoData(TaskProgress.Optional)]
+        public static void Get_DescriptionStatus_NotCompleted_Returns_CannotStart(
+            TaskProgress descriptionStatus,
             Order order,
             ServiceRecipientsStatusProvider service)
         {
             var state = new OrderProgress()
             {
-                CommencementDateStatus = TaskProgress.InProgress,
+                DescriptionStatus = descriptionStatus,
             };
 
             var actual = service.Get(new OrderWrapper(order), state);

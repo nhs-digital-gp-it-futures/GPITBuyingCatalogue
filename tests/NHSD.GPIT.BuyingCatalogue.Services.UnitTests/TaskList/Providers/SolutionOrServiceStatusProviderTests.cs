@@ -14,6 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 {
     public static class SolutionOrServiceStatusProviderTests
     {
+        private static readonly OrderProgress ValidOrderState = new()
+        {
+            SupplierStatus = TaskProgress.Completed,
+            ServiceRecipients = TaskProgress.Completed,
+        };
+
         [Theory]
         [MockAutoData]
         public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
@@ -51,6 +57,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.NotApplicable)]
         [MockInlineAutoData(TaskProgress.NotStarted)]
         [MockInlineAutoData(TaskProgress.Optional)]
+        public static void Get_ServiceRecipientsNotComplete_ReturnsCannotStart(
+            TaskProgress status,
+            Order order,
+            SolutionOrServiceStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                ServiceRecipients = status,
+            };
+
+            var actual = service.Get(new OrderWrapper(order), state);
+
+            actual.Should().Be(TaskProgress.CannotStart);
+        }
+
+        [Theory]
+        [MockInlineAutoData(TaskProgress.CannotStart)]
+        [MockInlineAutoData(TaskProgress.InProgress)]
+        [MockInlineAutoData(TaskProgress.NotApplicable)]
+        [MockInlineAutoData(TaskProgress.NotStarted)]
+        [MockInlineAutoData(TaskProgress.Optional)]
         public static void Get_SupplierStatusNotComplete_ReturnsCannotStart(
             TaskProgress status,
             Order order,
@@ -58,7 +85,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress
             {
-                CommencementDateStatus = status,
+                SupplierStatus = status,
+            };
+
+            var actual = service.Get(new OrderWrapper(order), state);
+
+            actual.Should().Be(TaskProgress.CannotStart);
+        }
+
+        [Theory]
+        [MockInlineAutoData(TaskProgress.CannotStart)]
+        [MockInlineAutoData(TaskProgress.InProgress)]
+        [MockInlineAutoData(TaskProgress.NotApplicable)]
+        [MockInlineAutoData(TaskProgress.NotStarted)]
+        [MockInlineAutoData(TaskProgress.Optional)]
+        public static void Get_ServiceRecipientsNotComplete_SupplierStatusNotComplete_ReturnsCannotStart(
+            TaskProgress status,
+            Order order,
+            SolutionOrServiceStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                ServiceRecipients = status,
+                SupplierStatus = status,
             };
 
             var actual = service.Get(new OrderWrapper(order), state);
@@ -74,15 +123,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             SolutionOrServiceStatusProvider service)
         {
-            var state = new OrderProgress
-            {
-                ServiceRecipients = TaskProgress.Completed,
-            };
-
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = itemType);
 
-            var actual = service.Get(new OrderWrapper(order), state);
+            var actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
             actual.Should().Be(TaskProgress.NotStarted);
         }
@@ -93,17 +137,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             SolutionOrServiceStatusProvider service)
         {
-            var state = new OrderProgress
-            {
-                ServiceRecipients = TaskProgress.Completed,
-            };
-
             order.Revision = 1;
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             var amendedOrder = order.BuildAmendment(2);
 
-            var actual = service.Get(new OrderWrapper(amendedOrder, [order]), state);
+            var actual = service.Get(new OrderWrapper(amendedOrder, [order]), ValidOrderState);
 
             actual.Should().Be(TaskProgress.NotStarted);
         }
@@ -115,11 +154,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             OrderSublocation newOrderSublocation,
             SolutionOrServiceStatusProvider service)
         {
-            var state = new OrderProgress
-            {
-                ServiceRecipients = TaskProgress.Completed,
-            };
-
             order.Revision = 1;
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution);
@@ -131,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             });
             amendedOrder.OrderSublocations.Add(newOrderSublocation);
 
-            var actual = service.Get(new OrderWrapper(amendedOrder, [order]), state);
+            var actual = service.Get(new OrderWrapper(amendedOrder, [order]), ValidOrderState);
 
             actual.Should().Be(TaskProgress.InProgress);
         }
@@ -144,11 +178,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             OrderSublocation sublocation,
             SolutionOrServiceStatusProvider service)
         {
-            var state = new OrderProgress
-            {
-                ServiceRecipients = TaskProgress.Completed,
-            };
-
             order.Revision = 1;
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution);
@@ -161,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             amendedOrder.OrderItems.Add(orderItemToAdd);
             amendedOrder.OrderSublocations.Add(sublocation);
 
-            var actual = service.Get(new OrderWrapper(amendedOrder, [order]), state);
+            var actual = service.Get(new OrderWrapper(amendedOrder, [order]), ValidOrderState);
 
             actual.Should().Be(TaskProgress.InProgress);
         }
@@ -172,15 +201,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             SolutionOrServiceStatusProvider service)
         {
-            var state = new OrderProgress
-            {
-                ServiceRecipients = TaskProgress.Completed,
-            };
-
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.AssociatedServicesOnlyDetails.SolutionId = null;
 
-            var actual = service.Get(new OrderWrapper(order), state);
+            var actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
             actual.Should().Be(TaskProgress.NotStarted);
         }
@@ -192,16 +216,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             SolutionOrServiceStatusProvider service)
         {
-            var state = new OrderProgress
-            {
-                ServiceRecipients = TaskProgress.Completed,
-            };
-
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.AssociatedServicesOnlyDetails.SolutionId = solutionId;
             order.OrderItems.Clear();
 
-            var actual = service.Get(new OrderWrapper(order), state);
+            var actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
             actual.Should().Be(TaskProgress.InProgress);
         }
@@ -212,11 +231,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             SolutionOrServiceStatusProvider service)
         {
-            var state = new OrderProgress
-            {
-                ServiceRecipients = TaskProgress.Completed,
-            };
-
             order.Revision = 1;
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x =>
@@ -227,7 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
             order.FlattenedRecipients.ForEach(x => x.OrderItemSublocationRecipients.ForEach(y => y.Quantity = null));
 
-            var actual = service.Get(new OrderWrapper(order), state);
+            var actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
             actual.Should().Be(TaskProgress.InProgress);
         }
@@ -238,8 +252,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             SolutionOrServiceStatusProvider service)
         {
-            var state = new OrderProgress { ServiceRecipients = TaskProgress.Completed };
-
             order.Revision = 1;
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x =>
@@ -248,7 +260,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             });
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            TaskProgress actual = service.Get(new OrderWrapper(order), state);
+            TaskProgress actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
             actual.Should().Be(TaskProgress.Completed);
         }
@@ -262,8 +274,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             SolutionOrServiceStatusProvider service)
         {
-            var state = new OrderProgress { ServiceRecipients = TaskProgress.Completed };
-
             order.Revision = 2;
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x =>
@@ -272,7 +282,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             });
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            TaskProgress actual = service.Get(new OrderWrapper(order, [previousOrder]), state);
+            TaskProgress actual = service.Get(new OrderWrapper(order, [previousOrder]), ValidOrderState);
 
             actual.Should().Be(TaskProgress.Amended);
         }
