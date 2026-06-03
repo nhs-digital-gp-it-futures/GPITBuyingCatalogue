@@ -158,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             EntityFramework.Ordering.Models.Order order)
         {
             return order.GetAdditionalServices()
-                .ToDictionary(x => x.CatalogueItemId, _ => Arg.Any<int>());
+                .ToDictionary(x => x.CatalogueItemId, _ => 0);
         }
     }
 }

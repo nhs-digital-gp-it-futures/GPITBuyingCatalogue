@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IOrderService mockOrderService,
             OrderItemService service)
         {
-            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}", CatalogueItemType = CatalogueItemType.Solution }));
+            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}", CatalogueItemType = CatalogueItemType.AdditionalService }));
             await context.SaveChangesAsync();
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
