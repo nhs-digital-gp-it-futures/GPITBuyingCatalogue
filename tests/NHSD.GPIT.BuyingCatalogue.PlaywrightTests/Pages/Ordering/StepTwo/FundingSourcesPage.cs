@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Base;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepTwo;
 
+/// <summary>
+/// Page object for selecting funding sources during step 2 of the ordering journey.
+/// Supports both single-source and multi-source funding flows.
+/// </summary>
 public class FundingSourcesPage : BasePage
 {
     private ILocator NavigationLink => Page.GetByRole(AriaRole.Link, new() { Name = "Select funding sources" });
@@ -13,7 +16,6 @@ public class FundingSourcesPage : BasePage
     public async Task NavigateAsync() =>
         await NavigationLink.ClickAsync();
 
-    // Single funding source (used by Associated Service Only journeys)
     public async Task SelectFundingAsync(string sourceFilter, string fundingType)
     {
         await AssertHeadingAsync("Funding sources");
@@ -27,7 +29,6 @@ public class FundingSourcesPage : BasePage
         await ClickSaveAndContinueAsync();
     }
 
-    // Any number of funding sources — catalogue solution plus add-ons
     public async Task SelectFundingForSourcesAsync(string fundingType, params string[] sourceFilters)
     {
         foreach (var filter in sourceFilters)

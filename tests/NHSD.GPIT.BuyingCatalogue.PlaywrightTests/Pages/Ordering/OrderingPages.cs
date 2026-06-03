@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Playwright;
-using Xunit.Abstractions;
+﻿using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Login;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.OrderType;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepOne;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepTwo;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepThree;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepFour;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepOne;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepThree;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepTwo;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering;
 
@@ -64,10 +62,6 @@ public class OrderingPages
         ReviewOrder = new ReviewOrderPage(page);
     }
 
-    // ------------------------------------------------------------------------
-    // Shared steps
-    // ------------------------------------------------------------------------
-
     public async Task LoginAsync()
     {
         _output.WriteLine("Login");
@@ -103,10 +97,13 @@ public class OrderingPages
         await Timescales.EnterTimescalesAsync(_data.StartDay, _data.StartMonth, _data.StartYear, _data.InitialPeriod, _data.Duration);
     }
 
-    // ------------------------------------------------------------------------
-    // Catalogue Solution (optionally with associated and/or additional service)
-    // ------------------------------------------------------------------------
-
+    /// <summary>
+    /// Completes step 2 of the order journey by selecting the catalogue solution,
+    /// entering quantities, and optionally adding associated or additional services.
+    /// </summary>
+    /// <param name="solutionName">The catalogue solution to add to the order.</param>
+    /// <param name="associatedService">Optional associated service to add.</param>
+    /// <param name="additionalService">Optional additional service to add.</param>
     public async Task StepTwoAddSolutionsAndServicesAsync(
         string solutionName,
         string associatedService = "",
@@ -125,7 +122,8 @@ public class OrderingPages
         await SolutionsAndServices.SelectCatalogueSolutionAsync(solutionName);
         await SolutionsAndServices.SelectPriceAsync();
 
-        // If there are additional or associated services, stay on the Edit page so the add-on links are available
+        // Enter base solution quantities. If add-ons are required, remain on the
+        // edit page so the associated/additional service links stay available.
         await Quantity.EnterQuantitiesAsync(_data.Quantities, completeEdit: !hasAddOns);
 
         if (!string.IsNullOrWhiteSpace(additionalService))
@@ -173,6 +171,7 @@ public class OrderingPages
         await Declaration.NavigateAndAgreeAsync();
     }
 
+    // TODO: Re-enable order completion once the error has been resolved.
     public async Task StepFourReviewAndCompleteOrderAsync()
     {
         _output.WriteLine("Step 4 — review and complete");
@@ -181,9 +180,9 @@ public class OrderingPages
     }
 
     /// <summary>
-    /// Associated Service Only journey (Something Else / Merger)
+    /// Starts an associated-service-only order journey for the supported
+    /// scenarios such as Something Else and Merger.
     /// </summary>
-
     public async Task CreateNewAssociatedServiceOrderAsync(AssociatedServiceTestData data)
     {
         _output.WriteLine("Create new Associated Service order");
@@ -194,6 +193,10 @@ public class OrderingPages
         await OrderType.SelectFrameworkAsync(data.Framework);
     }
 
+    /// <summary>
+    /// Completes step 1 of the associated-service order journey, including
+    /// supplier selection for merger and non-merger scenarios.
+    /// </summary>
     public async Task StepOnePrepareAssociatedServiceOrderAsync(AssociatedServiceTestData data)
     {
         _output.WriteLine("Step 1 — prepare associated service order");
@@ -205,6 +208,8 @@ public class OrderingPages
         await PrimaryContact.EnterContactDetailsAsync(data.FirstName, data.LastName, data.Phone, data.ContactEmail);
 
         await Supplier.NavigateAsync();
+
+        // Merger journey uses the radio selection path instead of supplier search.
         if (data.IsMerger)
             await Supplier.SelectSupplierByRadioAsync(data.Supplier);
         else

@@ -4,6 +4,10 @@ using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Base;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepTwo;
 
+/// <summary>
+/// Page object for step 2 of the ordering journey, covering catalogue solutions,
+/// associated services, additional services, and pricing selection.
+/// </summary>
 public class SolutionsAndServicesPage : BasePage
 {
     private ILocator NavigationLink => Page.GetByRole(AriaRole.Link, new() { Name = "Solutions and services" });
@@ -28,8 +32,7 @@ public class SolutionsAndServicesPage : BasePage
         await AssertHeadingAsync("Price of Catalogue solution");
         await ClickSaveAndContinueAsync();
     }
-
-    // Associated Service Only — "Something Else" (radio + variant checkbox)
+    
     public async Task SelectAssociatedServiceSomeThingElseAsync(string serviceName, string serviceVariant)
     {
         await AssertHeadingAsync("Which catalogue solution does the service help implement?");
@@ -41,7 +44,6 @@ public class SolutionsAndServicesPage : BasePage
         await ClickSaveAndContinueAsync();
     }
 
-    // Associated Service Only — "Merger" (radio only)
     public async Task SelectAssociatedServiceMergerAsync(string serviceName)
     {
         await AssertHeadingAsync("Which catalogue solution does the service help implement?");
@@ -49,7 +51,6 @@ public class SolutionsAndServicesPage : BasePage
         await ClickSaveAndContinueAsync();
     }
 
-    // Associated Service Only — pricing
     public async Task SelectAssociatedServicePriceAsync()
     {
         await StartLink.ClickAsync();
@@ -57,14 +58,12 @@ public class SolutionsAndServicesPage : BasePage
         await ClickSaveAndContinueAsync();
     }
 
-    // Associated Service Only — continue past edit page (Merger)
     public async Task ContinuePastEditAsync()
     {
         await AssertHeadingAsync("Edit associated service");
         await ClickSaveAndContinueLinkAsync();
     }
 
-    // Add an associated OR additional service on top of a catalogue solution
     public async Task AddOnServiceToCatalogueAsync(AddOnServiceType addOn, string serviceName)
     {
         await AssertHeadingAsync("Edit solutions and services");

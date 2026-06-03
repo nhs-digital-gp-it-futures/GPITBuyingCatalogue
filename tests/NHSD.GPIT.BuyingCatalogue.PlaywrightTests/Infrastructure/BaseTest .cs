@@ -5,6 +5,10 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
 
+/// <summary>
+/// Base class for Playwright UI tests.
+/// Handles browser, context, page creation, and shared ordering page setup.
+/// </summary>
 [Collection("Playwright")]
 public abstract class BaseTest : IAsyncLifetime
 {
@@ -36,7 +40,6 @@ public abstract class BaseTest : IAsyncLifetime
         Page = await _context.NewPageAsync();
 
         var data = new OrderTestData { BaseUrl = Fixture.BaseUrl };
-        //Pages = new OrderingPages(Page, Output, new OrderTestData());
         orderPages = new OrderingPages(Page, Output, new OrderTestData());
 
         Output.WriteLine($"Test started: {_testName}");
