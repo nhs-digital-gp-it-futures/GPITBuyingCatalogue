@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             List<PricingTierDto> actual = null;
 
             mockOrderPriceService
-                .When(x => x.UpsertPrice(orderItem.Id, price, Arg.Any<List<PricingTierDto>>()))
+                .When(x => x.UpsertPrice(order.Id, orderItem.Id, price, Arg.Any<List<PricingTierDto>>()))
                 .Do(x => actual = x.Arg<List<PricingTierDto>>());
 
             var model = new ConfirmPriceModel(orderItem.CatalogueItem, price, null);
@@ -440,7 +440,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             List<PricingTierDto> actual = null;
 
             mockOrderPriceService
-                .When(x => x.UpdatePrice(orderItem.Id, Arg.Any<List<PricingTierDto>>()))
+                .When(x => x.UpdatePrice(order.Id, orderItem.Id, Arg.Any<List<PricingTierDto>>()))
                 .Do(x => actual = x.Arg<List<PricingTierDto>>());
 
             var model = new ConfirmPriceModel(orderItem.OrderItemPrice, orderItem.CatalogueItem);

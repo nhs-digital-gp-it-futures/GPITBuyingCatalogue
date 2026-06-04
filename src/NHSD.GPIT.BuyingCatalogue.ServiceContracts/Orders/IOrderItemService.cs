@@ -11,13 +11,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         Task DeleteOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<int> itemIds);
 
-        public Task<OrderItem> GetOrderItem(string internalOrgId, int orderItemId);
+        public Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, int orderItemId);
 
         public Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId);
 
         public Task UpdateOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, OrderItemFundingType selectedFundingType);
 
-        public Task SetOrderItemEstimationPeriod(int orderItemId, CataloguePrice price);
+        public Task SetOrderItemEstimationPeriod(CallOffId callOffId, string internalOrgId, int orderItemId, CataloguePrice price);
 
         public Task DetectChangesInFundingAndDelete(CallOffId callOffId, string internalOrgId, int orderItemId);
     }

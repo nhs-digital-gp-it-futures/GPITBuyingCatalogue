@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 
@@ -9,8 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
     {
         public TaskProgress Get(OrderWrapper wrapper, OrderProgress state)
         {
-            if (wrapper?.Order == null
-                || state == null)
+            if (wrapper?.Order is null
+                || state is null
+                || !TaskListStatusService.IsTaskCompleted(state.DescriptionStatus))
             {
                 return TaskProgress.CannotStart;
             }
@@ -22,17 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.NotApplicable;
             }
 
-            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
-
-            if (!okToProgress.Contains(state.FundingSource))
-            {
-                return order.Contract?.ImplementationPlan != null
-                    ? TaskProgress.InProgress
-                    : TaskProgress.CannotStart;
-            }
-
-            return order.Contract?.ImplementationPlan != null
-                ? order.IsAmendment ? TaskProgress.Amended : TaskProgress.Completed
+            return order.Contract?.ImplementationPlan is not null
+                ? TaskListStatusService.CompletedOrAmended(order.IsAmendment)
                 : TaskProgress.NotStarted;
         }
     }

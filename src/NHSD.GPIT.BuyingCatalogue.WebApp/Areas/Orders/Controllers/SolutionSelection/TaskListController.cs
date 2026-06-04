@@ -71,17 +71,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var associatedServicesForSolution = await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(solutionId, order.OrderType.ToPracticeReorganisationType);
             var selectedAdditionalServiceIds = selectedAdditionalServices.Select(x => x.CatalogueItemId).ToList();
-            var associatedServicesGroupedByAdditionalService =
-                new Dictionary<CatalogueItemId, List<CatalogueItem>>();
-
-            foreach (var additionalServiceId in selectedAdditionalServiceIds)
-            {
-                associatedServicesGroupedByAdditionalService[additionalServiceId] = await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(additionalServiceId, order.OrderType.ToPracticeReorganisationType);
-            }
+            var associatedServicesCountGroupedByAdditionalService =
+                await associatedServicesService.GetCountOfAssociatedServicesForCatalogueItems(
+                    selectedAdditionalServiceIds.ToHashSet());
 
             var selectedAssociatedServices = order.GetAssociatedServices();
 
-            var model = new TaskListModel(internalOrgId, callOffId, wrapper, associatedServicesGroupedByAdditionalService)
+            var model = new TaskListModel(internalOrgId, callOffId, wrapper, associatedServicesCountGroupedByAdditionalService)
             {
                 BackLink = Url.Action(backRoute.ActionName, backRoute.ControllerName, backRoute.RouteValues),
                 OnwardLink = Url.Action(onwardRoute.ActionName, onwardRoute.ControllerName, onwardRoute.RouteValues),

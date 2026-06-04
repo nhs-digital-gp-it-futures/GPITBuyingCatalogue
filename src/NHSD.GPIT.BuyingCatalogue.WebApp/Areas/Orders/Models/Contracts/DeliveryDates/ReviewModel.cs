@@ -35,10 +35,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             SolutionId = order.GetSolutionOrderItem().Id;
             AdditionalServiceIds = order.GetAdditionalServices().Select(x => x.Id).ToList();
             AssociatedServiceIds = order.GetAssociatedServices().Select(x => x.Id).ToList();
-            AssociatedServiceIdsForAdditionalServices = order.GetAdditionalServices()
-                .ToDictionary(
-                    additionalService => additionalService.CatalogueItemId,
-                    additionalService => additionalService.Services.Select(service => service.Id).ToList());
         }
 
         public string InternalOrgId { get; set; }
@@ -56,8 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         public int? SolutionId { get; set; }
 
         public List<int> AdditionalServiceIds { get; set; } = new();
-
-        public Dictionary<CatalogueItemId, List<int>> AssociatedServiceIdsForAdditionalServices { get; set; } = new();
 
         public List<int> AssociatedServiceIds { get; set; } = new();
 

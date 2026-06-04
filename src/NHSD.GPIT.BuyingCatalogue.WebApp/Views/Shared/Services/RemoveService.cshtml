@@ -5,8 +5,8 @@
 @{
     ViewBag.Title = $"Remove {Model.ServiceType}";
     var removeTextPrefix = $"Removing an {Model.ServiceType} will also remove any quantities and prices you've previously entered for it";
-    var removeText = Model.ServiceType == CatalogueItemType.AdditionalService.DisplayName()
-        ? $"{removeTextPrefix}. You will also remove any associated services that have been added to this additional service."
+    var removeText = Model.ServiceType == CatalogueItemType.AdditionalService
+        ? $"{removeTextPrefix}. You will also remove any associated services that have been added to this ${Model.ServiceType.DisplayName().ToLowerInvariant()}."
         : $"{removeTextPrefix}.";
 }
 

@@ -300,12 +300,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                         .Excluding(oi => oi.QuantityStatus));
         }
 
-        private static Dictionary<CatalogueItemId, List<CatalogueItem>> AssociatedServicesForAdditionalServices(
+        private static Dictionary<CatalogueItemId, int> AssociatedServicesForAdditionalServices(
             EntityFramework.Ordering.Models.Order order = null)
         {
             return order?.GetAdditionalServices()
-                .ToDictionary(x => x.CatalogueItemId, _ => new List<CatalogueItem>())
-                ?? new Dictionary<CatalogueItemId, List<CatalogueItem>>();
+                .ToDictionary(x => x.CatalogueItemId, _ => 0)
+                ?? new Dictionary<CatalogueItemId, int>();
         }
     }
 }

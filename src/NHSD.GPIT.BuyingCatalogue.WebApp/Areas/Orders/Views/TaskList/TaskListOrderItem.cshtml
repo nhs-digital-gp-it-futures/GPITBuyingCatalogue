@@ -26,7 +26,7 @@
     </h3>
     @if(!Model.IsAmendment)
     {
-        var progressEnd = Model.AssociatedServicesCatalogueItems.Count > 0 ? '3' : '2';
+        var progressEnd = Model.AssociatedServicesCatalogueItemsCount > 0 ? '3' : '2';
         <span class="detail">
             <strong>@progress</strong> of <strong>@progressEnd</strong> started
         </span>
@@ -117,7 +117,7 @@
         </nhs-table-cell>
     </nhs-table-row-container>
     
-    @if (Model.AssociatedServicesCatalogueItems.Count > 0)
+    @if (Model.AssociatedServicesCatalogueItemsCount > 0)
     {
         <nhs-table-row-container>
             <nhs-table-cell>Associated Services</nhs-table-cell>
@@ -133,7 +133,7 @@
                         (actionText, action) = Model.AssociatedServicesStatus switch
                         {
                             TaskProgress.Completed or TaskProgress.InProgress => ("Change", nameof(AssociatedServicesController.ManageAssociatedServices)),
-                            TaskProgress.Optional => ("Start", nameof(AssociatedServicesController.SelectAssociatedServices)),
+                            TaskProgress.NotStarted => ("Start", nameof(AssociatedServicesController.SelectAssociatedServices)),
                             _ => (null, null),
                         };
                     }

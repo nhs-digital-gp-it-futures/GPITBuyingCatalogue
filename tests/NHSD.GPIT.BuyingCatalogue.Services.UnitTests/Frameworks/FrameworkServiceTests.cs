@@ -220,7 +220,6 @@ public static class FrameworkServiceTests
         dbContext.ChangeTracker.Clear();
 
         await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>(), 0));
-
     }
 
     [Theory]

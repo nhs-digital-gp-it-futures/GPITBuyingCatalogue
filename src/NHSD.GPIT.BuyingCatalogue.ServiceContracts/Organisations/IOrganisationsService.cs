@@ -22,6 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 
         Task<(int OrganisationId, string Error)> AddOrganisation(OdsOrganisation odsOrganisation);
 
+        Task<int> GetOrAddOrganisation(string odsCode);
+
         Task UpdateOrganisation(OdsOrganisation organisation);
 
         Task<List<Organisation>> GetUnrelatedOrganisations(int organisationId);

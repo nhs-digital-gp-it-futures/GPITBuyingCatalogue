@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IOrderService mockOrderService,
             OrderItemService service)
         {
-            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}", CatalogueItemType = CatalogueItemType.Solution }));
+            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}", CatalogueItemType = CatalogueItemType.AdditionalService }));
             await context.SaveChangesAsync();
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
@@ -487,7 +487,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            await orderItemService.SetOrderItemEstimationPeriod(item.Id, price);
+            await orderItemService.SetOrderItemEstimationPeriod(order.CallOffId, order.OrderingParty.InternalIdentifier, item.Id, price);
 
             var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
 
@@ -513,7 +513,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            await orderItemService.SetOrderItemEstimationPeriod(item.Id, price);
+            await orderItemService.SetOrderItemEstimationPeriod(order.CallOffId, order.OrderingParty.InternalIdentifier, item.Id, price);
 
             var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
 
@@ -539,7 +539,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            await orderItemService.SetOrderItemEstimationPeriod(item.Id, price);
+            await orderItemService.SetOrderItemEstimationPeriod(order.CallOffId, order.OrderingParty.InternalIdentifier, item.Id, price);
 
             var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
 

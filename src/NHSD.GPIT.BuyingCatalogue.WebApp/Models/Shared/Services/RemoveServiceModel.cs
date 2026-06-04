@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
@@ -16,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
             CatalogueItem service)
         {
             ServiceName = service.Name;
-            ServiceType = service.CatalogueItemType.DisplayName();
+            ServiceType = service.CatalogueItemType;
         }
 
         public IList<SelectOption<bool>> RemoveServiceOptions => new List<SelectOption<bool>>
@@ -25,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
             new($"No, I want to keep my current {ServiceType}s", false),
         };
 
-        public string ServiceType { get; set; }
+        public CatalogueItemType ServiceType { get; set; }
 
         public string ServiceName { get; set; }
 

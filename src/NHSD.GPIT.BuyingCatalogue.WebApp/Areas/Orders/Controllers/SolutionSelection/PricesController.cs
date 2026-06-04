@@ -160,9 +160,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var price = await GetCataloguePrice(priceId, catalogueItemId);
             var orderItem = order.OrderItem(orderItemId);
 
-            await orderPriceService.UpsertPrice(orderItem.Id, price, model.AgreedPrices);
+            await orderPriceService.UpsertPrice(order.Id, orderItem.Id, price, model.AgreedPrices);
 
-            await orderItemService.SetOrderItemEstimationPeriod(orderItemId, price);
+            await orderItemService.SetOrderItemEstimationPeriod(callOffId, internalOrgId, orderItemId, price);
 
             var route = routingService.GetRoute(
                 RoutingPoint.ConfirmPrice,
@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = orderWrapper.Order;
             var orderItem = order.OrderItem(orderItemId);
 
-            await orderPriceService.UpdatePrice(orderItem.Id, model.AgreedPrices);
+            await orderPriceService.UpdatePrice(order.Id, orderItem.Id, model.AgreedPrices);
 
             await orderItemService.DetectChangesInFundingAndDelete(callOffId, internalOrgId, orderItemId);
 

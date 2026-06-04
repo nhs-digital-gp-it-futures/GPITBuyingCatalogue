@@ -178,7 +178,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-
             mockOrderItemService.AddOrderItems(internalOrgId, callOffId, new[] { catalogueItemId }).Returns(Task.CompletedTask);
 
             var result = await controller.SelectAssociatedServices(internalOrgId, callOffId, model);

@@ -7,15 +7,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registratio
     {
         public const string EmailAddressMissingErrorMessage = "Enter your email address";
         public const string EmailAddressWrongFormatErrorMessage = "Enter an email address in the correct format, like name@example.com";
-        public const string FullNameErrorMessage = "Enter your full name";
-        public const string OrganisationNameErrorMessage = "Enter the name of your organisation";
+        public const string FirstNameErrorMessage = "Enter your first name";
+        public const string LastNameErrorMessage = "Enter your last name";
+        public const string OdsCodeErrorMessage = "Enter your organisation's ODS code";
+        public const string JustificationErrorMessage = "Enter a reason for your account request";
         public const string PrivacyPolicyErrorMessage = "Confirm you have read and understood our privacy policy";
 
         public RegistrationDetailsModelValidator()
         {
-            RuleFor(x => x.FullName)
+            RuleFor(x => x.FirstName)
                 .NotEmpty()
-                .WithMessage(FullNameErrorMessage);
+                .WithMessage(FirstNameErrorMessage);
+
+            RuleFor(x => x.LastName)
+                .NotEmpty()
+                .WithMessage(LastNameErrorMessage);
 
             RuleFor(x => x.EmailAddress)
                 .NotEmpty()
@@ -23,9 +29,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registratio
                 .EmailAddress()
                 .WithMessage(EmailAddressWrongFormatErrorMessage);
 
-            RuleFor(x => x.OrganisationName)
+            RuleFor(x => x.OdsCode)
                 .NotEmpty()
-                .WithMessage(OrganisationNameErrorMessage);
+                .WithMessage(OdsCodeErrorMessage);
+
+            RuleFor(x => x.Justification)
+                .NotEmpty()
+                .WithMessage(JustificationErrorMessage);
 
             RuleFor(x => x.HasReadPrivacyPolicy)
                 .NotEqual(false)

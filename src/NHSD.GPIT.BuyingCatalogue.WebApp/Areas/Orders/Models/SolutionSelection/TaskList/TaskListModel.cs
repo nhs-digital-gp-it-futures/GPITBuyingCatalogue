@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             string internalOrgId,
             CallOffId callOffId,
             OrderWrapper wrapper,
-            Dictionary<CatalogueItemId, List<CatalogueItem>> associatedServicesForAdditionalServices)
+            IDictionary<CatalogueItemId, int> associatedServicesForAdditionalServices)
         {
             var rolledUpOrder = wrapper?.RolledUp;
 
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
                     HasNewRecipients = wrapper.HasNewOrderRecipients,
                     NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
-                    AssociatedServicesCatalogueItems = associatedServicesForAdditionalServices.TryGetValue(x.CatalogueItemId, out var associatedServices) ? associatedServices : new List<CatalogueItem>(),
+                    AssociatedServicesCatalogueItemsCount = associatedServicesForAdditionalServices.TryGetValue(x.CatalogueItemId, out var associatedServicesCount) ? associatedServicesCount : 0,
                     PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                         ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
                         : 0,

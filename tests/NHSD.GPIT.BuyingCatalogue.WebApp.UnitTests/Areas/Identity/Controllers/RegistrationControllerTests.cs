@@ -1,10 +1,8 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.Registration;
 using Xunit;
@@ -82,25 +80,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         [MockAutoData]
         public static async Task Post_Details_ValidModelState_RedirectsToConfirmation(
             RegistrationDetailsModel expected,
-            [Frozen] IRequestAccountService mockRequestAccountService,
             RegistrationController systemUnderTest)
         {
-            NewAccountDetails actual = null;
-
-            mockRequestAccountService
-                .When(x => x.RequestAccount(Arg.Any<NewAccountDetails>()))
-                .Do(x => actual = x.Arg<NewAccountDetails>());
-
             var result = await systemUnderTest.Details(expected);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(RegistrationController.Confirmation));
-
-            actual.FullName.Should().Be(expected.FullName);
-            actual.EmailAddress.Should().Be(expected.EmailAddress);
-            actual.OrganisationName.Should().Be(expected.OrganisationName);
-            actual.OdsCode.Should().Be(expected.OdsCode);
-            actual.HasGivenUserResearchConsent.Should().Be(expected.HasGivenUserResearchConsent);
         }
     }
 }

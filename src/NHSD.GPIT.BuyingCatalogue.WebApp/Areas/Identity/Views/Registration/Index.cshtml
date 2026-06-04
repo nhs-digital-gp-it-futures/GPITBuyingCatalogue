@@ -1,38 +1,54 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.NavBaseModel
 @{
     Layout = "Layouts/_AllBannersLayout";
-    ViewBag.Title = "Request Buying Catalogue account";
+    ViewBag.Title = "Request a Buying Catalogue account";
 }
 
 <div data-test-id="registration-page">
-    <partial name="Partials/_BackLink" model="@Model" />
+    <partial name="Partials/_BackLink" model="@Model"/>
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-page-title title="@ViewBag.Title"
-                            advice="This is how to register for a user account. You’ll need one to place orders on the Buying Catalogue." />
-            <div data-test-id="registration-information">
-                <p>
-                    You can request an account on the Buying Catalogue using our online form. You'll need to provide the following information: Your name, email address, the name of your organisation and its ODS code if you know it.
-                </p>
-                <p>
-                    Currently we can only set up accounts for staff from Integrated Care Boards, Commissioning Support Units or GP practices that are involved in procurement.
-                </p>
-                <p>
-                    Once we've set up your account, you'll be sent a link to the email address you provide so you can create a password. The link can be used only once to set up an account, and will be valid for 24 hours from the time you receive the email.
-                </p>
-                <p>
-                    The Buying Catalogue Team aims to respond to account requests within 5 working days.
-                </p>
-                <p>
-                    If for any reason the button does not work, you can send your details to buying.catalogue@nhs.net with the subject line: Buying Catalogue account request.
-                </p>
+                            advice="You'll need an account to place orders and run competitions on the Buying Catalogue."/>
+            <div>
+                <h2 class="nhsuk-heading-m">Who can request an account</h2>
+                <p>You can request an account if you work for:</p>
+
+                <ul>
+                    <li>Integrated Care Boards (ICBs)</li>
+                    <li>GP Practices</li>
+                </ul>
             </div>
-            <vc:nhs-action-link url="@Url.Action(
-                                         nameof(RegistrationController.Details),
-                                         typeof(RegistrationController).ControllerName())" 
-                                text="Request an account" />
+
+            <div>
+                <h2 class="nhsuk-heading-m">Information you’ll need to provide</h2>
+
+                <ul>
+                    <li>your name</li>
+                    <li>your NHS email address</li>
+                    <li>your organisation's ODS code</li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="nhsuk-heading-m">What happens next</h2>
+
+                <p>To request an account, select Request an account and enter your details.</p>
+
+                <p>Once we’ve set up your account, we’ll email you a link to create a password. The link can only be
+                    used once, and it expires after 24 hours.</p>
+
+                <p>We aim to respond to requests within 5 working days.</p>
+
+                <p>You can still <a asp-action="Index" asp-controller="Solutions" asp-area="Solutions" target="_blank">view products and
+                        services (opens in a new tab)</a> without an account.</p>
+            </div>
+            <vc:nhs-anchor-button type="Primary" url="@Url.Action(
+                                                          nameof(RegistrationController.Details),
+                                                          typeof(RegistrationController).ControllerName())"
+                                  text="Request an account"/>
         </div>
     </div>
 </div>

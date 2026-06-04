@@ -49,14 +49,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.NotApplicable)]
         [MockInlineAutoData(TaskProgress.NotStarted)]
         [MockInlineAutoData(TaskProgress.Optional)]
-        public static void Get_SupplierStatusNotComplete_ReturnsCannotStart(
-            TaskProgress supplierStatus,
+        public static void Get_DescriptionStatusNotComplete_ReturnsCannotStart(
+            TaskProgress descriptionStatus,
             Order order,
             CommencementDateStatusProvider service)
         {
             var state = new OrderProgress
             {
-                SupplierStatus = supplierStatus,
+                DescriptionStatus = descriptionStatus,
             };
 
             var actual = service.Get(new OrderWrapper(order), state);
@@ -68,13 +68,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.Completed)]
         [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_TimescalesNotStarted_ReturnsNotStarted(
-            TaskProgress supplierStatus,
+            TaskProgress descriptionStatus,
             Order order,
             CommencementDateStatusProvider service)
         {
             var state = new OrderProgress
             {
-                SupplierStatus = supplierStatus,
+                DescriptionStatus = descriptionStatus,
             };
 
             order.CommencementDate = null;
@@ -90,13 +90,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.Completed)]
         [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_OnlyCommencementDateSpecified_ReturnsInProgress(
-            TaskProgress supplierStatus,
+            TaskProgress descriptionStatus,
             Order order,
             CommencementDateStatusProvider service)
         {
             var state = new OrderProgress
             {
-                SupplierStatus = supplierStatus,
+                DescriptionStatus = descriptionStatus,
             };
 
             order.CommencementDate = DateTime.UtcNow;
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.Completed, null, 6)]
         [MockInlineAutoData(TaskProgress.Amended, null, 6)]
         public static void Get_MaximumTermAndInitialPeriod_ReturnsInProgress(
-            TaskProgress supplierStatus,
+            TaskProgress descriptionStatus,
             int? maximumTerm,
             int? initialPeriod,
             Order order,
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress
             {
-                SupplierStatus = supplierStatus,
+                DescriptionStatus = descriptionStatus,
             };
 
             order.CommencementDate = null;
@@ -138,13 +138,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(TaskProgress.Completed)]
         [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_ReturnsCompleted(
-            TaskProgress supplierStatus,
+            TaskProgress descriptionStatus,
             Order order,
             CommencementDateStatusProvider service)
         {
             var state = new OrderProgress
             {
-                SupplierStatus = supplierStatus,
+                DescriptionStatus = descriptionStatus,
             };
 
             order.CommencementDate = DateTime.UtcNow;
