@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public bool AlternativeSolutionsAvailable { get; set; }
 
         public bool AdditionalServicesAvailable { get; set; }
-        
+
         public bool UnselectedAdditionalServicesAvailable { get; set; }
 
         public IEnumerable<OrderItem> AdditionalServices { get; set; }

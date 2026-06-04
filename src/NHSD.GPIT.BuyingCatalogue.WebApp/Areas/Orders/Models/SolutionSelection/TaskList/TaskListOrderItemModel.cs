@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool IsAssociatedService { get; set; }
 
-        public int AssociatedServicesCatalogueItemsCount { get; set; } = new();
+        public int AssociatedServicesCatalogueItemsCount { get; set; }
 
         public List<OrderItem> AssociatedServicesOrderItems { get; set; } = new();
 
