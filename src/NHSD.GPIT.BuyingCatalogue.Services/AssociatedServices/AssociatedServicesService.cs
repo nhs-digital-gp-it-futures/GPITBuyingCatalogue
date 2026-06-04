@@ -163,7 +163,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
         public async Task<IDictionary<CatalogueItemId, int>> GetCountOfAssociatedServicesForCatalogueItems(HashSet<CatalogueItemId> catalogueItems)
             => await dbContext.SupplierServiceAssociations
                 .Where(ssa => catalogueItems.Contains(ssa.CatalogueItemId))
-                .Include(ssa => ssa.CatalogueItem)
                 .GroupBy(ssa => ssa.CatalogueItemId)
                 .Select(group => new
                 {
