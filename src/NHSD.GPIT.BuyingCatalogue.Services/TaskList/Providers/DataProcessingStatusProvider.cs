@@ -35,12 +35,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 || !TaskListStatusService.IsTaskCompleted(state.SolutionOrService)
                 || !TaskListStatusService.IsTaskCompleted(state.DeliveryDates)
                 || !TaskListStatusService.IsTaskCompleted(state.FundingSource)
-                || !TaskListStatusService.IsTaskCompleted(state.ImplementationPlan)
-                || !AssociatedServiceTaskComplete(state.AssociatedServiceBilling)
-                || !AssociatedServiceTaskComplete(state.AssociatedServiceRequirements));
+                || !ServiceRelatedTaskComplete(state.ImplementationPlan)
+                || !ServiceRelatedTaskComplete(state.AssociatedServiceBilling)
+                || !ServiceRelatedTaskComplete(state.AssociatedServiceRequirements));
         }
 
-        private static bool AssociatedServiceTaskComplete(TaskProgress associatedServiceTaskState)
+        private static bool ServiceRelatedTaskComplete(TaskProgress associatedServiceTaskState)
         {
             var okToProgress = new[] { TaskProgress.Completed, TaskProgress.NotApplicable };
             return okToProgress.Contains(associatedServiceTaskState);
