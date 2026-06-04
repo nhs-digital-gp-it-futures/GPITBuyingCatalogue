@@ -35,9 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             var defaultDeliveryDateEntered = order.DeliveryDate.HasValue;
 
-            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
-
-            if (!okToProgress.Contains(state.SolutionOrService)
+            if (!TaskListStatusService.IsTaskCompleted(state.SolutionOrService)
                 && !anyDeliveryDatesEntered)
             {
                 return TaskProgress.CannotStart;
@@ -47,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             if (allDeliveryDatesSet && (wrapper.HasNewOrderRecipients || wrapper.HasNewOrderItems))
             {
-                return order.IsAmendment ? TaskProgress.Amended : TaskProgress.Completed;
+                return TaskListStatusService.CompletedOrAmended(order.IsAmendment);
             }
 
             if ((anyDeliveryDatesEntered || defaultDeliveryDateEntered) && wrapper.HasNewOrderRecipients)

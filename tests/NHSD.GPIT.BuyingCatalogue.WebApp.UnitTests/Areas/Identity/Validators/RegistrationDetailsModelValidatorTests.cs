@@ -19,19 +19,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
             RegistrationDetailsModelValidator validator)
         {
             model.EmailAddress = inputValue;
-            model.FullName = inputValue;
-            model.OrganisationName = inputValue;
+            model.FirstName = inputValue;
+            model.LastName = inputValue;
+            model.OdsCode = inputValue;
 
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.EmailAddress)
                 .WithErrorMessage(RegistrationDetailsModelValidator.EmailAddressMissingErrorMessage);
 
-            result.ShouldHaveValidationErrorFor(m => m.FullName)
-                .WithErrorMessage(RegistrationDetailsModelValidator.FullNameErrorMessage);
+            result.ShouldHaveValidationErrorFor(m => m.FirstName)
+                .WithErrorMessage(RegistrationDetailsModelValidator.FirstNameErrorMessage);
 
-            result.ShouldHaveValidationErrorFor(m => m.OrganisationName)
-                .WithErrorMessage(RegistrationDetailsModelValidator.OrganisationNameErrorMessage);
+            result.ShouldHaveValidationErrorFor(m => m.LastName)
+                .WithErrorMessage(RegistrationDetailsModelValidator.LastNameErrorMessage);
+
+            result.ShouldHaveValidationErrorFor(m => m.OdsCode)
+                .WithErrorMessage(RegistrationDetailsModelValidator.OdsCodeErrorMessage);
         }
 
         [Theory]

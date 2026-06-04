@@ -10,21 +10,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
 
         Task<List<AspNetUser>> GetAllUsers();
 
-        Task<bool> HasRole(int userId, string role);
-
-        Task<IList<string>> GetRoles(AspNetUser user);
-
         Task<List<AspNetUser>> GetAllUsersBySearchTerm(string searchTerm);
 
         Task<List<AspNetUser>> GetAllUsersForOrganisation(int organisationId);
-
-        Task EnableOrDisableUser(int userId, bool disabled);
-
-        Task UpdateUserAccountType(int userId, string organisationFunction);
-
-        Task UpdateUserDetails(int userId, string firstName, string lastName, string email);
-
-        Task UpdateUserOrganisation(int userId, int organisationId);
 
         Task UpdateUser(
             int userId,

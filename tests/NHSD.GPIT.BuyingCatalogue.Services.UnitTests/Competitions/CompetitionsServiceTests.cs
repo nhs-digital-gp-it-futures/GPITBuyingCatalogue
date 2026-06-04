@@ -1179,6 +1179,7 @@ public static class CompetitionsServiceTests
     {
         return
         [
+
             // Adds
             [
                 CommonOrganisationFactory(78), CommonCompetitionFactory(33, 78),

@@ -52,7 +52,10 @@
                 <a href="@Url.Action(nameof(UsersController.Index), typeof(UsersController).ControllerName())">Manage all users</a>
                 <p>Add a new user or edit the details for one that's already been created.</p>
             </li>
-
+            <li>
+                <a href="@Url.Action(nameof(AccountRequestsController.Index), typeof(AccountRequestsController).ControllerName())">Manage account creation requests</a>
+                <p>View all account requests that have been submitted on the Buying Catalogue.</p>
+            </li>
             <li>
                 <a href="@Url.Action(nameof(EmailDomainManagementController.Index), typeof(EmailDomainManagementController).ControllerName())">Manage allowed email domains</a>
                 <p>Add or delete email domains that a user can register with.</p>

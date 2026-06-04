@@ -16,14 +16,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
         private readonly IPasswordService passwordService;
         private readonly IPasswordResetCallback passwordResetCallback;
         private readonly IGovNotifyEmailService govNotifyEmailService;
-        private readonly RegistrationSettings settings;
+        private readonly AccountTemplateSettings settings;
 
         public CreateUserService(
             UserManager<AspNetUser> userManager,
             IPasswordService passwordService,
             IPasswordResetCallback passwordResetCallback,
             IGovNotifyEmailService govNotifyEmailService,
-            RegistrationSettings settings)
+            AccountTemplateSettings settings)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
@@ -38,7 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             string lastName,
             string emailAddress,
             string organisationFunction,
-            bool isDisabled = false)
+            bool isDisabled = false,
+            bool optedInUserResearch = false)
         {
             if (string.IsNullOrWhiteSpace(emailAddress))
                 throw new ArgumentException($"{nameof(emailAddress)} must be provided.", nameof(emailAddress));
@@ -51,6 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                 Email = emailAddress,
                 PrimaryOrganisationId = primaryOrganisationId,
                 Disabled = isDisabled,
+                HasOptedInUserResearch = optedInUserResearch,
             };
 
             await userManager.CreateAsync(aspNetUser);
@@ -77,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 
             return govNotifyEmailService.SendEmailAsync(
                 user.Email,
-                settings.EmailTemplateId,
+                settings.AccountApprovedTemplateId,
                 personalisation);
         }
     }

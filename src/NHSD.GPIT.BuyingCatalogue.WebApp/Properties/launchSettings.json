@@ -9,7 +9,8 @@
         "BC_DB_CONNECTION": "Server=127.0.0.1,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false;TrustServerCertificate=true",
         "APPINSIGHTS_INSTRUMENTATIONKEY": "",
         "DOMAIN_NAME": "localhost:5001",
-        "SESSION_IDLE_TIMEOUT": "60"
+        "SESSION_IDLE_TIMEOUT": "60",
+        "NOTIFY_API_KEY": ""
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:5001"

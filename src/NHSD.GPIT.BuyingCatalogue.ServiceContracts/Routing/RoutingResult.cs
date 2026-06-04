@@ -7,5 +7,7 @@
         public string ActionName { get; set; }
 
         public object RouteValues { get; set; }
+
+        public string AreaName { get; set; }
     }
 }

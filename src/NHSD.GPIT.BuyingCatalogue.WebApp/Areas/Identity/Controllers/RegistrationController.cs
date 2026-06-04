@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.Registration;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -12,14 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 {
     [Area("Identity")]
     [Route("registration")]
-    public class RegistrationController : Controller
+    public class RegistrationController(IAccountRequestsService accountRequestsService) : Controller
     {
-        private readonly IRequestAccountService requestAccountService;
-
-        public RegistrationController(IRequestAccountService requestAccountService)
-        {
-            this.requestAccountService = requestAccountService ?? throw new ArgumentNullException(nameof(requestAccountService));
-        }
+        private readonly IAccountRequestsService accountRequestsService = accountRequestsService ?? throw new ArgumentNullException(nameof(accountRequestsService));
 
         [HttpGet]
         public IActionResult Index()
@@ -54,14 +51,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             if (!ModelState.IsValid)
                 return View(viewModel);
 
-            await requestAccountService.RequestAccount(new NewAccountDetails
+            var confirmationRoute = new RoutingResult
             {
-                FullName = viewModel.FullName,
-                EmailAddress = viewModel.EmailAddress,
-                OrganisationName = viewModel.OrganisationName,
-                OdsCode = viewModel.OdsCode,
-                HasGivenUserResearchConsent = viewModel.HasGivenUserResearchConsent,
-            });
+                ControllerName = typeof(RegistrationController).ControllerName(),
+                ActionName = nameof(ConfirmRegistration),
+                AreaName = typeof(RegistrationController).AreaName(),
+            };
+
+            await accountRequestsService.SubmitAccountRequest(
+                new AccountRequest(
+                    viewModel.FirstName,
+                    viewModel.LastName,
+                    viewModel.EmailAddress,
+                    viewModel.OdsCode,
+                    viewModel.Justification,
+                    viewModel.HasGivenUserResearchConsent),
+                confirmationRoute);
+
+            return RedirectToAction(nameof(Confirmation));
+        }
+
+        [HttpGet("{requestId}/confirm-registration")]
+        public async Task<IActionResult> ConfirmRegistration(Guid requestId, string email)
+        {
+            await accountRequestsService.ConfirmAccountRequest(requestId, email);
 
             return RedirectToAction(nameof(Confirmation));
         }

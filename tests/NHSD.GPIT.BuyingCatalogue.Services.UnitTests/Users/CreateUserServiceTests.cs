@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [MockInMemoryDbAutoData]
         public static async Task Create_NewApplicationUser_SendsEmail(
             string expectedToken,
-            [Frozen] RegistrationSettings settings,
+            [Frozen] AccountTemplateSettings settings,
             [Frozen] IPasswordResetCallback mockPasswordResetCallback,
             [Frozen] IPasswordService mockPasswordService,
             [Frozen] IGovNotifyEmailService mockEmailService,
@@ -138,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             await mockEmailService.Received()
                 .SendEmailAsync(
                     expectedUser.Email,
-                    settings.EmailTemplateId,
+                    settings.AccountApprovedTemplateId,
                     Arg.Any<Dictionary<string, dynamic>>());
         }
 
