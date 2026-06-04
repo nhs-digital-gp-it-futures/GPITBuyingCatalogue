@@ -7,6 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 {
     public class DataProcessingStatusProvider : ITaskProgressProvider
     {
+        private static readonly TaskProgress[] OkToProgressStatuses =
+            [TaskProgress.Completed, TaskProgress.Amended, TaskProgress.NotApplicable];
+
         public TaskProgress Get(OrderWrapper wrapper, OrderProgress state)
         {
             if (wrapper?.Order is null
@@ -35,15 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 || !TaskListStatusService.IsTaskCompleted(state.SolutionOrService)
                 || !TaskListStatusService.IsTaskCompleted(state.DeliveryDates)
                 || !TaskListStatusService.IsTaskCompleted(state.FundingSource)
-                || !IsTaskCompletedOrNotApplicable(state.ImplementationPlan)
-                || !IsTaskCompletedOrNotApplicable(state.AssociatedServiceBilling)
-                || !IsTaskCompletedOrNotApplicable(state.AssociatedServiceRequirements));
-        }
-
-        private static bool IsTaskCompletedOrNotApplicable(TaskProgress associatedServiceTaskState)
-        {
-            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.NotApplicable };
-            return okToProgress.Contains(associatedServiceTaskState);
+                || !OkToProgressStatuses.Contains(state.ImplementationPlan)
+                || !OkToProgressStatuses.Contains(state.AssociatedServiceBilling)
+                || !OkToProgressStatuses.Contains(state.AssociatedServiceRequirements));
         }
     }
 }
