@@ -304,7 +304,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             EntityFramework.Ordering.Models.Order order = null)
         {
             return order?.GetAdditionalServices()
-                .ToDictionary(x => x.CatalogueItemId, _ => Arg.Any<int>())
+                .ToDictionary(x => x.CatalogueItemId, _ => 0)
                 ?? new Dictionary<CatalogueItemId, int>();
         }
     }
