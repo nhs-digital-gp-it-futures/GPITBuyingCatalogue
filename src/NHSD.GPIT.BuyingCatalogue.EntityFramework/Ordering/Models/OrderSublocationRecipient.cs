@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public void SetQuantityForItem(OrderItem orderItem, int? quantity)
         {
             OrderItemSublocationRecipient itemRecipient =
-                OrderItemSublocationRecipients.FirstOrDefault(x => x.OrderItem?.CatalogueItemId == orderItem.CatalogueItemId);
+                OrderItemSublocationRecipients.FirstOrDefault(x => x.OrderItem?.Id == orderItem.Id);
 
             if (itemRecipient is null)
             {
@@ -81,6 +81,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             return OrderItemSublocationRecipients
                 .FirstOrDefault(x => x.OrderItem.CatalogueItemId == catalogueItemId)
+                ?.Quantity;
+        }
+
+        public int? GetQuantityForItem(int orderItemId)
+        {
+            return OrderItemSublocationRecipients
+                .FirstOrDefault(x => x.OrderItem.Id == orderItemId)
                 ?.Quantity;
         }
 

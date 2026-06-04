@@ -274,6 +274,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             order.MaximumTerm = 12;
             order.OrderItems.ForEach(x =>
             {
+                x.Id = 0;
                 order.OrderSublocations.ForEach(y => y.SublocationRecipients.ForEach(z =>
                     z.OrderItemSublocationRecipients.Add(
                         new OrderItemSublocationRecipient(order.Id, z.RecipientOdsCode, x)

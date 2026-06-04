@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             if (newServiceIds.Any())
             {
-                await orderItemService.AddOrderItems(internalOrgId, callOffId, newServiceIds);
+                await orderItemService.AddOrderItems(internalOrgId, callOffId, newServiceIds, wrapper.Order.GetSolutionOrderItem().Id);
             }
 
             return RedirectToAction(

@@ -67,21 +67,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 ? new List<CatalogueItem>()
                 : await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId, publishedOnly: true);
 
-            var selectedAdditionalServices = order.GetAdditionalServices();
+            var selectedAdditionalServices = order.GetAdditionalServices().ToList();
 
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(solutionId, order.OrderType.ToPracticeReorganisationType);
+            var associatedServicesForSolution = await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(solutionId, order.OrderType.ToPracticeReorganisationType);
+            var selectedAdditionalServiceIds = selectedAdditionalServices.Select(x => x.CatalogueItemId).ToList();
+            var associatedServicesCountGroupedByAdditionalService =
+                await associatedServicesService.GetCountOfAssociatedServicesForCatalogueItems(
+                    selectedAdditionalServiceIds.ToHashSet());
 
             var selectedAssociatedServices = order.GetAssociatedServices();
 
-            var model = new TaskListModel(internalOrgId, callOffId, wrapper)
+            var model = new TaskListModel(internalOrgId, callOffId, wrapper, associatedServicesCountGroupedByAdditionalService)
             {
                 BackLink = Url.Action(backRoute.ActionName, backRoute.ControllerName, backRoute.RouteValues),
                 OnwardLink = Url.Action(onwardRoute.ActionName, onwardRoute.ControllerName, onwardRoute.RouteValues),
                 AlternativeSolutionsAvailable = solutions.Count > 1,
                 AdditionalServicesAvailable = additionalServices.Any(),
                 UnselectedAdditionalServicesAvailable = additionalServices.Any(x => selectedAdditionalServices.All(y => x.Id != y.CatalogueItemId)),
-                AssociatedServicesAvailable = associatedServices.Any(),
-                UnselectedAssociatedServicesAvailable = associatedServices.Any(x => selectedAssociatedServices.All(y => x.Id != y.CatalogueItemId)),
+                AssociatedServicesAvailable = associatedServicesForSolution.Any(),
+                UnselectedAssociatedServicesAvailable = associatedServicesForSolution.Any(x => selectedAssociatedServices.All(y => x.Id != y.CatalogueItemId)),
             };
 
             return View(model);

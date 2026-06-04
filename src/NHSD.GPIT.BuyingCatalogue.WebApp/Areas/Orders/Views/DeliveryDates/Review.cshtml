@@ -67,8 +67,9 @@
 
         @if (Model.SolutionId != null && Model.OrderItemDates(Model.SolutionId.Value).Any())
         {
-            var catalogueItemId = Model.SolutionId.Value;
-            var itemName = Model.OrderItemName(catalogueItemId);
+            var solutionItemId = Model.SolutionId.Value;
+            var itemName = Model.OrderItemName(solutionItemId);
+            var catalogueItemId = Model.OrderWrapper.Order.OrderItem(solutionItemId).CatalogueItemId;
 
             <h2>Catalogue solution</h2>
             
@@ -76,7 +77,7 @@
                 new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList });
             
 
-            foreach (var date in Model.OrderItemDates(catalogueItemId))
+            foreach (var date in Model.OrderItemDates(solutionItemId))
             {
                 <nhs-expander-v2 open="true">
                     <nhs-expander-summary label-text="@itemName" bold-title="true">
@@ -91,7 +92,7 @@
                     <nhs-table>
                         <nhs-table-column>Organisation</nhs-table-column>
                         <nhs-table-column>ODS code</nhs-table-column>
-                        @foreach (var (odsCode, name) in Model.OrderItemRecipients(catalogueItemId, date))
+                        @foreach (var (odsCode, name) in Model.OrderItemRecipients(solutionItemId, date))
                         {
                             <nhs-table-row-container>
                                 <nhs-table-cell>@name</nhs-table-cell>
@@ -108,15 +109,16 @@
         {
             <h2>Additional services</h2>
 
-            @foreach (var catalogueItemId in Model.AdditionalServiceIds.Where(x => Model.OrderItemDates(x).Any()))
+            @foreach (var itemId in Model.AdditionalServiceIds.Where(x => Model.OrderItemDates(x).Any()))
             {
-                var itemName = Model.OrderItemName(catalogueItemId);
+                var itemName = Model.OrderItemName(itemId);
+                var catalogueItemId = Model.OrderWrapper.Order.OrderItem(itemId).CatalogueItemId;
 
                 var url = Url.Action(nameof(DeliveryDatesController.EditDates),
                     typeof(DeliveryDatesController).ControllerName(),
                     new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList });
 
-                foreach (var date in Model.OrderItemDates(catalogueItemId))
+                foreach (var date in Model.OrderItemDates(itemId))
                 {
                     <nhs-expander-v2 open="true">
                         <nhs-expander-summary label-text="@itemName" bold-title="true">
@@ -131,7 +133,7 @@
                         <nhs-table>
                             <nhs-table-column>Organisation</nhs-table-column>
                             <nhs-table-column>ODS code</nhs-table-column>
-                            @foreach (var (odsCode, name) in Model.OrderItemRecipients(catalogueItemId, date))
+                            @foreach (var (odsCode, name) in Model.OrderItemRecipients(itemId, date))
                             {
                                 <nhs-table-row-container>
                                     <nhs-table-cell>@name</nhs-table-cell>

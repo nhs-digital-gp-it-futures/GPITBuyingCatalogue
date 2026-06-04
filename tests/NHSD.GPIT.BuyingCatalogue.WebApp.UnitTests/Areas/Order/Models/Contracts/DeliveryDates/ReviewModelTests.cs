@@ -17,14 +17,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             EntityFramework.Ordering.Models.Order order,
             OrderItem additionalService,
             OrderItem associatedService,
+            OrderItem solution,
             DateTime date)
         {
             additionalService.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            associatedService.ParentId = solution.Id;
 
             order.OrderItems.Clear();
             order.OrderItems.Add(additionalService);
             order.OrderItems.Add(associatedService);
+            order.OrderItems.Add(solution);
 
             order.DeliveryDate = date;
             var model = new ReviewModel(new OrderWrapper(order));
@@ -39,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.AdditionalServiceIds.Count.Should().Be(1);
             model.AssociatedServiceIds.Count.Should().Be(1);
 
-            model.SolutionId.Should().Be(order.GetSolutionOrderItem()?.CatalogueItemId);
+            model.SolutionId.Should().Be(order.GetSolutionOrderItem()?.Id);
         }
 
         [Theory]
@@ -70,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
 
             var model = new ReviewModel(new OrderWrapper(order));
 
-            var result = model.OrderItemRecipients(solution.CatalogueItemId, date);
+            var result = model.OrderItemRecipients(solution.Id, date);
             result.Should().NotBeNull();
             result.Should().BeOfType(typeof(List<(string OdsCode, string Name)>));
             result.Count.Should().Be(1);
@@ -102,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
 
             var model = new ReviewModel(new OrderWrapper(order));
 
-            var result = model.OrderItemDates(solution.CatalogueItemId);
+            var result = model.OrderItemDates(solution.Id);
             result.Should().NotBeNull();
             result.Should().BeOfType(typeof(List<DateTime?>));
             result.Count.Should().Be(1);

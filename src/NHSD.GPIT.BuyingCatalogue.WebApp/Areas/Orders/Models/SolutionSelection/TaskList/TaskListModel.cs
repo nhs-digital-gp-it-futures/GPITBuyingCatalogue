@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoreLinq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList
@@ -26,7 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public TaskListModel(
             string internalOrgId,
             CallOffId callOffId,
-            OrderWrapper wrapper)
+            OrderWrapper wrapper,
+            IDictionary<CatalogueItemId, int> associatedServicesForAdditionalServices)
         {
             var rolledUpOrder = wrapper?.RolledUp;
 
@@ -72,6 +75,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                             : 0,
                         PreviousRecipients = Previous?.FlattenedRecipients.Count() ?? 0,
                         CanBeRemoved = false,
+                        Source = RoutingSource.TaskList,
+                        OrderItemId = CatalogueSolution.Id,
                     });
             }
 
@@ -82,11 +87,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
                     HasNewRecipients = wrapper.HasNewOrderRecipients,
                     NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
+                    AssociatedServicesCatalogueItemsCount = associatedServicesForAdditionalServices.TryGetValue(x.CatalogueItemId, out var associatedServicesCount) ? associatedServicesCount : 0,
                     PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                         ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
                         : 0,
                     PreviousRecipients = Previous?.FlattenedRecipients.Count() ?? 0,
+                    AssociatedServicesOrderItems = x.Services.ToList(),
                     CanBeRemoved = !(IsAmendment && (Previous?.Exists(x.CatalogueItemId) ?? false)),
+                    Source = RoutingSource.TaskList,
+                    OrderItemId = x.Id,
                 }));
 
             AssociatedServices.ForEach(x => AddTaskModelForAssociatedService(
@@ -207,6 +216,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     ? orderItem.CatalogueItem.CataloguePrices.First().CataloguePriceId
                     : 0,
                 CanBeRemoved = canBeRemoved,
+                Source = RoutingSource.TaskList,
+                OrderItemId = orderItem.Id,
             };
         }
     }

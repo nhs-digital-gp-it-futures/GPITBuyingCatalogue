@@ -18,15 +18,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task ResetItemQuantities(int orderId, CatalogueItemId catalogueItemId)
+        public async Task ResetItemQuantities(int orderItemId)
         {
             var orderItem = await dbContext.OrderItems
-                .FirstOrDefaultAsync(x => x.OrderId == orderId
-                    && x.CatalogueItemId == catalogueItemId);
+                .FirstOrDefaultAsync(x => x.Id == orderItemId);
 
             List<OrderItemSublocationRecipient> orderItemSublocationRecipients = await dbContext
                 .OrderItemSublocationRecipients
-                .Where(x => x.OrderId == orderId)
+                .Where(x => x.OrderItemId == orderItemId)
                 .ToListAsync();
 
             if (orderItem == null)
@@ -80,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task SetServiceRecipientQuantities(
             int orderId,
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             List<OrderItemRecipientQuantityDto> quantities)
         {
             if (quantities is null || quantities is { Count: 0 })
@@ -94,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ThenInclude(orderItemSublocationRecipient => orderItemSublocationRecipient.OrderItem)
                 .ToListAsync();
             OrderItem orderItem = await dbContext.OrderItems
-                .FirstOrDefaultAsync(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId);
+                .FirstOrDefaultAsync(x => x.Id == orderItemId);
 
             if (recipients.Count == 0)
             {

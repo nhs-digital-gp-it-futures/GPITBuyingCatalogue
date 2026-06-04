@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared
@@ -18,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared
 
         private static bool HaveMadeASelection(SelectServicesModel model)
         {
-            return !model.AssociatedServicesOnly
+            return (!model.AssociatedServicesOnly && model.ParentItem != CatalogueItemType.AdditionalService)
                 || (model.Services?.Any(x => x.IsSelected) ?? false);
         }
     }

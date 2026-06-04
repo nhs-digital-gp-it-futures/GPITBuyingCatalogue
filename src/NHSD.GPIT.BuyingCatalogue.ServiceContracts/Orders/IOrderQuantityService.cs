@@ -6,15 +6,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IOrderQuantityService
     {
-        Task ResetItemQuantities(int orderId, CatalogueItemId catalogueItemId);
-
-        Task SetOrderItemQuantity(int orderId, CatalogueItemId catalogueItemId, int quantity);
+        Task ResetItemQuantities(int orderItemId);
 
         Task SetServiceRecipientQuantities(int orderId, CatalogueItemId catalogueItemId, int quantity);
 
         Task SetServiceRecipientQuantities(
             int orderId,
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             List<OrderItemRecipientQuantityDto> quantities);
     }
 }

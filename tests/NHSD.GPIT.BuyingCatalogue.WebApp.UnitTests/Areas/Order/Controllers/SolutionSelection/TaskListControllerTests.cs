@@ -81,7 +81,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(order));
+            var expected = new TaskListModel(
+                internalOrgId,
+                callOffId,
+                new OrderWrapper(order),
+                AssociatedServicesForAdditionalServices(order));
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink).Excluding(m => m.OnwardLink));
         }
@@ -128,7 +132,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(order))
+            var expected = new TaskListModel(
+                internalOrgId,
+                callOffId,
+                new OrderWrapper(order),
+                AssociatedServicesForAdditionalServices(order))
             {
                 AdditionalServicesAvailable = true,
                 UnselectedAdditionalServicesAvailable = true,
@@ -144,6 +152,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                         .Excluding(m => m.OnwardLink)
                         .Excluding(m => m.CatalogueSolution.OrderItemPrice.OrderItemPriceTiers)
                         .Excluding(m => m.AdditionalServices));
+        }
+
+        private static Dictionary<CatalogueItemId, int> AssociatedServicesForAdditionalServices(
+            EntityFramework.Ordering.Models.Order order)
+        {
+            return order.GetAdditionalServices()
+                .ToDictionary(x => x.CatalogueItemId, _ => 0);
         }
     }
 }

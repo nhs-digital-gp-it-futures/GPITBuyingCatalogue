@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -9,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 {
     public class ReviewModel : NavBaseModel
     {
-        private readonly Dictionary<CatalogueItemId, string> orderItemNames = new();
+        private readonly Dictionary<int, string> orderItemNames = new();
 
         public ReviewModel()
         {
@@ -26,14 +27,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             DeliveryDate = order.DeliveryDate;
 
             orderItemNames = order.OrderItems.ToDictionary(
-                x => x.CatalogueItemId,
+                x => x.Id,
                 x => x.CatalogueItem.Name);
 
             OrderWrapper = orderWrapper;
 
-            SolutionId = order.GetSolutionOrderItem()?.CatalogueItemId;
-            AdditionalServiceIds = order.GetAdditionalServices().Select(x => x.CatalogueItemId).ToList();
-            AssociatedServiceIds = order.GetAssociatedServices().Select(x => x.CatalogueItemId).ToList();
+            SolutionId = order.GetSolutionOrderItem().Id;
+            AdditionalServiceIds = order.GetAdditionalServices().Select(x => x.Id).ToList();
+            AssociatedServiceIds = order.GetAssociatedServices().Select(x => x.Id).ToList();
         }
 
         public string InternalOrgId { get; set; }
@@ -48,44 +49,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public DateTime? DeliveryDate { get; set; }
 
-        public CatalogueItemId? SolutionId { get; set; }
+        public int? SolutionId { get; set; }
 
-        public List<CatalogueItemId> AdditionalServiceIds { get; set; } = new();
+        public List<int> AdditionalServiceIds { get; set; } = new();
 
-        public List<CatalogueItemId> AssociatedServiceIds { get; set; } = new();
+        public List<int> AssociatedServiceIds { get; set; } = new();
 
         public OrderWrapper OrderWrapper { get; set; } = new();
 
-        public string OrderItemName(CatalogueItemId catalogueItemId) => orderItemNames.ContainsKey(catalogueItemId)
-            ? orderItemNames[catalogueItemId]
+        public string OrderItemName(int orderItemId) => orderItemNames.ContainsKey(orderItemId)
+            ? orderItemNames[orderItemId]
             : string.Empty;
 
-        public List<DateTime?> OrderItemDates(CatalogueItemId catalogueItemId)
+        public List<DateTime?> OrderItemDates(int orderItemId)
         {
-            return GetRecipientsForItem(catalogueItemId)
+            return GetRecipientsForItem(orderItemId)
                 .Select(x => x.DeliveryDate)
                 .Distinct()
                 .OrderBy(x => x)
                 .ToList();
         }
 
-        public List<(string OdsCode, string Name)> OrderItemRecipients(CatalogueItemId catalogueItemId, DateTime? deliveryDate)
+        public List<(string OdsCode, string Name)> OrderItemRecipients(int orderItemId, DateTime? deliveryDate)
         {
-            return GetRecipientsForItem(catalogueItemId)
+            return GetRecipientsForItem(orderItemId)
                 .Where(x => x.DeliveryDate == deliveryDate)
                 .OrderBy(x => x.RecipientName)
                 .Select(x => (x.OdsCode, x.RecipientName))
                 .ToList();
         }
 
-        private List<OrderItemRecipientModel> GetRecipientsForItem(CatalogueItemId catalogueItemId)
+        private List<OrderItemRecipientModel> GetRecipientsForItem(int orderItemId)
         {
-            var orderItem = OrderWrapper.OrderItems.FirstOrDefault(x => x.CatalogueItemId == catalogueItemId);
-            return orderItem != null
-                ? OrderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId)
-                    .Select(x => new OrderItemRecipientModel(x, orderItem.CatalogueItemId))
-                    .ToList()
-                : [];
+            var orderItem = OrderWrapper.OrderItems.FirstOrDefault(x => x.Id == orderItemId);
+            if (orderItem == null) return [];
+
+            var item = orderItem.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+                ? orderItem.Parent
+                : orderItem;
+            return OrderWrapper.DetermineOrderRecipients(item.CatalogueItemId)
+                .Select(x => new OrderItemRecipientModel(x, orderItem.CatalogueItemId))
+                .ToList();
         }
     }
 }
