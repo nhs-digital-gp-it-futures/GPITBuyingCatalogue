@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoreLinq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -49,7 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             PreviousAssociatedServices = wrapper.PreviousOrders
                 .SelectMany(order => order.GetAssociatedServices() ?? new List<OrderItem>())
                 .GroupBy(item => item.Order.CallOffId);
-            AssociatedServicesForAdditionalServices = associatedServicesForAdditionalServices;
             HasNewRecipients = wrapper.HasNewOrderRecipients;
 
             if (rolledUpOrder.OrderType.AssociatedServicesOnly)
@@ -156,8 +154,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public bool AlternativeSolutionsAvailable { get; set; }
 
         public bool AdditionalServicesAvailable { get; set; }
-
-        public Dictionary<CatalogueItemId, List<CatalogueItem>> AssociatedServicesForAdditionalServices { get; set; }
 
         public bool UnselectedAdditionalServicesAvailable { get; set; }
 

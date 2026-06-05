@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using MoreLinq;
@@ -155,6 +156,41 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
                 orderItemId = order.GetAdditionalServices().First().Id,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.EditDeliveryDates);
+            result.ControllerName.Should().Be(Constants.Controllers.DeliveryDates);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public void Process_SubsequentAssociatedServiceForAdditionalServiceAvailable_SolutionDoesNotMatchPrimaryDeliveryDate_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            OrderItem associatedService,
+            DeliveryDatesProvider provider)
+        {
+            var deliveryDate = DateTime.Today;
+
+            order.SetupCatalogueSolution();
+            order.DeliveryDate = deliveryDate;
+            var solution = order.OrderItems.First();
+            order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(solution, deliveryDate));
+
+            var additionalService = order.OrderItems.ElementAt(1);
+            additionalService.Services = new List<OrderItem> { associatedService };
+            associatedService.Parent = additionalService;
+            order.OrderItems.Add(associatedService);
+
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, additionalService.CatalogueItemId) { OrderItemId = additionalService.Id });
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                orderItemId = associatedService.Id,
             };
 
             result.ActionName.Should().Be(Constants.Actions.EditDeliveryDates);

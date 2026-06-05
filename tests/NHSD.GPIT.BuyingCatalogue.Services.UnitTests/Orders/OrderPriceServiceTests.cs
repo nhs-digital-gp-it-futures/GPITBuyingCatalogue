@@ -259,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var solutionId = order.GetSolutionOrderItem().Id;
 
-            await service.UpdatePrice(solutionId, new List<PricingTierDto>());
+            await service.UpdatePrice(order.Id, solutionId, new List<PricingTierDto>());
 
             var actual = context.OrderItemPrices
                 .FirstOrDefault(x => x.OrderItem.Id == solutionId);
@@ -286,7 +286,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var expected = context.OrderItemPrices
                 .First(x => x.OrderItem.Id == solutionId);
 
-            await service.UpdatePrice(solutionId, new List<PricingTierDto>());
+            await service.UpdatePrice(order.Id, solutionId, new List<PricingTierDto>());
 
             var actual = context.OrderItemPrices
                 .First(x => x.OrderItem.Id == solutionId);

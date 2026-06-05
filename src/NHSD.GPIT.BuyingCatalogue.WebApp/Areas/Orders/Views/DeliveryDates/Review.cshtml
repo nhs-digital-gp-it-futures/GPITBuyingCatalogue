@@ -101,23 +101,24 @@
         @if (Model.AssociatedServiceIdsForAdditionalServices.Values.Any(associatedServices => associatedServices.Count > 0))
         {
             <h2>Associated Services for your Additional Services</h2>
-
-            @foreach (var additionalServiceItemId in Model.AssociatedServiceIdsForAdditionalServices.Keys.Where(additionalService => Model.AssociatedServiceIdsForAdditionalServices[additionalService].Any()))
-            {
-                var additionalService = Model.OrderWrapper.Order.OrderItem(additionalServiceItemId);
-                var additionalServiceName = Model.OrderItemName(additionalService.Id);
-                
-                @foreach (var associatedServiceId in Model.AssociatedServiceIdsForAdditionalServices[additionalServiceItemId])
+            <nhs-card>
+                @foreach (var additionalServiceItemId in Model.AssociatedServiceIdsForAdditionalServices.Keys.Where(additionalService => Model.AssociatedServiceIdsForAdditionalServices[additionalService].Any()))
                 {
-                    var itemName = $"{additionalServiceName} - {Model.OrderItemName(associatedServiceId)}";
-                    var url = Url.Action(nameof(DeliveryDatesController.EditDates),
-                        typeof(DeliveryDatesController).ControllerName(),
-                        new { Model.InternalOrgId, Model.CallOffId, orderItemId = associatedServiceId, source = RoutingSource.TaskList });
+                    var additionalService = Model.OrderWrapper.Order.OrderItem(additionalServiceItemId);
+                    var additionalServiceName = Model.OrderItemName(additionalService.Id);
+                
+                    @foreach (var associatedServiceId in Model.AssociatedServiceIdsForAdditionalServices[additionalServiceItemId])
+                    {
+                        var itemName = $"{additionalServiceName} - {Model.OrderItemName(associatedServiceId)}";
+                        var url = Url.Action(nameof(DeliveryDatesController.EditDates),
+                            typeof(DeliveryDatesController).ControllerName(),
+                            new { Model.InternalOrgId, Model.CallOffId, orderItemId = associatedServiceId, source = RoutingSource.TaskList });
                     
-                    <partial name="DeliveryDatesReviewItemTable"
-                             model="new DeliveryDatesReviewItemTableModel(itemName, url, Model.OrderItemRecipients(associatedServiceId))" />
+                        <partial name="DeliveryDatesReviewItemTable"
+                                 model="new DeliveryDatesReviewItemTableModel(itemName, url, Model.OrderItemRecipients(associatedServiceId))" />
+                    }
                 }
-            }
+            </nhs-card>
         }
 
         @if (Model.AssociatedServiceIds.Any())

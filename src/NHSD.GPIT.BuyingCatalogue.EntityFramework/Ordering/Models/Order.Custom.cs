@@ -80,7 +80,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 output.Add(solution.Id);
             }
 
-            output.AddRange(GetAdditionalServices().Select(x => x.Id));
+            output.AddRange(GetAdditionalServices().SelectMany(additionalService =>
+            {
+                var result = new List<int> { additionalService.Id };
+                result.AddRange(additionalService.Services.Select(associatedService => associatedService.Id));
+                return result;
+            }));
             output.AddRange(GetAssociatedServices().Select(x => x.Id));
 
             return output;

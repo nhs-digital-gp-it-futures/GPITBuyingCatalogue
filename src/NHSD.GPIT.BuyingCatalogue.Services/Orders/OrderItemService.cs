@@ -154,6 +154,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (price is null)
                 throw new ArgumentNullException(nameof(price));
 
+            var orderId = await dbContext.OrderId(internalOrgId, callOffId);
+
             var orderItem = await dbContext.OrderItems
                 .FirstAsync(oi =>
                     oi.Id == orderItemId
