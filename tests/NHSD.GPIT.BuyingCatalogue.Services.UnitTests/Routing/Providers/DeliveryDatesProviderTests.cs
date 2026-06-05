@@ -165,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
         [Theory]
         [MockAutoData]
-        public void Process_SubsequentAssociatedServiceForAdditionalServiceAvailable_SolutionDoesNotMatchPrimaryDeliveryDate_ExpectedResult(
+        public void Process_SubsequentAssociatedService_ForAdditionalService_Available_SolutionDoesNotMatchPrimaryDeliveryDate_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             Order order,
