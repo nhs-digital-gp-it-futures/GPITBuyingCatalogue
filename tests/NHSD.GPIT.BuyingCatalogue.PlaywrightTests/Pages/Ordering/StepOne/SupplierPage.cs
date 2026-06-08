@@ -29,6 +29,12 @@ public class SupplierPage : BasePage
         await ClickSaveAndContinueAsync();
     }
 
+    public async Task SelectSupplierByRadioAsync(string supplierName)
+    {
+        await Page.GetByRole(AriaRole.Radio, new() { Name = supplierName }).CheckAsync();
+        await ClickSaveAndContinueAsync();
+    }
+
     public async Task ConfirmSupplierAsync()
     {
         await YesRadio.CheckAsync();

@@ -1,4 +1,5 @@
-﻿using Microsoft.Playwright;
+﻿using System.Threading.Tasks;
+using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Base;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepTwo;
@@ -18,14 +19,29 @@ public class ServiceRecipientsPage : BasePage
     {
         await ManualOption.CheckAsync();
         await ClickSaveAndContinueAsync();
-        await SelectSublocationAsync(sublocation);
+        await SelectSublocationAsync(sublocation, "order");
         await SelectPracticesAsync(practices);
         await ConfirmRecipientsAsync();
     }
 
-    private async Task SelectSublocationAsync(string sublocation)
+    public async Task SelectRecipientsWithRecipientToBeMergedAsync(string sublocation, string[] practices, string recipientToBeMerged, string serviceCategory)
     {
-        await AssertHeadingAsync("Select sublocations for this order");
+        await ManualOption.CheckAsync();
+        await ClickSaveAndContinueAsync();
+        await SelectSublocationAsync(sublocation, serviceCategory);
+        await SelectPracticesAsync(practices);
+
+        await AssertHeadingAsync("Service recipient to be retained");
+        await Page.GetByRole(AriaRole.Radio, new() { Name = recipientToBeMerged }).CheckAsync();
+        await ClickSaveAndContinueAsync();
+
+        await AssertHeadingAsync("Confirm service recipients");
+        await ClickSaveAndContinueAsync();
+    }
+
+    private async Task SelectSublocationAsync(string sublocation, string serviceCategory)
+    {
+        await AssertHeadingAsync($"Select sublocations for this {serviceCategory}");
         await Page.GetByRole(AriaRole.Checkbox, new() { Name = sublocation }).CheckAsync();
         await ClickSaveAndContinueAsync();
     }
