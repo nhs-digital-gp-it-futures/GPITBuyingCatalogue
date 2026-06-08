@@ -10,17 +10,5 @@ public class OrderTestDataBuilder
         return this;
     }
 
-    public OrderTestDataBuilder WithSupplier(string supplier)
-    {
-        _data.Supplier = supplier;
-        return this;
-    }
-
-    public OrderTestDataBuilder WithSolution(string solution)
-    {
-        _data.Solution = solution;
-        return this;
-    }
-
     public OrderTestData Build() => _data;
 }

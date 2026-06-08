@@ -38,8 +38,6 @@ public abstract class BaseTest : IAsyncLifetime
         _context = await CreateContextAsync();
 
         Page = await _context.NewPageAsync();
-
-        var data = new OrderTestData { BaseUrl = Fixture.BaseUrl };
         orderPages = new OrderingPages(Page, Output, new OrderTestData());
 
         Output.WriteLine($"Test started: {_testName}");
