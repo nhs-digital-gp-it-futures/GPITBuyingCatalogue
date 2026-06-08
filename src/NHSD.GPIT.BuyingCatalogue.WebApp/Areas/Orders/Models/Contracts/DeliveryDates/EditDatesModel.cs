@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
-        public int OrderItemId { get; set; }
+        public int? OrderItemId { get; set; }
 
         public CatalogueItemType CatalogueItemType { get; set; }
 

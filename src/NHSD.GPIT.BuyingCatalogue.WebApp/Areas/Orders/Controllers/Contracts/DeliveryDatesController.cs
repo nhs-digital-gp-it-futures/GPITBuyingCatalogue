@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             return RedirectToAction(
                 nameof(EditDates),
                 typeof(DeliveryDatesController).ControllerName(),
-                new { internalOrgId, callOffId, OrderItemId = order.GetOrderItemIds().First() });
+                new { internalOrgId, callOffId, OrderItemId = order.GetOrderItemIds()[0] });
         }
 
         [HttpGet("confirm")]
@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                     await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, model.NewDeliveryDate);
                     await deliveryDateService.ResetRecipientDeliveryDates(order.Id);
 
-                    var orderItemId = order.GetOrderItemIds().First();
+                    var orderItemId = order.GetOrderItemIds()[0];
 
                     return RedirectToAction(
                         nameof(EditDates),
