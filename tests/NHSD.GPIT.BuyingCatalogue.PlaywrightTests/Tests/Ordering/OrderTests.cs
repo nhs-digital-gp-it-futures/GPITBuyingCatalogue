@@ -12,6 +12,13 @@ public class OrderTests : BaseTest
     private const string AssociatedService = "Engineering";
     private const string AdditionalService = "Automated Arrivals";
 
+    private static readonly string[] MergerPractices =
+   {
+        "BANKFIELD SURGERY",
+        "BEECHWOOD MEDICAL CENTRE",
+        "BRIG ROYD SURGERY"
+    };
+
     public OrderTests(TestServerFixture fixture, ITestOutputHelper output)
         : base(fixture, output)
     {
@@ -97,9 +104,7 @@ public class OrderTests : BaseTest
             .WithServiceCategory("Merger")
             .WithSupplier("EMIS Health", isMerger: true)
             .WithCatalogueSolutionForMerger("Video Consult")
-            .WithPracticesAndRecipientToBeMerged(
-                new[] { "BANKFIELD SURGERY", "BEECHWOOD MEDICAL CENTRE", "BRIG ROYD SURGERY" },
-                "BANKFIELD SURGERY")
+            .WithPracticesAndRecipientToBeMerged(MergerPractices, "BANKFIELD SURGERY")
             .WithFundingFilter("Merger")
             .Build();
 
