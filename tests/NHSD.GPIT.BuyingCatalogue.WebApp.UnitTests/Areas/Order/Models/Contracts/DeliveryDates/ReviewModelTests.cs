@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
 
             var result = model.OrderItemRecipients(solution.Id);
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(List<(string OdsCode, string Name, DateTime? DeliveryDate)>));
+            result.Should().BeOfType<List<(string OdsCode, string Name, DateTime? DeliveryDate)>>();
             result.Count.Should().Be(1);
             result[0].DeliveryDate.Should().Be(date);
         }
