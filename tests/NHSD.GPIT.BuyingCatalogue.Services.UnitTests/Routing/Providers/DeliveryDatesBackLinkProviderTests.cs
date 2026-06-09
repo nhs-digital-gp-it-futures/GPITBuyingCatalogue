@@ -46,10 +46,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             RouteValues routeValues,
             DeliveryDatesBackLinkProvider provider)
         {
-            routeValues.CatalogueItemId = null;
+            routeValues.OrderItemId = null;
 
             FluentActions
-                .Invoking(() => provider.Process(new OrderWrapper(order), null))
+                .Invoking(() => provider.Process(new OrderWrapper(order), routeValues))
                 .Should().Throw<ArgumentNullException>()
                 .WithParameterName("routeValues");
         }
@@ -60,12 +60,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             string internalOrgId,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
+            int orderItemId,
             Order order,
             DeliveryDatesBackLinkProvider provider)
         {
             var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId)
             {
                 Source = RoutingSource.TaskList,
+                OrderItemId = orderItemId,
             });
 
             var expected = new

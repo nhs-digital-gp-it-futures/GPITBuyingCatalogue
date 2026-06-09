@@ -91,10 +91,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 await deliveryDateService.ResetRecipientDeliveryDates(order.Id);
             }
 
+            int? orderItemId = order.GetOrderItemIds().Count > 0 ? order.GetOrderItemIds()[0] : null;
+
             return RedirectToAction(
                 nameof(EditDates),
                 typeof(DeliveryDatesController).ControllerName(),
-                new { internalOrgId, callOffId, OrderItemId = order.GetOrderItemIds()[0] });
+                new { internalOrgId, callOffId, OrderItemId = orderItemId });
         }
 
         [HttpGet("confirm")]
@@ -131,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                     await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, model.NewDeliveryDate);
                     await deliveryDateService.ResetRecipientDeliveryDates(order.Id);
 
-                    var orderItemId = order.GetOrderItemIds()[0];
+                    int? orderItemId = order.GetOrderItemIds().Count > 0 ? order.GetOrderItemIds()[0] : null;
 
                     return RedirectToAction(
                         nameof(EditDates),

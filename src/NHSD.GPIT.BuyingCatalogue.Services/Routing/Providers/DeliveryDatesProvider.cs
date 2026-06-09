@@ -12,13 +12,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
     {
         public RoutingResult Process(OrderWrapper orderWrapper, RouteValues routeValues)
         {
-            ArgumentNullException.ThrowIfNull(orderWrapper);
-            var order = orderWrapper.Order ?? throw new ArgumentNullException(nameof(orderWrapper));
+            if (orderWrapper is null or { Order: null })
+            {
+                throw new ArgumentNullException(nameof(orderWrapper));
+            }
 
-            if (routeValues?.CatalogueItemId == null)
+            if (routeValues is null or { OrderItemId: null })
             {
                 throw new ArgumentNullException(nameof(routeValues));
             }
+
+            var order = orderWrapper.Order;
 
             if (routeValues.Source is RoutingSource.TaskList)
             {
@@ -30,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            var orderItemId = order.GetNextOrderItemId(routeValues.OrderItemId!.Value);
+            var orderItemId = order.GetNextOrderItemId(routeValues.OrderItemId.Value);
 
             if (orderItemId == null)
             {

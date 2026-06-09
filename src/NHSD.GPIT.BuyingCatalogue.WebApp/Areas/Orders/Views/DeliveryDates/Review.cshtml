@@ -136,7 +136,7 @@
                     new { Model.InternalOrgId, Model.CallOffId, orderItemId, source = RoutingSource.TaskList });
                 
                 var label = mergerSplit
-                    ? $"Planned delivery date: {GetFormattedDate(Model.OrderItemDates(orderItemId).First())}"
+                    ? $"Planned delivery date: {GetFormattedDate(Model.OrderItemDates(orderItemId).FirstOrDefault())}"
                     : itemName;
 
                 <partial name="DeliveryDatesReviewItemTable"
