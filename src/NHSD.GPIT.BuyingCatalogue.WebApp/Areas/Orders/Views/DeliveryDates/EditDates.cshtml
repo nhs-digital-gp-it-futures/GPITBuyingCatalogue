@@ -5,7 +5,7 @@
 @{
     ViewBag.Title = Model.OrderType.MergerOrSplit
         ? $"Review planned delivery dates"
-        : $"Review planned delivery dates for {Model.CatalogueItemType.Name()}";
+        : $"Review planned delivery dates for {Model.CatalogueItemTypeSuffix}";
 
     var deliveryDate = Model.DeliveryDate.HasValue
         ? $"{Model.DeliveryDate:d MMMM yyyy}"
@@ -48,7 +48,7 @@
                 var returnUrl = Url.Action(
                 nameof(DeliveryDatesController.EditDates),
                 typeof(DeliveryDatesController).ControllerName(),
-                new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.Source });
+                new { Model.InternalOrgId, Model.CallOffId, Model.OrderItemId, Model.Source });
 
                 <span>&nbsp;</span>
                 <a id="edit-delivery-date-link"

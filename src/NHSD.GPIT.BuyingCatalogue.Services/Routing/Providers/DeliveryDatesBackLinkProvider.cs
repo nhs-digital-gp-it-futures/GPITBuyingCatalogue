@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
@@ -10,13 +11,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
     {
         public RoutingResult Process(OrderWrapper orderWrapper, RouteValues routeValues)
         {
-            ArgumentNullException.ThrowIfNull(orderWrapper);
-            var order = orderWrapper.Order ?? throw new ArgumentNullException(nameof(orderWrapper));
+            if (orderWrapper is null or { Order: null })
+            {
+                throw new ArgumentNullException(nameof(orderWrapper));
+            }
 
-            if (routeValues == null)
+            if (routeValues is null or { OrderItemId: null })
             {
                 throw new ArgumentNullException(nameof(routeValues));
             }
+
+            var order = orderWrapper.Order;
 
             if (routeValues.Source is RoutingSource.TaskList
                 || routeValues.CatalogueItemId == null)
@@ -29,9 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            var catalogueItemId = order.GetPreviousOrderItemId(routeValues.CatalogueItemId.Value);
+            var orderItemId = order.GetPreviousOrderItemId(routeValues.OrderItemId.Value);
 
-            if (catalogueItemId == null)
+            if (orderItemId == null)
             {
                 return new RoutingResult
                 {
@@ -42,7 +47,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             }
 
             var solution = order.GetSolutionOrderItem();
-            var orderItem = order.OrderItem(catalogueItemId.Value);
+            var orderItem = order.OrderItem(orderItemId.Value);
+            var item = orderItem.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+                ? orderItem.Parent
+                : orderItem;
 
             if (order.OrderType.AssociatedServicesOnly
                 || solution == null)
@@ -51,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 {
                     ActionName = Constants.Actions.EditDeliveryDates,
                     ControllerName = Constants.Controllers.DeliveryDates,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, catalogueItemId },
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, orderItemId },
                 };
             }
 
@@ -62,11 +70,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 
             IEnumerable<string> solutionOdsCodes = orderWrapper.DetermineOrderRecipients(solution.CatalogueItemId)
                 .Select(x => x.RecipientOdsCode);
-            IEnumerable<string> nextItemOdsCodes = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId)
+            IEnumerable<string> nextItemOdsCodes = orderWrapper.DetermineOrderRecipients(item.CatalogueItemId)
                 .Select(x => x.RecipientOdsCode);
             var crossOver = solutionOdsCodes.Intersect(nextItemOdsCodes);
 
-            if (!solutionDates.Any()
+            if (solutionDates.Count == 0
                 || solutionDates.All(x => x == order.DeliveryDate)
                 || !crossOver.Any())
             {
@@ -74,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 {
                     ActionName = Constants.Actions.EditDeliveryDates,
                     ControllerName = Constants.Controllers.DeliveryDates,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, catalogueItemId },
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, orderItemId },
                 };
             }
 
@@ -82,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             {
                 ActionName = Constants.Actions.MatchDeliveryDates,
                 ControllerName = Constants.Controllers.DeliveryDates,
-                RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, catalogueItemId = routeValues.CatalogueItemId.Value },
+                RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, orderItemId = routeValues.OrderItemId.Value },
             };
         }
     }

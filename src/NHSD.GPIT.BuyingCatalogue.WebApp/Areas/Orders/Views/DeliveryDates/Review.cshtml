@@ -2,6 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.ReviewModel
 @{
     ViewBag.Title = "Review planned delivery dates";
@@ -69,40 +70,15 @@
         {
             var solutionItemId = Model.SolutionId.Value;
             var itemName = Model.OrderItemName(solutionItemId);
-            var catalogueItemId = Model.OrderWrapper.Order.OrderItem(solutionItemId).CatalogueItemId;
+            var orderItemId = Model.OrderWrapper.Order.OrderItem(solutionItemId).Id;
 
             <h2>Catalogue solution</h2>
             
             var url = Url.Action(nameof(DeliveryDatesController.EditDates), typeof(DeliveryDatesController).ControllerName(),
-                new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList });
+                new { Model.InternalOrgId, Model.CallOffId, orderItemId, source = RoutingSource.TaskList });
             
-
-            foreach (var date in Model.OrderItemDates(solutionItemId))
-            {
-                <nhs-expander-v2 open="true">
-                    <nhs-expander-summary label-text="@itemName" bold-title="true">
-                        <span class="nhsuk-details__summary-text_secondary_url">
-                            <b>Planned delivery date: </b>
-                            @GetFormattedDate(date)
-                            <br />
-                            <a class="nhsuk-link nhsuk-link--no-visited-state" style="float: right;" href="@url">Change date</a>
-                        </span>
-                    </nhs-expander-summary>
-                    <nhs-expander-content>
-                    <nhs-table>
-                        <nhs-table-column>Organisation</nhs-table-column>
-                        <nhs-table-column>ODS code</nhs-table-column>
-                        @foreach (var (odsCode, name) in Model.OrderItemRecipients(solutionItemId, date))
-                        {
-                            <nhs-table-row-container>
-                                <nhs-table-cell>@name</nhs-table-cell>
-                                <nhs-table-cell>@odsCode</nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    </nhs-table>
-                   </nhs-expander-content>
-                </nhs-expander-v2>
-            }
+            <partial name="DeliveryDatesReviewItemTable"
+                     model="new DeliveryDatesReviewItemTableModel(itemName, url, Model.OrderItemRecipients(solutionItemId))" />
         }
 
         @if (Model.AdditionalServiceIds.Any())
@@ -112,39 +88,37 @@
             @foreach (var itemId in Model.AdditionalServiceIds.Where(x => Model.OrderItemDates(x).Any()))
             {
                 var itemName = Model.OrderItemName(itemId);
-                var catalogueItemId = Model.OrderWrapper.Order.OrderItem(itemId).CatalogueItemId;
 
                 var url = Url.Action(nameof(DeliveryDatesController.EditDates),
                     typeof(DeliveryDatesController).ControllerName(),
-                    new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList });
-
-                foreach (var date in Model.OrderItemDates(itemId))
-                {
-                    <nhs-expander-v2 open="true">
-                        <nhs-expander-summary label-text="@itemName" bold-title="true">
-                            <span class="nhsuk-details__summary-text_secondary_url">
-                                <b>Planned delivery date: </b>
-                                @GetFormattedDate(date)
-                                <br />
-                                <a class="nhsuk-link nhsuk-link--no-visited-state" style="float: right;" href="@url">Change date</a>
-                            </span>
-                        </nhs-expander-summary>
-                        <nhs-expander-content>
-                        <nhs-table>
-                            <nhs-table-column>Organisation</nhs-table-column>
-                            <nhs-table-column>ODS code</nhs-table-column>
-                            @foreach (var (odsCode, name) in Model.OrderItemRecipients(itemId, date))
-                            {
-                                <nhs-table-row-container>
-                                    <nhs-table-cell>@name</nhs-table-cell>
-                                    <nhs-table-cell>@odsCode</nhs-table-cell>
-                                </nhs-table-row-container>
-                            }
-                        </nhs-table>
-                        </nhs-expander-content>
-                    </nhs-expander-v2>
-                }
+                    new { Model.InternalOrgId, Model.CallOffId, orderItemId = itemId, source = RoutingSource.TaskList });
+                
+                <partial name="DeliveryDatesReviewItemTable"
+                         model="new DeliveryDatesReviewItemTableModel(itemName, url, Model.OrderItemRecipients(itemId))" />
             }
+        }
+        
+        @if (Model.AssociatedServiceIdsForAdditionalServices.Values.Any(associatedServices => associatedServices.Count > 0))
+        {
+            <h2>Associated Services for your Additional Services</h2>
+            <nhs-card>
+                @foreach (var additionalServiceItemId in Model.AssociatedServiceIdsForAdditionalServices.Keys.Where(additionalService => Model.AssociatedServiceIdsForAdditionalServices[additionalService].Any()))
+                {
+                    var additionalService = Model.OrderWrapper.Order.OrderItem(additionalServiceItemId);
+                    var additionalServiceName = Model.OrderItemName(additionalService.Id);
+                
+                    @foreach (var associatedServiceId in Model.AssociatedServiceIdsForAdditionalServices[additionalServiceItemId])
+                    {
+                        var itemName = $"{additionalServiceName} - {Model.OrderItemName(associatedServiceId)}";
+                        var url = Url.Action(nameof(DeliveryDatesController.EditDates),
+                            typeof(DeliveryDatesController).ControllerName(),
+                            new { Model.InternalOrgId, Model.CallOffId, orderItemId = associatedServiceId, source = RoutingSource.TaskList });
+                    
+                        <partial name="DeliveryDatesReviewItemTable"
+                                 model="new DeliveryDatesReviewItemTableModel(itemName, url, Model.OrderItemRecipients(associatedServiceId))" />
+                    }
+                }
+            </nhs-card>
         }
 
         @if (Model.AssociatedServiceIds.Any())
@@ -154,46 +128,19 @@
                 <h2>Associated services</h2>
             }
 
-            @foreach (var catalogueItemId in Model.AssociatedServiceIds)
+            @foreach (var orderItemId in Model.AssociatedServiceIds)
             {
-                var itemName = Model.OrderItemName(catalogueItemId);
+                var itemName = Model.OrderItemName(orderItemId);
                 var url = Url.Action(nameof(DeliveryDatesController.EditDates),
                     typeof(DeliveryDatesController).ControllerName(),
-                    new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList });
+                    new { Model.InternalOrgId, Model.CallOffId, orderItemId, source = RoutingSource.TaskList });
+                
+                var label = mergerSplit
+                    ? $"Planned delivery date: {GetFormattedDate(Model.OrderItemDates(orderItemId).FirstOrDefault())}"
+                    : itemName;
 
-                foreach (var date in Model.OrderItemDates(catalogueItemId))
-                {
-                    var label = mergerSplit
-                        ? $"Planned delivery date: {GetFormattedDate(date)}"
-                        : itemName;
-
-                    <nhs-expander-v2 open="true">
-                        <nhs-expander-summary label-text="@label" bold-title="true">
-                            <span class="nhsuk-details__summary-text_secondary_url">
-                                @if (!mergerSplit)
-                                {
-                                    <b>Planned delivery date: </b>
-                                    @GetFormattedDate(date)
-                                    <br />
-                                }
-                                <a class="nhsuk-link nhsuk-link--no-visited-state" style="float: right;" href="@url">Change date</a>
-                            </span>
-                        </nhs-expander-summary>
-                        <nhs-expander-content>
-                        <nhs-table>
-                            <nhs-table-column>Organisation</nhs-table-column>
-                            <nhs-table-column>ODS code</nhs-table-column>
-                            @foreach (var (odsCode, name) in Model.OrderItemRecipients(catalogueItemId, date))
-                            {
-                                <nhs-table-row-container>
-                                    <nhs-table-cell>@name</nhs-table-cell>
-                                    <nhs-table-cell>@odsCode</nhs-table-cell>
-                                </nhs-table-row-container>
-                            }
-                        </nhs-table>
-                        </nhs-expander-content>
-                    </nhs-expander-v2>
-                }
+                <partial name="DeliveryDatesReviewItemTable"
+                         model="new DeliveryDatesReviewItemTableModel(label, url, Model.OrderItemRecipients(orderItemId), !mergerSplit)" />
             }
         }
 

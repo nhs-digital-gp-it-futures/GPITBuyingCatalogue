@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -15,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         {
         }
 
-        public EditDatesModel(OrderWrapper orderWrapper, CatalogueItemId catalogueItemId, RoutingSource? source = null)
+        public EditDatesModel(OrderWrapper orderWrapper, int orderItemId, RoutingSource? source = null)
         {
             var order = orderWrapper.Order;
             InternalOrgId = order.OrderingParty.InternalIdentifier;
@@ -23,17 +24,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             OrderType = order.OrderType;
             SolutionName = order.OrderType.GetSolutionNameFromOrder(order);
             PracticeReorganisationName = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient?.Name ?? string.Empty;
-            CatalogueItemId = catalogueItemId;
+            OrderItemId = orderItemId;
             DeliveryDate = order.DeliveryDate;
             Source = source;
-            DisplayEditLink = order.GetPreviousOrderItemId(catalogueItemId) == null;
+            DisplayEditLink = order.GetPreviousOrderItemId(orderItemId) == null;
 
-            var orderItem = order.OrderItem(catalogueItemId);
+            var orderItem = order.OrderItem(orderItemId);
+            var item = IsParentAdditionalService(orderItem)
+                ? orderItem.Parent
+                : orderItem;
 
             CatalogueItemType = orderItem.CatalogueItem.CatalogueItemType;
-            Description = orderItem.CatalogueItem.Name;
+            Description = orderItem.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+                    ? $"{orderItem.Parent.CatalogueItem.Name} - {orderItem.CatalogueItem.Name}"
+                    : orderItem.CatalogueItem.Name;
+            CatalogueItemTypeSuffix = IsParentAdditionalService(orderItem)
+                    ? "Associated service for an Additional service"
+                    : CatalogueItemType.Name();
 
-            ICollection<OrderSublocationRecipient> recipients = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId)
+            ICollection<OrderSublocationRecipient> recipients = orderWrapper.DetermineOrderRecipients(item.CatalogueItemId)
                 .Where(x => !string.Equals(
                     x.RecipientOdsCode,
                     order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode))
@@ -42,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             RecipientDateModel[] recipientDates = recipients
                 .Select(x => new RecipientDateModel(
                     x,
-                    x.GetDeliveryDateForItem(orderItem.CatalogueItemId) ?? DeliveryDate,
+                    x.GetDeliveryDateForItem(orderItem.Id) ?? DeliveryDate,
                     order.CommencementDate!.Value))
                 .OrderBy(y => y.Description)
                 .ToArray();
@@ -76,7 +85,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
+        public int? OrderItemId { get; set; }
+
         public CatalogueItemType CatalogueItemType { get; set; }
+
+        public string CatalogueItemTypeSuffix { get; set; }
 
         public RoutingSource? Source { get; set; }
 
@@ -87,5 +100,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         public bool DisplayEditLink { get; set; }
 
         public List<KeyValuePair<string, RecipientDateModel[]>> Recipients { get; set; }
+
+        private static bool IsParentAdditionalService(OrderItem orderItem)
+        {
+            return orderItem.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService;
+        }
     }
 }
