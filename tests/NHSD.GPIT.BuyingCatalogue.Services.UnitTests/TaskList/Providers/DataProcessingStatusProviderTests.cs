@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(OrderTaskListStatus.ImplementationPlan, TaskProgress.InProgress)]
         [MockInlineAutoData(OrderTaskListStatus.ImplementationPlan, TaskProgress.NotStarted)]
         [MockInlineAutoData(OrderTaskListStatus.ImplementationPlan, TaskProgress.Optional)]
-        public static void Get_DependentTaskNotComplete_HasService_ReturnsICannotStart(
+        public static void Get_DependentTaskNotComplete_HasService_ReturnsCannotStart(
             OrderTaskListStatus task,
             TaskProgress status,
             Order order,
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(OrderTaskListStatus.ImplementationPlan, TaskProgress.InProgress)]
         [MockInlineAutoData(OrderTaskListStatus.ImplementationPlan, TaskProgress.NotStarted)]
         [MockInlineAutoData(OrderTaskListStatus.ImplementationPlan, TaskProgress.Optional)]
-        public static void Get_DependentTaskNotComplete_NoService_ReturnsICannotStart(
+        public static void Get_DependentTaskNotComplete_NoService_ReturnsCannotStart(
             OrderTaskListStatus task,
             TaskProgress status,
             Order order,
@@ -211,7 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 SolutionOrService = TaskProgress.Completed,
                 DeliveryDates = TaskProgress.Completed,
                 FundingSource = TaskProgress.Completed,
-                ImplementationPlan = TaskProgress.Completed,
+                ImplementationPlan = status,
                 AssociatedServiceBilling = status,
                 AssociatedServiceRequirements = status,
             };
@@ -237,13 +237,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 SolutionOrService = TaskProgress.Completed,
                 DeliveryDates = TaskProgress.Completed,
                 FundingSource = TaskProgress.Completed,
-                ImplementationPlan = TaskProgress.Completed,
                 AssociatedServiceBilling = TaskProgress.Completed,
                 AssociatedServiceRequirements = TaskProgress.Completed,
             };
 
             if (!hasService)
             {
+                state.ImplementationPlan = TaskProgress.NotApplicable;
                 state.AssociatedServiceBilling = TaskProgress.NotApplicable;
                 state.AssociatedServiceRequirements = TaskProgress.NotApplicable;
             }

@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
+﻿using Microsoft.Playwright;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Builders;
 using Xunit.Abstractions;
 
@@ -19,6 +20,6 @@ public class LoginTests : BaseTest
             .WithBaseUrl(Fixture.BaseUrl)
             .Build();
 
-        await orderPages.LoginAsync(data);
+        await orderPages.LoginAsync();
     }
 }
