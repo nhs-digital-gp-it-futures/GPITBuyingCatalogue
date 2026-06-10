@@ -23,7 +23,7 @@
                            label-text="Email address"
                            label-hint="We’ll use your NHS email address to contact you about your account request and to send you your sign-in details. We’ll not use it for any other purpose. "/>
                 <nhs-input asp-for="OdsCode"
-                           label-text="Your organisation's ODS code (optional)" input-width="Five">
+                           label-text="Your organisation's ODS code" input-width="Five">
                     <nhs-hint-text>
                         Provide the ODS code for your organisation. If you don't know your ODS code, you can use the
                         <a href="https://www.odsdatasearchandexport.nhs.uk/" target="_blank">ODS
@@ -35,24 +35,25 @@
                               label-hint="Tell us why you need a Buying Catalogue account."/>
 
                 <div class="nhsuk-u-margin-bottom-9">
-                    <nhs-fieldset-form-label asp-for="HasReadPrivacyPolicy"
+                    <nhs-fieldset-form-label asp-for="HasGivenUserResearchConsent"
                                              label-text="Sign up for user research"
                                              label-hint="Select this option if you would like to take part in user research to help us improve the Buying Catalogue. We may contact you about research opportunities in the future, but you can opt out at any time."
                                              size="Large">
                         <nhs-checkbox-container>
-                            <nhs-checkbox asp-for="HasReadPrivacyPolicy"
-                                          label-text="I have read and understood the privacy policy"/>
+                            <nhs-checkbox asp-for="HasGivenUserResearchConsent"
+                                          label-text="I am happy to be contacted to take part in user research"/>
                         </nhs-checkbox-container>
                     </nhs-fieldset-form-label>
-                    <nhs-fieldset-form-label asp-for="HasReadPrivacyPolicy" label-text="Privacy policy agreement"
+                    <nhs-fieldset-form-label asp-for="HasReadPrivacyPolicy" 
+                                             label-text="Privacy policy agreement"
                                              size="Large">
                         <nhs-hint-text>
                             You must confirm you have read and understood our <a href="~/privacy-policy" target="_blank">privacy
                                 policy (opens in a new tab)</a> before sending.
                         </nhs-hint-text>
                         <nhs-checkbox-container>
-                            <nhs-checkbox asp-for="HasGivenUserResearchConsent"
-                                          label-text="I am happy to be contacted to take part in user research"/>
+                            <nhs-checkbox asp-for="HasReadPrivacyPolicy"
+                                          label-text="I have read and understood the privacy policy"/>
                         </nhs-checkbox-container>
                     </nhs-fieldset-form-label>
                 </div>
