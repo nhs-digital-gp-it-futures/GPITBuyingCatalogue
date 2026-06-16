@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -249,7 +250,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [Theory]
         [MockAutoData]
         public static void Get_SolutionSelected_EverythingPopulated_ReturnsCompleted(
+            int quantity,
             Order order,
+            OrderSublocationRecipient recipient,
+            OrderSublocation orderSublocation,
             SolutionOrServiceStatusProvider service)
         {
             order.Revision = 1;
@@ -257,7 +261,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             order.OrderItems.ForEach(x =>
             {
                 x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+                recipient.SetQuantityForItem(x, quantity);
             });
+            orderSublocation.SublocationRecipients = new List<OrderSublocationRecipient> { recipient };
+            order.OrderSublocations = new List<OrderSublocation> { orderSublocation };
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             TaskProgress actual = service.Get(new OrderWrapper(order), ValidOrderState);
@@ -270,8 +277,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockInlineAutoData(CatalogueItemType.AssociatedService)]
         public static void Get_SolutionSelected_EverythingPopulated_Amendment_ReturnsCompleted(
             CatalogueItemType catalogueItemType,
+            int quantity,
             Order previousOrder,
             Order order,
+            OrderSublocationRecipient recipient,
+            OrderSublocation orderSublocation,
             SolutionOrServiceStatusProvider service)
         {
             order.Revision = 2;
@@ -279,7 +289,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             order.OrderItems.ForEach(x =>
             {
                 x.CatalogueItem.CatalogueItemType = catalogueItemType;
+                recipient.SetQuantityForItem(x, quantity);
             });
+            orderSublocation.SublocationRecipients = new List<OrderSublocationRecipient> { recipient };
+            order.OrderSublocations = new List<OrderSublocation> { orderSublocation };
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             TaskProgress actual = service.Get(new OrderWrapper(order, [previousOrder]), ValidOrderState);

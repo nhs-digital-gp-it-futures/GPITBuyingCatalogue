@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
         public async Task AddRequirement(
             int orderId,
             int contractId,
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             string details,
             bool requiresExplanation)
         {
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 .Include(x => x.ContractBilling)
                 .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId);
 
-            var associatedService = contract.Order.GetAssociatedService(catalogueItemId);
+            var associatedService = contract.Order.GetAssociatedService(orderItemId);
 
             contract.ContractBilling.Requirements.Add(new Requirement()
             {
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
         public async Task EditRequirement(
             int orderId,
             int requirementId,
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             string details,
             bool requiresExplanation)
         {
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             }
 
             var associatedService = await dbContext.OrderItems
-                .FirstOrDefaultAsync(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId);
+                .FirstOrDefaultAsync(x => x.OrderId == orderId && x.Id == orderItemId);
 
             requirement.OrderItem = associatedService;
             requirement.Details = details;

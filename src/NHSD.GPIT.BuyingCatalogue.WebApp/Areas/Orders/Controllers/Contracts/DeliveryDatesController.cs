@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 : orderItem;
 
             // If there are no new recipients for this item (e.g. the original solution in an amend)
-            if (orderWrapper.DetermineOrderRecipients(item.CatalogueItemId) is null or { Count: 0 })
+            if (orderWrapper.DetermineOrderRecipients(item) is null or { Count: 0 })
             {
                 RoutingResult next = routingService.GetRoute(
                     RoutingPoint.EditDeliveryDates,
@@ -240,16 +240,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.Order;
-            var solutionId = order.GetSolutionId();
-            var solutionOrderItem = solutionId.HasValue ? order.OrderItem(solutionId.Value) : null;
+            var solutionOrderItem = order.GetSolutionOrderItem();
             var orderItem = order.OrderItem(orderItemId);
 
-            var recipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
-            List<RecipientDeliveryDateDto> dates = model.MatchDates == true && solutionId is not null
+            var recipients = wrapper.DetermineOrderRecipients(orderItem);
+            List<RecipientDeliveryDateDto> dates = model.MatchDates == true && solutionOrderItem is not null
                 ? recipients
                     .Select(x => new RecipientDeliveryDateDto(
                         x.RecipientOdsCode,
-                        x.GetDeliveryDateForItem(solutionOrderItem.CatalogueItemId)!.Value))
+                        x.GetDeliveryDateForItem(solutionOrderItem.Id).GetValueOrDefault()))
                     .ToList()
                 : recipients
                     .Select(x => new RecipientDeliveryDateDto(x.RecipientOdsCode, order.DeliveryDate!.Value))

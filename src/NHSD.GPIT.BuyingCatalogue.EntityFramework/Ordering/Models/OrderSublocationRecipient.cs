@@ -77,31 +77,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             itemRecipient.DeliveryDate = deliveryDate;
         }
 
-        public int? GetQuantityForItem(CatalogueItemId catalogueItemId)
-        {
-            return OrderItemSublocationRecipients
-                .FirstOrDefault(x => x.OrderItem.CatalogueItemId == catalogueItemId)
-                ?.Quantity;
-        }
-
         public int? GetQuantityForItem(int orderItemId)
         {
             return OrderItemSublocationRecipients
-                .FirstOrDefault(x => x.OrderItem.Id == orderItemId)
+                .FirstOrDefault(x => x.OrderItemId == orderItemId)
                 ?.Quantity;
-        }
-
-        public DateTime? GetDeliveryDateForItem(CatalogueItemId catalogueItemId)
-        {
-            return OrderItemSublocationRecipients
-                .FirstOrDefault(x => x.OrderItem.CatalogueItemId == catalogueItemId)
-                ?.DeliveryDate;
         }
 
         public DateTime? GetDeliveryDateForItem(int orderItemId)
         {
             return OrderItemSublocationRecipients
-                .FirstOrDefault(x => x.OrderItem.Id == orderItemId)
+                .FirstOrDefault(x => x.OrderItemId == orderItemId)
                 ?.DeliveryDate;
         }
     }

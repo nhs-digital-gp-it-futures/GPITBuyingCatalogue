@@ -437,20 +437,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             var orderWrapper = new OrderWrapper(order, previous);
 
-            orderWrapper.TotalCostForOrderItem(perMonthOrderItemUsedForTotal.CatalogueItem.Id).Should().Be(total);
+            orderWrapper.TotalCostForOrderItem(perMonthOrderItemUsedForTotal.Id).Should().Be(total);
         }
 
         [Theory]
         [MockInlineAutoData(1)]
         [MockInlineAutoData(2)]
-        public static void Order_TotalCostForOrderItem_Returns_0_When_OrderItem_Not_Found(int revision, CatalogueItemId catalogueItemId, IFixture fixture)
+        public static void Order_TotalCostForOrderItem_Returns_0_When_OrderItem_Not_Found(int revision, int orderItemId, IFixture fixture)
         {
             var order = fixture.Build<Order>()
                 .With(o => o.Revision, revision)
                 .Create();
 
             var orderWrapper = new OrderWrapper(order);
-            orderWrapper.TotalCostForOrderItem(catalogueItemId).Should().Be(0);
+            orderWrapper.TotalCostForOrderItem(orderItemId).Should().Be(0);
         }
 
         [Theory]
@@ -463,7 +463,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             order.OrderSublocations.ForEach(sl =>
                 sl.SublocationRecipients.ForEach(sr => sr.OrderItemSublocationRecipients.Clear()));
             var orderWrapper = new OrderWrapper(order);
-            orderWrapper.TotalCostForOrderItem(orderItem.CatalogueItem.Id).Should().Be(0);
+            orderWrapper.TotalCostForOrderItem(orderItem.Id).Should().Be(0);
         }
 
         [Theory]

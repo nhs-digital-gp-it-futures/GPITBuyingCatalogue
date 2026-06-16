@@ -49,12 +49,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public bool HasSpecificRequirements => BespokeBilling != null && BespokeBilling.Requirements.Any();
 
+        public IDictionary<int?, HashSet<OrderItem>> AssociatedServicesForAdditionalServices =>
+            Order.GetAllAssociatedServices()
+                .Where(service => service.Parent.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService)
+                .GroupBy(service => service.ParentId)
+                .ToDictionary(group => group.Key, group => group.ToHashSet());
+
         public AmendOrderItemModel BuildAmendOrderItemModel(OrderItem solution, string solutionName = null, bool fromPreviousRevision = false)
         {
             var orderLinkedList = new LinkedList<Order>([.. OrderWrapper.PreviousOrders, OrderWrapper.Order]);
             var previous = orderLinkedList.Find(solution.Order)?.Previous;
             var recipients = solution.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
-                ? solution.Order.DetermineOrderRecipients(previous?.Value, solution.CatalogueItemId)
+                ? solution.Order.DetermineOrderRecipients(previous?.Value, solution.Id)
                 : RolledUp.GetOrderRecipients().ToList();
             var previousRecipients = solution.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
                 ? []

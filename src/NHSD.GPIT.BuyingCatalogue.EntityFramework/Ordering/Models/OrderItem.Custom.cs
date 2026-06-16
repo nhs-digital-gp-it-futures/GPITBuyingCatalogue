@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             if (OrderItemPrice == null)
                 return 0;
 
-            return recipients?.Sum(r => r.GetQuantityForItem(CatalogueItemId) ?? 0) ?? 0;
+            return recipients?.Sum(r => r.GetQuantityForItem(Id) ?? 0) ?? 0;
         }
 
         public bool IsReadyForReview(bool isAmendment, ICollection<OrderSublocationRecipient> recipients)
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return (isAmendment && recipients.Count == 0)
                 || (OrderItemPrice != null
                     && TotalQuantity(recipients) > 0
-                    && (!isAmendment || recipients.AllDeliveryDatesEntered(CatalogueItemId)));
+                    && (!isAmendment || recipients.AllDeliveryDatesEntered(Id)));
         }
     }
 }

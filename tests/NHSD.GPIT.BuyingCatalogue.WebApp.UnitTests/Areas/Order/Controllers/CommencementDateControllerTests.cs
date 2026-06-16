@@ -155,7 +155,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             };
 
             order.OrderItems.ForEach(i =>
-                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(i, DateTime.Today)));
+                order.FlattenedRecipients.ForEach(r =>
+                {
+                    r.OrderItemSublocationRecipients.Clear();
+                    r.SetDeliveryDateForItem(i, DateTime.Today);
+                }));
 
             orderService
                 .GetOrderWithOrderItems(order.CallOffId, internalOrgId)
@@ -195,14 +199,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static async Task Get_ConfirmChanges_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
+            OrderSublocation sublocation,
+            OrderSublocationRecipient orderSublocationRecipient,
             [Frozen] IOrderService orderService,
             CommencementDateController controller)
         {
             order.CommencementDate = DateTime.Today;
+            var orderItem = order.OrderItems.First();
+            order.OrderItems = new List<OrderItem> { orderItem };
+
+            sublocation.SublocationRecipients = new List<OrderSublocationRecipient> { orderSublocationRecipient };
+            order.OrderSublocations = new List<OrderSublocation> { sublocation };
+
             List<OrderItemSublocationRecipient> dates = order.FlattenedRecipients
                 .SelectMany(x => x.OrderItemSublocationRecipients)
                 .ToList();
-            dates.ForEach(x => x.DeliveryDate = DateTime.Today);
+            dates.ForEach(x =>
+            {
+                x.OrderItemId = orderItem.Id;
+                x.DeliveryDate = DateTime.Today;
+            });
 
             orderService
                 .GetOrderWithOrderItems(order.CallOffId, internalOrgId)

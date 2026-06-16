@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     new { internalOrgId, callOffId });
             }
 
-            var recipients = wrapper.DetermineOrderRecipients(catalogueItemId);
+            var recipients = wrapper.DetermineOrderRecipients(additionalService);
 
             var model = new ManageAssociatedServicesModel(
                 services,

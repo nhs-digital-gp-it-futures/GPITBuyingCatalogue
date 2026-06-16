@@ -30,9 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             DisplayEditLink = order.GetPreviousOrderItemId(orderItemId) == null;
 
             var orderItem = order.OrderItem(orderItemId);
-            var item = IsParentAdditionalService(orderItem)
-                ? orderItem.Parent
-                : orderItem;
 
             CatalogueItemType = orderItem.CatalogueItem.CatalogueItemType;
             Description = orderItem.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
@@ -42,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
                     ? "Associated service for an Additional service"
                     : CatalogueItemType.Name();
 
-            ICollection<OrderSublocationRecipient> recipients = orderWrapper.DetermineOrderRecipients(item.CatalogueItemId)
+            ICollection<OrderSublocationRecipient> recipients = orderWrapper.DetermineOrderRecipients(orderItem)
                 .Where(x => !string.Equals(
                     x.RecipientOdsCode,
                     order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode))

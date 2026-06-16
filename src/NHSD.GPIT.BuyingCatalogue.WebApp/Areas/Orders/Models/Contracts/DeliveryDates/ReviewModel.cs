@@ -89,10 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             var orderItem = OrderWrapper.OrderItems.FirstOrDefault(x => x.Id == orderItemId);
             if (orderItem == null) return [];
 
-            var item = orderItem.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
-                ? orderItem.Parent
-                : orderItem;
-            return OrderWrapper.DetermineOrderRecipients(item.CatalogueItemId)
+            return OrderWrapper.DetermineOrderRecipients(orderItem)
                 .Select(x => new OrderItemRecipientModel(x, orderItem.Id))
                 .ToList();
         }

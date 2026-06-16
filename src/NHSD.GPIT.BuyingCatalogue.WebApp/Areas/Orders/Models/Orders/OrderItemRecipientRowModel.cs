@@ -32,6 +32,8 @@ public class OrderItemRecipientRowModel
 
     public CatalogueItemId CatalogueItemId { get; init; }
 
+    public int OrderItemId { get; init; }
+
     public bool IsServiceRecipientAdded { get; init; }
 
     public OrderType OrderType { get; init; }

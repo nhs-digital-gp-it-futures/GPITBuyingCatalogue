@@ -148,7 +148,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.SetupCatalogueSolution();
             order.DeliveryDate = deliveryDate;
             var solution = order.OrderItems.First();
-            order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(solution, deliveryDate));
+            order.FlattenedRecipients.ForEach(r =>
+            {
+                r.OrderItemSublocationRecipients.Clear();
+                r.SetDeliveryDateForItem(solution, deliveryDate);
+            });
 
             var orderItem = order.OrderItems.First();
             var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, orderItem.CatalogueItemId) { OrderItemId = orderItem.Id });

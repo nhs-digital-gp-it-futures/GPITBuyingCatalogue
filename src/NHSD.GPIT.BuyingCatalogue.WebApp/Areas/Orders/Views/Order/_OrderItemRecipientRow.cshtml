@@ -11,8 +11,8 @@
 @model OrderItemRecipientRowModel
 
 @{
-    var quantity = Model.ServiceRecipient.GetQuantityForItem(Model.CatalogueItemId);
-    var deliveryDate = Model.ServiceRecipient.GetDeliveryDateForItem(Model.CatalogueItemId);
+    var quantity = Model.ServiceRecipient.GetQuantityForItem(Model.OrderItemId);
+    var deliveryDate = Model.ServiceRecipient.GetDeliveryDateForItem(Model.OrderItemId);
     var deliveryDateText = deliveryDate.HasValue
         ? $"{deliveryDate.Value:d MMM yyyy}"
         : "No date entered";
@@ -20,7 +20,7 @@
 
 <nhs-table-row-container>
     <nhs-table-cell>@Model.ServiceRecipient.RecipientOdsOrganisation?.Name (@Model.ServiceRecipient.RecipientOdsCode)</nhs-table-cell>
-    <nhs-table-cell>@($"{Model.CallOffId}-{Model.ServiceRecipient.RecipientOdsCode}-{Model.CatalogueItemId}")</nhs-table-cell>
+    <nhs-table-cell>@($"{Model.CallOffId}-{Model.ServiceRecipient.RecipientOdsCode}-{Model.CatalogueItemId}-{Model.OrderItemId}")</nhs-table-cell>
     <nhs-table-cell>@deliveryDateText</nhs-table-cell>
     <nhs-table-cell>
         @(quantity.HasValue ? $"{quantity:N0}" : "N/A")

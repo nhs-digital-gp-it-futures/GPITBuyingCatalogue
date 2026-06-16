@@ -154,18 +154,48 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
         [Theory]
         [MockAutoData]
-        public static async Task Post_AddRequirement_ModelError_ReturnsExpectedResult(
+        public static async Task Post_AddRequirement_NoSelectedOrderId_ReturnsNotFound(
             string internalOrgId,
+            int orderItemId,
+            CatalogueItemId catalogueItemId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderService mockOrderService,
             RequirementDetailsModel model,
             RequirementController controller)
         {
+            model.SelectedOrderItemId = null;
             order.OrderItems.Add(new OrderItem()
             {
-                CatalogueItemId = model.SelectedOrderItemId,
-                CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
+                Id = orderItemId,
+                CatalogueItem = new CatalogueItem() { Name = "Test", Id = catalogueItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
+            });
+
+
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
+
+            var result = await controller.AddRequirement(internalOrgId, callOffId, model);
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_AddRequirement_ModelError_ReturnsExpectedResult(
+            string internalOrgId,
+            int orderItemId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService mockOrderService,
+            RequirementDetailsModel model,
+            RequirementController controller)
+        {
+            model.SelectedOrderItemId = orderItemId;
+            order.OrderItems.Add(new OrderItem()
+            {
+                Id = orderItemId,
+                CatalogueItem = new CatalogueItem() { Name = "Test", Id = catalogueItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
             });
 
             mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
@@ -184,6 +214,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         [MockAutoData]
         public static async Task Post_AddRequirement_ReturnsExpectedResult(
             string internalOrgId,
+            int orderItemId,
+            CatalogueItemId catalogueItemId,
             RequirementDetailsModel model,
             EntityFramework.Ordering.Models.Order order,
             Contract contract,
@@ -192,17 +224,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             [Frozen] IRequirementsService mockRequirementsService,
             RequirementController controller)
         {
+            model.SelectedOrderItemId = orderItemId;
             order.OrderItems.Add(new OrderItem()
             {
-                CatalogueItemId = model.SelectedOrderItemId,
-                CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
+                Id = orderItemId,
+                CatalogueItem = new CatalogueItem() { Name = "Test", Id = catalogueItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
             });
             contract.Order = order;
             mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             mockContractsService.GetContract(order.Id).Returns(contract);
 
-            mockRequirementsService.AddRequirement(order.Id, contract.Id, model.SelectedOrderItemId, model.Details, model.RequiresExplanation.GetValueOrDefault()).Returns(Task.CompletedTask);
+            mockRequirementsService.AddRequirement(order.Id, contract.Id, orderItemId, model.Details, model.RequiresExplanation.GetValueOrDefault()).Returns(Task.CompletedTask);
 
             var result = await controller.AddRequirement(internalOrgId, order.CallOffId, model);
 
@@ -255,17 +288,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
         [Theory]
         [MockAutoData]
-        public static async Task Post_EditRequirement_ModelError_ReturnsExpectedResult(
+        public static async Task Post_EditRequirement_NoSelectedOrderId_ReturnsNotFound(
             string internalOrgId,
+            int orderItemId,
+            CatalogueItemId catalogueItemId,
+            CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderService mockOrderService,
             RequirementDetailsModel model,
             RequirementController controller)
         {
+            model.SelectedOrderItemId = null;
             order.OrderItems.Add(new OrderItem()
             {
-                CatalogueItemId = model.SelectedOrderItemId,
-                CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
+                Id = orderItemId,
+                CatalogueItem = new CatalogueItem() { Name = "Test", Id = catalogueItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
+            });
+
+
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
+
+            var result = await controller.EditRequirement(internalOrgId, callOffId, model);
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_EditRequirement_ModelError_ReturnsExpectedResult(
+            string internalOrgId,
+            int orderItemId,
+            CatalogueItemId catalogueItemId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService mockOrderService,
+            RequirementDetailsModel model,
+            RequirementController controller)
+        {
+            model.SelectedOrderItemId = orderItemId;
+            order.OrderItems.Add(new OrderItem()
+            {
+                Id = orderItemId,
+                CatalogueItem = new CatalogueItem() { Name = "Test", Id = catalogueItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
             });
 
             mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
@@ -284,21 +347,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         [MockAutoData]
         public static async Task Post_EditRequirement_ReturnsExpectedResult(
             string internalOrgId,
+            int orderItemId,
+            CatalogueItemId catalogueItemId,
             RequirementDetailsModel model,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderService mockOrderService,
             [Frozen] IRequirementsService mockRequirementsService,
             RequirementController controller)
         {
+            model.SelectedOrderItemId = orderItemId;
             order.OrderItems.Add(new OrderItem()
             {
-                CatalogueItemId = model.SelectedOrderItemId,
-                CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
+                Id = orderItemId,
+                CatalogueItem = new CatalogueItem() { Name = "Test", Id = catalogueItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
             });
 
             mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockRequirementsService.EditRequirement(order.Id, model.ItemId, model.SelectedOrderItemId, model.Details, model.RequiresExplanation.GetValueOrDefault()).Returns(Task.CompletedTask);
+            mockRequirementsService.EditRequirement(order.Id, model.ItemId, orderItemId, model.Details, model.RequiresExplanation.GetValueOrDefault()).Returns(Task.CompletedTask);
 
             var result = await controller.EditRequirement(internalOrgId, order.CallOffId, model);
 

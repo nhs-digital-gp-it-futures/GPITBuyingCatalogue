@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
             ContractBillingItemModel model,
             ContractBillingItemModelValidator validator)
         {
-            model.SelectedOrderItemId = default(CatalogueItemId);
+            model.SelectedOrderItemId = null;
 
             var result = validator.TestValidate(model);
 
