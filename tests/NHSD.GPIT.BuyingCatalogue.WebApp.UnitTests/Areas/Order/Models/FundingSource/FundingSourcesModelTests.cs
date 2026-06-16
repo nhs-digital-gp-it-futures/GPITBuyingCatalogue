@@ -252,9 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
                 },
             };
 
-            var model = new FundingSources();
-
-            var result = model.GetItemName(orderItem);
+            var result = FundingSources.GetItemName(orderItem);
 
             result.Should().Be(expectedItemName);
         }

@@ -4,6 +4,7 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSource
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources.FundingSources
 @{
     ViewBag.Title = Model.Title;
@@ -53,14 +54,14 @@
                         @foreach (var item in Model.OrderItemsSelectable)
                         {
                             <nhs-table-row-container>
-                                <nhs-table-cell>@Model.GetItemName(item)</nhs-table-cell>
+                                <nhs-table-cell>@FundingSources.GetItemName(item)</nhs-table-cell>
                                 <nhs-table-cell>@($"£{CalculateTotalCost(item):N2}")</nhs-table-cell>
                                 <nhs-table-cell>@item.FundingType.Description()</nhs-table-cell>
                                 <nhs-table-cell>
                                     <nhs-tag status-enum="@GetStatus(item)"></nhs-tag>
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    <a data-test-id="@Model.GetItemName(item).Trim().Replace(' ', '-')" asp-controller="@typeof(FundingSourceController).ControllerName()"
+                                    <a data-test-id="@FundingSources.GetItemName(item).Trim().Replace(' ', '-')" asp-controller="@typeof(FundingSourceController).ControllerName()"
                                        asp-action="@nameof(FundingSourceController.FundingSource)"
                                        asp-route-internalOrgId="@Model.InternalOrgId"
                                        asp-route-callOffId="@Model.CallOffId"
@@ -97,7 +98,7 @@
                         @foreach (var item in Model.OrderItemsSingleFundingType)
                         {
                             <nhs-table-row-container>
-                                <nhs-table-cell>@Model.GetItemName(item)</nhs-table-cell>
+                                <nhs-table-cell>@FundingSources.GetItemName(item)</nhs-table-cell>
                                 <nhs-table-cell>@($"£{CalculateTotalCost(item):N2}")</nhs-table-cell>
                                 <nhs-table-cell></nhs-table-cell>
                                 <nhs-table-cell></nhs-table-cell>
@@ -129,7 +130,7 @@
                         @foreach (var item in Model.OrderItemsNoFundingRequired)
                         {
                             <nhs-table-row-container>
-                                <nhs-table-cell>@Model.GetItemName(item)</nhs-table-cell>
+                                <nhs-table-cell>@FundingSources.GetItemName(item)</nhs-table-cell>
                                 <nhs-table-cell>@($"£{CalculateTotalCost(item):N2}")</nhs-table-cell>
                                 <nhs-table-cell></nhs-table-cell>
                                 <nhs-table-cell></nhs-table-cell>

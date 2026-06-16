@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
         public EntityFramework.Catalogue.Models.Framework SelectedFramework { get; set; }
 
-        public string GetItemName(OrderItem orderItem) => IsParentAdditionalService(orderItem)
+        public static string GetItemName(OrderItem orderItem) => IsParentAdditionalService(orderItem)
             ? $"{orderItem.Parent.CatalogueItem.Name} - {orderItem.CatalogueItem.Name}"
             : orderItem.CatalogueItem.Name;
 
