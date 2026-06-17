@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             return AllValuesEntered(
                 orderRecipients,
-                (recipients, item) => recipients.AllDeliveryDatesEntered(item.CatalogueItemId),
+                (recipients, item) => recipients.AllDeliveryDatesEntered(item.Id),
                 previous);
         }
 
@@ -159,11 +159,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 .Where(item => item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService);
         }
 
-        public OrderItem GetAssociatedService(CatalogueItemId catalogueItemId)
+        public OrderItem GetAssociatedService(int orderItemId)
         {
             return OrderItems
                 .FirstOrDefault(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
-                    && x.CatalogueItem.Id == catalogueItemId);
+                    && x.Id == orderItemId);
         }
 
         public IEnumerable<OrderItem> GetAssociatedServices()
@@ -368,16 +368,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(
             Order previous,
-            CatalogueItemId catalogueItemId)
+            int orderItemId)
         {
-            var orderItem = OrderItems.FirstOrDefault(item => item.CatalogueItemId == catalogueItemId);
+            var orderItem = OrderItems.FirstOrDefault(item => item.Id == orderItemId);
 
-            if (orderItem is null || !Exists(orderItem.CatalogueItemId))
+            if (orderItem is null || !Exists(orderItem.Id))
             {
                 return [];
             }
 
-            if (previous == null || (!previous.Exists(orderItem.CatalogueItemId)
+            if (previous == null || (!previous.Exists(orderItem.Id)
                 && orderItem.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService))
             {
                 // No previous order or this order item is new, all recipients apply
@@ -387,21 +387,21 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             // only the new recipients or recipients from previous orders with missing values
             // which might happen if we amend migrated order that wasn't global recipient compatible
             return GetOrderRecipients()
-                .Where(PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(previous, catalogueItemId))
+                .Where(PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(previous, orderItemId))
                 .Where(CurrentRecipientDidNotExistInPreviousOrderPredicate(previous, IsAmendment))
                 .ToList();
 
             // it doesn't exist on this order so no recipients apply
         }
 
-        public bool Exists(CatalogueItemId catalogueItemId)
+        public bool Exists(int orderItemId)
         {
-            return OrderItems.Any(x => x.CatalogueItemId == catalogueItemId);
+            return OrderItems.Any(x => x.Id == orderItemId);
         }
 
         private static Func<OrderSublocationRecipient, bool> PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(
             Order previous,
-            CatalogueItemId catalogueItemId)
+            int orderItemId)
         {
             return cr =>
             {
@@ -411,7 +411,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
                 return previousRecipient is null
                     || previousRecipient.OrderItemSublocationRecipients.All(oir =>
-                        oir.OrderItem.CatalogueItemId != catalogueItemId);
+                        oir.OrderItem.Id != orderItemId);
             };
         }
 
@@ -432,7 +432,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             {
                 return OrderItems.All(item =>
                 {
-                    var recipients = DetermineOrderRecipients(previous, item.CatalogueItemId);
+                    var recipients = DetermineOrderRecipients(previous, item.Id);
                     return allValuesPred(recipients, item);
                 });
             }

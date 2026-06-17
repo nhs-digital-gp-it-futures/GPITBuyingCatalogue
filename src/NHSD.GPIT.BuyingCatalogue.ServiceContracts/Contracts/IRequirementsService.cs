@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
         Task AddRequirement(
             int orderId,
             int contractId,
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             string details,
             bool requiresExplanation);
 
@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
         Task EditRequirement(
             int orderId,
             int requirementId,
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             string details,
             bool requiresExplanation);
 

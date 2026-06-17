@@ -39,11 +39,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
 
         [Theory]
         [MockAutoData]
-        public static void AllDeliveryDatesEntered_Rejects_Null(CatalogueItemId catalogueItemId)
+        public static void AllDeliveryDatesEntered_Rejects_Null(int orderItemId)
         {
             Exception exception = Record.Exception(() =>
             {
-                OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(null, catalogueItemId);
+                OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(null, orderItemId);
             });
 
             exception.Should().NotBeNull();
@@ -54,9 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         [MockAutoData]
         public static void AllDeliveryDatesEntered_Returns_False_When_Recipients_No_Linked_To_CatalogueItemId(
             OrderSublocationRecipient[] recipients,
-            CatalogueItemId catalogueItemId)
+            int orderItemId)
         {
-            OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(recipients, catalogueItemId)
+            OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(recipients, orderItemId)
                 .Should()
                 .BeFalse();
         }

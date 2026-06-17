@@ -13,9 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, int orderItemId);
 
-        public Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId);
-
-        public Task UpdateOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, OrderItemFundingType selectedFundingType);
+        public Task UpdateOrderItemFunding(CallOffId callOffId, string internalOrgId, int orderItemId, OrderItemFundingType selectedFundingType);
 
         public Task SetOrderItemEstimationPeriod(CallOffId callOffId, string internalOrgId, int orderItemId, CataloguePrice price);
 

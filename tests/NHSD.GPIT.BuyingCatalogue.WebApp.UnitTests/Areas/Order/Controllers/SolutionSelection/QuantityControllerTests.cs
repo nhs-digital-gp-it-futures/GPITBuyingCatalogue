@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(wrapper);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem);
             var orderRecipientDtos = QuantityController.GetRecipientDtos(orderRecipients, orderItem);
 
             var expectedModel = new SublocationQuantityHubModel(
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(wrapper);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(parent.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(parent);
             var orderRecipientDtos = QuantityController.GetRecipientDtos(orderRecipients, associatedService);
 
             var expectedModel = new SublocationQuantityHubModel(
@@ -137,9 +137,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(wrapper);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem);
 
-            orderRecipients.ForEach(x => x.SetQuantityForItem(solution, 5));
+            orderRecipients.ForEach(x =>
+            {
+                x.OrderItemSublocationRecipients.Clear();
+                x.SetQuantityForItem(orderItem, 5);
+            });
 
             var result = await controller.SublocationHub(
                 internalOrgId,
@@ -174,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(wrapper);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem);
 
             orderRecipients.First().SetQuantityForItem(orderItem, null);
 
@@ -212,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(wrapper);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(parent.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(parent);
 
             orderRecipients.First().SetQuantityForItem(associatedService, null);
 
@@ -550,17 +554,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             amendment.OrderNumber = order.OrderNumber;
             amendment.Revision = 2;
 
+            var orderItem = order.OrderItems.First();
+            orderItem.Id = 0;
+            order.OrderItems = [orderItem];
+
             var sublocationRecipient = new OrderSublocationRecipient("r1", sublocation.SublocationOdsCode);
             sublocation.SublocationRecipients = [sublocationRecipient];
             order.OrderSublocations = [sublocation];
 
-            var amendSublocation = new OrderSublocation();
-            amendSublocation.SublocationOdsCode = sublocation.SublocationOdsCode;
+            var amendSublocation = new OrderSublocation { SublocationOdsCode = sublocation.SublocationOdsCode };
             var amendSublocationRecipient = new OrderSublocationRecipient("r2", sublocation.SublocationOdsCode);
             amendSublocation.SublocationRecipients = [sublocationRecipient, amendSublocationRecipient];
             amendment.OrderSublocations = [amendSublocation];
 
-            var orderItem = order.OrderItems.First();
             amendment.OrderItems = [orderItem];
 
             orderService.GetOrderWithOrderItems(amendment.CallOffId, internalOrgId).Returns(new OrderWrapper(amendment, [order]));
@@ -600,7 +606,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(wrapper);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem);
             var orderRecipientDtos = QuantityController.GetRecipientDtos(orderRecipients, orderItem);
 
             var expectedModel = new ConfirmQuantitiesModel(

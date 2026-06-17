@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -681,7 +682,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         public static async Task Post_MatchDates_MatchDatesIsTrue_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
+            DateTime datetime,
             EntityFramework.Ordering.Models.Order order,
+            OrderSublocation orderSublocation,
             MatchDatesModel model,
             [Frozen] IOrderService orderService,
             [Frozen] IDeliveryDateService deliveryDateService,
@@ -690,15 +693,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             model.MatchDates = true;
             order.SetupCatalogueSolution();
 
-            var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
+            var solution = order.OrderItems.ElementAt(0);
             var orderItem = order.OrderItems.ElementAt(1);
-            var catalogueItemId = orderItem.CatalogueItemId;
 
-            var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
+            order.OrderItems = new List<OrderItem> { solution, orderItem };
+
+            orderSublocation.Order = order;
+            orderSublocation.OrderId = order.Id;
+
+            orderSublocation.SublocationRecipients = new List<OrderSublocationRecipient>
+            {
+                CreateRecipient(orderSublocation, "RECIPIENT-1", datetime, true),
+                CreateRecipient(orderSublocation, "RECIPIENT-2", datetime, true),
+            };
+
+            order.OrderSublocations = new List<OrderSublocation> { orderSublocation };
+
+            var recipients = order.DetermineOrderRecipients(null, orderItem.Id);
 
             var recipientDates = await VerifyMatching(orderItem, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
 
-            recipientDates.Select(x => x.DeliveryDate).Should().BeEquivalentTo(recipients.Select(x => x.GetDeliveryDateForItem(solutionId)!.Value));
+            recipientDates.Select(x => x.DeliveryDate).Should().BeEquivalentTo(recipients.Select(x => x.GetDeliveryDateForItem(solution.Id)!.Value));
         }
 
         [Theory]
@@ -706,7 +721,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         public static async Task Post_MatchDates_MatchDatesIsTrue_ServiceHasNoExistingOrderItemRecipients_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
+            DateTime datetime,
             EntityFramework.Ordering.Models.Order order,
+            OrderSublocation orderSublocation,
             MatchDatesModel model,
             [Frozen] IOrderService orderService,
             [Frozen] IDeliveryDateService deliveryDateService,
@@ -715,22 +732,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             model.MatchDates = true;
             order.SetupCatalogueSolution();
 
-            var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
-
-            order.FlattenedRecipients.ToList()
-                .ForEach(x => x.OrderItemSublocationRecipients
-                    .Where(y => y.OrderItem.CatalogueItemId != solutionId)
-                    .ToList()
-                    .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
-
+            var solution = order.OrderItems.ElementAt(0);
             var orderItem = order.OrderItems.ElementAt(1);
-            var catalogueItemId = orderItem.CatalogueItemId;
 
-            var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
+            order.OrderItems = new List<OrderItem> { solution, orderItem };
+
+            orderSublocation.Order = order;
+            orderSublocation.OrderId = order.Id;
+
+            orderSublocation.SublocationRecipients = new List<OrderSublocationRecipient>
+            {
+                CreateRecipient(orderSublocation, "RECIPIENT-1", datetime, true),
+                CreateRecipient(orderSublocation, "RECIPIENT-2", datetime, false),
+            };
+
+            order.OrderSublocations = new List<OrderSublocation> { orderSublocation };
+
+            var recipients = order.DetermineOrderRecipients(null, orderItem.Id);
 
             var recipientDates = await VerifyMatching(orderItem, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
 
-            recipientDates.Select(x => x.DeliveryDate).Should().BeEquivalentTo(recipients.Select(x => x.GetDeliveryDateForItem(solutionId)!.Value));
+            recipientDates.Select(x => x.DeliveryDate).Should().BeEquivalentTo(recipients.Select(x => x.GetDeliveryDateForItem(solution.Id)!.Value));
         }
 
         [Theory]
@@ -748,9 +770,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             order.SetupCatalogueSolution();
 
             var orderItem = order.OrderItems.ElementAt(1);
-            var catalogueItemId = orderItem.CatalogueItemId;
 
-            var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
+            var recipients = order.DetermineOrderRecipients(null, orderItem.Id);
 
             var recipientDates = await VerifyMatching(orderItem, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
 
@@ -780,9 +801,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                     .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
 
             var orderItem = order.OrderItems.ElementAt(1);
-            var catalogueItemId = orderItem.CatalogueItemId;
 
-            var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
+            var recipients = order.DetermineOrderRecipients(null, orderItem.Id);
 
             var recipientDates = await VerifyMatching(orderItem, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
 
@@ -808,9 +828,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             order.GetSolutionId().Should().BeNull();
 
             var orderItem = order.OrderItems.ElementAt(1);
-            var catalogueItemId = orderItem.CatalogueItemId;
 
-            var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
+            var recipients = order.DetermineOrderRecipients(null, orderItem.Id);
 
             var recipientDates = await VerifyMatching(orderItem, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
 
@@ -882,6 +901,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             recipientDates.Select(x => x.OdsCode).Should().BeEquivalentTo(recipients.Select(x => x.RecipientOdsCode));
 
             return recipientDates;
+        }
+
+        private static OrderSublocationRecipient CreateRecipient(OrderSublocation sublocation, string recipientOdsCode, DateTime solutionDeliveryDate, bool createRecipientForItem)
+        {
+            var recipient = new OrderSublocationRecipient(recipientOdsCode, sublocation.SublocationOdsCode)
+            {
+                Order = sublocation.Order,
+                OrderId = sublocation.OrderId,
+                ParentSublocation = sublocation,
+            };
+
+            var solution = sublocation.Order.OrderItems.First();
+            var orderItem = sublocation.Order.OrderItems.ElementAt(1);
+
+            recipient.OrderItemSublocationRecipients = new List<OrderItemSublocationRecipient>
+            {
+                CreateOrderItemRecipient(recipient, solution, solutionDeliveryDate),
+                createRecipientForItem ? CreateOrderItemRecipient(recipient, orderItem, null) : null,
+            };
+
+            return recipient;
+        }
+
+        private static OrderItemSublocationRecipient CreateOrderItemRecipient(
+            OrderSublocationRecipient recipient,
+            OrderItem item,
+            DateTime? deliveryDate)
+        {
+            return new OrderItemSublocationRecipient(recipient.OrderId, recipient.RecipientOdsCode, item)
+            {
+                DeliveryDate = deliveryDate,
+                ParentSublocationOdsCode = recipient.ParentSublocationOdsCode,
+                Recipient = recipient,
+            };
         }
     }
 }

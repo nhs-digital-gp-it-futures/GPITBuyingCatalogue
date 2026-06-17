@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> AddRequirement(string internalOrgId, CallOffId callOffId)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var associatedServices = order.GetAssociatedServices();
+            var associatedServices = order.GetAllAssociatedServices();
 
             var model = new RequirementDetailsModel(callOffId, internalOrgId, associatedServices)
             {
@@ -85,15 +85,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 
             if (!ModelState.IsValid)
             {
-                model.AssociatedServices = order.GetAssociatedServices();
+                model.AssociatedServices = order.GetAllAssociatedServices();
                 return View("RequirementDetails", model);
             }
 
-            if (order?.GetAssociatedService(model.SelectedOrderItemId) is null)
+            if (model.SelectedOrderItemId is null || order?.GetAssociatedService(model.SelectedOrderItemId.Value) is null)
                 return NotFound();
 
             var contract = await contractsService.GetContract(order.Id);
-            await requirementsService.AddRequirement(order.Id, contract.Id, model.SelectedOrderItemId, model.Details, model.RequiresExplanation.GetValueOrDefault());
+            await requirementsService.AddRequirement(order.Id, contract.Id, model.SelectedOrderItemId.Value, model.Details, model.RequiresExplanation.GetValueOrDefault());
 
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
         }
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> EditRequirement(string internalOrgId, CallOffId callOffId, int itemId)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var associatedServices = order.GetAssociatedServices();
+            var associatedServices = order.GetAllAssociatedServices();
 
             var requirement = await requirementsService.GetRequirement(order.Id, itemId);
 
@@ -126,10 +126,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 return View("RequirementDetails", model);
             }
 
-            if (order?.GetAssociatedService(model.SelectedOrderItemId) is null)
+            if (model.SelectedOrderItemId is null || order?.GetAssociatedService(model.SelectedOrderItemId.Value) is null)
                 return NotFound();
 
-            await requirementsService.EditRequirement(order.Id, model.ItemId, model.SelectedOrderItemId, model.Details, model.RequiresExplanation.GetValueOrDefault());
+            await requirementsService.EditRequirement(order.Id, model.ItemId, model.SelectedOrderItemId.Value, model.Details, model.RequiresExplanation.GetValueOrDefault());
 
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
         }

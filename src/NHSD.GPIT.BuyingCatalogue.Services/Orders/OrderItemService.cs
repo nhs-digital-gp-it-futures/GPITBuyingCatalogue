@@ -90,6 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return await dbContext.OrderItems
                 .AsNoTracking()
                 .Include(oi => oi.Parent)
+                    .ThenInclude(parent => parent.CatalogueItem)
                 .Include(oi => oi.Services)
                 .Include(oi => oi.OrderItemFunding)
                 .Include(oi => oi.CatalogueItem)
@@ -101,24 +102,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
         }
 
-        public async Task<OrderItem> GetOrderItem(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)
+        public async Task UpdateOrderItemFunding(CallOffId callOffId, string internalOrgId, int orderItemId, OrderItemFundingType selectedFundingType)
         {
-            var orderId = await dbContext.OrderId(internalOrgId, callOffId);
-
-            return await dbContext.OrderItems
-                .AsNoTracking()
-                .Include(oi => oi.OrderItemFunding)
-                .Include(oi => oi.CatalogueItem)
-                .Include(oi => oi.OrderItemPrice)
-                .ThenInclude(ip => ip.OrderItemPriceTiers)
-                .FirstOrDefaultAsync(oi => oi.OrderId == orderId
-                    && oi.CatalogueItemId == catalogueItemId
-                    && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
-        }
-
-        public async Task UpdateOrderItemFunding(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId, OrderItemFundingType selectedFundingType)
-        {
-            var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
+            var item = await GetOrderItemTracked(callOffId, internalOrgId, orderItemId);
 
             await SaveOrUpdateOrderItemFunding(item, selectedFundingType);
         }
@@ -129,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = orderWrapper.Order;
             var item = order.OrderItems.FirstOrDefault(oi => oi.Id == orderItemId);
 
-            if (item.OrderItemFunding is null || !item.IsReadyForReview(callOffId.IsAmendment, orderWrapper.DetermineOrderRecipients(item.CatalogueItemId)))
+            if (item?.OrderItemFunding is null || !item.IsReadyForReview(callOffId.IsAmendment, orderWrapper.DetermineOrderRecipients(item)))
                 return;
 
             var newFundingType = item.FundingType;
@@ -172,13 +158,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        private async Task<OrderItem> GetOrderItemTracked(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)
+        private async Task<OrderItem> GetOrderItemTracked(CallOffId callOffId, string internalOrgId, int orderItemId)
         {
             var orderId = await dbContext.OrderId(internalOrgId, callOffId);
 
             return await dbContext.OrderItems
                 .Include(oi => oi.OrderItemFunding)
                 .Include(oi => oi.CatalogueItem)
+                .Include(oi => oi.Parent)
+                    .ThenInclude(p => p.CatalogueItem)
                 .Include(oi => oi.OrderItemPrice)
                     .ThenInclude(ip => ip.OrderItemPriceTiers)
                 .Include(oi => oi.Order)
@@ -186,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(oi => oi.Order)
                     .ThenInclude(o => o.OrderingParty)
                 .FirstOrDefaultAsync(oi => oi.OrderId == orderId
-                    && oi.CatalogueItemId == catalogueItemId
+                    && oi.Id == orderItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
         }
 

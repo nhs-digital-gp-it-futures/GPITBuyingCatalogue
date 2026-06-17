@@ -115,12 +115,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
                 new { internalOrgId, callOffId });
         }
 
-        [HttpGet("{catalogueItemId}/funding-source")]
-        public async Task<IActionResult> FundingSource(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
+        [HttpGet("{orderItemId}/funding-source")]
+        public async Task<IActionResult> FundingSource(string internalOrgId, CallOffId callOffId, int orderItemId)
         {
             var orderWrapper = await orderService.GetOrderWithOrderItemsForFunding(callOffId, internalOrgId);
 
-            var item = await orderItemService.GetOrderItem(callOffId, internalOrgId, catalogueItemId);
+            var item = await orderItemService.GetOrderItem(callOffId, internalOrgId, orderItemId);
 
             var model = new Models.FundingSources.FundingSource(internalOrgId, callOffId, orderWrapper, item)
             {
@@ -133,8 +133,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
             return View(model);
         }
 
-        [HttpPost("{catalogueItemId}/funding-source")]
-        public async Task<IActionResult> FundingSource(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, Models.FundingSources.FundingSource model)
+        [HttpPost("{orderItemId}/funding-source")]
+        public async Task<IActionResult> FundingSource(string internalOrgId, CallOffId callOffId, int orderItemId, Models.FundingSources.FundingSource model)
         {
             if (!ModelState.IsValid)
             {
@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
                 return View(model);
             }
 
-            await orderItemService.UpdateOrderItemFunding(callOffId, internalOrgId, catalogueItemId, model.SelectedFundingType);
+            await orderItemService.UpdateOrderItemFunding(callOffId, internalOrgId, orderItemId, model.SelectedFundingType);
 
             return RedirectToAction(
                 nameof(FundingSources),

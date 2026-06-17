@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
             RequirementDetailsModel model,
             RequirementDetailsModelValidator validator)
         {
-            model.SelectedOrderItemId = default(CatalogueItemId);
+            model.SelectedOrderItemId = null;
 
             var result = validator.TestValidate(model);
 
@@ -53,12 +53,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         [Theory]
         [MockAutoData]
         public static void Validate_Valid_NoModelError(
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             string details,
             RequirementDetailsModel model,
             RequirementDetailsModelValidator validator)
         {
-            model.SelectedOrderItemId = catalogueItemId;
+            model.SelectedOrderItemId = orderItemId;
             model.Details = details;
             model.RequiresExplanation = true;
 

@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             string name,
             int orderId,
             int contractId,
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             string paymentTrigger,
             ContractBillingService service)
         {
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                     () => service.AddBespokeContractBillingItem(
                         orderId,
                         contractId,
-                        catalogueItemId,
+                        orderItemId,
                         name,
                         paymentTrigger))
                 .Should()
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             string paymentTrigger,
             int orderId,
             int contractId,
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             string name,
             ContractBillingService service)
         {
@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                     () => service.AddBespokeContractBillingItem(
                         orderId,
                         contractId,
-                        catalogueItemId,
+                        orderItemId,
                         name,
                         paymentTrigger))
                 .Should()
@@ -143,11 +143,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             Order order,
             ContractBillingService service)
         {
-            order.OrderItems.Add(new OrderItem()
+            var orderItem = new OrderItem()
             {
                 CatalogueItemId = catalogueItemId,
-                CatalogueItem = new CatalogueItem() { Name = "Test", Id = catalogueItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
-            });
+                CatalogueItem = new CatalogueItem()
+                {
+                    Name = "Test",
+                    Id = catalogueItemId,
+                    CatalogueItemType = CatalogueItemType.AssociatedService,
+                },
+            };
+            order.OrderItems.Add(orderItem);
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
@@ -160,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             await service.AddBespokeContractBillingItem(
                 order.Id,
                 contract.Id,
-                catalogueItemId,
+                orderItem.Id,
                 name,
                 paymentTrigger);
 
@@ -186,11 +192,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             Contract contract,
             ContractBillingService service)
         {
-            order.OrderItems.Add(new OrderItem()
+            var orderItem = new OrderItem()
             {
                 CatalogueItemId = catalogueItemId,
-                CatalogueItem = new CatalogueItem() { Name = "Test", Id = catalogueItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
-            });
+                CatalogueItem = new CatalogueItem()
+                {
+                    Name = "Test",
+                    Id = catalogueItemId,
+                    CatalogueItemType = CatalogueItemType.AssociatedService,
+                },
+            };
+            order.OrderItems.Add(orderItem);
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
@@ -205,7 +217,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             await service.AddBespokeContractBillingItem(
                 order.Id,
                 contract.Id,
-                catalogueItemId,
+                orderItem.Id,
                 name,
                 paymentTrigger);
 
@@ -265,7 +277,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
            string name,
            int orderId,
            int itemId,
-           CatalogueItemId catalogueItemId,
+           int orderItemId,
            string paymentTrigger,
            ContractBillingService service)
         {
@@ -274,7 +286,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                     () => service.EditContractBillingItem(
                         orderId,
                         itemId,
-                        catalogueItemId,
+                        orderItemId,
                         name,
                         paymentTrigger))
                 .Should()
@@ -289,7 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             string paymentTrigger,
             int orderId,
             int itemId,
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             string name,
             ContractBillingService service)
         {
@@ -298,7 +310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                     () => service.EditContractBillingItem(
                         orderId,
                         itemId,
-                        catalogueItemId,
+                        orderItemId,
                         name,
                         paymentTrigger))
                 .Should()
@@ -346,7 +358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             await service.EditContractBillingItem(
                 order.Id,
                 item.Id,
-                catalogueItemId,
+                orderItem.Id,
                 name,
                 paymentTrigger);
 
