@@ -53,7 +53,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Contrac
         public override string Advice => IsEdit ? "Edit this associated service milestone." : "Add an associated service milestone.";
 
         public IEnumerable<SelectOption<string>> OrderItemOptions => AssociatedServices.Select(x =>
-            new SelectOption<string>($"{x.Parent.CatalogueItem.Name} - {x.CatalogueItem.Name}", x.Id.ToString())).ToList();
+        {
+            var text = x.Parent is null
+                ? x.CatalogueItem.Name
+                : $"{x.Parent.CatalogueItem.Name} - {x.CatalogueItem.Name}";
+            return new SelectOption<string>(text, x.Id.ToString());
+        }).ToList();
 
         public IEnumerable<OrderItem> AssociatedServices { get; set; }
     }

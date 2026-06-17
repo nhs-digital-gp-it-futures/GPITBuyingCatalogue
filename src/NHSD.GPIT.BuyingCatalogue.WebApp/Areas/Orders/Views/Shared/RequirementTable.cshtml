@@ -15,7 +15,9 @@
         }
         @foreach (var item in Model.Requirements)
         {
-            var itemName = $"{item.OrderItem.Parent.CatalogueItem.Name} - {item.OrderItem.CatalogueItem.Name}";
+            var itemName = item.OrderItem.Parent is not null
+                ? $"{item.OrderItem.Parent.CatalogueItem.Name} - {item.OrderItem.CatalogueItem.Name}"
+                : item.OrderItem.CatalogueItem.Name;
             <nhs-table-row-container>
                 <nhs-table-cell style="word-break:break-word">@itemName</nhs-table-cell>
                 <nhs-table-cell style="word-break:break-word">@item.Details</nhs-table-cell>

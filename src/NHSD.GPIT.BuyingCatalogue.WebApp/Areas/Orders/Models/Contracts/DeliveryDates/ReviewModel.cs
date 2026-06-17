@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
             OrderWrapper = orderWrapper;
 
-            SolutionId = order.GetSolutionOrderItem().Id;
+            SolutionId = order.GetSolutionOrderItem()?.Id;
             AdditionalServiceIds = order.GetAdditionalServices().Select(x => x.Id).ToList();
             AssociatedServiceIds = order.GetAssociatedServices().Select(x => x.Id).ToList();
             AssociatedServiceIdsForAdditionalServices = order.GetAdditionalServices()

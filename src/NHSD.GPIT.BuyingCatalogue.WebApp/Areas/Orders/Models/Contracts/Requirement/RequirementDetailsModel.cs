@@ -50,7 +50,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Require
         public override string Advice => IsEdit ? "Edit associated service requirement." : "Add associated service requirement.";
 
         public IEnumerable<SelectOption<string>> OrderItemOptions => AssociatedServices.Select(x =>
-            new SelectOption<string>($"{x.Parent.CatalogueItem.Name} - {x.CatalogueItem.Name}", x.Id.ToString())).ToList();
+        {
+            var text = x.Parent is null
+                ? x.CatalogueItem.Name
+                : $"{x.Parent.CatalogueItem.Name} - {x.CatalogueItem.Name}";
+            return new SelectOption<string>(text, x.Id.ToString());
+        }).ToList();
 
         public IEnumerable<OrderItem> AssociatedServices { get; set; }
 
