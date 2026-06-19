@@ -20,4 +20,14 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TestData\Files\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="TestData\Files\valid_service_recipients.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
