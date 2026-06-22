@@ -19,8 +19,9 @@ public class QuantityPage : BasePage
         await SelectLink.ClickAsync();
 
         foreach (var (practice, quantity) in practiceQuantities)
-            await Page.GetByRole(AriaRole.Row, new() { Name = practice })
-                .GetByLabel("Patient total")
+            await Page.GetByRole(AriaRole.Row)
+                .Filter(new() { HasText = practice })
+                .GetByRole(AriaRole.Textbox)
                 .FillAsync(quantity);
 
         await ClickSaveAndContinueAsync();
