@@ -51,9 +51,26 @@
         TaskProgress.InProgress => "Continue",
         _ => "Change",
     };
+
+    var progress = 0;
+    if (Model.PriceProgress is not (TaskProgress.NotStarted or TaskProgress.CannotStart))
+    {
+        progress++;
+    }
+    if (Model.QuantityProgress is not (TaskProgress.NotStarted or TaskProgress.CannotStart))
+    {
+        progress++;
+    }
 }
 
-<h3>@Model.AssociatedServiceItem.Name</h3>
+<div style="display:block; align-items:center;">
+    <h3 class="header-with-detail">
+        @Model.AssociatedServiceItem.Name
+    </h3>
+    <span class="detail">
+        <strong>@progress</strong> of <strong>2</strong> started
+    </span>
+</div>
 
 <nhs-table>
     <nhs-table-column>Item</nhs-table-column>

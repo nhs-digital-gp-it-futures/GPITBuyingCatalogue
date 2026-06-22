@@ -19,6 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
@@ -477,17 +478,17 @@ public static class CompetitionHubControllerTests
 
         var expectedModel = new ConfirmPriceModel(service.CatalogueItem, additionalServicePrice, competitionPrice);
 
-        //var result = (await controller.ConfirmPrice(
-        //    internalOrgId,
-        //    competition.Id,
-        //    competitionSolution.CatalogueItemId,
-        //    additionalServicePrice.CataloguePriceId,
-        //    null,
-        //    service.CatalogueItemId,
-        //    null)).As<ViewResult>();
+        var result = (await controller.ConfirmPrice(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            additionalServicePrice.CataloguePriceId,
+            (CatalogueItemId?)null,
+            service.CatalogueItemId,
+            (RoutingSource?)null)).As<ViewResult>();
 
-        //result.Should().NotBeNull();
-        //result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
     }
 
     [Theory]
@@ -556,15 +557,16 @@ public static class CompetitionHubControllerTests
 
         listPriceService.GetCatalogueItemWithPublishedListPrices(additionalService.Id).Returns(additionalService);
 
-        //_ = await controller.ConfirmPrice(
-        //    internalOrgId,
-        //    competitionId,
-        //    catalogueItem.Id,
-        //    price.CataloguePriceId,
-        //    model,
-        //    additionalService.Id);
+        _ = await controller.ConfirmPrice(
+            internalOrgId,
+            competitionId,
+            catalogueItem.Id,
+            price.CataloguePriceId,
+            model,
+            null,
+            additionalService.Id);
 
-        //await competitionsPriceService.Received().SetServicePrice(internalOrgId, competitionId, catalogueItem.Id, additionalService.Id, price, Arg.Any<List<PricingTierDto>>());
+        await competitionsPriceService.Received().SetServicePrice(internalOrgId, competitionId, catalogueItem.Id, additionalService.Id, price, Arg.Any<List<PricingTierDto>>());
     }
 
     [Theory]
@@ -1112,31 +1114,35 @@ public static class CompetitionHubControllerTests
 
         competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.CatalogueItemId = solution.CatalogueItemId;
-        competitionSolution.Services = solutionServices.Cast<CompetitionCatalogueItem>().ToList();
+        competitionSolution.Services = [.. solutionServices.Cast<CompetitionCatalogueItem>()];
 
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
 
-        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
+        competitionsService
+            .GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId)
+            .Returns(competitionSolution);
 
-        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService
+            .GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None)
+            .Returns([.. associatedServices.Select(x => x.CatalogueItem)]);
 
-        //var expectedModel = new SelectServicesModel(
-        //    solutionServices.Select(x => x.CatalogueItem).ToList(),
-        //    associatedServices.Select(x => x.CatalogueItem).ToList())
-        //{
-        //    EntityType = "Competition",
-        //    ParentItemName = solution.CatalogueItem.Name,
-        //    InternalOrgId = internalOrgId,
-        //    ParentItemId = solution.CatalogueItemId,
-        //};
+        var expectedModel = new SelectServicesModel(
+            [.. solutionServices.Select(x => x.CatalogueItem)],
+            [.. associatedServices.Select(x => x.CatalogueItem)])
+        {
+            EntityType = "Competition",
+            ParentItemName = solution.CatalogueItem.Name,
+            InternalOrgId = internalOrgId,
+            ParentItemId = solution.CatalogueItemId,
+        };
 
-        //var result = (await controller.SelectAssociatedServices(
-        //    internalOrgId,
-        //    competition.Id,
-        //    competitionSolution.CatalogueItemId)).As<ViewResult>();
+        var result = (await controller.SelectAssociatedServices(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId)).As<ViewResult>();
 
-        //result.Should().NotBeNull();
-        //result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.ParentItemType));
     }
 
     [Theory]

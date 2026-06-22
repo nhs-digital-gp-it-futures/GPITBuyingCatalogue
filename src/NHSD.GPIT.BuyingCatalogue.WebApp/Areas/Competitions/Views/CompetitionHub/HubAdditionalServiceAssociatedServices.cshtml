@@ -22,33 +22,33 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
 
-    <nhs-page-title title="@ViewBag.Title"
-                    caption="@Model.AdditionalServiceName"
-                    advice="Associated services for your additional service" />
-
-    <nhs-card-v2>
-        <nhs-card-content>
-        @foreach (var associatedService in Model.AssociatedServices)
-        {
-            <partial name="_HubAdditionalServiceAssociatedServiceItem" model="associatedService" />
-        }
-        </nhs-card-content>
-        <nhs-card-footer>
-        @if (Model.AssociatedServicesRemaining)
-        {
-            <vc:add-or-change href="@associatedServicesUrl" noun-phrase="Associated services" />
-        }
-        else
-        {
-            <div class="nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-3">
-                <vc:inline-information text="All the associated services available for this additional service have already been added." />
-            </div>
-        }
-        </nhs-card-footer>
-    </nhs-card-v2>
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.AdditionalServiceName" />
+                                            
+        <h3>Associated services for your additional service</h3>
+        <nhs-card-v2>
+            <nhs-card-content>
+            @foreach (var associatedService in Model.AssociatedServices)
+            {
+                <partial name="_HubAdditionalServiceAssociatedServiceItem" model="associatedService" />
+            }
+            </nhs-card-content>
+            <nhs-card-footer>
+            @if (Model.AssociatedServicesRemaining)
+            {
+                <vc:add-or-change href="@associatedServicesUrl" noun-phrase="Associated services" />
+            }
+            else
+            {
+                <div class="nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-3">
+                    <vc:inline-information text="All the associated services available for this additional service have already been added." />
+                </div>
+            }
+            </nhs-card-footer>
+        </nhs-card-v2>
                 
-    <vc:nhs-anchor-button text="Save and continue"
-                            url="@Model.BackLink"
-                            type="Primary" />
+        <vc:nhs-anchor-button text="Save and continue"
+                                url="@Model.BackLink"
+                                type="Primary" />
     </div>
 </div>
