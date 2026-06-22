@@ -46,6 +46,8 @@ public interface ICompetitionsService
 
     Task<int> GetCompetitionTotalRecipientCount(string internalOrgId, int competitionId);
 
+    Task<CompetitionSolution> GetCompetitionSolution(string internalOrgId, int competitionId, CatalogueItemId solutionId);
+
     Task<CompetitionTaskListModel> GetCompetitionTaskList(string internalOrgId, int competitionId);
 
     Task<ICollection<CompetitionSolution>> GetNonShortlistedSolutions(string internalOrgId, int competitionId);
@@ -67,6 +69,18 @@ public interface ICompetitionsService
         int competitionId,
         CatalogueItemId solutionId,
         IEnumerable<CatalogueItemId> associatedServices);
+
+    Task AddAssociatedServicesToAdditionalService(
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId? additionalServiceId,
+        IEnumerable<CatalogueItemId> selectedAssociatedServices);
+
+    Task RemoveAssociatedServicesFromAdditionalService(
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceItemId,
+        CatalogueItemId serviceId);
 
     Task RemoveAssociatedService(
         string internalOrgId,

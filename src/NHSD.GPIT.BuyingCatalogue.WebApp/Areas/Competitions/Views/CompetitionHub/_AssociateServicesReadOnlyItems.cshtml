@@ -1,0 +1,84 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
+
+@model CatalogueItemHubModel
+
+@{
+    var associatedServicesForAdditionalServiceUrl = Url.Action(
+            nameof(CompetitionHubController.HubAdditionalServiceAssociatedServices),
+            typeof(CompetitionHubController).ControllerName(),
+            new
+            {
+            Model.InternalOrgId,
+            Model.CompetitionId,
+            Model.SolutionId,
+            additionalServiceItemId = Model.CatalogueItemId
+        });
+}
+
+@if (Model.CatalogueItemType is CatalogueItemType.AdditionalService &&
+    Model.AssociatedServicesAvailable == true &&
+    Model.AssociatedServicesProgress != TaskProgress.Optional)
+{
+    <h3>Associated services for @Model.CatalogueItemName</h3>
+    <nhs-table>
+        <nhs-table-column>Item</nhs-table-column>
+        <nhs-table-column>Status</nhs-table-column>
+        <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
+        <nhs-table-row-container>
+            <nhs-table-cell>Associated Services</nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag status-enum="@Model.AssociatedServicesProgress"></nhs-tag>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <a href="@associatedServicesForAdditionalServiceUrl">@Model.GetLinkName(Model.AssociatedServicesProgress)</a>
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+
+    @foreach (var associatedService in Model.AssociatedServices)
+    {
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="@associatedService.CatalogueItemName"></nhs-summary-list-row>
+            @if (associatedService?.Price is null)
+            {
+                <nhs-summary-list-row label-text="Price"></nhs-summary-list-row>
+            }
+            else if (associatedService?.Price?.BillingPeriod is null)
+            {
+                <nhs-summary-list-row label-text="One-off cost @(associatedService?.Price?.Description)">
+                    @if (@associatedService.QuantityProgress != TaskProgress.CannotStart &&
+                            @associatedService.QuantityProgress != TaskProgress.NotStarted)
+                    {
+                        <text>£@Model.CalculateOneOffCost()</text>
+                    }
+                </nhs-summary-list-row>
+            }
+            else
+            {
+                <nhs-summary-list-row label-text="Price per month">
+                    @if (@associatedService.QuantityProgress != TaskProgress.CannotStart &&
+                            @associatedService.QuantityProgress != TaskProgress.NotStarted)
+                    {
+                        <text>£@Model.CalculateCostPerMonth()</text>
+                    }
+                </nhs-summary-list-row>
+            }
+
+            <nhs-summary-list-row label-text="Quantity">
+                @if (@associatedService.QuantityProgress != TaskProgress.CannotStart &&
+                        @associatedService.QuantityProgress != TaskProgress.NotStarted)
+                {
+                    @associatedService.Quantity.ToString($"#,##0")
+                }
+            </nhs-summary-list-row>
+
+            @if (associatedService?.Price?.BillingPeriod is not null)
+            {
+                <nhs-summary-list-row label-text="Total price">
+                    £@Model.CalculateTotalCost()
+                </nhs-summary-list-row>
+            }
+        </nhs-summary-list>
+    }
+}

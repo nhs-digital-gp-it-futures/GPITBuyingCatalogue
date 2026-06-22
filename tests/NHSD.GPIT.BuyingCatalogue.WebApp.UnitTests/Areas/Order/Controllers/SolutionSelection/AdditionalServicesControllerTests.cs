@@ -70,8 +70,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 InternalOrgId = internalOrgId,
                 AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly,
-                SolutionName = order.OrderType.GetSolutionNameFromOrder(order),
-                SolutionId = solutionId,
+                ParentItemName = order.OrderType.GetSolutionNameFromOrder(order),
+                ParentItemId = solutionId,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));

@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
             SelectServicesModel model,
             SelectServicesModelValidator systemUnderTest)
         {
-            model.ParentItem = CatalogueItemType.AdditionalService;
+            model.ParentItemType = CatalogueItemType.AdditionalService;
             model.Services.ForEach(x => x.IsSelected = false);
 
             var result = systemUnderTest.TestValidate(model);

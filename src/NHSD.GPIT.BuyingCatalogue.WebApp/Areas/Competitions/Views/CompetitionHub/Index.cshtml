@@ -1,8 +1,5 @@
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAnchorButton
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+
 @model PricingDashboardModel
 
 @{
@@ -19,26 +16,31 @@
 
         <nhs-card-v2>
             <nhs-card-content title="Indicative costs excluding VAT">
-        <nhs-table>
-            <nhs-table-column>Catalogue solution</nhs-table-column>
-            <nhs-table-column>Price</nhs-table-column>
-            <nhs-table-column>Status</nhs-table-column>
-                    <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
+                <nhs-table>
+                    <nhs-table-column>Catalogue solution</nhs-table-column>
+                    <nhs-table-column>Price</nhs-table-column>
+                    <nhs-table-column>Status</nhs-table-column>
+                        <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
 
-            @foreach (var solution in Model.SolutionPrices.OrderBy(x => x.Name))
-            {
-                <nhs-table-row-container>
-                    <nhs-table-cell>@solution.Name</nhs-table-cell>
-                    <nhs-table-cell>@(!solution.Price.HasValue ? "Not calculated" : $"£{solution.Price.GetValueOrDefault():N2}")</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@solution.Progress"/>
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                                <a href="@Url.Action(nameof(CompetitionHubController.Hub), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = solution.CatalogueItemId })">@GetLinkName(@solution.Progress)</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-            }
-        </nhs-table>
+                        @foreach (var solution in Model.SolutionPrices.OrderBy(x => x.Name))
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>@solution.Name</nhs-table-cell>
+                                <nhs-table-cell>@(!solution.Price.HasValue ? "Not calculated" : $"£{solution.Price.GetValueOrDefault():N2}")</nhs-table-cell>
+                                <nhs-table-cell>
+                                    <nhs-tag status-enum="@solution.Progress"/>
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    <a href="@Url.Action(
+                                        nameof(CompetitionHubController.Hub), 
+                                        typeof(CompetitionHubController).ControllerName(), 
+                                        new { Model.InternalOrgId, Model.CompetitionId, solutionId = solution.CatalogueItemId })">
+                                        @GetLinkName(@solution.Progress)
+                                    </a>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                </nhs-table>
             </nhs-card-content>
         </nhs-card-v2>
         <br/>
