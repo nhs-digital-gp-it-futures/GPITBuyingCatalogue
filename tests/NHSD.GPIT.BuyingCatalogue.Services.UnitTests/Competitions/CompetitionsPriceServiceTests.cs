@@ -50,10 +50,24 @@ public static class CompetitionsPriceServiceTests
         string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
-        CatalogueItemId servicePrice,
+        CatalogueItemId serviceId,
         CataloguePrice cataloguePrice,
         CompetitionsPriceService service) => FluentActions
-        .Awaiting(() => service.SetServicePrice(internalOrgId, competitionId, solutionId, servicePrice, cataloguePrice, null))
+        .Awaiting(() => service.SetServicePrice(internalOrgId, competitionId, solutionId, serviceId, cataloguePrice, null))
+        .Should()
+        .ThrowAsync<ArgumentNullException>();
+
+    [Theory]
+    [MockAutoData]
+    public static Task SetAdditionalServiceAssociatedServicePrice_NullAgreedPrices_ThrowsException(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId serviceId,
+        CataloguePrice cataloguePrice,
+        CompetitionsPriceService service) => FluentActions
+        .Awaiting(() => service.SetAdditionalServiceAssociatedServicePrice(internalOrgId, competitionId, solutionId, additionalServiceId, serviceId, cataloguePrice, null))
         .Should()
         .ThrowAsync<ArgumentNullException>();
 
@@ -74,7 +88,7 @@ public static class CompetitionsPriceServiceTests
         });
 
         price.CataloguePriceTiers = tiers;
-        solution.CatalogueItem.CataloguePrices = new List<CataloguePrice> { price, };
+        solution.CatalogueItem.CataloguePrices = [price];
 
         competition.OrganisationId = organisation.Id;
         competition.CompetitionSolutions.Add(new CompetitionSolution(competition.Id, solution.CatalogueItemId) { IsShortlisted = true });
@@ -128,7 +142,7 @@ public static class CompetitionsPriceServiceTests
 
         oldPrice.CataloguePriceTiers = oldTiers;
         price.CataloguePriceTiers = tiers;
-        solution.CatalogueItem.CataloguePrices = new List<CataloguePrice> { oldPrice, price, };
+        solution.CatalogueItem.CataloguePrices = [oldPrice, price];
 
         competitionPrice.CataloguePriceId = oldPrice.CataloguePriceId;
         competitionPrice.Tiers = competitionPriceTiers;
@@ -185,7 +199,7 @@ public static class CompetitionsPriceServiceTests
 
         price.CataloguePriceTiers = tiers;
 
-        additionalService.CatalogueItem.CataloguePrices = new List<CataloguePrice> { price, };
+        additionalService.CatalogueItem.CataloguePrices = [price];
 
         competition.OrganisationId = organisation.Id;
         competition.CompetitionSolutions.Add(
@@ -254,7 +268,7 @@ public static class CompetitionsPriceServiceTests
         oldPrice.CataloguePriceTiers = oldTiers;
         price.CataloguePriceTiers = tiers;
 
-        additionalService.CatalogueItem.CataloguePrices = new List<CataloguePrice> { oldPrice, price, };
+        additionalService.CatalogueItem.CataloguePrices = [oldPrice, price];
 
         competitionPrice.CataloguePriceId = oldPrice.CataloguePriceId;
         competitionPrice.Tiers = competitionPriceTiers;
@@ -301,5 +315,171 @@ public static class CompetitionsPriceServiceTests
 
         updatedService.Price.Should().NotBeNull();
         updatedService.Price.Tiers.Should().HaveCount(tiers.Count);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task SetAdditionalServiceAssociatedServicePrice_NoExistingPrice_SetsPrice(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        AdditionalService additionalService,
+        AssociatedService associatedService,
+        CataloguePrice price,
+        List<CataloguePriceTier> tiers,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsPriceService service)
+    {
+        int competitionAdditionalServiceId = 101;
+        tiers.ForEach(x =>
+        {
+            x.CataloguePrice = null;
+        });
+
+        price.CataloguePriceTiers = tiers;
+
+        associatedService.CatalogueItem.CataloguePrices = [price];
+
+        var competitionAssociatedService = new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
+        {
+            CatalogueItem = associatedService.CatalogueItem,
+            ParentItemId = competitionAdditionalServiceId,
+        };
+
+        var competitionAdditionalService = new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId, true)
+        {
+            Id = competitionAdditionalServiceId,
+            CatalogueItem = additionalService.CatalogueItem,
+            AssociatedServices = [competitionAssociatedService],
+        };
+
+        competition.OrganisationId = organisation.Id;
+        competition.CompetitionSolutions.Add(
+            new CompetitionSolution(competition.Id, solution.CatalogueItemId)
+            {
+                IsShortlisted = true,
+                Services = [competitionAdditionalService],
+            });
+
+        context.AdditionalServices.Add(additionalService);
+        context.Solutions.Add(solution);
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.CompetitionCatalogueItems.Add(competitionAssociatedService);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.SetAdditionalServiceAssociatedServicePrice(
+            organisation.InternalIdentifier,
+            competition.Id,
+            solution.CatalogueItemId,
+            additionalService.CatalogueItemId,
+            associatedService.CatalogueItemId,
+            price,
+            tiers.Select(
+                x => new PricingTierDto { LowerRange = x.LowerRange, UpperRange = x.UpperRange, Price = x.Price, }));
+
+        var updatedAssociatedService = await context.CompetitionCatalogueItems
+            .Include(x => x.Price)
+            .ThenInclude(x => x.Tiers)
+            .FirstOrDefaultAsync(x => x.CompetitionId == competition.Id &&
+                x.CatalogueItemId == associatedService.CatalogueItemId &&
+                x.ParentItemId == competitionAdditionalServiceId);
+
+        updatedAssociatedService.Price.Should().NotBeNull();
+        updatedAssociatedService.Price.Tiers.Should().HaveCount(tiers.Count);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task SetAdditionalServiceAssociatedServicePrice_ExistingPrice_SetsPrice(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        AdditionalService additionalService,
+        AssociatedService associatedService,
+        CataloguePrice oldPrice,
+        List<CataloguePriceTier> oldTiers,
+        CataloguePrice price,
+        List<CataloguePriceTier> tiers,
+        CompetitionCatalogueItemPrice competitionPrice,
+        List<CompetitionCatalogueItemPriceTier> competitionPriceTiers,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsPriceService service)
+    {
+        int competitionAdditionalServiceId = 1001;
+
+        tiers.ForEach(x =>
+        {
+            x.CataloguePrice = null;
+        });
+
+        oldPrice.CataloguePriceTiers = oldTiers;
+        price.CataloguePriceTiers = tiers;
+
+        associatedService.CatalogueItem.CataloguePrices = [oldPrice, price];
+
+        competitionPrice.CataloguePriceId = oldPrice.CataloguePriceId;
+        competitionPrice.Tiers = competitionPriceTiers;
+
+        competition.OrganisationId = organisation.Id;
+
+
+        var competitionAssociatedService = new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
+        {
+            CatalogueItem = associatedService.CatalogueItem,
+            ParentItemId = competitionAdditionalServiceId,
+        };
+
+        var competitionAdditionalService = new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId, true)
+        {
+            Id = competitionAdditionalServiceId,
+            CatalogueItem = additionalService.CatalogueItem,
+            AssociatedServices = [competitionAssociatedService],
+        };
+
+        competition.CompetitionSolutions.Add(
+            new CompetitionSolution(competition.Id, solution.CatalogueItemId)
+            {
+                IsShortlisted = true,
+                Price = competitionPrice,
+                Services = [competitionAdditionalService],
+            });
+
+        context.AdditionalServices.Add(additionalService);
+        context.Solutions.Add(solution);
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.CompetitionCatalogueItems.Add(competitionAssociatedService);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.SetAdditionalServiceAssociatedServicePrice(
+            organisation.InternalIdentifier,
+            competition.Id,
+            solution.CatalogueItemId,
+            additionalService.CatalogueItemId,
+            associatedService.CatalogueItemId,
+            price,
+            tiers.Select(
+                x => new PricingTierDto { LowerRange = x.LowerRange, UpperRange = x.UpperRange, Price = x.Price, }));
+
+        var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Price)
+            .ThenInclude(x => x.Tiers)
+            .FirstOrDefaultAsync(x => x.Id == competition.Id);
+
+        var updatedAssociatedService = await context.CompetitionCatalogueItems
+            .Include(x => x.Price)
+            .ThenInclude(x => x.Tiers)
+            .FirstOrDefaultAsync(x => x.CompetitionId == competition.Id &&
+                x.CatalogueItemId == associatedService.CatalogueItemId &&
+                x.ParentItemId == competitionAdditionalServiceId);
+
+        updatedAssociatedService.Price.Should().NotBeNull();
+        updatedAssociatedService.Price.Tiers.Should().HaveCount(tiers.Count);
     }
 }

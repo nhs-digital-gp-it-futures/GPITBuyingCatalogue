@@ -176,10 +176,10 @@ public class CompetitionsPriceService : ICompetitionsPriceService
 
         var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
         var additionalService = solution?.Services.FirstOrDefault(x => x.CatalogueItemId == additionalServiceId);
-        var associatedService = dbContext.CompetitionCatalogueItems
+        var associatedService = await dbContext.CompetitionCatalogueItems
             .Include(x => x.Price)
             .ThenInclude(x => x.Tiers)
-            .FirstOrDefault(x => x.CompetitionId == competitionId &&
+            .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
                 x.CatalogueItemId == serviceId &&
                 x.ParentItemId == additionalService.Id);
 
