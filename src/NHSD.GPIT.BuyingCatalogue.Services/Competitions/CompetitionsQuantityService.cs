@@ -188,9 +188,9 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
 
         var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
         var additionalService = solution?.Services.FirstOrDefault(x => x.CatalogueItemId == additionalServiceId);
-        var associatedService = dbContext.CompetitionCatalogueItems
+        var associatedService = await dbContext.CompetitionCatalogueItems
             .Include(x => x.Quantities)
-            .FirstOrDefault(x => x.CompetitionId == competitionId &&
+            .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
                 x.CatalogueItemId == serviceId &&
                 x.ParentItemId == additionalService.Id);
 

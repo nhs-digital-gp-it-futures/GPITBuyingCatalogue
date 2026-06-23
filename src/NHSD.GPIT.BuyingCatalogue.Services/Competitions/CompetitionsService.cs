@@ -763,6 +763,7 @@ public class CompetitionsService : ICompetitionsService
     }
 
     public async Task AddAssociatedServicesToAdditionalService(
+        string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
         CatalogueItemId? additionalServiceId,
@@ -775,11 +776,15 @@ public class CompetitionsService : ICompetitionsService
 
         var solution = await dbContext.CompetitionSolutions
             .Include(x => x.Services)
-            .FirstOrDefaultAsync(x => x.CompetitionId == competitionId && x.CatalogueItemId == solutionId);
+            .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
+                x.Competition.Organisation.InternalIdentifier == internalOrgId &&
+                x.CatalogueItemId == solutionId);
 
-        var additionalService = solution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceId);
-        selectedAssociatedServices.ToList().ForEach(x =>
-            dbContext.CompetitionCatalogueItems.Add(new CompetitionAssociatedService()
+        var additionalService = solution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceId)
+            ?? throw new InvalidOperationException($"Additional service with id {additionalServiceId} not found for solution {solutionId}");
+
+        dbContext.CompetitionCatalogueItems.AddRange(selectedAssociatedServices.Select(x =>
+            new CompetitionAssociatedService()
             {
                 CompetitionId = competitionId,
                 ParentItemId = additionalService.Id,
@@ -791,6 +796,7 @@ public class CompetitionsService : ICompetitionsService
     }
 
     public async Task RemoveAssociatedServicesFromAdditionalService(
+        string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
         CatalogueItemId additionalServiceItemId,
@@ -798,14 +804,17 @@ public class CompetitionsService : ICompetitionsService
     {
         var solution = await dbContext.CompetitionSolutions
             .Include(x => x.Services)
-            .FirstOrDefaultAsync(x => x.CompetitionId == competitionId && x.CatalogueItemId == solutionId);
+            .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
+                x.Competition.Organisation.InternalIdentifier == internalOrgId &&
+                x.CatalogueItemId == solutionId);
 
         var additionalService = solution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceItemId);
         if (additionalService == null) return;
 
-        var associatedService = dbContext.CompetitionCatalogueItems
+        var associatedService = await dbContext.CompetitionCatalogueItems
             .Include(x => x.Price)
-            .FirstOrDefault(x => x.CompetitionId == competitionId &&
+            .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
+                x.Competition.Organisation.InternalIdentifier == internalOrgId &&
                 x.CatalogueItemId == serviceId &&
                 x.ParentItemId == additionalService.Id);
 

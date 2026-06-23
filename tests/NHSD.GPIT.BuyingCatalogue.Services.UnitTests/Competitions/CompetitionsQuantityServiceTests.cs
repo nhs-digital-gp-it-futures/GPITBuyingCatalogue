@@ -153,6 +153,7 @@ public static class CompetitionsQuantityServiceTests
         };
 
         competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
         competition.CompetitionSolutions.Add(
             new CompetitionSolution(competition.Id, solution.CatalogueItemId)
             {
@@ -339,6 +340,7 @@ public static class CompetitionsQuantityServiceTests
         };
 
         competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
         competition.CompetitionSolutions.Add(
             new CompetitionSolution(competition.Id, solution.CatalogueItemId)
             {
