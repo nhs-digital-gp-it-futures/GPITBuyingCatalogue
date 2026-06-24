@@ -33,6 +33,7 @@ public class CompetitionHubController : Controller
     private const string SublocationHubViewName = "QuantitySelection/SublocationHub";
     private const string ConfirmQuantitiesViewName = "QuantitySelection/ConfirmQuantities";
     private const string RemoveServiceViewName = "Services/RemoveService";
+    private const string ConfirmPriceViewName = "PriceSelection/ConfirmPrice";
 
     private const string ServiceNotFoundErrorMessage = "Service not found";
 
@@ -186,21 +187,26 @@ public class CompetitionHubController : Controller
 
         var catalogueItem = await listPriceService.GetCatalogueItemWithPublishedListPrices(serviceId ?? solutionId);
         var price = catalogueItem.CataloguePrices.First(x => x.CataloguePriceId == priceId);
+        var model = new ConfirmPriceModel(catalogueItem, price, existingPrice);
 
-        var model = new ConfirmPriceModel(catalogueItem, price, existingPrice)
+        if (additionalServiceId is not null)
         {
-            BackLink = additionalServiceId is not null
-                ? Url.Action(
-                    nameof(HubAdditionalServiceAssociatedServices),
-                    new { internalOrgId, competitionId, solutionId, additionalServiceItemId = additionalServiceId })
-                : source is RoutingSource.TaskList
-                    ? Url.Action(nameof(Hub), new { internalOrgId, competitionId, solutionId })
-                    : Url.Action(
-                        nameof(SelectPrice),
-                        new { internalOrgId, competitionId, solutionId, serviceId, selectedPriceId = priceId }),
-        };
+            model.BackLink = Url.Action(
+                nameof(HubAdditionalServiceAssociatedServices),
+                new { internalOrgId, competitionId, solutionId, additionalServiceItemId = additionalServiceId });
+        }
+        else if (source is RoutingSource.TaskList)
+        {
+            model.BackLink = Url.Action(nameof(Hub), new { internalOrgId, competitionId, solutionId });
+        }
+        else
+        {
+            model.BackLink = Url.Action(
+                nameof(SelectPrice),
+                new { internalOrgId, competitionId, solutionId, serviceId, selectedPriceId = priceId });
+        }
 
-        return View("PriceSelection/ConfirmPrice", model);
+        return View(ConfirmPriceViewName, model);
     }
 
     [HttpPost("{solutionId}/select-price/{priceId}/confirm")]
@@ -215,7 +221,7 @@ public class CompetitionHubController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return View("PriceSelection/ConfirmPrice", model);
+            return View(ConfirmPriceViewName, model);
         }
 
         var prices = await listPriceService.GetCatalogueItemWithPublishedListPrices(serviceId ?? solutionId);
@@ -686,7 +692,7 @@ public class CompetitionHubController : Controller
             return null;
 
         if (additionalServiceId is null)
-            return competitionSolution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
+            return competitionSolution.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
 
         var additionalService = competitionSolution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceId);
         return additionalService?.AssociatedServices.FirstOrDefault(x => x.CatalogueItemId == serviceId);

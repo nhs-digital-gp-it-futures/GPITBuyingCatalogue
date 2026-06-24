@@ -1789,6 +1789,229 @@ public static class CompetitionHubControllerTests
 
     [Theory]
     [MockAutoData]
+    public static async Task SelectAssociatedServices_WithAdditionalServiceParent_Redirects(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        List<CompetitionAssociatedService> solutionServices,
+        Solution solution,
+        List<AssociatedService> associatedServices,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        CompetitionHubController controller)
+    {
+        solutionServices.ForEach(
+            x =>
+            {
+                x.CatalogueItem = associatedServices.First().CatalogueItem;
+                x.CatalogueItemId = associatedServices.First().CatalogueItemId;
+            });
+
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = solutionServices.Cast<CompetitionCatalogueItem>().ToList();
+
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
+
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+
+        var model = new SelectServicesModel(
+            solutionServices.Select(x => x.CatalogueItem).ToList(),
+            associatedServices.Select(x => x.CatalogueItem).ToList())
+        {
+            EntityType = "Competition",
+            ParentItemName = solution.CatalogueItem.Name,
+            ParentItemType = CatalogueItemType.AdditionalService,
+            InternalOrgId = internalOrgId,
+        };
+
+        var result = (await controller.SelectAssociatedServices(internalOrgId, competition.Id, solution.CatalogueItemId, model))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.HubAdditionalServiceAssociatedServices));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveAdditionalServiceAssociatedService_IncorrectSolutionId_ReturnsBadRequestResult(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceItemId,
+        CatalogueItemId serviceId,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solutionId)
+            .Returns(competitionSolution);
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competition.Id,
+            solutionId,
+            additionalServiceItemId,
+            serviceId);
+
+        result.Should().BeOfType<BadRequestResult>();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveAdditionalServiceAssociatedService_IncorrectAdditionalServiceId_ReturnsBadRequestResult(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        CatalogueItemId additionalServiceItemId,
+        CatalogueItemId serviceId,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId)
+            .Returns(competitionSolution);
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            additionalServiceItemId,
+            serviceId);
+
+        result.Should().BeOfType<BadRequestResult>();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveAdditionalServiceAssociatedService_IncorrectAdditionalAssociatedServiceId_ReturnsBadRequestResult(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        CatalogueItemId additionalServiceItemId,
+        CatalogueItemId serviceId,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionSolution.Services = [competitionAdditionalService];
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId)
+            .Returns(competitionSolution);
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            additionalServiceItemId,
+            serviceId);
+
+        result.Should().BeOfType<BadRequestResult>();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveAdditionalServiceAssociatedService_Valid_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        AssociatedService associatedService,
+        CompetitionAssociatedService competitionAssociatedService,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionAssociatedService.CatalogueItemId = associatedService.CatalogueItemId;
+        competitionAssociatedService.CatalogueItem = associatedService.CatalogueItem;
+
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.AssociatedServices = [competitionAssociatedService];
+
+        competitionSolution.Services = [competitionAdditionalService];
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId)
+            .Returns(competitionSolution);
+
+        var expectedModel = new RemoveServiceModel(competitionAssociatedService.CatalogueItem) { EntityType = "Competition" };
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            competitionAdditionalService.CatalogueItemId,
+            competitionAssociatedService.CatalogueItemId);
+
+        var viewResult = result.Should().BeOfType<ViewResult>();
+        viewResult.Subject.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveAdditionalServiceAssociatedService_Confirmed_RemovesAssociatedService(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId serviceId,
+        RemoveServiceModel model,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        model.ConfirmRemoveService = true;
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competitionId,
+            solutionId,
+            additionalServiceId,
+            serviceId,
+            model);
+
+        result.Should().NotBeNull();
+        await competitionsService.Received()
+            .RemoveAssociatedServicesFromAdditionalService(competitionId, solutionId, additionalServiceId, serviceId);
+    }
+
+    [Theory]
+    [MockInlineAutoData(true)]
+    [MockInlineAutoData(false)]
+    public static async Task RemoveAdditionalServiceAssociatedService_RedirectsToHub(
+        bool confirmed,
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId serviceId,
+        RemoveServiceModel model,
+        CompetitionHubController controller)
+    {
+        model.ConfirmRemoveService = confirmed;
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competitionId,
+            solutionId,
+            additionalServiceId,
+            serviceId,
+            model);
+
+        var redirectResult = result.Should().BeOfType<RedirectToActionResult>();
+
+        redirectResult.Subject.ActionName.Should().Be(nameof(controller.HubAdditionalServiceAssociatedServices));
+    }
+
+    [Theory]
+    [MockAutoData]
     public static async Task RemoveAssociatedService_IncorrectCompetitionId_ReturnsBadRequestResult(
         string internalOrgId,
         int competitionId,
