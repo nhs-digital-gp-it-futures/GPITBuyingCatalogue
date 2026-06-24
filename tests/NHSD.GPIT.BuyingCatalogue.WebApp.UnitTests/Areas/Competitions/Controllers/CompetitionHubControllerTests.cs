@@ -94,6 +94,48 @@ public static class CompetitionHubControllerTests
 
     [Theory]
     [MockAutoData]
+    public static async Task Hub_SolutionWithAdditionalServiceAssociatedServices_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        List<AssociatedService> associatedServices,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.AssociatedServices = associatedServices
+            .Select(x => new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = x.CatalogueItem,
+            });
+
+        competitionSolution.Services = [competitionAdditionalService];
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
+
+        var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition.FlattenedRecipients, competition.ContractLength);
+
+        var result = (await controller.Hub(internalOrgId, competition.Id, solution.CatalogueItemId)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.BackLink).Excluding(m => m.AssociatedServicesUrl));
+    }
+
+    [Theory]
+    [MockAutoData]
     public static async Task Hub_InvalidSolutionId_ReturnsViewWithModel(
         string internalOrgId,
         CatalogueItemId solutionId,
@@ -128,14 +170,15 @@ public static class CompetitionHubControllerTests
     {
         competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.CatalogueItemId = solution.CatalogueItemId;
-        competitionSolution.Services = associatedServices
+        competitionSolution.Services = [.. associatedServices
             .Select(x =>
                 new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
                 {
+                    CatalogueItemType = CatalogueItemType.AssociatedService,
                     CatalogueItem = x.CatalogueItem,
                 })
-            .Cast<CompetitionCatalogueItem>()
-            .ToList();
+            .Cast<CompetitionCatalogueItem>()];
+
         competition.CompetitionSolutions = [competitionSolution];
 
         competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
@@ -174,9 +217,10 @@ public static class CompetitionHubControllerTests
         additionalService.Price = servicePrice;
         additionalService.AssociatedServices = associatedServices
             .Select(x => new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
-                {
-                    CatalogueItem = x.CatalogueItem,
-                });
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = x.CatalogueItem,
+            });
 
         competitionSolution.Services = [additionalService];
 
@@ -292,6 +336,7 @@ public static class CompetitionHubControllerTests
         competitionAdditionalService.AssociatedServices = [
             new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
             {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
                 CatalogueItem = associatedService.CatalogueItem,
                 Price = servicePrice,
             }
@@ -603,6 +648,7 @@ public static class CompetitionHubControllerTests
         competitionAdditionalService.AssociatedServices = [
             new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
             {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
                 CatalogueItem = associatedService.CatalogueItem,
                 Price = servicePrice,
             }
@@ -981,6 +1027,7 @@ public static class CompetitionHubControllerTests
         competitionAdditionalService.AssociatedServices = [
             new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
             {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
                 CatalogueItem = associatedService.CatalogueItem,
                 Price = servicePrice,
             }
@@ -1231,6 +1278,7 @@ public static class CompetitionHubControllerTests
         competitionAdditionalService.AssociatedServices = [
             new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
             {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
                 CatalogueItem = associatedService.CatalogueItem,
                 Price = servicePrice,
             }
@@ -1399,6 +1447,7 @@ public static class CompetitionHubControllerTests
         competitionAdditionalService.AssociatedServices = [
             new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
             {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
                 CatalogueItem = associatedService.CatalogueItem,
                 Price = servicePrice,
             }
@@ -2030,6 +2079,7 @@ public static class CompetitionHubControllerTests
         competitionAdditionalService.AssociatedServices = associatedServices
             .Select(x => new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
             {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
                 CatalogueItem = x.CatalogueItem,
             });
 

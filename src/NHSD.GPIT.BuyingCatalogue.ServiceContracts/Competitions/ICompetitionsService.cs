@@ -71,14 +71,12 @@ public interface ICompetitionsService
         IEnumerable<CatalogueItemId> associatedServices);
 
     Task AddAssociatedServicesToAdditionalService(
-        string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
         CatalogueItemId? additionalServiceId,
         IEnumerable<CatalogueItemId> selectedAssociatedServices);
 
     Task RemoveAssociatedServicesFromAdditionalService(
-        string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
         CatalogueItemId additionalServiceItemId,

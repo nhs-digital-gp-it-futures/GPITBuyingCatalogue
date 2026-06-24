@@ -9,10 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingMode
 
 public class AdditionalServiceAssociatedServiceItemModel
 {
-    public AdditionalServiceAssociatedServiceItemModel()
-    {
-    }
-
     public AdditionalServiceAssociatedServiceItemModel(
         CatalogueItemId additionalServiceItemId,
         CatalogueItem associatedServiceItem,

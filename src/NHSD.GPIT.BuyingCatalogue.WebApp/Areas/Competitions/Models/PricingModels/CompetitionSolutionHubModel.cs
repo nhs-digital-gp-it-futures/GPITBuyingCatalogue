@@ -9,10 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingMode
 
 public class CompetitionSolutionHubModel : NavBaseModel
 {
-    public CompetitionSolutionHubModel()
-    {
-    }
-
     public CompetitionSolutionHubModel(
         string internalOrgId,
         CompetitionSolution competitionSolution,

@@ -7,6 +7,7 @@ using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -14,11 +15,14 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Extensions;
 using NSubstitute;
 using Xunit;
 using EntityOdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
@@ -3237,6 +3241,571 @@ public static class CompetitionsServiceTests
         result.Should().BeEquivalentTo(
             competition,
             opt => opt.Excluding(c => c.Framework));
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionSolution_NoSolutionServices_NoAvailableAssociatedServices_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItemType = CatalogueItemType.Solution;
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.Competition = competition;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+        context.CompetitionSolutions.Add(competitionSolution);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var result = await service.GetCompetitionSolution(
+            organisation.InternalIdentifier,
+            competition.Id,
+            competitionSolution.CatalogueItemId);
+
+        result.Should().NotBeNull();
+        result.CatalogueItemId.Should().Be(competitionSolution.CatalogueItemId);
+        result.AssociatedServicesAvailable.Should().BeFalse();
+        result.AssociatedServicesRemaining.Should().BeFalse();
+        result.Services.Should().BeEmpty();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionSolution_NoSolutionServices_AssociatedServiceAvailable_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        List<AssociatedService> associatedServices,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItemType = CatalogueItemType.Solution;
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.Competition = competition;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+        context.CompetitionSolutions.Add(competitionSolution);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        associatedServicesService
+            .GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None)
+            .Returns([.. associatedServices.Select(x => x.CatalogueItem)]);
+
+        var result = await service.GetCompetitionSolution(
+            organisation.InternalIdentifier,
+            competition.Id,
+            competitionSolution.CatalogueItemId);
+
+        result.Should().NotBeNull();
+        result.CatalogueItemId.Should().Be(competitionSolution.CatalogueItemId);
+        result.AssociatedServicesAvailable.Should().BeTrue();
+        result.AssociatedServicesRemaining.Should().BeTrue();
+        result.Services.Should().BeEmpty();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionSolution_SingleSolutionAssociatedService_AssociatedServiceRemaining_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        List<AssociatedService> associatedServices,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItemType = CatalogueItemType.Solution;
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.Competition = competition;
+
+        var associatedService = associatedServices.First();
+        competitionSolution.Services = [new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = associatedService.CatalogueItem,
+            }
+        ];
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+        context.CompetitionSolutions.Add(competitionSolution);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        associatedServicesService
+            .GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None)
+            .Returns([.. associatedServices.Select(x => x.CatalogueItem)]);
+
+        var result = await service.GetCompetitionSolution(
+            organisation.InternalIdentifier,
+            competition.Id,
+            competitionSolution.CatalogueItemId);
+
+        result.Should().NotBeNull();
+        result.CatalogueItemId.Should().Be(competitionSolution.CatalogueItemId);
+        result.AssociatedServicesAvailable.Should().BeTrue();
+        result.AssociatedServicesRemaining.Should().BeTrue();
+        result.Services.Should().HaveCount(1);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionSolution_MultipleSolutionAssociatedService_NoAssociatedServiceRemaining_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        List<AssociatedService> associatedServices,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItemType = CatalogueItemType.Solution;
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.Competition = competition;
+
+        competitionSolution.Services = [.. associatedServices.Select(x =>
+            new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = x.CatalogueItem,
+            })];
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+        context.CompetitionSolutions.Add(competitionSolution);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        associatedServicesService
+            .GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None)
+            .Returns([.. associatedServices.Select(x => x.CatalogueItem)]);
+
+        var result = await service.GetCompetitionSolution(
+            organisation.InternalIdentifier,
+            competition.Id,
+            competitionSolution.CatalogueItemId);
+
+        result.Should().NotBeNull();
+        result.CatalogueItemId.Should().Be(competitionSolution.CatalogueItemId);
+        result.AssociatedServicesAvailable.Should().BeTrue();
+        result.AssociatedServicesRemaining.Should().BeFalse();
+        result.Services.Should().HaveCount(competitionSolution.Services.Count);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionSolution_SingleSolutionAdditionalService_NoAvailableAssociatedServices_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItemType = CatalogueItemType.Solution;
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.Competition = competition;
+
+        competitionSolution.Services = [new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AdditionalService,
+                CatalogueItem = additionalService.CatalogueItem,
+            }
+        ];
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+        context.CompetitionSolutions.Add(competitionSolution);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var result = await service.GetCompetitionSolution(
+            organisation.InternalIdentifier,
+            competition.Id,
+            competitionSolution.CatalogueItemId);
+
+        result.Should().NotBeNull();
+        result.CatalogueItemId.Should().Be(competitionSolution.CatalogueItemId);
+        result.AssociatedServicesAvailable.Should().BeFalse();
+        result.AssociatedServicesRemaining.Should().BeFalse();
+        result.Services.Should().HaveCount(1);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionSolution_SingleSolutionAdditionalService_AvailableAssociatedServices_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        List<AssociatedService> associatedServices,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItemType = CatalogueItemType.Solution;
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.Competition = competition;
+
+        competitionSolution.Services = [new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AdditionalService,
+                CatalogueItem = additionalService.CatalogueItem,
+            }
+        ];
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+        context.CompetitionSolutions.Add(competitionSolution);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        associatedServicesService
+            .GetPublishedAssociatedServicesForCatalogueItem(additionalService.CatalogueItemId, PracticeReorganisationTypeEnum.None)
+            .Returns([.. associatedServices.Select(x => x.CatalogueItem)]);
+
+        var result = await service.GetCompetitionSolution(
+            organisation.InternalIdentifier,
+            competition.Id,
+            competitionSolution.CatalogueItemId);
+
+        result.Should().NotBeNull();
+        result.CatalogueItemId.Should().Be(competitionSolution.CatalogueItemId);
+        result.AssociatedServicesAvailable.Should().BeFalse();
+        result.AssociatedServicesRemaining.Should().BeFalse();
+        result.Services.Should().HaveCount(1);
+        result.GetAdditionalServices().Should().HaveCount(1);
+        result.GetAdditionalServices().ElementAt(0).AssociatedServices.Should().BeEmpty();
+        result.GetAdditionalServices().ElementAt(0).AssociatedServicesAvailable.Should().BeTrue();
+        result.GetAdditionalServices().ElementAt(0).AssociatedServicesRemaining.Should().BeTrue();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionSolution_SingleAdditionalServiceWithAssociatedService_AvailableAssociatedServices_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        List<AssociatedService> associatedServices,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItemType = CatalogueItemType.Solution;
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.Competition = competition;
+
+        var competitionAddionalService = new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId)
+        {
+            Id = 101,
+            CatalogueItemType = CatalogueItemType.AdditionalService,
+            CatalogueItem = additionalService.CatalogueItem,
+        };
+
+        var associatedService = associatedServices.First();
+        var competitionAdditionalService = new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
+        {
+            CatalogueItemType = CatalogueItemType.AssociatedService,
+            CatalogueItem = associatedService.CatalogueItem,
+            ParentItemId = competitionAddionalService.Id,
+        };
+
+        competitionSolution.Services = [competitionAddionalService];
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+        context.CompetitionSolutions.Add(competitionSolution);
+        context.CompetitionCatalogueItems.Add(competitionAdditionalService);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        associatedServicesService
+            .GetPublishedAssociatedServicesForCatalogueItem(additionalService.CatalogueItemId, PracticeReorganisationTypeEnum.None)
+            .Returns([.. associatedServices.Select(x => x.CatalogueItem)]);
+
+        var result = await service.GetCompetitionSolution(
+            organisation.InternalIdentifier,
+            competition.Id,
+            competitionSolution.CatalogueItemId);
+
+        result.Should().NotBeNull();
+        result.CatalogueItemId.Should().Be(competitionSolution.CatalogueItemId);
+        result.AssociatedServicesAvailable.Should().BeFalse();
+        result.AssociatedServicesRemaining.Should().BeFalse();
+        result.Services.Should().HaveCount(1);
+        result.GetAdditionalServices().Should().HaveCount(1);
+        result.GetAdditionalServices().ElementAt(0).CatalogueItemId.Should().Be(additionalService.CatalogueItemId);
+        result.GetAdditionalServices().ElementAt(0).AssociatedServices.Should().HaveCount(1);
+        result.GetAdditionalServices().ElementAt(0).AssociatedServicesAvailable.Should().BeTrue();
+        result.GetAdditionalServices().ElementAt(0).AssociatedServicesRemaining.Should().BeTrue();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionSolution_SingleAdditionalServiceWithMultipleAssociatedService_NoAssociatedServiceRemaining_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        List<AssociatedService> associatedServices,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItemType = CatalogueItemType.Solution;
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.Competition = competition;
+
+        var competitionAdditionalService = new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId)
+        {
+            Id = 101,
+            CatalogueItemType = CatalogueItemType.AdditionalService,
+            CatalogueItem = additionalService.CatalogueItem,
+        };
+
+        var competitionAssociatedServices = associatedServices.Select(x =>
+            new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = x.CatalogueItem,
+                ParentItemId = competitionAdditionalService.Id,
+            });
+
+        competitionSolution.Services = [competitionAdditionalService];
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+        context.CompetitionSolutions.Add(competitionSolution);
+        context.CompetitionCatalogueItems.AddRange(competitionAssociatedServices);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        associatedServicesService
+            .GetPublishedAssociatedServicesForCatalogueItem(additionalService.CatalogueItemId, PracticeReorganisationTypeEnum.None)
+            .Returns([.. associatedServices.Select(x => x.CatalogueItem)]);
+
+        var result = await service.GetCompetitionSolution(
+            organisation.InternalIdentifier,
+            competition.Id,
+            competitionSolution.CatalogueItemId);
+
+        result.Should().NotBeNull();
+        result.CatalogueItemId.Should().Be(competitionSolution.CatalogueItemId);
+        result.AssociatedServicesAvailable.Should().BeFalse();
+        result.AssociatedServicesRemaining.Should().BeFalse();
+        result.Services.Should().HaveCount(1);
+        result.GetAdditionalServices().Should().HaveCount(1);
+        result.GetAdditionalServices().ElementAt(0).CatalogueItemId.Should().Be(additionalService.CatalogueItemId);
+        result.GetAdditionalServices().ElementAt(0).AssociatedServices.Should().HaveCount(competitionAssociatedServices.Count());
+        result.GetAdditionalServices().ElementAt(0).AssociatedServicesAvailable.Should().BeTrue();
+        result.GetAdditionalServices().ElementAt(0).AssociatedServicesRemaining.Should().BeFalse();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task AddAssociatedServicesToAdditionalService_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        AssociatedService associatedService,
+        List<AssociatedService> associatedServices,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItemType = CatalogueItemType.Solution;
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.Competition = competition;
+
+        var competitionAdditionalService = new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId)
+        {
+            Id = 101,
+            CatalogueItemType = CatalogueItemType.AdditionalService,
+            CatalogueItem = additionalService.CatalogueItem,
+            CompetitionId = competition.Id,
+            Competition = competition,
+        };
+
+        var serviceItemToAdd = new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = associatedService.CatalogueItem,
+            };
+
+        competitionSolution.Services = [competitionAdditionalService];
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+        context.CompetitionSolutions.Add(competitionSolution);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        associatedServicesService
+            .GetPublishedAssociatedServicesForCatalogueItem(additionalService.CatalogueItemId, PracticeReorganisationTypeEnum.None)
+            .Returns([.. associatedServices.Select(x => x.CatalogueItem)]);
+
+        await service.AddAssociatedServicesToAdditionalService(
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            competitionAdditionalService.CatalogueItemId,
+            [serviceItemToAdd.CatalogueItemId]);
+
+        var updated = context.CompetitionCatalogueItems
+            .FirstOrDefault(x =>
+                x.CompetitionId == competition.Id &&
+                x.ParentItemId == competitionAdditionalService.Id &&
+                x.CatalogueItemId == serviceItemToAdd.CatalogueItemId &&
+                x.CatalogueItemType == CatalogueItemType.AssociatedService);
+
+        updated.Should().NotBeNull();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task RemoveAssociatedServicesFromAdditionalService_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        List<AssociatedService> associatedServices,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItemType = CatalogueItemType.Solution;
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.Competition = competition;
+
+        var competitionAdditionalService = new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId)
+        {
+            Id = 101,
+            CatalogueItemType = CatalogueItemType.AdditionalService,
+            CatalogueItem = additionalService.CatalogueItem,
+            CompetitionId = competition.Id,
+            Competition = competition,
+        };
+
+        var competitionAssociatedServices = associatedServices.Select(x =>
+            new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = x.CatalogueItem,
+                ParentItemId = competitionAdditionalService.Id,
+                CompetitionId = competition.Id,
+                Competition = competition,
+            });
+
+        competitionSolution.Services = [competitionAdditionalService];
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+        context.CompetitionSolutions.Add(competitionSolution);
+        context.CompetitionCatalogueItems.AddRange(competitionAssociatedServices);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        associatedServicesService
+            .GetPublishedAssociatedServicesForCatalogueItem(additionalService.CatalogueItemId, PracticeReorganisationTypeEnum.None)
+            .Returns([.. associatedServices.Select(x => x.CatalogueItem)]);
+
+        var associatedServicesToRemove = competitionAssociatedServices.First();
+        var expectedCount = competitionAssociatedServices.Count() - 1;
+
+        await service.RemoveAssociatedServicesFromAdditionalService(
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            competitionAdditionalService.CatalogueItemId,
+            associatedServicesToRemove.CatalogueItemId);
+
+        var updated = await service.GetCompetitionSolution(
+            organisation.InternalIdentifier,
+            competition.Id,
+            competitionSolution.CatalogueItemId);
+
+        updated.Should().NotBeNull();
+        updated.GetAdditionalServices().Should().HaveCount(1);
+        updated.GetAdditionalServices().ElementAt(0).AssociatedServices.Should().HaveCount(expectedCount);
+        updated.GetAdditionalServices().ElementAt(0).AssociatedServices.Should().NotContain(associatedServicesToRemove);
     }
 
     private static Organisation CommonOrganisationFactory(int customId = 0)

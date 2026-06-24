@@ -297,8 +297,10 @@ public class CompetitionsService : ICompetitionsService
         var solutionAssociatedServices = solution.GetAssociatedServices();
         var associatedServices = await associatedServicesService.
             GetPublishedAssociatedServicesForCatalogueItem(solutionId, PracticeReorganisationTypeEnum.None);
-        solution.AssociatedServicesAvailable = associatedServices.Count > 0;
-        solution.AssociatedServicesRemaining = associatedServices.Any(x => solutionAssociatedServices.All(y => x.Id != y.CatalogueItemId));
+
+        solution.AssociatedServicesAvailable = associatedServices?.Count > 0;
+        solution.AssociatedServicesRemaining = associatedServices?.Any(x =>
+            solutionAssociatedServices.All(y => x.Id != y.CatalogueItemId)) ?? false;
 
         foreach (var service in solution.Services)
         {
@@ -316,11 +318,14 @@ public class CompetitionsService : ICompetitionsService
                     .ToListAsync();
 
                 var avialableAssociatedServices = await associatedServicesService.
-                    GetPublishedAssociatedServicesForCatalogueItem(additionalService.CatalogueItemId, PracticeReorganisationTypeEnum.None);
+                    GetPublishedAssociatedServicesForCatalogueItem(
+                        additionalService.CatalogueItemId,
+                        PracticeReorganisationTypeEnum.None);
 
                 additionalService.AssociatedServices = [.. selectedAssociatedServices.OfType<CompetitionAssociatedService>()];
-                additionalService.AssociatedServicesAvailable = avialableAssociatedServices.Count > 0;
-                additionalService.AssociatedServicesRemaining = avialableAssociatedServices.Any(x => selectedAssociatedServices.All(y => x.Id != y.CatalogueItemId));
+                additionalService.AssociatedServicesAvailable = avialableAssociatedServices?.Count > 0;
+                additionalService.AssociatedServicesRemaining = avialableAssociatedServices?.Any(x =>
+                    selectedAssociatedServices.All(y => x.Id != y.CatalogueItemId)) ?? false;
             }
         }
 
@@ -763,7 +768,6 @@ public class CompetitionsService : ICompetitionsService
     }
 
     public async Task AddAssociatedServicesToAdditionalService(
-        string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
         CatalogueItemId? additionalServiceId,
@@ -777,7 +781,6 @@ public class CompetitionsService : ICompetitionsService
         var solution = await dbContext.CompetitionSolutions
             .Include(x => x.Services)
             .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
-                x.Competition.Organisation.InternalIdentifier == internalOrgId &&
                 x.CatalogueItemId == solutionId);
 
         var additionalService = solution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceId)
@@ -796,7 +799,6 @@ public class CompetitionsService : ICompetitionsService
     }
 
     public async Task RemoveAssociatedServicesFromAdditionalService(
-        string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
         CatalogueItemId additionalServiceItemId,
@@ -805,7 +807,6 @@ public class CompetitionsService : ICompetitionsService
         var solution = await dbContext.CompetitionSolutions
             .Include(x => x.Services)
             .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
-                x.Competition.Organisation.InternalIdentifier == internalOrgId &&
                 x.CatalogueItemId == solutionId);
 
         var additionalService = solution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceItemId);
@@ -814,7 +815,6 @@ public class CompetitionsService : ICompetitionsService
         var associatedService = await dbContext.CompetitionCatalogueItems
             .Include(x => x.Price)
             .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
-                x.Competition.Organisation.InternalIdentifier == internalOrgId &&
                 x.CatalogueItemId == serviceId &&
                 x.ParentItemId == additionalService.Id);
 
