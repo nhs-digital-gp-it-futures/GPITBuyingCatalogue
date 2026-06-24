@@ -103,7 +103,7 @@ public class CatalogueItemHubModel
         }
     }
 
-    public string GetLinkName(TaskProgress progress) => progress switch
+    public static string GetLinkName(TaskProgress progress) => progress switch
     {
         TaskProgress.NotStarted => "Start",
         TaskProgress.InProgress => "Continue",

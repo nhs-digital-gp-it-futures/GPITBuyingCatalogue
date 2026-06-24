@@ -226,4 +226,30 @@ public static class CatalogueItemHubModelTests
         model.PriceProgress.Should().Be(TaskProgress.Completed);
         model.QuantityProgress.Should().Be(TaskProgress.InProgress);
     }
+
+    [Fact]
+    public static void GetLinkName_NotStarted_AsStart()
+    {
+        var linkName = CatalogueItemHubModel.GetLinkName(TaskProgress.NotStarted);
+        linkName.Should().Be("Start");
+    }
+
+    [Fact]
+    public static void GetLinkName_InProgress_AsContinue()
+    {
+        var linkName = CatalogueItemHubModel.GetLinkName(TaskProgress.InProgress);
+        linkName.Should().Be("Continue");
+    }
+
+    [Theory]
+    [MockInlineAutoData(TaskProgress.NotApplicable)]
+    [MockInlineAutoData(TaskProgress.Amended)]
+    [MockInlineAutoData(TaskProgress.CannotStart)]
+    [MockInlineAutoData(TaskProgress.Optional)]
+    [MockInlineAutoData(TaskProgress.Completed)]
+    public static void GetLinkName_InProgress_AsChange(TaskProgress status)
+    {
+        var linkName = CatalogueItemHubModel.GetLinkName(status);
+        linkName.Should().Be("Change");
+    }
 }

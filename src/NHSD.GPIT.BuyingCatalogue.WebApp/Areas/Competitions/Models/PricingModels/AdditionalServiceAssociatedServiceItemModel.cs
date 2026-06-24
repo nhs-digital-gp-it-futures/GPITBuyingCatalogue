@@ -64,11 +64,10 @@ public class AdditionalServiceAssociatedServiceItemModel
             if (PriceProgress is TaskProgress.NotStarted)
                 return TaskProgress.CannotStart;
 
-            return GlobalQuantity.HasValue || OdsOrganisations.All(x => x.Value.HasValue)
-                ? TaskProgress.Completed
-                : OdsOrganisations.All(x => !x.Value.HasValue)
-                    ? TaskProgress.NotStarted
-                    : TaskProgress.InProgress;
+            if (GlobalQuantity.HasValue || OdsOrganisations.All(x => x.Value.HasValue))
+                return TaskProgress.Completed;
+
+            return OdsOrganisations.All(x => !x.Value.HasValue) ? TaskProgress.NotStarted : TaskProgress.InProgress;
         }
     }
 }

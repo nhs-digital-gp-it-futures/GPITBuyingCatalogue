@@ -49,7 +49,7 @@
             <nhs-tag status-enum="@Model.PriceProgress"></nhs-tag>
         </nhs-table-cell>
         <nhs-table-cell>
-            <a href="@priceUrl">@Model.GetLinkName(Model.PriceProgress)</a>
+            <a href="@priceUrl">@CatalogueItemHubModel.GetLinkName(Model.PriceProgress)</a>
         </nhs-table-cell>
     </nhs-table-row-container>
 
@@ -61,7 +61,7 @@
         <nhs-table-cell>
             @if (Model.QuantityProgress != TaskProgress.CannotStart)
             {
-                <a href="@quantityUrl">@Model.GetLinkName(Model.QuantityProgress)</a>
+                <a href="@quantityUrl">@CatalogueItemHubModel.GetLinkName(Model.QuantityProgress)</a>
             }
         </nhs-table-cell>
     </nhs-table-row-container>

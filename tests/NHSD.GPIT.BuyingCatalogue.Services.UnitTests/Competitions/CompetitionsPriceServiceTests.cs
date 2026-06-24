@@ -425,7 +425,6 @@ public static class CompetitionsPriceServiceTests
 
         competition.OrganisationId = organisation.Id;
 
-
         var competitionAssociatedService = new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
         {
             CatalogueItem = associatedService.CatalogueItem,
