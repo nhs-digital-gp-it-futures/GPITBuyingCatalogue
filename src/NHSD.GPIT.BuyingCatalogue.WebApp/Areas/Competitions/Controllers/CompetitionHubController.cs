@@ -684,21 +684,6 @@ public class CompetitionHubController : Controller
         return RedirectToAction(nameof(Hub), new { internalOrgId, competitionId, solutionId });
     }
 
-    private static CompetitionCatalogueItem GetServiceItem(
-        CompetitionSolution competitionSolution,
-        CatalogueItemId? serviceId,
-        CatalogueItemId? additionalServiceId)
-    {
-        if (competitionSolution is null || serviceId is null)
-            return null;
-
-        if (additionalServiceId is null)
-            return competitionSolution.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
-
-        var additionalService = competitionSolution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceId);
-        return additionalService?.AssociatedServices.FirstOrDefault(x => x.CatalogueItemId == serviceId);
-    }
-
     internal async Task<IEnumerable<ServiceRecipientQuantityDto>> GetRecipientQuantities(
         IReadOnlyList<CompetitionSublocationRecipient> competitionRecipients,
         ICollection<CompetitionItemQuantity> recipientQuantities,
@@ -729,6 +714,21 @@ public class CompetitionHubController : Controller
                 quantity,
                 location);
         });
+    }
+
+    private static CompetitionCatalogueItem GetServiceItem(
+        CompetitionSolution competitionSolution,
+        CatalogueItemId? serviceId,
+        CatalogueItemId? additionalServiceId)
+    {
+        if (competitionSolution is null || serviceId is null)
+            return null;
+
+        if (additionalServiceId is null)
+            return competitionSolution.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
+
+        var additionalService = competitionSolution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceId);
+        return additionalService?.AssociatedServices.FirstOrDefault(x => x.CatalogueItemId == serviceId);
     }
 
     private async Task<SelectServicesModel> GetSelectServicesModel(
