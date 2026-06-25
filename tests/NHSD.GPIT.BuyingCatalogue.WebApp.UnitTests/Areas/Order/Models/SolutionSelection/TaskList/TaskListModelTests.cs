@@ -30,7 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         [MockAutoData]
         public static void WithValidArguments_PropertiesSetCorrectly(
             string internalOrgId,
+            int quantity,
             CallOffId callOffId,
+            OrderSublocation orderSublocation,
+            OrderSublocationRecipient recipient,
             EntityFramework.Ordering.Models.Order order)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
@@ -44,6 +47,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             additionalService.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+
+            order.OrderItems.ForEach(item => recipient.SetQuantityForItem(item, quantity));
+            orderSublocation.SublocationRecipients = new List<OrderSublocationRecipient> { recipient };
+            order.OrderSublocations = new List<OrderSublocation> { orderSublocation };
 
             var model = new TaskListModel(
                 internalOrgId,
@@ -148,8 +155,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         [MockAutoData]
         public static void WithValidArguments_AssociatedServicesOnly_PropertiesSetCorrectly(
             string internalOrgId,
+            int quantity,
             CallOffId callOffId,
             CatalogueItem serviceSolution,
+            OrderSublocation orderSublocation,
+            OrderSublocationRecipient recipient,
             EntityFramework.Ordering.Models.Order order)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
@@ -160,6 +170,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             order.AssociatedServicesOnlyDetails.Solution = serviceSolution;
 
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
+            order.OrderItems.ForEach(item => recipient.SetQuantityForItem(item, quantity));
+            orderSublocation.SublocationRecipients = new List<OrderSublocationRecipient> { recipient };
+            order.OrderSublocations = new List<OrderSublocation> { orderSublocation };
 
             var model = new TaskListModel(
                 internalOrgId,

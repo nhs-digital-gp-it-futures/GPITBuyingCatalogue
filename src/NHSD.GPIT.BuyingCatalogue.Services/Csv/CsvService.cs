@@ -68,14 +68,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             return $"[{string.Join(";", orderItemPriceTiers.OrderBy(x => x.LowerRange).Select(item => $"[{item.LowerRange}:{item.Price}]"))}]";
         }
 
-        private async Task<Dictionary<CatalogueItemId, TimeUnit?>> GetBillingPeriods(int orderId)
+        private async Task<Dictionary<int, TimeUnit?>> GetBillingPeriods(int orderId)
         {
             return await dbContext.OrderItems
                 .Include(x => x.OrderItemPrice)
                 .AsNoTracking()
                 .Where(x => x.OrderId == orderId)
                 .ToDictionaryAsync(
-                    x => x.CatalogueItemId,
+                    x => x.Id,
                     x => x.OrderItemPrice?.BillingPeriod);
         }
 
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ToListAsync();
         }
 
-        private async Task<Dictionary<CatalogueItemId, decimal>> GetPrices(int orderId)
+        private async Task<Dictionary<int, decimal>> GetPrices(int orderId)
         {
             return await dbContext.OrderItems
                 .Include(x => x.OrderItemPrice)
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .AsNoTracking()
                 .Where(x => x.OrderId == orderId)
                 .ToDictionaryAsync(
-                    x => x.CatalogueItemId,
+                    x => x.Id,
                     x => x.OrderItemPrice?.OrderItemPriceTiers?.FirstOrDefault()?.Price ?? decimal.Zero);
         }
 
@@ -215,13 +215,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                                     .FirstOrDefault(x => x.OrderItemId == oir.OrderItemId)
                                     .Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
-                        UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
+                        UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.Id]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                         Price = (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
                             && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType
                             == CataloguePriceCalculationType.Cumulative)
                             ? null
-                            : prices[oir.OrderItem.CatalogueItemId],
+                            : prices[oir.OrderItem.Id],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
                         M1Planned = or.OrderItemSublocationRecipients.FirstOrDefault(x =>
                             x.OrderItemId == oir.OrderItemId) == null
@@ -300,12 +300,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                                     .FirstOrDefault(x => x.OrderItemId == oir.OrderItemId)
                                     .Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
-                        UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
+                        UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.Id]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                         Price = (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
                             && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative)
                             ? null
-                            : prices[oir.OrderItem.CatalogueItemId],
+                            : prices[oir.OrderItem.Id],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
                         M1Planned = or.OrderItemSublocationRecipients.FirstOrDefault(x =>
                             x.OrderItemId == oir.OrderItemId) == null
@@ -379,12 +379,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                                     .FirstOrDefault(x => x.OrderItemId == oir.OrderItemId)
                                     .Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
-                        UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
+                        UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.Id]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                         Price = (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
                             && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative)
                             ? (decimal?)null
-                            : prices[oir.OrderItem.CatalogueItemId],
+                            : prices[oir.OrderItem.Id],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
                         M1Planned = or.OrderItemSublocationRecipients.FirstOrDefault(x =>
                             x.OrderItemId == oir.OrderItemId) == null

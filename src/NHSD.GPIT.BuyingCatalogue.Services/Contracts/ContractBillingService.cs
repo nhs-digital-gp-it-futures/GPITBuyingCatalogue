@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             return contract;
         }
 
-        public async Task AddBespokeContractBillingItem(int orderId, int contractId, CatalogueItemId catalogueItemId, string name, string paymentTrigger)
+        public async Task AddBespokeContractBillingItem(int orderId, int contractId, int orderItemId, string name, string paymentTrigger)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 .Include(x => x.ContractBilling)
                 .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId);
 
-            var associatedService = contract.Order.GetAssociatedService(catalogueItemId);
+            var associatedService = contract.Order.GetAssociatedService(orderItemId);
 
             contract.ContractBilling ??= new ContractBilling();
             contract.ContractBilling.ContractBillingItems.Add(new ContractBillingItem()
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 .FirstOrDefaultAsync(x => x.Id == itemId && x.OrderItem.OrderId == orderId);
         }
 
-        public async Task EditContractBillingItem(int orderId, int itemId, CatalogueItemId catalogueItemId, string name, string paymentTrigger)
+        public async Task EditContractBillingItem(int orderId, int itemId, int orderItemId, string name, string paymentTrigger)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             }
 
             var associatedService = await dbContext.OrderItems
-                .FirstOrDefaultAsync(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId);
+                .FirstOrDefaultAsync(x => x.OrderId == orderId && x.Id == orderItemId);
 
             item.OrderItem = associatedService;
             item.Milestone.Title = name;

@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var item = source == RoutingSource.ManageAssociatedServices ? orderItem.Parent : orderItem;
             var caption = GetCaption(source, orderItem, callOffId);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(item.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(item);
 
             List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem);
 
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var orderItem = order.OrderItem(orderItemId);
             var item = model.Source == RoutingSource.ManageAssociatedServices ? orderItem.Parent : orderItem;
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(item.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(item);
 
             if (orderRecipients.All(x => x.GetQuantityForItem(orderItemId) is not null))
                 return RedirectToAction(nameof(ConfirmQuantities), new { internalOrgId, callOffId, catalogueItemId, orderItemId, source = model.Source });
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var item = source == RoutingSource.ManageAssociatedServices ? orderItem.Parent : orderItem;
             var caption = GetCaption(source, orderItem, callOffId);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(item.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(item);
 
             List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem, odsCode);
 
@@ -170,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             if (solution?.OrderItemPrice?.ProvisioningType is ProvisioningType.Patient
                 && solution.CatalogueItemId != catalogueItemId)
             {
-                await SetPracticeSizes(model, odsCode, solution, wrapper.DetermineOrderRecipients(solution.CatalogueItemId));
+                await SetPracticeSizes(model, odsCode, solution, wrapper.DetermineOrderRecipients(solution));
             }
             else
             {
@@ -251,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var orderWrapper = await orderService.GetOrderWithOrderItems(quantityViewCallOffId, internalOrgId);
             var orderItem = orderWrapper.Order.OrderItem(catalogueItemId);
-            var recipients = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var recipients = orderWrapper.DetermineOrderRecipients(orderItem);
 
             var model = new ViewServiceRecipientQuantityModel(orderItem, recipients)
             {
@@ -280,7 +280,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var item = source == RoutingSource.ManageAssociatedServices ? orderItem.Parent : orderItem;
             var caption = GetCaption(source, orderItem, callOffId);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(item.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(item);
 
             List<ServiceRecipientQuantityDto> recipientDtos = GetRecipientDtos(orderRecipients, orderItem);
 
@@ -345,7 +345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     x.ParentSublocationOdsCode,
                     x.RecipientOdsCode,
                     x.RecipientOdsOrganisation?.Name,
-                    x.GetQuantityForItem(orderItem.CatalogueItemId)));
+                    x.GetQuantityForItem(orderItem.Id)));
         }
 
         private async Task SetPracticeSizes(
@@ -377,7 +377,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                             ?.FirstOrDefault(x =>
                                 x.RecipientOdsCode == serviceRecipient.RecipientOdsCode && x.ParentSublocationOdsCode
                                 == serviceRecipient.ParentSublocationOdsCode)
-                            ?.GetQuantityForItem(solution.CatalogueItemId)
+                            ?.GetQuantityForItem(solution.Id)
                         : null;
 
                     if (existing.HasValue)

@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             var model = new RequirementDetailsModel(item, callOffId, internalOrgId, associatedServices);
 
             model.Details.Should().Be(item.Details);
-            model.SelectedOrderItemId.Should().Be(item.OrderItem.CatalogueItemId);
+            model.SelectedOrderItemId.Should().Be(item.OrderItem.Id);
             model.IsEdit.Should().BeTrue();
             model.Advice.Should().Be("Edit associated service requirement.");
             model.RequiresExplanation.Should().Be(item.RequiresExplanation);

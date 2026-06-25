@@ -63,10 +63,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         internalOrgId,
                         callOffId,
                         OrderType,
-                        wrapper.DetermineOrderRecipients(CatalogueSolution.CatalogueItemId),
+                        wrapper.DetermineOrderRecipients(CatalogueSolution),
                         CatalogueSolution)
                     {
-                        FromPreviousRevision = Previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
+                        FromPreviousRevision = Previous?.Exists(CatalogueSolution.Id) ?? false,
                         HasNewRecipients = wrapper.HasNewOrderRecipients,
                         NumberOfPrices = CatalogueSolution.CatalogueItem.CataloguePrices.Count,
                         PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
@@ -81,9 +81,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             AdditionalServices.ForEach(x => taskModels.Add(
                 x.CatalogueItemId,
-                new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, wrapper.DetermineOrderRecipients(x.CatalogueItemId), x)
+                new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, wrapper.DetermineOrderRecipients(x), x)
                 {
-                    FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
+                    FromPreviousRevision = Previous?.Exists(x.Id) ?? false,
                     HasNewRecipients = wrapper.HasNewOrderRecipients,
                     NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                     AssociatedServicesCatalogueItemsCount = associatedServicesForAdditionalServices.TryGetValue(x.CatalogueItemId, out var associatedServicesCount) ? associatedServicesCount : 0,
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         : 0,
                     PreviousRecipients = Previous?.FlattenedRecipients.Count() ?? 0,
                     AssociatedServicesOrderItems = x.Services.ToList(),
-                    CanBeRemoved = !(IsAmendment && (Previous?.Exists(x.CatalogueItemId) ?? false)),
+                    CanBeRemoved = !(IsAmendment && (Previous?.Exists(x.Id) ?? false)),
                     Source = RoutingSource.TaskList,
                     OrderItemId = x.Id,
                 }));
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 internalOrgId,
                 callOffId,
                 x,
-                wrapper.DetermineOrderRecipients(x.CatalogueItemId)
+                wrapper.DetermineOrderRecipients(x)
                     .ToList(),
                 !OrderType.MergerOrSplit));
 
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         internalOrgId,
                         callOffId,
                         item,
-                        wrapper.DetermineOrderRecipients(item.CatalogueItemId).ToList(),
+                        wrapper.DetermineOrderRecipients(item).ToList(),
                         false));
 
                 taskModelsForPrevious.Add(

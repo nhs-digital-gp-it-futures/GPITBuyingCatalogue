@@ -307,6 +307,62 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [MockInMemoryDbAutoData]
+        public static async Task GetOrderItem_NonExistentOrderItem_ReturnsNull(
+            string internalOrgId,
+            Order order,
+            OrderItem orderItem,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService service)
+        {
+            orderItem.Id = 5;
+            order.OrderItems.Add(orderItem);
+            order.OrderingParty.InternalIdentifier = internalOrgId;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var result = await service.GetOrderItem(order.CallOffId, internalOrgId, 10);
+
+            result.Should().BeNull();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetOrderItem_ExistentOrderItem_ReturnsOrderItem(
+            string internalOrgId,
+            int id,
+            Order order,
+            OrderItem orderItem,
+            OrderItem parentOrderItem,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService service)
+        {
+            orderItem.Id = id;
+            orderItem.Parent = parentOrderItem;
+            order.OrderItems.Add(orderItem);
+            order.OrderingParty.InternalIdentifier = internalOrgId;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var result = await service.GetOrderItem(order.CallOffId, internalOrgId, id);
+
+            result.Should().NotBeNull();
+            result.Id.Should().Be(id);
+            result.ParentId.Should().Be(parentOrderItem.Id);
+            result.Parent.Id.Should().Be(parentOrderItem.Id);
+            result.Parent.CatalogueItem.Should().NotBeNull();
+            result.Services.Should().NotBeNull();
+            result.OrderItemFunding.Should().NotBeNull();
+            result.CatalogueItem.Should().NotBeNull();
+            result.OrderItemPrice.Should().NotBeNull();
+            result.OrderItemPrice.OrderItemPriceTiers.Should().NotBeNull();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
         public static async Task DetectChangesInFundingAndDelete_NotReadyForReview_OrderItemFundingUnchanged(
             Order order,
             OrderItemFunding funding,

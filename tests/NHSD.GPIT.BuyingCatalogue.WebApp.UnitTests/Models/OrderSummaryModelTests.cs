@@ -4,6 +4,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
@@ -156,6 +157,43 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
             model.AssociatedServicesForCurrentOrder.Should().BeEquivalentTo([orderItem]);
             model.PreviousAssociatedServicesGrouping.Should().BeEquivalentTo(new List<OrderItem>() { orderItem }
                 .GroupBy(oi => oi.Order.CallOffId));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void AssociatedServicesForAdditionalServices_PropertyCorrectlySet(
+            int orderItemId,
+            OrderItem additionalService,
+            OrderItem associatedService,
+            CatalogueItem catalogueItem,
+            Order order)
+        {
+            additionalService.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            catalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            var additionalService2 = new OrderItem { Id = orderItemId, CatalogueItem = catalogueItem };
+            associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            associatedService.ParentId = additionalService2.Id;
+            associatedService.Parent = additionalService2;
+
+            var associatedService2 = order.OrderItems.First();
+            associatedService2.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            associatedService2.ParentId = additionalService.Id;
+            associatedService2.Parent = additionalService;
+
+            order.OrderItems.Clear();
+            order.OrderItems.AddRange(new List<OrderItem> { additionalService, additionalService2, associatedService, associatedService2 });
+
+            var expected = new Dictionary<int?, HashSet<OrderItem>>
+            {
+                { additionalService.Id, new HashSet<OrderItem> { associatedService2 } },
+                { additionalService2.Id, new HashSet<OrderItem> { associatedService } },
+            };
+
+            var orderWrapper = new OrderWrapper(order);
+
+            var model = new OrderSummaryModel(orderWrapper, new ImplementationPlan());
+
+            model.AssociatedServicesForAdditionalServices.Should().BeEquivalentTo(expected);
         }
     }
 }

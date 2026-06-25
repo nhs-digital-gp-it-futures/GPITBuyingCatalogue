@@ -363,7 +363,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expected = new ManageAssociatedServicesModel(
                 services,
                 additionalService.CatalogueItem.Name,
-                orderWrapper.DetermineOrderRecipients(catalogueItemId),
+                orderWrapper.DetermineOrderRecipients(additionalService),
                 callOffId,
                 internalOrgId,
                 catalogueItemId)

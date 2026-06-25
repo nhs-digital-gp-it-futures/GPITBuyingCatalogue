@@ -93,7 +93,7 @@ public static class OrderTests
     public static void OrderRecipients_DeterminesRecipientsForOrder_DoesNotExist(
         Order previousOrder,
         Order currentOrder,
-        CatalogueItemId catalogueItemId)
+        int orderItemId)
     {
         previousOrder.OrderNumber = currentOrder.OrderNumber;
 
@@ -102,7 +102,7 @@ public static class OrderTests
 
         ICollection<OrderSublocationRecipient> result = currentOrder.DetermineOrderRecipients(
             previousOrder,
-            catalogueItemId);
+            orderItemId);
 
         Assert.Equal([], result);
     }
@@ -123,7 +123,7 @@ public static class OrderTests
 
         ICollection<OrderSublocationRecipient> result = currentOrder.DetermineOrderRecipients(
             previousOrder,
-            orderItem.CatalogueItemId);
+            orderItem.Id);
 
         result.Should().BeEquivalentTo(currentOrder.FlattenedRecipients);
     }
@@ -134,10 +134,30 @@ public static class OrderTests
 
         var orderingPartyId = 667;
 
-        var catalogueItemId = new CatalogueItemId(556, "334");
+        var catalogueItemId = new CatalogueItemId(556, "Id");
+        var catalogueItem = new CatalogueItem
+        {
+            Id = catalogueItemId,
+            CatalogueItemType = CatalogueItemType.AssociatedService,
+        };
 
-        var orderItem1 = new OrderItem { CatalogueItemId = catalogueItemId, OrderId = 1001 };
-        var orderItem2 = new OrderItem { CatalogueItemId = catalogueItemId, OrderId = 1002 };
+        var orderItemId1 = 1;
+        var orderItemId2 = 2;
+
+        var orderItem1 = new OrderItem
+        {
+            Id = orderItemId1,
+            CatalogueItem = catalogueItem,
+            CatalogueItemId = catalogueItemId,
+            OrderId = 1001,
+        };
+        var orderItem2 = new OrderItem
+        {
+            Id = orderItemId2,
+            CatalogueItem = catalogueItem,
+            CatalogueItemId = catalogueItemId,
+            OrderId = 1002,
+        };
 
         return
         [
@@ -236,7 +256,7 @@ public static class OrderTests
                         },
                     ],
                 },
-                catalogueItemId,
+                orderItemId2,
                 new List<OrderSublocationRecipient>
                 {
                     new()
@@ -344,7 +364,7 @@ public static class OrderTests
                         },
                     ],
                 },
-                catalogueItemId,
+                orderItemId2,
                 new List<OrderSublocationRecipient>
                 {
                     new()
@@ -365,12 +385,12 @@ public static class OrderTests
     public static void OrderRecipients_DeterminesRecipientsForOrder_Scenarios(
         Order previousOrder,
         Order currentOrder,
-        CatalogueItemId catalogueItemId,
+        int orderItemId,
         List<OrderSublocationRecipient> expectedRecipients)
     {
         ICollection<OrderSublocationRecipient> result = currentOrder.DetermineOrderRecipients(
             previousOrder,
-            catalogueItemId);
+            orderItemId);
 
         result.Should().BeEquivalentTo(expectedRecipients);
     }
