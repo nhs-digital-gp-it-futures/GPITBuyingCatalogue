@@ -74,8 +74,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 InternalOrgId = internalOrgId,
                 AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly,
-                SolutionName = order.OrderType.GetSolutionNameFromOrder(orderWrapper.RolledUp),
-                SolutionId = order.GetSolutionId(),
+                ParentItemName = order.OrderType.GetSolutionNameFromOrder(orderWrapper.RolledUp),
+                ParentItemId = order.GetSolutionId(),
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
@@ -225,11 +225,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var expected = new SelectServicesModel(existingAssociatedServiceItems, associatedServices)
             {
-                SolutionId = catalogueItemId,
+                ParentItemId = catalogueItemId,
                 InternalOrgId = internalOrgId,
                 AssociatedServicesOnly = false,
-                SolutionName = additionalService.CatalogueItem.Name,
-                ParentItem = CatalogueItemType.AdditionalService,
+                ParentItemName = additionalService.CatalogueItem.Name,
+                ParentItemType = CatalogueItemType.AdditionalService,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));

@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
+using Azure;
 using FluentAssertions;
+using FluentAssertions.Common;
+using Flurl;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.SignalR;
 using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -19,13 +22,15 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
+using NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
 using Xunit;
-using OdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controllers;
 
@@ -49,7 +54,7 @@ public static class CompetitionHubControllerTests
         [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
-        competition.CompetitionSolutions = new List<CompetitionSolution>();
+        competition.CompetitionSolutions = [];
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
@@ -69,24 +74,60 @@ public static class CompetitionHubControllerTests
         Competition competition,
         CompetitionSolution competitionSolution,
         Solution solution,
-        List<AssociatedService> associatedServices,
         [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IAssociatedServicesService associatedServicesService,
         CompetitionHubController controller)
     {
         competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.CatalogueItemId = solution.CatalogueItemId;
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competition.CompetitionSolutions = [competitionSolution];
 
-        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
 
-        var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition)
-        {
-            AssociatedServicesRemaining = true,
-            AssociatedServicesAvailable = associatedServices.Any(),
-        };
+        var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition.FlattenedRecipients, competition.ContractLength);
+
+        var result = (await controller.Hub(internalOrgId, competition.Id, solution.CatalogueItemId)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.BackLink).Excluding(m => m.AssociatedServicesUrl));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task Hub_SolutionWithAdditionalServiceAssociatedServices_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        List<AssociatedService> associatedServices,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.AssociatedServices = associatedServices
+            .Select(x => new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = x.CatalogueItem,
+            });
+
+        competitionSolution.Services = [competitionAdditionalService];
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
+
+        var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition.FlattenedRecipients, competition.ContractLength);
 
         var result = (await controller.Hub(internalOrgId, competition.Id, solution.CatalogueItemId)).As<ViewResult>();
 
@@ -110,9 +151,10 @@ public static class CompetitionHubControllerTests
     {
         competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.CatalogueItemId = solution.CatalogueItemId;
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
 
         var result = (await controller.Hub(internalOrgId, competition.Id, solutionId)).As<BadRequestResult>();
 
@@ -128,31 +170,80 @@ public static class CompetitionHubControllerTests
         Solution solution,
         List<AssociatedService> associatedServices,
         [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IAssociatedServicesService associatedServicesService,
         CompetitionHubController controller)
     {
         competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.CatalogueItemId = solution.CatalogueItemId;
-        competitionSolution.Services = associatedServices
+        competitionSolution.Services = [.. associatedServices
             .Select(x =>
                 new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
                 {
+                    CatalogueItemType = CatalogueItemType.AssociatedService,
                     CatalogueItem = x.CatalogueItem,
                 })
-            .Cast<CompetitionCatalogueItem>()
-            .ToList();
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+            .Cast<CompetitionCatalogueItem>()];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competition.CompetitionSolutions = [competitionSolution];
 
-        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
 
-        var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition)
-        {
-            AssociatedServicesRemaining = false,
-            AssociatedServicesAvailable = associatedServices.Any(),
-        };
+        var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition.FlattenedRecipients, competition.ContractLength);
 
+        var result = (await controller.Hub(internalOrgId, competition.Id, solution.CatalogueItemId)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.BackLink).Excluding(m => m.AssociatedServicesUrl));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task Hub_AdditionalServiceWithAssociatedServicesRemaining_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        Solution solution,
+        CompetitionCatalogueItemPrice servicePrice,
+        AdditionalService service,
+        CompetitionAdditionalService additionalService,
+        List<AssociatedService> associatedServices,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+
+        additionalService.CatalogueItem = service.CatalogueItem;
+        additionalService.CatalogueItemId = service.CatalogueItemId;
+        additionalService.Price = servicePrice;
+        additionalService.AssociatedServices = associatedServices
+            .Select(x => new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = x.CatalogueItem,
+            });
+
+        competitionSolution.Services = [additionalService];
+        competition.CompetitionSublocations = [new CompetitionSublocation()
+            {
+                CompetitionId = competition.Id,
+                SublocationRecipients = [new CompetitionSublocationRecipient()
+                    {
+                        CompetitionId = competition.Id,
+                        ParentSublocationOdsCode = "Sublocation1",
+                        RecipientOdsCode = "Recipient1",
+                    }
+                ],
+            }
+        ];
+
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
+
+        var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition.FlattenedRecipients, competition.ContractLength);
         var result = (await controller.Hub(internalOrgId, competition.Id, solution.CatalogueItemId)).As<ViewResult>();
 
         result.Should().NotBeNull();
@@ -178,10 +269,10 @@ public static class CompetitionHubControllerTests
         competitionSolution.CatalogueItemId = catalogueItem.Id;
         competitionSolution.Price = competitionPrice;
 
-        catalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        catalogueItem.CataloguePrices = [cataloguePrice];
+        competition.CompetitionSolutions = [competitionSolution];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId).Returns(competitionSolution);
 
         listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id).Returns(catalogueItem);
 
@@ -215,18 +306,20 @@ public static class CompetitionHubControllerTests
         solutionService.CatalogueItemId = service.CatalogueItemId;
         solutionService.Price = servicePrice;
 
-        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
         competitionSolution.Price = competitionPrice;
         competitionSolution.Services = [solutionService];
 
-        solution.CatalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItem.CataloguePrices = [cataloguePrice];
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId).Returns(competitionSolution);
 
         listPriceService.GetCatalogueItemWithPublishedListPrices(service.CatalogueItemId).Returns(service.CatalogueItem);
 
-        var result = (await controller.SelectPrice(internalOrgId, competition.Id, solution.CatalogueItemId, service.CatalogueItemId))
+        var result = (await controller.SelectPrice(internalOrgId, competition.Id, competitionSolution.CatalogueItemId, null, service.CatalogueItemId, null))
             .As<ViewResult>();
 
         result.Should().NotBeNull();
@@ -234,6 +327,60 @@ public static class CompetitionHubControllerTests
 
         var model = result.Model.As<SelectPriceModel>();
 
+        model.SelectedPriceId.Should().Be(servicePrice.CataloguePriceId);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SelectPrice_WithAssociatedServiceId_ReturnsExpectedPriceId(
+        string internalOrgId,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        CompetitionAdditionalService competitionAdditionalService,
+        AdditionalService additionalService,
+        CompetitionCatalogueItemPrice competitionPrice,
+        CompetitionCatalogueItemPrice servicePrice,
+        AssociatedService associatedService,
+        CataloguePrice cataloguePrice,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IListPriceService listPriceService,
+        CompetitionHubController controller)
+    {
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.AssociatedServices = [
+            new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = associatedService.CatalogueItem,
+                Price = servicePrice,
+            }
+        ];
+
+        competitionSolution.Services = [competitionAdditionalService];
+
+        competitionSolution.Price = competitionPrice;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItem.CataloguePrices = [cataloguePrice];
+
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId).Returns(competitionSolution);
+        listPriceService.GetCatalogueItemWithPublishedListPrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
+
+        var result = (await controller.SelectPrice(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            additionalService.CatalogueItemId,
+            associatedService.CatalogueItemId)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().NotBeNull();
+
+        var model = result.Model.As<SelectPriceModel>();
         model.SelectedPriceId.Should().Be(servicePrice.CataloguePriceId);
     }
 
@@ -254,10 +401,10 @@ public static class CompetitionHubControllerTests
         competitionSolution.CatalogueItemId = catalogueItem.Id;
         competitionSolution.Price = competitionPrice;
 
-        catalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        catalogueItem.CataloguePrices = [cataloguePrice];
+        competition.CompetitionSolutions = [competitionSolution];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId).Returns(competitionSolution);
 
         listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id).Returns(catalogueItem);
 
@@ -288,10 +435,10 @@ public static class CompetitionHubControllerTests
         competitionSolution.CatalogueItemId = catalogueItem.Id;
         competitionSolution.Price = competitionPrice;
 
-        catalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        catalogueItem.CataloguePrices = [cataloguePrice];
+        competition.CompetitionSolutions = [competitionSolution];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId).Returns(competitionSolution);
 
         listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id).Returns(catalogueItem);
 
@@ -427,10 +574,10 @@ public static class CompetitionHubControllerTests
         competitionSolution.CatalogueItemId = catalogueItem.Id;
         competitionSolution.Price = competitionPrice;
 
-        catalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        catalogueItem.CataloguePrices = [cataloguePrice];
+        competition.CompetitionSolutions = [competitionSolution];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId).Returns(competitionSolution);
 
         listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id).Returns(catalogueItem);
 
@@ -467,14 +614,15 @@ public static class CompetitionHubControllerTests
         solutionService.Price = servicePrice;
 
         competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.Price = competitionPrice;
         competitionSolution.Services = [solutionService];
 
-        service.CatalogueItem.CataloguePrices = new List<CataloguePrice> { additionalServicePrice };
-        solution.CatalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        service.CatalogueItem.CataloguePrices = [additionalServicePrice];
+        solution.CatalogueItem.CataloguePrices = [cataloguePrice];
+        competition.CompetitionSolutions = [competitionSolution];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId).Returns(competitionSolution);
 
         listPriceService.GetCatalogueItemWithPublishedListPrices(service.CatalogueItemId).Returns(service.CatalogueItem);
 
@@ -483,9 +631,72 @@ public static class CompetitionHubControllerTests
         var result = (await controller.ConfirmPrice(
             internalOrgId,
             competition.Id,
-            solution.CatalogueItemId,
+            competitionSolution.CatalogueItemId,
             additionalServicePrice.CataloguePriceId,
-            service.CatalogueItemId)).As<ViewResult>();
+            (CatalogueItemId?)null,
+            service.CatalogueItemId,
+            (RoutingSource?)null)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task ConfirmPrice_WithAdditionalServiceId_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        CompetitionAdditionalService competitionAdditionalService,
+        AdditionalService additionalService,
+        CompetitionCatalogueItemPrice competitionPrice,
+        CompetitionCatalogueItemPrice servicePrice,
+        AssociatedService associatedService,
+        CataloguePrice cataloguePrice,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IListPriceService listPriceService,
+        CompetitionHubController controller)
+    {
+        associatedService.CatalogueItem.CataloguePrices = [cataloguePrice];
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.AssociatedServices = [
+            new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = associatedService.CatalogueItem,
+                Price = servicePrice,
+            }
+        ];
+
+        competitionSolution.Services = [competitionAdditionalService];
+
+        competitionSolution.Price = competitionPrice;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItem.CataloguePrices = [cataloguePrice];
+
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId)
+            .Returns(competitionSolution);
+        listPriceService.GetCatalogueItemWithPublishedListPrices(associatedService.CatalogueItemId)
+            .Returns(competitionAdditionalService.AssociatedServices.FirstOrDefault().CatalogueItem);
+
+        var expectedModel = new ConfirmPriceModel(
+            associatedService.CatalogueItem,
+            associatedService.CatalogueItem.CataloguePrices.FirstOrDefault(),
+            servicePrice);
+
+        var result = (await controller.ConfirmPrice(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            cataloguePrice.CataloguePriceId,
+            competitionAdditionalService.CatalogueItemId,
+            associatedService.CatalogueItemId,
+            (RoutingSource?)null)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -563,9 +774,43 @@ public static class CompetitionHubControllerTests
             catalogueItem.Id,
             price.CataloguePriceId,
             model,
+            null,
             additionalService.Id);
 
         await competitionsPriceService.Received().SetServicePrice(internalOrgId, competitionId, catalogueItem.Id, additionalService.Id, price, Arg.Any<List<PricingTierDto>>());
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task ConfirmPrice_WithAdditionalServiceId_SetsSolutionPrice(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItem solutionItem,
+        CatalogueItem additionalService,
+        CatalogueItem associatedService,
+        List<CataloguePrice> prices,
+        ConfirmPriceModel model,
+        [Frozen] IListPriceService listPriceService,
+        [Frozen] ICompetitionsPriceService competitionsPriceService,
+        CompetitionHubController controller)
+    {
+        var price = prices.First();
+
+        associatedService.CataloguePrices = prices;
+
+        listPriceService.GetCatalogueItemWithPublishedListPrices(associatedService.Id).Returns(associatedService);
+
+        _ = await controller.ConfirmPrice(
+            internalOrgId,
+            competitionId,
+            solutionItem.Id,
+            price.CataloguePriceId,
+            model,
+            additionalService.Id,
+            associatedService.Id);
+
+        await competitionsPriceService.Received()
+            .SetAdditionalServiceAssociatedServicePrice(internalOrgId, competitionId, solutionItem.Id, additionalService.Id, associatedService.Id, price, Arg.Any<List<PricingTierDto>>());
     }
 
     [Theory]
@@ -598,6 +843,38 @@ public static class CompetitionHubControllerTests
 
     [Theory]
     [MockAutoData]
+    public static async Task ConfirmPrice_WithAdditionalService_Redirects(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItem solutionItem,
+        CatalogueItem additionalService,
+        CatalogueItem associatedService,
+        List<CataloguePrice> prices,
+        ConfirmPriceModel model,
+        [Frozen] IListPriceService listPriceService,
+        CompetitionHubController controller)
+    {
+        var price = prices.First();
+
+        associatedService.CataloguePrices = prices;
+
+        listPriceService.GetCatalogueItemWithPublishedListPrices(associatedService.Id).Returns(associatedService);
+
+        var result = (await controller.ConfirmPrice(
+            internalOrgId,
+            competitionId,
+            solutionItem.Id,
+            price.CataloguePriceId,
+            model,
+            additionalService.Id,
+            associatedService.Id)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.HubAdditionalServiceAssociatedServices));
+    }
+
+    [Theory]
+    [MockAutoData]
     public static async Task CompetitionSublocationHub_NullServiceId_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
@@ -618,10 +895,11 @@ public static class CompetitionHubControllerTests
         competitionSolution.Price = competitionPrice;
         competition.Organisation = organisation;
 
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
         competition.CompetitionSublocations = [sublocation];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
         gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns([]);
         odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                 Arg.Any<string>(),
@@ -691,10 +969,11 @@ public static class CompetitionHubControllerTests
         competitionSolution.CatalogueItemId = solution.CatalogueItemId;
         competitionSolution.Services = [solutionService];
 
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
         competition.CompetitionSublocations = [sublocation];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
         gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns([]);
         odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                 Arg.Any<string>(),
@@ -724,7 +1003,93 @@ public static class CompetitionHubControllerTests
                 .ToArray(),
         };
 
-        var result = (await controller.CompetitionSublocationHub(internalOrgId, competition.Id, solution.CatalogueItemId, service.CatalogueItemId))
+        var result = (await controller.CompetitionSublocationHub(internalOrgId, competition.Id, solution.CatalogueItemId, null, service.CatalogueItemId))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(
+            expectedModel,
+            opt => opt.Excluding(m => m.BackLink)
+                .Excluding(m => m.Caption));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task CompetitionSublocationHub_WithAdditionalServiceId_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        Organisation organisation,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        AssociatedService associatedService,
+        CompetitionCatalogueItemPrice competitionPrice,
+        CompetitionCatalogueItemPrice servicePrice,
+        CompetitionSublocation sublocation,
+        CataloguePrice cataloguePrice,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IGpPracticeService gpPracticeService,
+        [Frozen] IOdsService odsService,
+        CompetitionHubController controller)
+    {
+        competitionPrice.ProvisioningType = ProvisioningType.Declarative;
+
+        associatedService.CatalogueItem.CataloguePrices = [cataloguePrice];
+
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.Price = competitionPrice;
+        competitionAdditionalService.AssociatedServices = [
+            new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = associatedService.CatalogueItem,
+                Price = servicePrice,
+            }
+        ];
+
+        competitionSolution.Services = [competitionAdditionalService];
+        competition.Organisation = organisation;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+
+        competition.CompetitionSolutions = [competitionSolution];
+        competition.CompetitionSublocations = [sublocation];
+
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
+        gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns([]);
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                Arg.Any<string>(),
+                Arg.Any<IEnumerable<string>>())
+            .Returns([]);
+
+        var recipients = competition.FlattenedRecipients.Select(recipient =>
+        {
+            var quantity = competitionSolution.Quantities.FirstOrDefault(quantity =>
+                quantity.RecipientOdsCode == recipient.RecipientOdsCode);
+            return new ServiceRecipientQuantityDto(
+                recipient.ParentSublocationOdsCode,
+                recipient.RecipientOdsCode,
+                recipient.RecipientOrganisation.Name,
+                quantity?.Quantity,
+                null);
+        });
+
+        var expectedModel = new SublocationQuantityHubModel(
+            competition.Organisation,
+            associatedService.CatalogueItem)
+        {
+            SubLocations = CreateSublocationHelper.CreateSubLocations(recipients)
+                .Select(s => new SubLocationModel(s)
+                {
+                    ForwardingLink = "testUrl",
+                })
+                .ToArray(),
+        };
+
+        var result = (await controller.CompetitionSublocationHub(internalOrgId, competition.Id, solution.CatalogueItemId, additionalService.CatalogueItemId, associatedService.CatalogueItemId))
             .As<ViewResult>();
 
         result.Should().NotBeNull();
@@ -741,23 +1106,193 @@ public static class CompetitionHubControllerTests
         Competition competition,
         CompetitionSolution competitionSolution,
         CatalogueItemId serviceId,
-        Solution solution,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
-        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId).Returns(competitionSolution);
         competitionSolution.Services = [];
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
 
         var response = await controller.CompetitionSublocationHub(
             internalOrgId,
             competition.Id,
-            solution.CatalogueItemId,
+            competitionSolution.CatalogueItemId,
+            null,
             serviceId);
 
         response.Should().NotBeNull();
         response.Should().BeOfType<BadRequestResult>();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task CompetitionSublocationHub_IncorrectItemId_ReturnsBadRequest(
+        string internalOrgId,
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CatalogueItemId randomSolutionItemId,
+        CompetitionSolution competitionSolution,
+        SublocationQuantityHubModel model,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competition.Organisation = organisation;
+
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId).Returns(competitionSolution);
+
+        var result = await controller.CompetitionSublocationHub(
+            internalOrgId,
+            competition.Id,
+            randomSolutionItemId,
+            model);
+
+        result.Should().NotBeNull();
+        result.Should().BeOfType<BadRequestResult>();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task CompetitionSublocationHub_RedirectToAction_Hub(
+        string internalOrgId,
+        Organisation organisation,
+        Competition competition,
+        CompetitionCatalogueItemPrice competitionPrice,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        CompetitionSublocation sublocation,
+        ServiceRecipient serviceRecipient,
+        SublocationQuantityHubModel model,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IGpPracticeService gpPracticeService,
+        [Frozen] IOdsService odsService,
+        CompetitionHubController controller)
+    {
+        competitionPrice.ProvisioningType = ProvisioningType.Declarative;
+
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Price = competitionPrice;
+
+        sublocation.SublocationRecipients.ForEach(r => r.RecipientOdsCode = serviceRecipient.OrgId);
+
+        competition.Organisation = organisation;
+        competition.CompetitionSolutions = [competitionSolution];
+        competition.CompetitionSublocations = [sublocation];
+
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
+        gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns([]);
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                Arg.Any<string>(),
+                Arg.Any<IEnumerable<string>>())
+            .Returns([serviceRecipient]);
+        var recipients = competition.FlattenedRecipients.Select(recipient =>
+        {
+            var quantity = competitionSolution.Quantities.FirstOrDefault(quantity =>
+                quantity.RecipientOdsCode == recipient.RecipientOdsCode);
+            return new ServiceRecipientQuantityDto(
+                recipient.ParentSublocationOdsCode,
+                recipient.RecipientOdsCode,
+                recipient.RecipientOrganisation.Name,
+                quantity?.Quantity,
+                serviceRecipient.Location);
+        });
+
+        var result = (await controller.CompetitionSublocationHub(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            model)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Hub));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task CompetitionSublocationHub_RedirectToActionWithAdditionalAssociatedService_ConfirmQuantities(
+        string internalOrgId,
+        Organisation organisation,
+        Competition competition,
+        CompetitionCatalogueItemPrice competitionPrice,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        CompetitionSublocation sublocation,
+        ServiceRecipient serviceRecipient,
+        SublocationQuantityHubModel model,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        AssociatedService associatedService,
+        CompetitionAssociatedService competitionAssociatedService,
+        CompetitionItemQuantity competitionItemQuantity,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IGpPracticeService gpPracticeService,
+        [Frozen] IOdsService odsService,
+        CompetitionHubController controller)
+    {
+        competitionPrice.ProvisioningType = ProvisioningType.Declarative;
+
+        competitionAssociatedService.CatalogueItem = associatedService.CatalogueItem;
+        competitionAssociatedService.CatalogueItemId = associatedService.CatalogueItemId;
+        competitionAssociatedService.Quantities = [competitionItemQuantity];
+
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.AssociatedServices = [competitionAssociatedService];
+
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Price = competitionPrice;
+        competitionSolution.Services = [competitionAdditionalService];
+
+        sublocation.SublocationRecipients.ForEach(r => r.RecipientOdsCode = serviceRecipient.OrgId);
+
+        competition.Organisation = organisation;
+        competition.CompetitionSolutions = [competitionSolution];
+        competition.CompetitionSublocations = [sublocation];
+
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id)
+            .Returns(competition);
+
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId)
+            .Returns(competitionSolution);
+
+        gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>())
+            .Returns([new GpPracticeSize() { OdsCode = serviceRecipient.OrgId, NumberOfPatients = 100 }]);
+
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                Arg.Any<string>(),
+                Arg.Any<IEnumerable<string>>())
+            .Returns([serviceRecipient]);
+
+        var recipients = competition.FlattenedRecipients.Select(recipient =>
+        {
+            var quantity = competitionSolution.Quantities.FirstOrDefault(quantity =>
+                quantity.RecipientOdsCode == recipient.RecipientOdsCode);
+            return new ServiceRecipientQuantityDto(
+                recipient.ParentSublocationOdsCode,
+                recipient.RecipientOdsCode,
+                recipient.RecipientOrganisation.Name,
+                quantity?.Quantity,
+                serviceRecipient.Location);
+        });
+
+        var result = (await controller.CompetitionSublocationHub(
+                internalOrgId,
+                competition.Id,
+                competitionSolution.CatalogueItemId,
+                model,
+                competitionAdditionalService.CatalogueItemId,
+                competitionAssociatedService.CatalogueItemId))
+         .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().BeSameAs(nameof(controller.ConfirmQuantities));
     }
 
     [Theory]
@@ -785,10 +1320,11 @@ public static class CompetitionHubControllerTests
 
         sublocation.SublocationRecipients.ForEach(r => r.RecipientOdsCode = serviceRecipient.OrgId);
 
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
         competition.CompetitionSublocations = [sublocation];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
         gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns([]);
         odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                 Arg.Any<string>(),
@@ -856,10 +1392,11 @@ public static class CompetitionHubControllerTests
         solutionService.CatalogueItemId = service.CatalogueItemId;
         competitionSolution.Services = [solutionService];
 
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
         competition.CompetitionSublocations = [sublocation];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
         gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns([]);
         odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                 Arg.Any<string>(),
@@ -886,7 +1423,91 @@ public static class CompetitionHubControllerTests
             internalOrgId,
             competition.Id,
             competitionSolution.CatalogueItemId,
+            null,
             solutionService.CatalogueItemId)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.BackLink)
+                    .Excluding(m => m.ContinueLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task ConfirmQuantities_ReturnsWithViewModel_WhenAdditionalServiceIdIsNotNull(
+        string internalOrgId,
+        Competition competition,
+        Organisation organisation,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        AssociatedService associatedService,
+        CompetitionCatalogueItemPrice competitionPrice,
+        CompetitionCatalogueItemPrice servicePrice,
+        CompetitionSublocation sublocation,
+        ServiceRecipient serviceRecipient,
+        CataloguePrice cataloguePrice,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IGpPracticeService gpPracticeService,
+        [Frozen] IOdsService odsService,
+        CompetitionHubController controller)
+    {
+        competitionPrice.ProvisioningType = ProvisioningType.Declarative;
+
+        associatedService.CatalogueItem.CataloguePrices = [cataloguePrice];
+
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.Price = competitionPrice;
+        competitionAdditionalService.AssociatedServices = [
+            new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = associatedService.CatalogueItem,
+                Price = servicePrice,
+            }
+        ];
+
+        competitionSolution.Services = [competitionAdditionalService];
+
+        sublocation.SublocationRecipients.ForEach(r => r.RecipientOdsCode = serviceRecipient.OrgId);
+
+        competition.Organisation = organisation;
+        competition.CompetitionSolutions = [competitionSolution];
+        competition.CompetitionSublocations = [sublocation];
+
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId).Returns(competitionSolution);
+        gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns([]);
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                Arg.Any<string>(),
+                Arg.Any<IEnumerable<string>>())
+            .Returns([serviceRecipient]);
+        var recipients = competition.FlattenedRecipients.Select(recipient =>
+        {
+            var quantity = competitionSolution.Quantities.FirstOrDefault(quantity =>
+                quantity.RecipientOdsCode == recipient.RecipientOdsCode);
+            return new ServiceRecipientQuantityDto(
+                recipient.ParentSublocationOdsCode,
+                recipient.RecipientOdsCode,
+                recipient.RecipientOrganisation.Name,
+                quantity?.Quantity,
+                serviceRecipient.Location);
+        });
+
+        var expectedModel = new ConfirmQuantitiesModel(
+            associatedService.CatalogueItem,
+            competitionAdditionalService.AssociatedServices.FirstOrDefault()?.Price,
+            [.. recipients]);
+
+        var result = (await controller.ConfirmQuantities(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            competitionAdditionalService.CatalogueItemId,
+            associatedService.CatalogueItemId)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should()
@@ -918,9 +1539,10 @@ public static class CompetitionHubControllerTests
         competitionSolution.Quantities = solutionQuantities;
         recipientQuantities.ForEach(recipient => recipient.ParentSublocationOdsCode = parentOdsCode);
 
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
 
         var expectedModel = new SelectServiceRecipientQuantityModel(
             solution.CatalogueItem,
@@ -964,9 +1586,10 @@ public static class CompetitionHubControllerTests
         competitionSolution.CatalogueItemId = solution.CatalogueItemId;
         competitionSolution.Services = [solutionService];
 
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
 
         var expectedModel = new SelectServiceRecipientQuantityModel(
             service.CatalogueItem,
@@ -974,7 +1597,64 @@ public static class CompetitionHubControllerTests
             recipientQuantities);
 
         var result =
-            (await controller.SelectServiceRecipientQuantity(internalOrgId, competition.Id, parentOdsCode, solution.CatalogueItemId, service.CatalogueItemId))
+            (await controller.SelectServiceRecipientQuantity(internalOrgId, competition.Id, parentOdsCode, solution.CatalogueItemId, null, service.CatalogueItemId))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.SubLocations));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SelectServiceRecipientQuantity_WithAdditionalServiceId_ReturnsViewWithModel(
+        string internalOrgId,
+        string parentOdsCode,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        AssociatedService associatedService,
+        CompetitionCatalogueItemPrice competitionPrice,
+        CompetitionCatalogueItemPrice servicePrice,
+        List<CompetitionItemQuantity> solutionQuantities,
+        List<ServiceRecipientQuantityDto> recipientQuantities,
+        CataloguePrice cataloguePrice,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionPrice.ProvisioningType = ProvisioningType.Declarative;
+        associatedService.CatalogueItem.CataloguePrices = [cataloguePrice];
+
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.Price = competitionPrice;
+        competitionAdditionalService.Quantities = solutionQuantities;
+        competitionAdditionalService.AssociatedServices = [
+            new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = associatedService.CatalogueItem,
+                Price = servicePrice,
+            }
+        ];
+
+        competitionSolution.Services = [competitionAdditionalService];
+
+        competition.CompetitionSolutions = [competitionSolution];
+
+        recipientQuantities.ForEach(recipient => recipient.ParentSublocationOdsCode = parentOdsCode);
+
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId).Returns(competitionSolution);
+
+        var expectedModel = new SelectServiceRecipientQuantityModel(
+            associatedService.CatalogueItem,
+            servicePrice,
+            recipientQuantities);
+
+        var result =
+            (await controller.SelectServiceRecipientQuantity(internalOrgId, competition.Id, parentOdsCode, competitionSolution.CatalogueItemId, additionalService.CatalogueItemId, associatedService.CatalogueItemId))
             .As<ViewResult>();
 
         result.Should().NotBeNull();
@@ -1052,7 +1732,7 @@ public static class CompetitionHubControllerTests
 
         model.SubLocations = [new SubLocationModel("Location One", serviceRecipients)];
 
-        _ = await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, parentOdsCode, solutionId, model, serviceId);
+        _ = await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, parentOdsCode, solutionId, model, null, serviceId);
 
         await competitionsQuantityService.Received()
             .SetServiceRecipientQuantity(
@@ -1060,6 +1740,40 @@ public static class CompetitionHubControllerTests
                 competitionId,
                 solutionId,
                 serviceId,
+                Arg.Any<IEnumerable<ServiceRecipientQuantityDto>>());
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SelectServiceRecipientQuantity_WithAdditionalServiceId_SetsSolutionRecipientQuantity(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId associatedServiceId,
+        string parentOdsCode,
+        SelectServiceRecipientQuantityModel model,
+        ServiceRecipientQuantityModel[] serviceRecipients,
+        [Frozen] ICompetitionsQuantityService competitionsQuantityService,
+        CompetitionHubController controller)
+    {
+        serviceRecipients.ForEach(x =>
+        {
+            x.InputQuantity = x.Quantity.ToString();
+            x.ParentSublocationOdsCode = parentOdsCode;
+        });
+
+        model.SubLocations = [new SubLocationModel("Location One", serviceRecipients)];
+
+        _ = await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, parentOdsCode, solutionId, model, additionalServiceId, associatedServiceId);
+
+        await competitionsQuantityService.Received()
+            .SetAdditionalServiceAssociatedServiceQuantity(
+                internalOrgId,
+                competitionId,
+                solutionId,
+                additionalServiceId,
+                associatedServiceId,
                 Arg.Any<IEnumerable<ServiceRecipientQuantityDto>>());
     }
 
@@ -1080,13 +1794,41 @@ public static class CompetitionHubControllerTests
             x.ParentSublocationOdsCode = parentOdsCode;
         });
 
-        model.SubLocations = new SubLocationModel[] { new SubLocationModel("Location One", serviceRecipients), };
+        model.SubLocations = [new SubLocationModel("Location One", serviceRecipients)];
 
         var result = (await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, parentOdsCode, solutionId, model))
             .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.CompetitionSublocationHub));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SelectServiceRecipientQuantity_AdditionalServiceId_Redirects(
+        string internalOrgId,
+        int competitionId,
+        string parentOdsCode,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId associatedServiceId,
+        SelectServiceRecipientQuantityModel model,
+        ServiceRecipientQuantityModel[] serviceRecipients,
+        CompetitionHubController controller)
+    {
+        serviceRecipients.ForEach(x =>
+        {
+            x.InputQuantity = x.Quantity.ToString();
+            x.ParentSublocationOdsCode = parentOdsCode;
+        });
+
+        model.SubLocations = [new SubLocationModel("Location One", serviceRecipients)];
+
+        var result = (await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, parentOdsCode, solutionId, model, additionalServiceId, associatedServiceId))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.HubAdditionalServiceAssociatedServices));
     }
 
     [Theory]
@@ -1106,22 +1848,26 @@ public static class CompetitionHubControllerTests
 
         competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.CatalogueItemId = solution.CatalogueItemId;
-        competitionSolution.Services = solutionServices.Cast<CompetitionCatalogueItem>().ToList();
+        competitionSolution.Services = [.. solutionServices.Cast<CompetitionCatalogueItem>()];
 
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService
+            .GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId)
+            .Returns(competitionSolution);
 
-        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService
+            .GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None)
+            .Returns([.. associatedServices.Select(x => x.CatalogueItem)]);
 
         var expectedModel = new SelectServicesModel(
-            solutionServices.Select(x => x.CatalogueItem).ToList(),
-            associatedServices.Select(x => x.CatalogueItem).ToList())
+            [.. solutionServices.Select(x => x.CatalogueItem)],
+            [.. associatedServices.Select(x => x.CatalogueItem)])
         {
             EntityType = "Competition",
-            SolutionName = solution.CatalogueItem.Name,
+            ParentItemName = solution.CatalogueItem.Name,
             InternalOrgId = internalOrgId,
-            SolutionId = solution.CatalogueItemId,
+            ParentItemId = solution.CatalogueItemId,
         };
 
         var result = (await controller.SelectAssociatedServices(
@@ -1130,7 +1876,59 @@ public static class CompetitionHubControllerTests
             competitionSolution.CatalogueItemId)).As<ViewResult>();
 
         result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.ParentItemType));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SelectAssociatedServices_WithAdditionalServiceParent_ReturnsViewWithModel(
+        string internalOrgId,
+        Solution solution,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        List<AssociatedService> associatedServices,
+        CompetitionAdditionalService competitionAdditionalService,
+        AdditionalService additionalService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        CompetitionHubController controller)
+    {
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.CatalogueItemType = CatalogueItemType.AdditionalService;
+
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = [competitionAdditionalService];
+
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService
+            .GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId)
+            .Returns(competitionSolution);
+
+        associatedServicesService
+            .GetPublishedAssociatedServicesForCatalogueItem(competitionAdditionalService.CatalogueItemId, PracticeReorganisationTypeEnum.None)
+            .Returns([.. associatedServices.Select(x => x.CatalogueItem)]);
+
+        var expectedModel = new SelectServicesModel([], [.. associatedServices.Select(x => x.CatalogueItem)])
+        {
+            InternalOrgId = internalOrgId,
+            EntityType = "Competition",
+            ParentItemName = competitionAdditionalService.CatalogueItem.Name,
+            ParentItemId = competitionAdditionalService.CatalogueItemId,
+            ParentItemType = competitionAdditionalService.CatalogueItemType,
+        };
+
+        var result = (await controller.SelectAssociatedServices(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            competitionAdditionalService.CatalogueItemId,
+            competitionAdditionalService.CatalogueItemType)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.ParentItemType));
     }
 
     [Theory]
@@ -1158,9 +1956,9 @@ public static class CompetitionHubControllerTests
         competitionSolution.CatalogueItemId = solution.CatalogueItemId;
         competitionSolution.Services = solutionServices.Cast<CompetitionCatalogueItem>().ToList();
 
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
 
         associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
@@ -1169,9 +1967,9 @@ public static class CompetitionHubControllerTests
             associatedServices.Select(x => x.CatalogueItem).ToList())
         {
             EntityType = "Competition",
-            SolutionName = solution.CatalogueItem.Name,
+            ParentItemName = solution.CatalogueItem.Name,
             InternalOrgId = internalOrgId,
-            SolutionId = solution.CatalogueItemId,
+            ParentItemId = solution.CatalogueItemId,
         };
 
         var result = (await controller.SelectAssociatedServices(internalOrgId, competition.Id, solution.CatalogueItemId, model))
@@ -1205,9 +2003,9 @@ public static class CompetitionHubControllerTests
         competitionSolution.CatalogueItemId = solution.CatalogueItemId;
         competitionSolution.Services = solutionServices.Cast<CompetitionCatalogueItem>().ToList();
 
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
 
         associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
@@ -1216,7 +2014,7 @@ public static class CompetitionHubControllerTests
             associatedServices.Select(x => x.CatalogueItem).ToList())
         {
             EntityType = "Competition",
-            SolutionName = solution.CatalogueItem.Name,
+            ParentItemName = solution.CatalogueItem.Name,
             InternalOrgId = internalOrgId,
         };
 
@@ -1225,6 +2023,229 @@ public static class CompetitionHubControllerTests
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Hub));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SelectAssociatedServices_WithAdditionalServiceParent_Redirects(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        List<CompetitionAssociatedService> solutionServices,
+        Solution solution,
+        List<AssociatedService> associatedServices,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        CompetitionHubController controller)
+    {
+        solutionServices.ForEach(
+            x =>
+            {
+                x.CatalogueItem = associatedServices.First().CatalogueItem;
+                x.CatalogueItemId = associatedServices.First().CatalogueItemId;
+            });
+
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = solutionServices.Cast<CompetitionCatalogueItem>().ToList();
+
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
+
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.CatalogueItemId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+
+        var model = new SelectServicesModel(
+            solutionServices.Select(x => x.CatalogueItem).ToList(),
+            associatedServices.Select(x => x.CatalogueItem).ToList())
+        {
+            EntityType = "Competition",
+            ParentItemName = solution.CatalogueItem.Name,
+            ParentItemType = CatalogueItemType.AdditionalService,
+            InternalOrgId = internalOrgId,
+        };
+
+        var result = (await controller.SelectAssociatedServices(internalOrgId, competition.Id, solution.CatalogueItemId, model))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.HubAdditionalServiceAssociatedServices));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveAdditionalServiceAssociatedService_IncorrectSolutionId_ReturnsBadRequestResult(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceItemId,
+        CatalogueItemId serviceId,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solutionId)
+            .Returns(competitionSolution);
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competition.Id,
+            solutionId,
+            additionalServiceItemId,
+            serviceId);
+
+        result.Should().BeOfType<BadRequestResult>();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveAdditionalServiceAssociatedService_IncorrectAdditionalServiceId_ReturnsBadRequestResult(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        CatalogueItemId additionalServiceItemId,
+        CatalogueItemId serviceId,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId)
+            .Returns(competitionSolution);
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            additionalServiceItemId,
+            serviceId);
+
+        result.Should().BeOfType<BadRequestResult>();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveAdditionalServiceAssociatedService_IncorrectAdditionalAssociatedServiceId_ReturnsBadRequestResult(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        CatalogueItemId additionalServiceItemId,
+        CatalogueItemId serviceId,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionSolution.Services = [competitionAdditionalService];
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId)
+            .Returns(competitionSolution);
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            additionalServiceItemId,
+            serviceId);
+
+        result.Should().BeOfType<BadRequestResult>();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveAdditionalServiceAssociatedService_Valid_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        AssociatedService associatedService,
+        CompetitionAssociatedService competitionAssociatedService,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionAssociatedService.CatalogueItemId = associatedService.CatalogueItemId;
+        competitionAssociatedService.CatalogueItem = associatedService.CatalogueItem;
+
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.AssociatedServices = [competitionAssociatedService];
+
+        competitionSolution.Services = [competitionAdditionalService];
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId)
+            .Returns(competitionSolution);
+
+        var expectedModel = new RemoveServiceModel(competitionAssociatedService.CatalogueItem) { EntityType = "Competition" };
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            competitionAdditionalService.CatalogueItemId,
+            competitionAssociatedService.CatalogueItemId);
+
+        var viewResult = result.Should().BeOfType<ViewResult>();
+        viewResult.Subject.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveAdditionalServiceAssociatedService_Confirmed_RemovesAssociatedService(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId serviceId,
+        RemoveServiceModel model,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        model.ConfirmRemoveService = true;
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competitionId,
+            solutionId,
+            additionalServiceId,
+            serviceId,
+            model);
+
+        result.Should().NotBeNull();
+        await competitionsService.Received()
+            .RemoveAssociatedServicesFromAdditionalService(internalOrgId, competitionId, solutionId, additionalServiceId, serviceId);
+    }
+
+    [Theory]
+    [MockInlineAutoData(true)]
+    [MockInlineAutoData(false)]
+    public static async Task RemoveAdditionalServiceAssociatedService_RedirectsToHub(
+        bool confirmed,
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId serviceId,
+        RemoveServiceModel model,
+        CompetitionHubController controller)
+    {
+        model.ConfirmRemoveService = confirmed;
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competitionId,
+            solutionId,
+            additionalServiceId,
+            serviceId,
+            model);
+
+        var redirectResult = result.Should().BeOfType<RedirectToActionResult>();
+
+        redirectResult.Subject.ActionName.Should().Be(nameof(controller.HubAdditionalServiceAssociatedServices));
     }
 
     [Theory]
@@ -1271,7 +2292,7 @@ public static class CompetitionHubControllerTests
         [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
@@ -1295,7 +2316,7 @@ public static class CompetitionHubControllerTests
         solutionService.CatalogueItem = associatedService.CatalogueItem;
 
         competitionSolution.Services = [solutionService];
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
@@ -1388,8 +2409,8 @@ public static class CompetitionHubControllerTests
         odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                 internalOrgId,
                 Arg.Any<IEnumerable<string>>())
-            .Returns(new List<ServiceRecipient> { serviceRecipient });
-        gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns(new List<GpPracticeSize>() { gpPracticeSize });
+            .Returns([serviceRecipient]);
+        gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns([gpPracticeSize]);
 
         var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);
 
@@ -1425,8 +2446,8 @@ public static class CompetitionHubControllerTests
         odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                 internalOrgId,
                 Arg.Any<IEnumerable<string>>())
-            .Returns(new List<ServiceRecipient> { serviceRecipient });
-        gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns(new List<GpPracticeSize> { gpPractice });
+            .Returns([serviceRecipient]);
+        gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns([gpPractice]);
 
         var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);
 
@@ -1440,5 +2461,137 @@ public static class CompetitionHubControllerTests
 
         serviceRecipients.Should().NotBeNull();
         serviceRecipients.Should().BeEquivalentTo(expectedList);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task HubAdditionalServiceAssociatedServices_NullSolution_ReturnsBadRequest(
+        string internalOrgId,
+        Competition competition,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceItemId,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solutionId).Returns((CompetitionSolution)null);
+
+        var result = (await controller.HubAdditionalServiceAssociatedServices(internalOrgId, competition.Id, solutionId, additionalServiceItemId))
+            .As<BadRequestResult>();
+
+        result.Should().NotBeNull();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task HubAdditionalServiceAssociatedServices_NoSolutionAdditionalServices_Redirects(
+        string internalOrgId,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        CatalogueItemId additionalServiceItemId,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.Competition = competition;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
+
+        var result = (await controller
+            .HubAdditionalServiceAssociatedServices(
+                internalOrgId,
+                competition.Id,
+                solution.CatalogueItemId,
+                additionalServiceItemId))
+             .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { nameof(internalOrgId), internalOrgId },
+                    { "competitionId", competition.Id },
+                    { "solutionId", solution.CatalogueItemId },
+                });
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task HubAdditionalServiceAssociatedServices_WithAdditionalServices_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        List<AssociatedService> associatedServices,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.AssociatedServices = associatedServices
+            .Select(x => new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
+            {
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+                CatalogueItem = x.CatalogueItem,
+            });
+
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.Competition = competition;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competitionSolution.Services = [competitionAdditionalService];
+
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
+
+        var expectedModel = new AdditionalServiceAssociatedServicesHubModel()
+        {
+            InternalOrgId = internalOrgId,
+            CompetitionId = competitionSolution.CompetitionId,
+            SolutionId = competitionSolution.CatalogueItemId,
+            AdditionalServiceItemId = competitionAdditionalService.CatalogueItemId,
+            AdditionalServiceName = competitionAdditionalService.CatalogueItem.Name,
+            AssociatedServicesRemaining = competitionAdditionalService.AssociatedServicesRemaining,
+            AssociatedServices = competitionAdditionalService.AssociatedServices.Select(s =>
+                new AdditionalServiceAssociatedServiceItemModel(
+                    competitionAdditionalService.CatalogueItemId,
+                    s.CatalogueItem,
+                    s.Quantity,
+                    competition.FlattenedRecipients.ToDictionary(
+                        y => y,
+                        y => s.Quantities.FirstOrDefault(z => z.RecipientOdsCode == y.RecipientOdsCode)?.Quantity),
+                    s.Price)
+                {
+                    InternalOrgId = internalOrgId,
+                    CompetitionId = competitionSolution.CompetitionId,
+                    SolutionId = competitionSolution.CatalogueItemId,
+                    ContractLength = competition.ContractLength,
+                }),
+        };
+
+        var result = (await controller
+            .HubAdditionalServiceAssociatedServices(
+                internalOrgId,
+                competition.Id,
+                solution.CatalogueItemId,
+                competitionAdditionalService.CatalogueItemId))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.BackLink));
     }
 }

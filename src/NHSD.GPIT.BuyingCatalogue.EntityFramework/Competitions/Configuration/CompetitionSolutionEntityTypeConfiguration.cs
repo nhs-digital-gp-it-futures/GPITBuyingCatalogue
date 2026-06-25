@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
@@ -21,5 +21,8 @@ public sealed class CompetitionSolutionEntityTypeConfiguration : IEntityTypeConf
             .HasForeignKey(x => x.CompetitionSolutionId)
             .HasConstraintName("FK_SolutionScores_Solution")
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Ignore(x => x.AssociatedServicesAvailable);
+        builder.Ignore(x => x.AssociatedServicesRemaining);
     }
 }
