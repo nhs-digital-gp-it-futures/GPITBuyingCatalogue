@@ -224,4 +224,55 @@ public static class AdditionalServiceAssociatedServiceItemModelTests
         model.PriceProgress.Should().Be(TaskProgress.Completed);
         model.QuantityProgress.Should().Be(TaskProgress.InProgress);
     }
+
+    [Theory]
+    [MockAutoData]
+    public static void QuantityProgress_RecipientQuantitiesDefined_AsNotStarted(
+        CatalogueItemId additionalServiceItemId,
+        CatalogueItem associatedServiceItem,
+        CompetitionCatalogueItemPrice selectedPrice,
+        CompetitionSublocationRecipient competitionSublocationRecipient,
+        List<CompetitionCatalogueItemPriceTier> tiers)
+    {
+        selectedPrice.Tiers = tiers;
+        Dictionary<CompetitionSublocationRecipient, int?> recipientQuantities = new()
+        {
+            { competitionSublocationRecipient, null },
+        };
+
+        var model = new AdditionalServiceAssociatedServiceItemModel(
+            additionalServiceItemId,
+            associatedServiceItem,
+            null,
+            recipientQuantities,
+            selectedPrice);
+
+        model.QuantityProgress.Should().Be(TaskProgress.NotStarted);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void QuantityProgress_RecipientQuantitiesDefined_AsInProgress(
+        CatalogueItemId additionalServiceItemId,
+        CatalogueItem associatedServiceItem,
+        CompetitionCatalogueItemPrice selectedPrice,
+        List<CompetitionCatalogueItemPriceTier> tiers)
+    {
+        selectedPrice.Tiers = tiers;
+        Dictionary<CompetitionSublocationRecipient, int?> recipientQuantities = new()
+        {
+            { new CompetitionSublocationRecipient() { CompetitionId = 1 }, 100 },
+            { new CompetitionSublocationRecipient() { CompetitionId = 2 }, 200 },
+            { new CompetitionSublocationRecipient() { CompetitionId = 3 }, null },
+        };
+
+        var model = new AdditionalServiceAssociatedServiceItemModel(
+            additionalServiceItemId,
+            associatedServiceItem,
+            null,
+            recipientQuantities,
+            selectedPrice);
+
+        model.QuantityProgress.Should().Be(TaskProgress.InProgress);
+    }
 }

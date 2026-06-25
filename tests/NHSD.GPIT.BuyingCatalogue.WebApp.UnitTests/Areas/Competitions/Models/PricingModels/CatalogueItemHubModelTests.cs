@@ -252,4 +252,81 @@ public static class CatalogueItemHubModelTests
         var linkName = CatalogueItemHubModel.GetLinkName(status);
         linkName.Should().Be("Change");
     }
+
+    [Theory]
+    [MockAutoData]
+    public static void AssociatedServicesProgress_AssociatedServicesAvailable_AsNotApplicable(
+        CatalogueItemId solutionId,
+        CatalogueItem catalogueItem,
+        int? globalQuantity,
+        Dictionary<CompetitionSublocationRecipient, int?> recipientQuantities,
+        CompetitionCatalogueItemPrice selectedPrice,
+        List<CompetitionCatalogueItemPriceTier> tiers)
+    {
+        selectedPrice.Tiers = tiers;
+
+        var model = new CatalogueItemHubModel(
+            solutionId,
+            catalogueItem,
+            globalQuantity,
+            recipientQuantities,
+            selectedPrice)
+        {
+            AssociatedServicesAvailable = false,
+        };
+
+        model.AssociatedServicesProgress.Should().Be(TaskProgress.NotApplicable);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void AssociatedServicesProgress_NoAssociatedServices_AsOptional(
+        CatalogueItemId solutionId,
+        CatalogueItem catalogueItem,
+        int? globalQuantity,
+        Dictionary<CompetitionSublocationRecipient, int?> recipientQuantities,
+        CompetitionCatalogueItemPrice selectedPrice,
+        List<CompetitionCatalogueItemPriceTier> tiers)
+    {
+        selectedPrice.Tiers = tiers;
+
+        var model = new CatalogueItemHubModel(
+            solutionId,
+            catalogueItem,
+            globalQuantity,
+            recipientQuantities,
+            selectedPrice)
+        {
+            AssociatedServicesAvailable = true,
+        };
+
+        model.AssociatedServicesProgress.Should().Be(TaskProgress.Optional);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void AssociatedServicesProgress_NoAssociatedServices_AsInProgress(
+        CatalogueItemId solutionId,
+        CatalogueItem catalogueItem,
+        int? globalQuantity,
+        Dictionary<CompetitionSublocationRecipient, int?> recipientQuantities,
+        CompetitionCatalogueItemPrice selectedPrice,
+        List<CatalogueItemHubModel> associatedServices,
+        List<CompetitionCatalogueItemPriceTier> tiers)
+    {
+        selectedPrice.Tiers = tiers;
+
+        var model = new CatalogueItemHubModel(
+            solutionId,
+            catalogueItem,
+            globalQuantity,
+            recipientQuantities,
+            selectedPrice)
+        {
+            AssociatedServicesAvailable = true,
+            AssociatedServices = associatedServices,
+        };
+
+        model.AssociatedServicesProgress.Should().Be(TaskProgress.InProgress);
+    }
 }

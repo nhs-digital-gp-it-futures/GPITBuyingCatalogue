@@ -10,10 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingMode
 
 public class CatalogueItemHubModel
 {
-    public CatalogueItemHubModel()
-    {
-    }
-
     public CatalogueItemHubModel(
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
@@ -93,7 +89,7 @@ public class CatalogueItemHubModel
             if (AssociatedServicesAvailable != true)
                 return TaskProgress.NotApplicable;
 
-            if (!AssociatedServices.Any())
+            if (AssociatedServices is null || !AssociatedServices.Any())
                 return TaskProgress.Optional;
 
             return AssociatedServices.Any(x =>
