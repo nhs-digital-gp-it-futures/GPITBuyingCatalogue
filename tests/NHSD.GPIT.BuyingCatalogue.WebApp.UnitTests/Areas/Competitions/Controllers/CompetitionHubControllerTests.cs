@@ -2217,7 +2217,7 @@ public static class CompetitionHubControllerTests
 
         result.Should().NotBeNull();
         await competitionsService.Received()
-            .RemoveAssociatedServicesFromAdditionalService(competitionId, solutionId, additionalServiceId, serviceId);
+            .RemoveAssociatedServicesFromAdditionalService(internalOrgId, competitionId, solutionId, additionalServiceId, serviceId);
     }
 
     [Theory]

@@ -768,6 +768,7 @@ public class CompetitionsService : ICompetitionsService
     }
 
     public async Task AddAssociatedServicesToAdditionalService(
+        string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
         CatalogueItemId? additionalServiceId,
@@ -781,6 +782,7 @@ public class CompetitionsService : ICompetitionsService
         var solution = await dbContext.CompetitionSolutions
             .Include(x => x.Services)
             .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
+                x.Competition.Organisation.InternalIdentifier == internalOrgId &&
                 x.CatalogueItemId == solutionId);
 
         var additionalService = solution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceId)
@@ -799,6 +801,7 @@ public class CompetitionsService : ICompetitionsService
     }
 
     public async Task RemoveAssociatedServicesFromAdditionalService(
+        string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
         CatalogueItemId additionalServiceItemId,
@@ -807,6 +810,7 @@ public class CompetitionsService : ICompetitionsService
         var solution = await dbContext.CompetitionSolutions
             .Include(x => x.Services)
             .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
+                x.Competition.Organisation.InternalIdentifier == internalOrgId &&
                 x.CatalogueItemId == solutionId);
 
         var additionalService = solution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceItemId);

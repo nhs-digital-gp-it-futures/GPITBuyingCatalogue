@@ -569,6 +569,7 @@ public class CompetitionHubController : Controller
         if (model.ParentItemType == CatalogueItemType.AdditionalService)
         {
             await competitionsService.AddAssociatedServicesToAdditionalService(
+                internalOrgId,
                 competitionId,
                 solutionId,
                 model.ParentItemId,
@@ -629,7 +630,7 @@ public class CompetitionHubController : Controller
         if (model.ConfirmRemoveService.GetValueOrDefault())
         {
             await competitionsService.RemoveAssociatedServicesFromAdditionalService(
-                competitionId, solutionId, additionalServiceItemId, serviceId);
+                internalOrgId, competitionId, solutionId, additionalServiceItemId, serviceId);
         }
 
         return RedirectToAction(nameof(HubAdditionalServiceAssociatedServices), new

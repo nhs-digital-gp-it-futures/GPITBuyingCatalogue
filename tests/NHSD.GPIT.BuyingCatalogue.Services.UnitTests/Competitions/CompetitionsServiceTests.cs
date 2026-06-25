@@ -3718,6 +3718,7 @@ public static class CompetitionsServiceTests
             .Returns([.. associatedServices.Select(x => x.CatalogueItem)]);
 
         await service.AddAssociatedServicesToAdditionalService(
+            organisation.InternalIdentifier,
             competition.Id,
             competitionSolution.CatalogueItemId,
             competitionAdditionalService.CatalogueItemId,
@@ -3792,6 +3793,7 @@ public static class CompetitionsServiceTests
         var expectedCount = competitionAssociatedServices.Count() - 1;
 
         await service.RemoveAssociatedServicesFromAdditionalService(
+            organisation.InternalIdentifier,
             competition.Id,
             competitionSolution.CatalogueItemId,
             competitionAdditionalService.CatalogueItemId,
