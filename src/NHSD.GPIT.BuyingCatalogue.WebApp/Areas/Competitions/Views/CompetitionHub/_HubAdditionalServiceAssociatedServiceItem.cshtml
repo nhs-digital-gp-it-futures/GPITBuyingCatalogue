@@ -1,0 +1,118 @@
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
+
+@model AdditionalServiceAssociatedServiceItemModel
+
+@{
+    const RoutingSource source = RoutingSource.TaskList;
+
+    var priceUrl = Model.NumberOfCataloguePrices > 1
+        ? Url.Action(
+            nameof(CompetitionHubController.SelectPrice),
+            typeof(CompetitionHubController).ControllerName(),
+            new 
+            { 
+                Model.InternalOrgId, 
+                Model.CompetitionId, 
+                solutionId = Model.SolutionId, 
+                additionalServiceId = Model.AdditionalServiceItemId, 
+                serviceId = Model.AssociatedServiceItem.Id,
+            })
+        : Url.Action(
+            nameof(CompetitionHubController.ConfirmPrice),
+            typeof(CompetitionHubController).ControllerName(),
+            new 
+            { 
+                Model.InternalOrgId, 
+                Model.CompetitionId, 
+                Model.PriceId, 
+                solutionId = Model.SolutionId, 
+                additionalServiceId = Model.AdditionalServiceItemId, 
+                serviceId = Model.AssociatedServiceItem.Id, 
+                source 
+            });
+
+    var quantityUrl = Url.Action(
+        nameof(CompetitionHubController.CompetitionSublocationHub), 
+        typeof(CompetitionHubController).ControllerName(), 
+        new 
+        { 
+            Model.InternalOrgId, 
+            Model.CompetitionId, 
+            solutionId = Model.SolutionId,
+            additionalServiceId = Model.AdditionalServiceItemId,
+            serviceId = Model.AssociatedServiceItem.Id,
+            source 
+        });
+
+    string GetLinkName(TaskProgress progress) => progress switch
+    {
+        TaskProgress.NotStarted => "Start",
+        TaskProgress.InProgress => "Continue",
+        _ => "Change",
+    };
+
+    var progress = 0;
+    if (Model.PriceProgress is not (TaskProgress.NotStarted or TaskProgress.CannotStart))
+    {
+        progress++;
+    }
+    if (Model.QuantityProgress is not (TaskProgress.NotStarted or TaskProgress.CannotStart))
+    {
+        progress++;
+    }
+}
+
+<div style="display:block; align-items:center;">
+    <h3 class="header-with-detail">
+        @Model.AssociatedServiceItem.Name
+    </h3>
+    <span class="detail">
+        <strong>@progress</strong> of <strong>2</strong> started
+    </span>
+</div>
+
+<nhs-table>
+    <nhs-table-column>Item</nhs-table-column>
+    <nhs-table-column>Status</nhs-table-column>
+    <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
+
+    <nhs-table-row-container>
+        <nhs-table-cell>Price</nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag status-enum="@Model.PriceProgress"></nhs-tag>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <a href="@priceUrl">@GetLinkName(Model.PriceProgress)</a>
+        </nhs-table-cell>
+    </nhs-table-row-container>
+
+    <nhs-table-row-container>
+        <nhs-table-cell>Quantity</nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag status-enum="@Model.QuantityProgress"></nhs-tag>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            @if (Model.QuantityProgress != TaskProgress.CannotStart)
+            {
+                <a href="@quantityUrl">@GetLinkName(Model.QuantityProgress)</a>
+            }
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<vc:nhs-delete-button 
+    url="@Url.Action(
+        nameof(CompetitionHubController.RemoveAdditionalServiceAssociatedService),
+        typeof(CompetitionHubController).ControllerName(),
+        new 
+        { 
+            Model.InternalOrgId, 
+            Model.CompetitionId, 
+            Model.SolutionId,
+            additionalServiceItemId = Model.AdditionalServiceItemId,
+            serviceId = Model.AssociatedServiceItem.Id, 
+        })"
+    text="Remove @Model.AssociatedServiceItem.Name" />
+
+<hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">

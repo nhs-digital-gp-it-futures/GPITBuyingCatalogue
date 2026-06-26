@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared
 
         private static bool HaveMadeASelection(SelectServicesModel model)
         {
-            return (!model.AssociatedServicesOnly && model.ParentItem != CatalogueItemType.AdditionalService)
+            return (!model.AssociatedServicesOnly && model.ParentItemType != CatalogueItemType.AdditionalService)
                 || (model.Services?.Any(x => x.IsSelected) ?? false);
         }
     }

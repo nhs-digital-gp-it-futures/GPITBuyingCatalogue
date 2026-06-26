@@ -36,12 +36,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
 
         public bool AssociatedServicesOnly { get; set; }
 
-        public string SolutionName { get; set; }
+        public string ParentItemName { get; set; }
 
-        public CatalogueItemId? SolutionId { get; set; }
+        public CatalogueItemId? ParentItemId { get; set; }
 
         public List<ServiceModel> Services { get; set; }
 
-        public CatalogueItemType? ParentItem { get; set; }
+        public CatalogueItemType? ParentItemType { get; set; }
     }
 }

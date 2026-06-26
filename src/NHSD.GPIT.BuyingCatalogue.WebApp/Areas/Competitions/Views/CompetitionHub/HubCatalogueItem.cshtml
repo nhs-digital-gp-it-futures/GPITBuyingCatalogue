@@ -1,10 +1,7 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+
 @model CatalogueItemHubModel
 
 @{
@@ -25,8 +22,18 @@
     var quantityUrl = Model.CatalogueItemType is CatalogueItemType.Solution
         ? Url.Action(nameof(CompetitionHubController.CompetitionSublocationHub), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, source })
         : Url.Action(nameof(CompetitionHubController.CompetitionSublocationHub), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, serviceId = Model.CatalogueItemId, source });
-
-    var quantity = (Model.GlobalQuantity ?? Model.OdsOrganisations.Sum(x => x.Value)).GetValueOrDefault();
+        
+    var associatedServicesForAdditionalServiceUrl = Url.Action(
+        nameof(CompetitionHubController.SelectAssociatedServices),
+        typeof(CompetitionHubController).ControllerName(),
+        new
+        {
+            Model.InternalOrgId,
+            Model.CompetitionId,
+            Model.SolutionId,
+            serviceId = Model.CatalogueItemId,
+            parentCatalogueItemType = CatalogueItemType.AdditionalService
+        });
 }
 
 <h3>@Model.CatalogueItemName</h3>
@@ -42,7 +49,7 @@
             <nhs-tag status-enum="@Model.PriceProgress"></nhs-tag>
         </nhs-table-cell>
         <nhs-table-cell>
-            <a href="@priceUrl">@GetLinkName(Model.PriceProgress)</a>
+            <a href="@priceUrl">@CatalogueItemHubModel.GetLinkName(Model.PriceProgress)</a>
         </nhs-table-cell>
     </nhs-table-row-container>
 
@@ -54,18 +61,37 @@
         <nhs-table-cell>
             @if (Model.QuantityProgress != TaskProgress.CannotStart)
             {
-                <a href="@quantityUrl">@GetLinkName(Model.QuantityProgress)</a>
+                <a href="@quantityUrl">@CatalogueItemHubModel.GetLinkName(Model.QuantityProgress)</a>
             }
         </nhs-table-cell>
     </nhs-table-row-container>
+
+    @if (Model.CatalogueItemType is CatalogueItemType.AdditionalService &&
+            Model.AssociatedServicesAvailable == true &&
+            Model.AssociatedServicesProgress == TaskProgress.Optional)
+    {
+        <nhs-table-row-container>
+            <nhs-table-cell>Associated Services</nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag status-enum="TaskProgress.Optional"></nhs-tag>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                @if (Model.QuantityProgress == TaskProgress.Completed &&
+                    Model.PriceProgress == TaskProgress.Completed)
+                {
+                    <a href="@associatedServicesForAdditionalServiceUrl">Start</a>
+                }                
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    }
 </nhs-table>
 
 @if (Model.CatalogueItemType is CatalogueItemType.AssociatedService)
 {
     <vc:nhs-delete-button url="@Url.Action(
-                                   nameof(CompetitionHubController.RemoveAssociatedService),
-                                   typeof(CompetitionHubController).ControllerName(),
-                                   new { Model.InternalOrgId, Model.CompetitionId, Model.SolutionId, serviceId = Model.CatalogueItemId })"
+                                    nameof(CompetitionHubController.RemoveAssociatedService),
+                                    typeof(CompetitionHubController).ControllerName(),
+                                    new { Model.InternalOrgId, Model.CompetitionId, Model.SolutionId, serviceId = Model.CatalogueItemId })"
                           text="Remove @Model.CatalogueItemName" />
     <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
 }
@@ -73,28 +99,20 @@
 @if (Model.PriceProgress is TaskProgress.Completed && Model.QuantityProgress is TaskProgress.Completed)
 {
     <nhs-summary-list>
-        @if (Model.Price.BillingPeriod is null)
-        {
-            <nhs-summary-list-row label-text="One-off cost @Model.Price.Description">£@(((IPrice)Model.Price).CalculateOneOffCost(quantity).ToString("N2"))</nhs-summary-list-row>
-        }
-        else
-        {
-            <nhs-summary-list-row label-text="Price per month">£@(((IPrice)Model.Price).CalculateCostPerMonth(quantity).ToString("N2"))</nhs-summary-list-row>
-        }
-        <nhs-summary-list-row label-text="Quantity">@quantity.ToString($"#,##0")</nhs-summary-list-row>
-        @if (Model.Price.BillingPeriod is not null)
-        {
-            <nhs-summary-list-row label-text="Total price">£@CalculateTotalCost().ToString("N2")</nhs-summary-list-row>
-        }
+    @if (Model.Price.BillingPeriod is null)
+    {
+        <nhs-summary-list-row label-text="One-off cost @Model.Price.Description">£@Model.CalculateOneOffCost()</nhs-summary-list-row>
+    }
+    else
+    {
+        <nhs-summary-list-row label-text="Price per month">£@Model.CalculateCostPerMonth()</nhs-summary-list-row>
+    }
+    <nhs-summary-list-row label-text="Quantity">@Model.Quantity.ToString($"#,##0")</nhs-summary-list-row>
+    @if (Model.Price.BillingPeriod is not null)
+    {
+        <nhs-summary-list-row label-text="Total price">£@Model.CalculateTotalCost()</nhs-summary-list-row>
+    }
     </nhs-summary-list>
 }
 
-@{
-    decimal CalculateTotalCost() => ((IPrice)Model.Price).CalculateCostPerMonth(quantity) * Model.ContractLength.GetValueOrDefault();
-    string GetLinkName(TaskProgress progress) => progress switch
-    {
-        TaskProgress.NotStarted => "Start",
-        TaskProgress.InProgress => "Continue",
-        _ => "Change",
-    };
-}
+<partial name="_AssociateServicesReadOnlyItems" model="@Model" />

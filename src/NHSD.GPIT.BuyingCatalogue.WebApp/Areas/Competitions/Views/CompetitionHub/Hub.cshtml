@@ -1,11 +1,7 @@
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model CompetitionSolutionHubModel
 
 @{
     ViewBag.Title = "Price and quantity";
-
-    var additionalServices = Model.GetCatalogueItemsByType(CatalogueItemType.AdditionalService).ToList();
-    var associatedServices = Model.AssociatedServices.ToList();
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -20,50 +16,50 @@
             <h2>Catalogue solution</h2>
 
             <nhs-card-v2>
-            <nhs-card-content>
-                <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(Model.SolutionId)"/>
-            </nhs-card-content>
+                <nhs-card-content>
+                    <partial name="HubCatalogueItem" model="@Model.SolutionItem"/>
+                </nhs-card-content>
             </nhs-card-v2>
         </div>
 
-        @if (additionalServices.Any())
+        @if (Model.AdditionalServices.Any())
         {
             <div id="AdditionalServiceDetails" class="nhsuk-u-margin-bottom-9">
                 <h2>Additional services</h2>
                 <p>These additional services are needed along with the solution to meet all the Capabilities and Epics you’ve selected.</p>
 
-                @foreach (var item in additionalServices)
+                @foreach (var additionalService in Model.AdditionalServices)
                 {
                     <nhs-card-v2>
-                    <nhs-card-content>
-                        <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
-                    </nhs-card-content>
+                        <nhs-card-content>
+                            <partial name="HubCatalogueItem" model="additionalService" />
+                        </nhs-card-content>
                     </nhs-card-v2>
                 }
             </div>
         }
 
-        @if (Model.AssociatedServicesAvailable)
+        @if (Model.SolutionItem.AssociatedServicesAvailable == true)
         {
             <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
                 <h2>Associated services</h2>
                 <nhs-card-v2>
                     <nhs-card-content>
-                        @if (!associatedServices.Any())
+                        @if (Model.SolutionItem.AssociatedServices == null || !Model.SolutionItem.AssociatedServices.Any())
                         {
                             <p>No associated services have been added for this catalogue solution.</p>
                         }
                         else
                         {
                             <p>You can add associated services to help implement your solution, for example training or data migration.</p>
-                            @foreach (var item in associatedServices)
+                            @foreach (var associatedService in Model.SolutionItem.AssociatedServices)
                             {
-                                <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
+                                <partial name="HubCatalogueItem" model="associatedService" />
                             }
                         }
                     </nhs-card-content>
                     <nhs-card-footer>
-                        @if (Model.AssociatedServicesRemaining)
+                        @if (Model.SolutionItem.AssociatedServicesRemaining)
                         {
                             <vc:add-or-change href="@Model.AssociatedServicesUrl" noun-phrase="Associated services" />
                         }

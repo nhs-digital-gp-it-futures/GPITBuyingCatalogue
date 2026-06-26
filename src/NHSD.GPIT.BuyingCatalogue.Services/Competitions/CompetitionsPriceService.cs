@@ -67,6 +67,30 @@ public class CompetitionsPriceService : ICompetitionsPriceService
             agreedPrices);
     }
 
+    public async Task SetAdditionalServiceAssociatedServicePrice(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId serviceId,
+        CataloguePrice cataloguePrice,
+        IEnumerable<PricingTierDto> agreedPrices)
+    {
+        ArgumentNullException.ThrowIfNull(agreedPrices);
+
+        var service = await GetAdditionalServiceAssociatedService(
+            internalOrgId, competitionId, solutionId, additionalServiceId, serviceId);
+        if (service == null) return;
+
+        await SetPrice(
+            service,
+            service.Price?.CataloguePriceId,
+            cataloguePrice,
+            () => quantityService.ResetAdditionalServiceAssociatedServiceQuantities(
+                internalOrgId, competitionId, solutionId, additionalServiceId, serviceId),
+            agreedPrices);
+    }
+
     private async Task SetPrice(
         CompetitionCatalogueItem entity,
         int? cataloguePriceId,
@@ -134,5 +158,31 @@ public class CompetitionsPriceService : ICompetitionsPriceService
         var service = solution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
 
         return service;
+    }
+
+    private async Task<CompetitionCatalogueItem> GetAdditionalServiceAssociatedService(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId serviceId)
+    {
+        var competition = await dbContext.Competitions
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .FirstOrDefaultAsync(x =>
+                x.Organisation.InternalIdentifier == internalOrgId &&
+                x.Id == competitionId);
+
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
+        var additionalService = solution?.Services.FirstOrDefault(x => x.CatalogueItemId == additionalServiceId);
+        var associatedService = await dbContext.CompetitionCatalogueItems
+            .Include(x => x.Price)
+            .ThenInclude(x => x.Tiers)
+            .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
+                x.CatalogueItemId == serviceId &&
+                x.ParentItemId == additionalService.Id);
+
+        return associatedService;
     }
 }

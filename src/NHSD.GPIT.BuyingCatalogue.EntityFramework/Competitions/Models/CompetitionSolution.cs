@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -26,6 +26,10 @@ public class CompetitionSolution : CompetitionCatalogueItem
     public string Justification { get; set; }
 
     public bool IsWinningSolution { get; set; }
+
+    public bool AssociatedServicesAvailable { get; set; }
+
+    public bool AssociatedServicesRemaining { get; set; }
 
     public ICollection<CompetitionCatalogueItem> Services { get; set; } = new HashSet<CompetitionCatalogueItem>();
 

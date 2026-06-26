@@ -103,15 +103,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var existingAssociatedServices = additionalService.Services.Select(service => service.CatalogueItem).ToList();
             var model = new SelectServicesModel(existingAssociatedServices, associatedServices)
             {
-                SolutionId = catalogueItemId,
+                ParentItemId = catalogueItemId,
                 BackLink = Url.Action(
                     nameof(ManageAssociatedServices),
                     typeof(AssociatedServicesController).ControllerName(),
                     new { internalOrgId, callOffId, catalogueItemId }),
                 InternalOrgId = internalOrgId,
                 AssociatedServicesOnly = false,
-                SolutionName = additionalService.CatalogueItem.Name,
-                ParentItem = CatalogueItemType.AdditionalService,
+                ParentItemName = additionalService.CatalogueItem.Name,
+                ParentItemType = CatalogueItemType.AdditionalService,
             };
 
             return View(SelectViewName, model);
@@ -208,11 +208,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 order.GetServices(CatalogueItemType.AssociatedService),
                 associatedServices)
             {
-                SolutionId = order.GetSolutionId(),
+                ParentItemId = order.GetSolutionId(),
                 BackLink = GetBackLink(internalOrgId, callOffId, source),
                 InternalOrgId = internalOrgId,
                 AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly,
-                SolutionName = order.OrderType.GetSolutionNameFromOrder(wrapper.RolledUp),
+                ParentItemName = order.OrderType.GetSolutionNameFromOrder(wrapper.RolledUp),
             };
         }
 
