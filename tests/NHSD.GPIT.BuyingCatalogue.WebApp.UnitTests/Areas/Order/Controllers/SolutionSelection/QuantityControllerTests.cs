@@ -541,6 +541,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
+        public static async Task Get_ViewQuantity_ReturnsBadRequest_If_No_PreviousOrder(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            int orderItemId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService mockOrderService,
+            QuantityController controller)
+        {
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
+
+            var result = await controller.ViewServiceRecipientQuantity(internalOrgId, callOffId, catalogueItemId, orderItemId);
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Get_ViewServiceRecipientQuantity_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -575,6 +593,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 internalOrgId,
                 callOffId,
                 orderItem.CatalogueItemId,
+                orderItem.Id,
                 amendment.CallOffId);
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;

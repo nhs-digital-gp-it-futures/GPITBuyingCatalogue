@@ -331,6 +331,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
+        public static async Task Get_ManageAssociatedServices_NoAssociatedServices_AmendmentDoesNotRedirectToTaskList(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            EntityFramework.Ordering.Models.Order order,
+            OrderItem additionalService,
+            List<CatalogueItem> associatedServices,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IAssociatedServicesService mockAssociatedServicesService,
+            AssociatedServicesController controller)
+        {
+            order.Revision = 2;
+            SetupAdditionalService(additionalService, catalogueItemId);
+            additionalService.Services.Clear();
+            order.OrderItems.Add(additionalService);
+
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
+            mockAssociatedServicesService
+                .GetPublishedAssociatedServicesForCatalogueItem(catalogueItemId, order.OrderType.ToPracticeReorganisationType)
+                .Returns(associatedServices);
+
+            var result = await controller.ManageAssociatedServices(internalOrgId, callOffId, catalogueItemId);
+
+            result.Should().BeOfType<ViewResult>();
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Get_ManageAssociatedServices_WithAssociatedServices_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -366,7 +394,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 orderWrapper.DetermineOrderRecipients(additionalService),
                 callOffId,
                 internalOrgId,
-                catalogueItemId)
+                catalogueItemId,
+                orderWrapper)
             {
                 UnselectedAssociatedServicesAvailable = allAvailableAssociatedServices.Count != services.Count,
             };

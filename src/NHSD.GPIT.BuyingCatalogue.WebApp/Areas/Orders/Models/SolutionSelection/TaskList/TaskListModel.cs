@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         wrapper.DetermineOrderRecipients(CatalogueSolution),
                         CatalogueSolution)
                     {
-                        FromPreviousRevision = Previous?.Exists(CatalogueSolution.Id) ?? false,
+                        FromPreviousRevision = Previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
                         HasNewRecipients = wrapper.HasNewOrderRecipients,
                         NumberOfPrices = CatalogueSolution.CatalogueItem.CataloguePrices.Count,
                         PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 x.CatalogueItemId,
                 new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, wrapper.DetermineOrderRecipients(x), x)
                 {
-                    FromPreviousRevision = Previous?.Exists(x.Id) ?? false,
+                    FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
                     HasNewRecipients = wrapper.HasNewOrderRecipients,
                     NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                     AssociatedServicesCatalogueItemsCount = associatedServicesForAdditionalServices.TryGetValue(x.CatalogueItemId, out var associatedServicesCount) ? associatedServicesCount : 0,
@@ -92,7 +92,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         : 0,
                     PreviousRecipients = Previous?.FlattenedRecipients.Count() ?? 0,
                     AssociatedServicesOrderItems = x.Services.ToList(),
-                    CanBeRemoved = !(IsAmendment && (Previous?.Exists(x.Id) ?? false)),
+                    PreviousAssociatedServicesOrderItems = wrapper.PreviousOrders
+                        .SelectMany(order => order.GetAdditionalServices())
+                        .FirstOrDefault(additionalService => additionalService.CatalogueItemId == x.CatalogueItemId)
+                        ?.Services.Count,
+                    CanBeRemoved = !(IsAmendment && (Previous?.Exists(x.CatalogueItemId) ?? false)),
                     Source = RoutingSource.TaskList,
                     OrderItemId = x.Id,
                 }));

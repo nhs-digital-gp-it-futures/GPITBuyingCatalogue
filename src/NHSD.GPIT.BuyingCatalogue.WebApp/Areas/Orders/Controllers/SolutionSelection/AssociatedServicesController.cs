@@ -158,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var services = additionalService.Services.ToList();
             var allAvailableServices = await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(catalogueItemId, order.OrderType.ToPracticeReorganisationType);
 
-            if (services is null or { Count: 0 })
+            if (!order.IsAmendment && services is null or { Count: 0 })
             {
                 return RedirectToAction(
                     nameof(TaskListController.TaskList),
@@ -174,7 +174,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 recipients,
                 callOffId,
                 internalOrgId,
-                catalogueItemId)
+                catalogueItemId,
+                wrapper)
             {
                 UnselectedAssociatedServicesAvailable = allAvailableServices.Count != services.Count,
                 BackLink = Url.Action(

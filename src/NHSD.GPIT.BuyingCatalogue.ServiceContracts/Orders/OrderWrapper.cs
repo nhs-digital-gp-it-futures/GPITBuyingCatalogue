@@ -143,8 +143,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             {
                 Order.OrderItems.ToList().ForEach(i =>
                 {
+                    var item = i.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+                        ? i.Parent
+                        : i;
                     if (Previous == null
-                        || !Previous.Exists(i.Id)
+                        || !Previous.Exists(item.CatalogueItemId)
                         || Previous.FlattenedRecipients.All(x => x.RecipientOdsCode != recipientOdsCode))
                     {
                         newRecipient.SetDeliveryDateForItem(i, Order.DeliveryDate.Value);

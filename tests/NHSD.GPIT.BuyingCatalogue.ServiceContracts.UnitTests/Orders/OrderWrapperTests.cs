@@ -34,10 +34,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
 
         [Theory]
         [MockAutoData]
-        public static void OrderWrapper_RolledUp_Uses_Old_Order_Data_Apart_From_Revision(IFixture fixture)
+        public static void OrderWrapper_RolledUp_Uses_Old_Order_Data_Apart_From_Revision(IFixture fixture, OrderItem solution)
         {
+            solution.ParentId = null;
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
             var order = fixture.Build<Order>()
                 .With(o => o.Revision, 1)
+                .With(o => o.OrderItems, [solution])
                 .Create();
 
             var amendedOrder = order.BuildAmendment(2);
@@ -92,6 +96,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
             OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.MixedFunding);
 
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            orderItem.ParentId = null;
+
             Order order = BuildOrder(
                 fixture,
                 [orderItem],
@@ -124,6 +131,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
             OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
 
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            orderItem.ParentId = null;
+
             Order order = BuildOrder(
                 fixture,
                 [orderItem],
@@ -155,6 +165,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
         {
             OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
             OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.MixedFunding);
+
+            orderItem.ParentId = null;
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             Order order = BuildOrder(
                 fixture,
@@ -202,6 +215,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
         {
             OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
             OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.MixedFunding);
+
+            orderItem.ParentId = null;
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             Order order = BuildOrder(
                 fixture,
@@ -267,10 +283,16 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             var sublocationRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem1]);
             var addedRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem1, orderItem2]);
             var finalRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem1, orderItem2]);
+
+            orderItem1.ParentId = null;
             orderItem1.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            orderItem2.ParentId = orderItem1.Id;
             orderItem2.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             OrderItem orderItem = BuildOrderItem(fixture, orderItem1.CatalogueItem, OrderItemFundingType.LocalFunding);
             OrderItem amendedOrderItem = BuildOrderItem(fixture, orderItem2.CatalogueItem, OrderItemFundingType.LocalFunding);
+
+            orderItem.ParentId = null;
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             Order order = BuildOrder(
                 fixture,
@@ -286,6 +308,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             Order amendedOrder = order.BuildAmendment(2);
             amendedOrder.Id = 1;
             amendedOrderItem.OrderId = amendedOrder.Id;
+
+            amendedOrderItem.ParentId = orderItem.Id;
             amendedOrder.OrderItems = [orderItem, amendedOrderItem];
             amendedOrder.OrderSublocations =
             [

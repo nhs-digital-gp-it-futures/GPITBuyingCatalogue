@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 recipients,
                 previousRecipients,
                 item,
-                Previous?.OrderItem(item.CatalogueItemId),
+                OrderWrapper.PreviousOrders.ToList().LastOrDefault()?.OrderItem(item.CatalogueItemId),
                 new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(item.CatalogueItemId)))
             {
                 InternalOrgId = InternalOrgId,

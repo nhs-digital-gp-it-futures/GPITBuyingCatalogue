@@ -141,6 +141,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             order.Revision = 1;
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+
+            var solution = order.OrderItems.ElementAt(0);
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.ParentId = null;
+
+            var additionalService = order.OrderItems.ElementAt(1);
+            additionalService.ParentId = solution.Id;
+
+            order.OrderItems = [solution, additionalService];
             var amendedOrder = order.BuildAmendment(2);
 
             var actual = service.Get(new OrderWrapper(amendedOrder, [order]), ValidOrderState);
@@ -157,7 +166,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             order.Revision = 1;
             order.OrderType = OrderTypeEnum.Solution;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution);
+
+            var solution = order.OrderItems.ElementAt(0);
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.ParentId = null;
+
+            order.OrderItems = [solution];
             var amendedOrder = order.BuildAmendment(2);
             order.OrderItems.ForEach(i =>
             {
@@ -181,7 +195,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             order.Revision = 1;
             order.OrderType = OrderTypeEnum.Solution;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution);
+
+            var solution = order.OrderItems.ElementAt(0);
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.ParentId = null;
+
+            order.OrderItems = [solution];
+
             var amendedOrder = order.BuildAmendment(2);
             order.OrderItems.ForEach(i =>
             {

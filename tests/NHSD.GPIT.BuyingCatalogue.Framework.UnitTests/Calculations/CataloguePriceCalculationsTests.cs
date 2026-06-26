@@ -566,6 +566,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             sublocation.SublocationRecipients = [recipient];
 
+            orderItem.ParentId = null;
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             Order order = BuildOrder(fixture, maximumTerm, [orderItem], commencementDate, [sublocation]);
 
             OrderSublocationRecipient amendedRecipient = fixture.Build<OrderSublocationRecipient>()
@@ -628,6 +630,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             revision3Recipient.SetDeliveryDateForItem(orderItem, revision3PlannedDelivery);
 
             sublocation.SublocationRecipients = [recipient];
+
+            orderItem.ParentId = null;
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             Order order = BuildOrder(fixture, maximumTerm, [orderItem], commencementDate, [sublocation]);
 
