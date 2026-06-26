@@ -227,7 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             int orderItemId,
             RoutingSource? source = null)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).PreviousOrders.LastOrDefault();
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).PreviousOrders.AsEnumerable().LastOrDefault();
 
             if (order == null) return NotFound();
 

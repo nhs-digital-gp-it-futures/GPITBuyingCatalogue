@@ -133,12 +133,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [Theory]
         [MockAutoData]
         public static void PropertiesCorrectlySet(
-            CallOffId callOffId,
             OrderItem orderItem,
             OrderItem previousOrderItem,
             bool fromPreviousRevision,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
+            var callOffId = new CallOffId(1, 2);
             var model = new AmendOrderItemModel(
                 callOffId,
                 OrderTypeEnum.Solution,

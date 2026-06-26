@@ -217,5 +217,177 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             model.QuantityStatus.Should().Be(TaskProgress.Completed);
         }
+
+        [Theory]
+        [MockInlineAutoData(false, 1, TaskProgress.Completed)]
+        [MockInlineAutoData(true, 1, TaskProgress.InProgress)]
+        [MockInlineAutoData(true, 0, TaskProgress.Completed)]
+        public static void AssociatedServicesStatus_PreviousAssociatedServices_ReturnsExpectedResult(
+            bool hasNewRecipients,
+            int associatedServicesCount,
+            TaskProgress expected,
+            string internalOrgId,
+            OrderItem orderItem,
+            OrderItem associatedService,
+            OrderSublocationRecipient[] recipients)
+        {
+            SetOrderItemPriceStatus(orderItem, true);
+            SetOrderItemPriceStatus(associatedService, true);
+            associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            recipients.ForEach(x => x.OrderItemSublocationRecipients.Clear());
+
+            var model = new TaskListOrderItemModel(internalOrgId, new CallOffId(1, 1), OrderTypeEnum.Solution, recipients, orderItem)
+            {
+                HasNewRecipients = hasNewRecipients,
+                PreviousAssociatedServicesOrderItems = 1,
+                AssociatedServicesOrderItems = associatedServicesCount > 0 ? [associatedService] : [],
+            };
+
+            model.AssociatedServicesStatus.Should().Be(expected);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void AssociatedServicesStatus_CurrentAssociatedServicesComplete_ReturnsCompleted(
+            string internalOrgId,
+            OrderItem orderItem,
+            OrderItem associatedService,
+            OrderSublocationRecipient[] recipients)
+        {
+            SetOrderItemPriceStatus(orderItem, true);
+            SetOrderItemPriceStatus(associatedService, true);
+            associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            recipients.ForEach(x =>
+            {
+                x.OrderItemSublocationRecipients.Clear();
+                x.SetQuantityForItem(associatedService, 1);
+            });
+
+            var model = new TaskListOrderItemModel(internalOrgId, new CallOffId(1, 1), OrderTypeEnum.Solution, recipients, orderItem)
+            {
+                AssociatedServicesOrderItems = [associatedService],
+            };
+
+            model.AssociatedServicesStatus.Should().Be(TaskProgress.Completed);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void AssociatedServicesStatus_CurrentAssociatedServicesCompleteForAmendment_ReturnsAmended(
+            string internalOrgId,
+            OrderItem orderItem,
+            OrderItem associatedService,
+            OrderSublocationRecipient[] recipients)
+        {
+            SetOrderItemPriceStatus(orderItem, true);
+            SetOrderItemPriceStatus(associatedService, true);
+            associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            recipients.ForEach(x =>
+            {
+                x.OrderItemSublocationRecipients.Clear();
+                x.SetQuantityForItem(associatedService, 1);
+            });
+
+            var model = new TaskListOrderItemModel(internalOrgId, new CallOffId(1, 2), OrderTypeEnum.Solution, recipients, orderItem)
+            {
+                AssociatedServicesOrderItems = [associatedService],
+            };
+
+            model.AssociatedServicesStatus.Should().Be(TaskProgress.Amended);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void AssociatedServicesStatus_CurrentAssociatedServicePriceNotStarted_ReturnsInProgress(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderItem orderItem,
+            OrderItem associatedService,
+            OrderSublocationRecipient[] recipients)
+        {
+            SetOrderItemPriceStatus(orderItem, true);
+            SetOrderItemPriceStatus(associatedService, false);
+            associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            recipients.ForEach(x =>
+            {
+                x.OrderItemSublocationRecipients.Clear();
+                x.SetQuantityForItem(associatedService, 1);
+            });
+
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, OrderTypeEnum.Solution, recipients, orderItem)
+            {
+                AssociatedServicesOrderItems = [associatedService],
+            };
+
+            model.AssociatedServicesStatus.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void AssociatedServicesStatus_CurrentAssociatedServiceQuantityNotStarted_ReturnsInProgress(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderItem orderItem,
+            OrderItem associatedService,
+            OrderSublocationRecipient[] recipients)
+        {
+            SetOrderItemPriceStatus(orderItem, true);
+            associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            recipients.ForEach(x => x.OrderItemSublocationRecipients.Clear());
+
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, OrderTypeEnum.Solution, recipients, orderItem)
+            {
+                AssociatedServicesOrderItems = [associatedService],
+            };
+
+            model.AssociatedServicesStatus.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void AssociatedServicesStatus_NoAssociatedServicesQuantityComplete_ReturnsNotStarted(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderItem orderItem,
+            OrderSublocationRecipient[] recipients)
+        {
+            SetOrderItemPriceStatus(orderItem, true);
+            recipients.ForEach(x =>
+            {
+                x.OrderItemSublocationRecipients.Clear();
+                x.SetQuantityForItem(orderItem, 1);
+            });
+
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, OrderTypeEnum.Solution, recipients, orderItem);
+
+            model.AssociatedServicesStatus.Should().Be(TaskProgress.NotStarted);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void AssociatedServicesStatus_NoAssociatedServicesQuantityIncomplete_ReturnsOptional(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderItem orderItem,
+            OrderSublocationRecipient[] recipients)
+        {
+            SetOrderItemPriceStatus(orderItem, true);
+            recipients.ForEach(x => x.OrderItemSublocationRecipients.Clear());
+
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, OrderTypeEnum.Solution, recipients, orderItem);
+
+            model.AssociatedServicesStatus.Should().Be(TaskProgress.Optional);
+        }
+
+        private static void SetOrderItemPriceStatus(OrderItem orderItem, bool completed)
+        {
+            orderItem.OrderItemPrice = new OrderItemPrice();
+            orderItem.OrderItemPrice.OrderItemPriceTiers.Clear();
+
+            if (completed)
+            {
+                orderItem.OrderItemPrice.OrderItemPriceTiers.Add(new OrderItemPriceTier());
+            }
+        }
     }
 }

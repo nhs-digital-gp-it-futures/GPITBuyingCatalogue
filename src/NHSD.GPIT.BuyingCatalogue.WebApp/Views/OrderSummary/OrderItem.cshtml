@@ -52,13 +52,13 @@
                           Model.OrderWrapper.GetCallOffIdForPreviousRecipient(recipient, orderIdWithCatalogueItem)))
             {
                 var callOffId = Model.OrderWrapper.GetCallOffIdForPreviousRecipient(serviceRecipient, orderIdWithCatalogueItem);
-                var recipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId) { CatalogueItemId = Model.Previous.CatalogueItemId, OrderItemId = Model.Previous.Id };
+                var recipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId);
                 <partial name="ServiceRecipientRow" model="recipientRowModel" />
             }
         }
         @foreach (var recipient in Model.RolledUpRecipientsForItem.Where(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)))
         {
-            var recipientRowModel = new OrderItemRecipientRowModel(recipient, Model, Model.CallOffId.ToString()) { CatalogueItemId = Model.OrderItem.CatalogueItemId, OrderItemId = Model.OrderItem.Id };
+            var recipientRowModel = new OrderItemRecipientRowModel(recipient, Model, Model.CallOffId.ToString());
             <partial name="ServiceRecipientRow" model="recipientRowModel" />
         }
     @if (!Model.OrderType.MergerOrSplit
