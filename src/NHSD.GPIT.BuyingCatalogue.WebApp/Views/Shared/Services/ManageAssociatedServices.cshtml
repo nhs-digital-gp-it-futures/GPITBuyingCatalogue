@@ -37,13 +37,16 @@
                 }
             </nhs-card-content>
             <nhs-card-footer>
-                @if (Model.IsAmendment && !Model.HasNewRecipients)
+                @if (Model.UnselectedAssociatedServicesAvailable)
                 {
-                <vc:inline-information text="You cannot add any new associated services without adding any new service recipients to this order" />
-                }
-                else if (Model.UnselectedAssociatedServicesAvailable)
-                {
-                    <vc:add-or-change href="@addAssociatedServicesLink" noun-phrase="Associated services"/>
+                    @if (Model.AssociatedServices.Any())
+                    {
+                        <vc:add-or-change href="@addAssociatedServicesLink" noun-phrase="Associated services"/>
+                    }
+                    else if (Model.IsAmendment && !Model.HasNewRecipients)
+                    {
+                        <vc:inline-information text="You cannot add any new associated services without adding any new service recipients to this order"/>
+                    }
                 }
                 else
                 {

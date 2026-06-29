@@ -143,6 +143,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 : TaskProgress.Completed;
         }
 
-        private TaskProgress IsCompletedOrAmended() => IsAmendment ? TaskProgress.Amended : TaskProgress.Completed;
+        private TaskProgress IsCompletedOrAmended() => IsAmendment && FromPreviousRevision ? TaskProgress.Amended : TaskProgress.Completed;
     }
 }

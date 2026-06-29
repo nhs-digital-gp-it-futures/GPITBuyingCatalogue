@@ -83,7 +83,7 @@
             @if (Model.QuantityStatus != TaskProgress.CannotStart)
             {
                 @if (Model.IsAmendment
-                     && Model.QuantityStatus != TaskProgress.InProgress && Model.QuantityStatus != TaskProgress.NotStarted && !Model.HasNewRecipients)
+                     && Model.QuantityStatus != TaskProgress.InProgress && Model.QuantityStatus != TaskProgress.NotStarted && !Model.HasNewRecipients && Model.FromPreviousRevision)
                 {
                     var viewAction = Model.IsAssociatedService
                         ? Url.Action(
@@ -137,7 +137,7 @@
                             _ => (null, null),
                         };
                     }
-                    if (Model.AssociatedServicesStatus == TaskProgress.Completed && !Model.HasNewRecipients)
+                    if (Model.AssociatedServicesStatus == TaskProgress.Completed && !Model.HasNewRecipients && Model.FromPreviousRevision)
                         actionText = "View";
                     
                     <a id="AssociatedServices_@Model.CatalogueItemId" style="float:right;"
