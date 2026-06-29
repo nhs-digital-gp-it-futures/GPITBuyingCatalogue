@@ -272,8 +272,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [MockAutoData]
+        [MockInlineAutoData(true, TaskProgress.Amended)]
+        [MockInlineAutoData(false, TaskProgress.Completed)]
         public static void AssociatedServicesStatus_CurrentAssociatedServicesCompleteForAmendment_ReturnsAmended(
+            bool fromPreviousRevision,
+            TaskProgress expectedProgress,
             string internalOrgId,
             OrderItem orderItem,
             OrderItem associatedService,
@@ -291,9 +294,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var model = new TaskListOrderItemModel(internalOrgId, new CallOffId(1, 2), OrderTypeEnum.Solution, recipients, orderItem)
             {
                 AssociatedServicesOrderItems = [associatedService],
+                FromPreviousRevision = fromPreviousRevision,
             };
 
-            model.AssociatedServicesStatus.Should().Be(TaskProgress.Amended);
+            model.AssociatedServicesStatus.Should().Be(expectedProgress);
         }
 
         [Theory]
