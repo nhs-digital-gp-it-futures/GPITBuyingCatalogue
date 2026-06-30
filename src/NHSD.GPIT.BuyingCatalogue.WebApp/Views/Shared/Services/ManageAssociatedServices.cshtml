@@ -39,11 +39,11 @@
             <nhs-card-footer>
                 @if (Model.UnselectedAssociatedServicesAvailable)
                 {
-                    @if (Model.AssociatedServices.Any() || Model.FromPreviousRevision == false)
+                    @if (Model.AssociatedServices.Any() || Model.FromPreviousRevision == false || (Model.IsAmendment && Model.HasNewRecipients))
                     {
                         <vc:add-or-change href="@addAssociatedServicesLink" noun-phrase="Associated services"/>
                     }
-                    else if (Model.IsAmendment && !Model.HasNewRecipients)
+                    else
                     {
                         <vc:inline-information text="You cannot add any new associated services without adding any new service recipients to this order"/>
                     }
