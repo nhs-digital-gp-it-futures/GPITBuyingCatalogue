@@ -10,7 +10,14 @@ public sealed class
     public void Configure(EntityTypeBuilder<CompetitionAdditionalService> builder)
     {
         builder.Property(x => x.ParentItemId).HasColumnName(nameof(CompetitionAdditionalService.ParentItemId));
-        builder.Ignore(x => x.AssociatedServices);
+
+        builder.HasMany(x => x.CompetitionAssociatedServices)
+            .WithOne()
+            .HasForeignKey(x => x.ParentItemId)
+            .HasConstraintName("FK_CompetitionCatalogueItems_Parent")
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Ignore(x => x.CompetitionAssociatedServices);
         builder.Ignore(x => x.AssociatedServicesAvailable);
         builder.Ignore(x => x.AssociatedServicesRemaining);
     }

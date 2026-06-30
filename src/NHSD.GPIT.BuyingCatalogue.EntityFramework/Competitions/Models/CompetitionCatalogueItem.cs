@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -25,6 +25,9 @@ public abstract class CompetitionCatalogueItem
     public int? Quantity { get; set; }
 
     public int? ParentItemId { get; set; }
+
+    public ICollection<CompetitionCatalogueItem> Services { get; set; }
+        = new HashSet<CompetitionCatalogueItem>();
 
     public CatalogueItemId CatalogueItemId { get; set; }
 

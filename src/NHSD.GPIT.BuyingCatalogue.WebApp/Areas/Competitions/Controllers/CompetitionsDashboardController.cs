@@ -213,9 +213,8 @@ public class CompetitionsDashboardController : Controller
             .Select(
             x => new CompetitionSolution(competitionId, x.Solution.CatalogueItemId)
             {
-                Services = x.Solution.AdditionalServices.Select(
-                        y => new CompetitionAdditionalService(competitionId, y.CatalogueItemId, true)).Cast<CompetitionCatalogueItem>()
-                    .ToList(),
+                Services =
+                    [.. x.Solution.AdditionalServices.Select(y => new CompetitionAdditionalService(competitionId, y.CatalogueItemId, true))],
             });
 
         await competitionsService.AddCompetitionSolutions(internalOrgId, competition.Id, competitionSolutions);
