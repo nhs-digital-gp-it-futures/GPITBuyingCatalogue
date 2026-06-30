@@ -90,5 +90,4 @@ public class CompetitionSolution : CompetitionCatalogueItem
 
         return ((IPrice)service.Price)?.CalculateOneOffCost(quantity);
     }
-
 }
