@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf
 {
     public interface IPdfService
     {
-        Task<byte[]> Convert(System.Uri url);
+        Task<byte[]> Convert(Uri url);
 
         Uri BaseUri();
     }
