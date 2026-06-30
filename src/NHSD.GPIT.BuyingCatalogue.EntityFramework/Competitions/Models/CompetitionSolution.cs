@@ -42,10 +42,26 @@ public class CompetitionSolution : CompetitionCatalogueItem
 
     public IEnumerable<CompetitionAssociatedService> GetAssociatedServices() => CompetitionAssociatedServices;
 
-    public IEnumerable<CompetitionCatalogueItem> GetAllServices() =>
-        CompetitionAdditionalServices.Cast<CompetitionCatalogueItem>()
-            .Concat(CompetitionAssociatedServices)
-            .Concat(CompetitionAdditionalServices.SelectMany(x => x.CompetitionAssociatedServices));
+    public IEnumerable<CompetitionCatalogueItem> GetAllServices()
+    {
+        foreach (var additionalService in CompetitionAdditionalServices)
+        {
+            yield return additionalService;
+        }
+
+        foreach (var associatedService in CompetitionAssociatedServices)
+        {
+            yield return associatedService;
+        }
+
+        foreach (var additionalService in CompetitionAdditionalServices)
+        {
+            foreach (var associatedService in additionalService.CompetitionAssociatedServices)
+            {
+                yield return associatedService;
+            }
+        }
+    }
 
     public bool HasScoreType(ScoreType type) => Scores.Any(x => x.ScoreType == type);
 
@@ -53,17 +69,26 @@ public class CompetitionSolution : CompetitionCatalogueItem
 
     public decimal? CalculateTotalPrice(int contractLength)
     {
-        IPrice price = Price;
-
-        var solutionMonthlyCost =
-            price?.CalculateCostPerMonth(Quantities.Sum(x => x.Quantity.GetValueOrDefault()));
-
-        var servicesMonthlyCost = GetAllServices()?.Sum(x =>
-            ((IPrice)x.Price)?.CalculateCostPerMonth(x.Quantities.Sum(y => y.Quantity.GetValueOrDefault())));
-        var oneOffCost = GetAllServices()?.Sum(x =>
-            ((IPrice)x.Price)?.CalculateOneOffCost(x.Quantities.Sum(y => y.Quantity.GetValueOrDefault())));
+        var solutionMonthlyCost = ((IPrice)Price)?.CalculateCostPerMonth(Quantities.Sum(x => x.Quantity.GetValueOrDefault()));
+        var servicesMonthlyCost = GetAllServices().Sum(CalculateCostPerMonth);
+        var servicesOneOffCost = GetAllServices().Sum(CalculateOneOffCost);
 
         return ((solutionMonthlyCost.GetValueOrDefault() + servicesMonthlyCost.GetValueOrDefault()) * contractLength)
-            + oneOffCost.GetValueOrDefault();
+            + servicesOneOffCost.GetValueOrDefault();
     }
+
+    private static decimal? CalculateCostPerMonth(CompetitionCatalogueItem service)
+    {
+        var quantity = service.Quantities.Sum(x => x.Quantity.GetValueOrDefault());
+
+        return ((IPrice)service.Price)?.CalculateCostPerMonth(quantity);
+    }
+
+    private static decimal? CalculateOneOffCost(CompetitionCatalogueItem service)
+    {
+        var quantity = service.Quantities.Sum(x => x.Quantity.GetValueOrDefault());
+
+        return ((IPrice)service.Price)?.CalculateOneOffCost(quantity);
+    }
+
 }
