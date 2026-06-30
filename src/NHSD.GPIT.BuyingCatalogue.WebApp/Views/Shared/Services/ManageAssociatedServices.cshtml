@@ -39,7 +39,7 @@
             <nhs-card-footer>
                 @if (Model.UnselectedAssociatedServicesAvailable)
                 {
-                    @if (Model.AssociatedServices.Any())
+                    @if (Model.AssociatedServices.Any() || Model.FromPreviousRevision == false)
                     {
                         <vc:add-or-change href="@addAssociatedServicesLink" noun-phrase="Associated services"/>
                     }
@@ -54,7 +54,7 @@
                 }
             </nhs-card-footer>
         </nhs-card-v2>
-        @if (Model.IsAmendment && Model.PreviousAssociatedServices.Any())
+        @if (Model.IsAmendment && Model.PreviousAssociatedServices.Values.Any(value => value.Count > 0))
         {
             <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-6">Previously ordered associated services</h3>
             <p>View details about associated services that have been ordered before.</p>

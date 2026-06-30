@@ -559,6 +559,53 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
+        public static async Task Get_ViewServiceRecipientQuantityWithLatestCallOffId_ExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            EntityFramework.Ordering.Models.Order amendment,
+            OrderSublocation sublocation,
+            [Frozen] IOrderService orderService,
+            QuantityController controller)
+        {
+            order.Revision = 1;
+            amendment.OrderNumber = order.OrderNumber;
+            amendment.Revision = 2;
+
+            var orderItem = order.OrderItems.First();
+            order.OrderItems = [orderItem];
+
+            var sublocationRecipient = new OrderSublocationRecipient("r1", sublocation.SublocationOdsCode);
+            sublocation.SublocationRecipients = [sublocationRecipient];
+            order.OrderSublocations = [sublocation];
+
+            var amendSublocation = new OrderSublocation { SublocationOdsCode = sublocation.SublocationOdsCode };
+            var amendSublocationRecipient = new OrderSublocationRecipient("r2", sublocation.SublocationOdsCode);
+            amendSublocation.SublocationRecipients = [amendSublocationRecipient];
+            amendment.OrderSublocations = [amendSublocation];
+
+            amendment.OrderItems = [orderItem];
+
+            orderService.GetOrderWithOrderItems(amendment.CallOffId, internalOrgId).Returns(new OrderWrapper(amendment, [order]));
+
+            var result = await controller.ViewServiceRecipientQuantity(
+                internalOrgId,
+                amendment.CallOffId,
+                orderItem.CatalogueItemId,
+                orderItem.Id);
+
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new ViewServiceRecipientQuantityModel(orderItem, [sublocationRecipient])
+            {
+                InternalOrgId = internalOrgId, CallOffId = amendment.CallOffId,
+            };
+
+            actual.Should().NotBeNull();
+            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Get_ViewServiceRecipientQuantity_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,

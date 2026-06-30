@@ -133,6 +133,7 @@
                         (actionText, action) = Model.AssociatedServicesStatus switch
                         {
                             TaskProgress.Completed or TaskProgress.InProgress or TaskProgress.Amended => ("Change", nameof(AssociatedServicesController.ManageAssociatedServices)),
+                            TaskProgress.NotStarted when Model.IsAmendment => ("Change", nameof(AssociatedServicesController.ManageAssociatedServices)),
                             TaskProgress.NotStarted => ("Start", nameof(AssociatedServicesController.SelectAssociatedServices)),
                             _ => (null, null),
                         };

@@ -32,6 +32,8 @@ public class ManageAssociatedServicesModel(
 
     public bool IsAmendment { get; set; } = orderWrapper.IsAmendment;
 
+    public bool? FromPreviousRevision { get; set; } = orderWrapper.Previous?.Exists(additionalServiceId);
+
     public bool HasNewRecipients { get; set; } = orderWrapper.HasNewOrderRecipients;
 
     public IDictionary<CallOffId, List<OrderItem>> PreviousAssociatedServices => orderWrapper

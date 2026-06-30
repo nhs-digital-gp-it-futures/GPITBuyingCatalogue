@@ -158,6 +158,89 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
 
         [Theory]
         [MockAutoData]
+        public static void CreateRecipientWithExistingOrderContext_AssociatedServiceWithAdditionalServiceParent_UsesParentToDeterminePreviousOrderContext(
+            string recipientOdsCode,
+            DateTime deliveryDate,
+            CatalogueItem additionalServiceCatalogueItem,
+            CatalogueItem associatedServiceCatalogueItem,
+            IFixture fixture,
+            Organisation organisation)
+        {
+            additionalServiceCatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            associatedServiceCatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+
+            var additionalServiceOrderItem = BuildOrderItem(fixture, additionalServiceCatalogueItem, null);
+            var associatedServiceOrderItem = BuildOrderItem(fixture, associatedServiceCatalogueItem, null);
+            associatedServiceOrderItem.Parent = additionalServiceOrderItem;
+            associatedServiceOrderItem.ParentId = additionalServiceOrderItem.Id;
+            var recipient = BuildOrderSublocationRecipient(fixture, "XXXX", [additionalServiceOrderItem]);
+            recipient.RecipientOdsCode = recipientOdsCode;
+
+            Order previousOrder = BuildOrder(
+                fixture,
+                [additionalServiceOrderItem],
+                [
+                    BuildOrderSublocation(
+                        fixture,
+                        "XXXX",
+                        [recipient]),
+                ],
+                organisation);
+
+            Order currentOrder = BuildOrder(fixture, [associatedServiceOrderItem], [], organisation);
+            currentOrder.DeliveryDate = deliveryDate;
+
+            var orderWrapper = new OrderWrapper(currentOrder, [previousOrder]);
+
+            var result = orderWrapper.CreateRecipientWithExistingOrderContext(recipientOdsCode, "XXXX");
+
+            result.GetDeliveryDateForItem(associatedServiceOrderItem.Id).Should().BeNull();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void CreateRecipientWithExistingOrderContext_AssociatedServiceWithSolutionParent_UsesAssociatedServiceToDeterminePreviousOrderContext(
+            string recipientOdsCode,
+            DateTime deliveryDate,
+            CatalogueItem additionalServiceCatalogueItem,
+            CatalogueItem associatedServiceCatalogueItem,
+            IFixture fixture,
+            Organisation organisation)
+        {
+            additionalServiceCatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            associatedServiceCatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+
+            var additionalServiceOrderItem = BuildOrderItem(fixture, additionalServiceCatalogueItem, null);
+            var associatedServiceOrderItem = BuildOrderItem(fixture, associatedServiceCatalogueItem, null);
+
+            associatedServiceOrderItem.Parent = null;
+
+            var recipient = BuildOrderSublocationRecipient(fixture, "XXXX", [additionalServiceOrderItem]);
+            recipient.RecipientOdsCode = recipientOdsCode;
+
+            Order previousOrder = BuildOrder(
+                fixture,
+                [additionalServiceOrderItem],
+                [
+                    BuildOrderSublocation(
+                        fixture,
+                        "XXXX",
+                        [recipient]),
+                ],
+                organisation);
+
+            Order currentOrder = BuildOrder(fixture, [associatedServiceOrderItem], [], organisation);
+            currentOrder.DeliveryDate = deliveryDate;
+
+            var orderWrapper = new OrderWrapper(currentOrder, [previousOrder]);
+
+            var result = orderWrapper.CreateRecipientWithExistingOrderContext(recipientOdsCode, "XXXX");
+
+            result.GetDeliveryDateForItem(associatedServiceOrderItem.Id).Should().Be(deliveryDate);
+        }
+
+        [Theory]
+        [MockAutoData]
         public static void OrderWrapper_RolledUp_Uses_Old_OrderItem_Data_Single_sublocation(
             CatalogueItem catalogueItem,
             IFixture fixture,
