@@ -80,10 +80,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
                 psi.ArgumentList.Add(url.ToString());
 
                 using var process = Process.Start(psi) ?? throw new InvalidOperationException("Failed to start Chrome");
-
-                var stderrTask = process.StandardError.ReadToEndAsync();
-                var stdoutTask = process.StandardOutput.ReadToEndAsync();
-
                 await process.WaitForExitAsync();
 
                 if (!File.Exists(filePath))
