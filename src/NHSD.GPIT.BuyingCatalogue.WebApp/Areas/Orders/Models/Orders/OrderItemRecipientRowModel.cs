@@ -22,6 +22,13 @@ public class OrderItemRecipientRowModel
         IsServiceRecipientAdded = amendOrderItemModel.IsServiceRecipientAdded(recipient.RecipientOdsCode);
         OrderType = amendOrderItemModel.OrderType;
         FromPreviousRevision = amendOrderItemModel.FromPreviousRevision;
+
+        CatalogueItemId = amendOrderItemModel.OrderItem.CatalogueItemId;
+        OrderItemId = recipient.OrderItemSublocationRecipients
+            .Where(x => x.OrderItem?.CatalogueItemId == CatalogueItemId)
+            .OrderByDescending(x => x.OrderItemId)
+            .FirstOrDefault()
+            ?.OrderItemId ?? amendOrderItemModel.OrderItem.Id;
     }
 
     public OrderSublocationRecipient ServiceRecipient { get; init; }

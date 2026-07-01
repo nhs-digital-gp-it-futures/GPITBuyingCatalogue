@@ -327,19 +327,36 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public void InitialiseOrderItemsFrom(ICollection<OrderItem> items)
         {
-            foreach (var item in items)
-            {
-                if (item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService) continue;
-                var existingOrderItem = OrderItems.FirstOrDefault(x => x.CatalogueItemId == item.CatalogueItemId);
+            var groupedItems = items.GroupBy(item => item.ParentId)
+                .Where(group => group.Key is not null)
+                .ToDictionary(
+                    groupByParentId => items.First(item => item.Id == groupByParentId.Key).CatalogueItemId,
+                    groupByParentId => groupByParentId.ToList());
 
-                if (existingOrderItem == null)
-                {
-                    OrderItems.Add(
-                        InitialiseAmendOrderItem(
-                            item.CatalogueItem.Id,
-                            item.OrderItemPrice?.Clone(),
-                            item.EstimationPeriod));
-                }
+            var solutionItem = items.First(key => key.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
+            var existingOrderItem = OrderItems.FirstOrDefault(x => x.CatalogueItemId == solutionItem.CatalogueItemId);
+
+            if (existingOrderItem is null)
+            {
+                var solution = InitialiseAmendOrderItem(
+                    solutionItem.CatalogueItem.Id,
+                    solutionItem.OrderItemPrice?.Clone(),
+                    solutionItem.EstimationPeriod);
+
+                groupedItems.TryGetValue(solutionItem.CatalogueItemId, out var solutionServices);
+                solutionServices?
+                    .Where(service => service.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService)
+                    .Select(service => InitialiseAmendOrderItem(
+                        service.CatalogueItemId,
+                        service.OrderItemPrice?.Clone(),
+                        service.EstimationPeriod)).ToList()
+                    .ForEach(additionalService =>
+                    {
+                        additionalService.Parent = solution;
+                        OrderItems.Add(additionalService);
+                    });
+
+                OrderItems.Add(solution);
             }
 
             return;
@@ -371,14 +388,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             int orderItemId)
         {
             var orderItem = OrderItems.FirstOrDefault(item => item.Id == orderItemId);
+            var item = orderItem is not null
+                && orderItem.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+                    ? orderItem.Parent
+                    : orderItem;
 
-            if (orderItem is null || !Exists(orderItem.Id))
+            if (orderItem is null || !Exists(item.CatalogueItemId))
             {
                 return [];
             }
 
-            if (previous == null || (!previous.Exists(orderItem.Id)
-                && orderItem.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService))
+            if (previous == null || (!previous.Exists(item.CatalogueItemId)
+                && item.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService))
             {
                 // No previous order or this order item is new, all recipients apply
                 return GetOrderRecipients().ToList();
@@ -387,21 +408,21 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             // only the new recipients or recipients from previous orders with missing values
             // which might happen if we amend migrated order that wasn't global recipient compatible
             return GetOrderRecipients()
-                .Where(PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(previous, orderItemId))
+                .Where(PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(previous, item.CatalogueItemId))
                 .Where(CurrentRecipientDidNotExistInPreviousOrderPredicate(previous, IsAmendment))
                 .ToList();
 
             // it doesn't exist on this order so no recipients apply
         }
 
-        public bool Exists(int orderItemId)
+        public bool Exists(CatalogueItemId catalogueItemId)
         {
-            return OrderItems.Any(x => x.Id == orderItemId);
+            return OrderItems.Any(x => x.CatalogueItemId == catalogueItemId);
         }
 
         private static Func<OrderSublocationRecipient, bool> PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(
             Order previous,
-            int orderItemId)
+            CatalogueItemId catalogueItemId)
         {
             return cr =>
             {
@@ -411,7 +432,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
                 return previousRecipient is null
                     || previousRecipient.OrderItemSublocationRecipients.All(oir =>
-                        oir.OrderItem.Id != orderItemId);
+                        oir.OrderItem.CatalogueItemId != catalogueItemId);
             };
         }
 

@@ -482,6 +482,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
+        public static async Task Get_ViewPrice_ReturnsBadRequest_If_No_PreviousOrder(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            int orderItemId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService mockOrderService,
+            PricesController controller)
+        {
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
+
+            var result = await controller.ViewPrice(internalOrgId, callOffId, catalogueItemId, orderItemId);
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Get_ViewPrice_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -498,7 +516,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(amendment, [original]));
 
-            var result = await controller.ViewPrice(internalOrgId, callOffId, orderItem.CatalogueItemId);
+            var result = await controller.ViewPrice(internalOrgId, callOffId, orderItem.CatalogueItemId, orderItem.Id);
 
             var expected = new ViewPriceModel(orderItem.OrderItemPrice, orderItem.CatalogueItem)
             {

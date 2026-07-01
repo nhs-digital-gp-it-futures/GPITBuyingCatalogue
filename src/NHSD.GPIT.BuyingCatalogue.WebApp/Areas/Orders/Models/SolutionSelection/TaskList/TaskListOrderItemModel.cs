@@ -24,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             IsPerServiceRecipient = ((IPrice)rolledUpOrderItem.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
             IsAssociatedService = rolledUpOrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService;
+            IsParentAdditionalService = rolledUpOrderItem.Parent?.CatalogueItem?.CatalogueItemType == CatalogueItemType.AdditionalService;
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             OrderType = orderType;
@@ -65,9 +66,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool IsAssociatedService { get; set; }
 
+        public bool IsParentAdditionalService { get; set; }
+
         public int AssociatedServicesCatalogueItemsCount { get; set; }
 
         public List<OrderItem> AssociatedServicesOrderItems { get; set; } = new();
+
+        public int? PreviousAssociatedServicesOrderItems { get; set; }
 
         public bool CanBeRemoved { get; set; }
 
@@ -112,16 +117,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
             get
             {
+                if ((!HasNewRecipients && PreviousAssociatedServicesOrderItems > 0)
+                    || (PreviousAssociatedServicesOrderItems > 0 && AssociatedServicesOrderItems.Count == 0))
+                {
+                    return TaskProgress.Completed;
+                }
+
                 if (AssociatedServicesOrderItems.Count > 0)
                 {
                     return AssociatedServicesOrderItems.All(orderItem =>
                         GetPriceStatus(orderItem) == TaskProgress.Completed
                     && RolledUpOrderRecipients.AllQuantitiesEntered(orderItem))
-                        ? TaskProgress.Completed
+                        ? IsCompletedOrAmended()
                         : TaskProgress.InProgress;
                 }
 
-                return QuantityStatus != TaskProgress.Completed ? TaskProgress.Optional : TaskProgress.NotStarted;
+                return QuantityStatus is not (TaskProgress.Completed or TaskProgress.Amended) ? TaskProgress.Optional : TaskProgress.NotStarted;
             }
         }
 
@@ -131,5 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 ? TaskProgress.NotStarted
                 : TaskProgress.Completed;
         }
+
+        private TaskProgress IsCompletedOrAmended() => IsAmendment && FromPreviousRevision ? TaskProgress.Amended : TaskProgress.Completed;
     }
 }

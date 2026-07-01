@@ -326,7 +326,7 @@
                 </nhs-expander-v2>
             }
 
-            @if (associatedServices.Any())
+            @if (associatedServices.Any() || Model.PreviousAssociatedServicesGrouping.Any())
             {
                 var heading = associatedServices.Count == 1
                 ? "Associated service"

@@ -12,7 +12,7 @@
     {
         progress++;
     }
-    if (Model.AssociatedServicesStatus is (TaskProgress.Completed))
+    if (Model.AssociatedServicesStatus is TaskProgress.Completed)
     {
         progress++;
     }
@@ -83,17 +83,17 @@
             @if (Model.QuantityStatus != TaskProgress.CannotStart)
             {
                 @if (Model.IsAmendment
-                     && Model.QuantityStatus != TaskProgress.InProgress && Model.QuantityStatus != TaskProgress.NotStarted && !Model.HasNewRecipients)
+                     && Model.QuantityStatus != TaskProgress.InProgress && Model.QuantityStatus != TaskProgress.NotStarted && !Model.HasNewRecipients && Model.FromPreviousRevision)
                 {
                     var viewAction = Model.IsAssociatedService
                         ? Url.Action(
                             nameof(QuantityController.ViewServiceRecipientQuantity),
                             typeof(QuantityController).ControllerName(),
-                            new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.QuantityViewCallOffId })
+                            new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.OrderItemId, Model.QuantityViewCallOffId, Model.Source })
                         : Url.Action(
                             nameof(QuantityController.ViewServiceRecipientQuantity),
                             typeof(QuantityController).ControllerName(),
-                            new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId });
+                            new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.OrderItemId, Model.Source });
                     <a id="Quantity_@Model.CatalogueItemId" style="float:right;"
                        href="@viewAction">View</a>
                 }
@@ -128,20 +128,24 @@
                 @{
                     string actionText = null;
                     string action = null;
-                    if (Model.QuantityStatus == TaskProgress.Completed)
+                    if (Model.QuantityStatus is TaskProgress.Completed or TaskProgress.Amended || Model.IsAmendment && Model.QuantityStatus is TaskProgress.NotStarted)
                     {
                         (actionText, action) = Model.AssociatedServicesStatus switch
                         {
-                            TaskProgress.Completed or TaskProgress.InProgress => ("Change", nameof(AssociatedServicesController.ManageAssociatedServices)),
+                            TaskProgress.Completed or TaskProgress.InProgress or TaskProgress.Amended => ("Change", nameof(AssociatedServicesController.ManageAssociatedServices)),
+                            TaskProgress.NotStarted when Model.IsAmendment => ("Change", nameof(AssociatedServicesController.ManageAssociatedServices)),
                             TaskProgress.NotStarted => ("Start", nameof(AssociatedServicesController.SelectAssociatedServices)),
                             _ => (null, null),
                         };
                     }
+                    if (Model.AssociatedServicesStatus == TaskProgress.Completed && !Model.HasNewRecipients && Model.FromPreviousRevision)
+                        actionText = "View";
+                    
                     <a id="AssociatedServices_@Model.CatalogueItemId" style="float:right;"
                        href="@Url.Action(
                                  action, 
                                  typeof(AssociatedServicesController).ControllerName(),
-                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId})">@actionText</a>
+                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId })">@actionText</a>
                 }
             </nhs-table-cell>
         </nhs-table-row-container>

@@ -23,13 +23,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             bool hasSubsequentRevisions,
             EntityFramework.Ordering.Models.Order order)
         {
-            var model = new SummaryModel(new OrderWrapper(order), internalOrgId, hasSubsequentRevisions, new ImplementationPlan());
+            var orderWrapper = new OrderWrapper(order);
+            var model = new SummaryModel(orderWrapper, internalOrgId, hasSubsequentRevisions, new ImplementationPlan());
 
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Order.Should().BeEquivalentTo(order);
+            model.Previous.Should().BeSameAs(orderWrapper.Previous);
             model.HasSubsequentRevisions.Should().Be(hasSubsequentRevisions);
             model.CanBeTerminated.Should().Be(order.OrderStatus == OrderStatus.Completed && !hasSubsequentRevisions);
             model.CanBeAmended.Should().Be(!order.OrderType.AssociatedServicesOnly && order.OrderStatus == OrderStatus.Completed && !hasSubsequentRevisions && !order.ContractExpired);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Previous_WithPreviousOrders_ReturnsRolledUpPreviousOrder(
+            string internalOrgId,
+            bool hasSubsequentRevisions,
+            EntityFramework.Ordering.Models.Order previous,
+            EntityFramework.Ordering.Models.Order order)
+        {
+            var orderWrapper = new OrderWrapper(order, [previous]);
+            var model = new SummaryModel(orderWrapper, internalOrgId, hasSubsequentRevisions, new ImplementationPlan());
+
+            model.Previous.Should().BeSameAs(orderWrapper.Previous);
+            model.Previous.Should().NotBeSameAs(previous);
         }
 
         [Theory]

@@ -254,15 +254,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> ViewPrice(
             string internalOrgId,
             CallOffId callOffId,
-            CatalogueItemId catalogueItemId)
+            CatalogueItemId catalogueItemId,
+            int orderItemId,
+            RoutingSource? source = null)
         {
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var order = wrapper.Previous;
+            var order = wrapper.PreviousOrders.AsEnumerable().LastOrDefault();
 
-            var orderItem = order.OrderItem(catalogueItemId);
+            if (order is null) return NotFound();
+
+            var orderItem = source == RoutingSource.ManageAssociatedServices
+                ? order.OrderItem(orderItemId)
+                : order.OrderItem(catalogueItemId);
             var price = orderItem.OrderItemPrice;
 
-            var backLink = Url.Action(
+            var backLink = source == RoutingSource.ManageAssociatedServices
+                ? Url.Action(
+                    nameof(AssociatedServicesController.ManageAssociatedServices),
+                    typeof(AssociatedServicesController).ControllerName(),
+                    new { internalOrgId, callOffId, catalogueItemId })
+                : Url.Action(
                    nameof(TaskListController.TaskList),
                    typeof(TaskListController).ControllerName(),
                    new { internalOrgId, callOffId });

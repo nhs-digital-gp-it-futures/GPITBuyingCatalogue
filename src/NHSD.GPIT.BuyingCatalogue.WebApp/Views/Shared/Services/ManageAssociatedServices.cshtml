@@ -22,17 +22,31 @@
         <h2 class="nhsuk-u-margin-bottom-6">Associated services for your additional service</h2>
         <nhs-card-v2>
             <nhs-card-content>
-            @foreach (var service in Model.AssociatedServices)
-            {
-                var model = Model.BuildAssociatedServiceOrderItemModel(service);
-                <partial name="../TaskList/TaskListOrderItem"
-                         model="model"/>
-            }
+                @if (Model.AssociatedServices.Any())
+                {
+                    @foreach (var service in Model.AssociatedServices)
+                    {
+                        var model = Model.BuildAssociatedServiceOrderItemModel(service);
+                        <partial name="../TaskList/TaskListOrderItem"
+                                 model="model"/>
+                    }
+                }
+                else
+                {
+                    <p>No new associated services have been added to this additional service</p>
+                }
             </nhs-card-content>
             <nhs-card-footer>
                 @if (Model.UnselectedAssociatedServicesAvailable)
                 {
-                    <vc:add-or-change href="@addAssociatedServicesLink" noun-phrase="Associated services"/>
+                    @if (Model.AssociatedServices.Any() || Model.FromPreviousRevision == false || (Model.IsAmendment && Model.HasNewRecipients))
+                    {
+                        <vc:add-or-change href="@addAssociatedServicesLink" noun-phrase="Associated services"/>
+                    }
+                    else
+                    {
+                        <vc:inline-information text="You cannot add any new associated services without adding any new service recipients to this order"/>
+                    }
                 }
                 else
                 {
@@ -40,6 +54,38 @@
                 }
             </nhs-card-footer>
         </nhs-card-v2>
+        @if (Model.IsAmendment && Model.PreviousAssociatedServices.Values.Any(value => value.Count > 0))
+        {
+            <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-6">Previously ordered associated services</h3>
+            <p>View details about associated services that have been ordered before.</p>
+            <p>Prices and quantities for previously ordered associated services reflect what was agreed at the time the order was placed.</p>
+                    
+            <nhs-inset-text>You cannot change your original associated services when amending an order</nhs-inset-text>
+
+            {
+                var index = 0;
+                @foreach (var (callOffId, associatedServices) in Model.PreviousAssociatedServices.Reverse())
+                {
+                    if (associatedServices.Count > 0)
+                    {
+                        <nhs-expander label-text="@callOffId" open="@(index == 0)">
+                            @foreach (var model in associatedServices.Select(associatedService => Model.BuildAssociatedServiceOrderItemModel(associatedService)))
+                            {
+                                model.QuantityViewCallOffId = callOffId;
+                                model.CatalogueItemId = Model.AdditionalServiceId;
+                                model.HasNewRecipients = false;
+                                model.FromPreviousRevision = true;
+                                model.CanBeRemoved = false;
+                                <partial name="../TaskList/TaskListOrderItem"
+                                         model="model"/>
+                            }
+                        </nhs-expander>   
+                    }
+
+                    index++;
+                }   
+            }
+        }
         
         <vc:nhs-anchor-button text="Save and continue"
                               url="@Url.Action(

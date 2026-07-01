@@ -94,19 +94,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                         Quantity = 5, DeliveryDate = new DateTime(2024, 01, 01),
                     })));
 
-            var amendment = order.BuildAmendment(2);
-
-            order.OrderType = OrderTypeEnum.Solution;
-
             var solution = order.OrderItems.ElementAt(0);
             var additionalService = order.OrderItems.ElementAt(1);
             var associatedService = order.OrderItems.ElementAt(2);
+
+            order.OrderType = OrderTypeEnum.Solution;
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             additionalService.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
 
+            solution.ParentId = null;
             associatedService.ParentId = solution.Id;
+            additionalService.ParentId = solution.Id;
+
+            var amendment = order.BuildAmendment(2);
 
             orderItem.CatalogueItem = new CatalogueItem()
             {
@@ -120,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             amendment.OrderItems = new List<OrderItem>()
             {
                 new OrderItem() { Id = parentId, Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.Solution, Id = solution.CatalogueItemId }, CatalogueItemId = solution.CatalogueItemId, OrderItemPrice = orderItem.OrderItemPrice },
-                new OrderItem() { Order = order, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService, Id = associatedService.CatalogueItemId }, CatalogueItemId = additionalService.CatalogueItemId, OrderItemPrice = orderItem.OrderItemPrice },
+                new OrderItem() { Order = order, ParentId = parentId, CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService, Id = associatedService.CatalogueItemId }, CatalogueItemId = additionalService.CatalogueItemId, OrderItemPrice = orderItem.OrderItemPrice },
                 orderItem,
             };
 

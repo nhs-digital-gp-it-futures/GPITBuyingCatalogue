@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
                 recipients,
                 previousRecipients,
                 solution,
-                Previous?.OrderItem(solution.CatalogueItemId),
+                OrderWrapper.PreviousOrders.AsEnumerable().LastOrDefault()?.OrderItem(solution.CatalogueItemId),
                 new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(solution.CatalogueItemId)))
             {
                 OrderWrapper = OrderWrapper,
