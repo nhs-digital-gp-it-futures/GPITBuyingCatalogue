@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Base;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepTwo;
@@ -8,6 +7,8 @@ public class ServiceRecipientsPage : BasePage
 {
     private ILocator NavigationLink => Page.GetByRole(AriaRole.Link, new() { Name = "service recipients" });
     private ILocator ManualOption => Page.GetByLabel("Add service recipients manually");
+    private ILocator UploadOption => Page.GetByLabel("Upload a CSV file");
+    private ILocator FileInput => Page.Locator("#File");
     private ILocator SelectLink => Page.GetByRole(AriaRole.Link, new() { Name = "Select" });
 
     public ServiceRecipientsPage(IPage page) : base(page) { }
@@ -37,6 +38,27 @@ public class ServiceRecipientsPage : BasePage
 
         await AssertHeadingAsync("Confirm service recipients");
         await ClickSaveAndContinueAsync();
+    }
+
+    // Upload a CSV file of service recipients instead of selecting them manually.
+    // The file lives in TestData/Files/ in the project, copied to the build output.
+    public async Task UploadServiceRecipientsCsvAsync(string fileName)
+    {
+        await UploadOption.CheckAsync();
+        await ClickSaveAndContinueAsync();
+
+        var filePath = Path.Combine(AppContext.BaseDirectory, "TestData", "Files", fileName);
+        await FileInput.SetInputFilesAsync(filePath);
+        await ClickSaveAndContinueAsync();
+
+        await AssertHeadingAsync("Upload validated");
+        await ClickSaveAndContinueAsync();
+
+        await AssertHeadingAsync("Confirm sublocations");
+        await ClickSaveAndContinueAsync();
+
+        await AssertHeadingAsync("Confirm service recipients");
+        await ClickSaveAndContinueLinkAsync();
     }
 
     private async Task SelectSublocationAsync(string sublocation, string serviceCategory)

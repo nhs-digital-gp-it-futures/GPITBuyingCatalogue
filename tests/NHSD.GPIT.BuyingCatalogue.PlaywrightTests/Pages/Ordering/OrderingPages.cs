@@ -1,13 +1,15 @@
-﻿using Microsoft.Playwright;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+using Xunit.Abstractions;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Login;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.OrderType;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepFour;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepOne;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepThree;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepTwo;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepThree;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepFour;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData;
-using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering;
 
@@ -62,6 +64,10 @@ public class OrderingPages
         ReviewOrder = new ReviewOrderPage(page);
     }
 
+    // ------------------------------------------------------------------------
+    // Shared steps
+    // ------------------------------------------------------------------------
+
     public async Task LoginAsync()
     {
         _output.WriteLine("Login");
@@ -98,16 +104,17 @@ public class OrderingPages
     }
 
     /// <summary>
-    /// Completes step 2 of the order journey by selecting the catalogue solution,
-    /// entering quantities, and optionally adding associated or additional services.
-    /// </summary>
-    /// <param name="solutionName">The catalogue solution to add to the order.</param>
-    /// <param name="associatedService">Optional associated service to add.</param>
-    /// <param name="additionalService">Optional additional service to add.</param>
+	/// Completes step 2 of the order journey by selecting the catalogue solution,
+	/// entering quantities, and optionally adding associated or additional services.
+	/// </summary>
+	/// <param name="solutionName">The catalogue solution to add to the order.</param>
+	/// <param name="associatedService">Optional associated service to add.</param>
+	/// <param name="additionalService">Optional additional service to add.</param>
     public async Task StepTwoAddSolutionsAndServicesAsync(
         string solutionName,
         string associatedService = "",
-        string additionalService = "")
+        string additionalService = "",
+        string serviceRecipientsCsv = "")
     {
         _output.WriteLine("Step 2 — add solutions and services");
 
@@ -116,7 +123,10 @@ public class OrderingPages
             !string.IsNullOrWhiteSpace(additionalService);
 
         await ServiceRecipients.NavigateAsync();
-        await ServiceRecipients.SelectRecipientsManuallyAsync(_data.Sublocation, _data.Practices);
+        if (!string.IsNullOrWhiteSpace(serviceRecipientsCsv))
+            await ServiceRecipients.UploadServiceRecipientsCsvAsync(serviceRecipientsCsv);
+        else
+            await ServiceRecipients.SelectRecipientsManuallyAsync(_data.Sublocation, _data.Practices);
 
         await SolutionsAndServices.NavigateAsync();
         await SolutionsAndServices.SelectCatalogueSolutionAsync(solutionName);
@@ -143,11 +153,71 @@ public class OrderingPages
                 AddOnServiceType.Associated.QuantityHeading(),
                 completeEdit: true);
         }
+    }
+
+    public async Task StepTwoEditSolutionsAndServicesAsync(
+    string oldAssociatedService = "", string newAssociatedService = "",
+    string oldAdditionalService = "", string newAdditionalService = "")
+    {
+        _output.WriteLine("Step 2 — edit solutions and services");
+
+        var hasAdditionalEdit =
+            !string.IsNullOrWhiteSpace(oldAdditionalService) &&
+            !string.IsNullOrWhiteSpace(newAdditionalService);
+
+        var hasAssociatedEdit =
+            !string.IsNullOrWhiteSpace(oldAssociatedService) &&
+            !string.IsNullOrWhiteSpace(newAssociatedService);
+
+        if (!hasAdditionalEdit && !hasAssociatedEdit) return;
+
+        await SolutionsAndServices.NavigateAsync();
+
+        if (hasAdditionalEdit)
+        {
+            await SolutionsAndServices.ReplaceAddOnServiceAsync(
+                AddOnServiceType.Additional, oldAdditionalService, newAdditionalService);
+            await Quantity.EnterAddOnQuantitiesAsync(
+                _data.Quantities,
+                AddOnServiceType.Additional.QuantityHeading(),
+                completeEdit: !hasAssociatedEdit);
+        }
+
+        if (hasAssociatedEdit)
+        {
+            await SolutionsAndServices.ReplaceAddOnServiceAsync(
+                AddOnServiceType.Associated, oldAssociatedService, newAssociatedService);
+            await Quantity.EnterAddOnQuantitiesAsync(
+                _data.Quantities,
+                AddOnServiceType.Associated.QuantityHeading(),
+                completeEdit: true);
+        }
+    }
+
+    public async Task StepTwoChangeCatalogueSolutionAsync(string newSolutionName)
+    {
+        _output.WriteLine("Step 2 — change catalogue solution");
+        await SolutionsAndServices.NavigateAsync();
+        await SolutionsAndServices.ChangeCatalogueSolutionAsync(newSolutionName);
+        await Quantity.EnterQuantitiesAsync(_data.Quantities, completeEdit: true);
+    }
+
+    public async Task StepTwoDeliveryAndFundingAsync(
+        string associatedService = "",
+        string additionalService = "",
+        string catalogueSolutionOverride = "")
+    {
+        _output.WriteLine("Step 2 — delivery dates and funding");
 
         await PlannedDeliveryDates.NavigateAsync();
         await PlannedDeliveryDates.EnterDeliveryDateAsync(_data.DeliveryDay, _data.DeliveryMonth, _data.DeliveryYear);
 
-        var fundingFilters = new List<string> { solutionName };
+        // Default to the baseline solution; override allows tests that changed the solution to fund the correct one
+        var solutionForFunding = string.IsNullOrWhiteSpace(catalogueSolutionOverride)
+            ? _data.Solution
+            : catalogueSolutionOverride;
+
+        var fundingFilters = new List<string> { solutionForFunding };
         if (!string.IsNullOrWhiteSpace(additionalService)) fundingFilters.Add(additionalService);
         if (!string.IsNullOrWhiteSpace(associatedService)) fundingFilters.Add(associatedService);
 
@@ -180,9 +250,9 @@ public class OrderingPages
     }
 
     /// <summary>
-    /// Starts an associated-service-only order journey for the supported
-    /// scenarios such as Something Else and Merger.
-    /// </summary>
+	/// Starts an associated-service-only order journey for the supported
+	/// scenarios such as Something Else and Merger.
+	/// </summary>
     public async Task CreateNewAssociatedServiceOrderAsync(AssociatedServiceTestData data)
     {
         _output.WriteLine("Create new Associated Service order");
@@ -236,9 +306,9 @@ public class OrderingPages
 
         await SolutionsAndServices.NavigateAsync();
         if (data.HasServiceVariant)
-            await SolutionsAndServices.SelectAssociatedServiceSomeThingElseAsync(data.SolutionWithAssociatedService, data.AssociatedService);
+            await SolutionsAndServices.SelectAssociatedServiceWithVariantAsync(data.SolutionWithAssociatedService, data.AssociatedService);
         else
-            await SolutionsAndServices.SelectAssociatedServiceMergerAsync(data.SolutionWithAssociatedService);
+            await SolutionsAndServices.SelectAssociatedServiceAsync(data.SolutionWithAssociatedService);
 
         await SolutionsAndServices.SelectAssociatedServicePriceAsync();
 
