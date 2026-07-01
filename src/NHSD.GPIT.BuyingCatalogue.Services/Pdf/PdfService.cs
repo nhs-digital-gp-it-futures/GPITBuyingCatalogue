@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
 
         public async Task<byte[]> Convert(Uri url)
         {
-            ArgumentNullException.ThrowIfNull(url, nameof(url));
+            ArgumentNullException.ThrowIfNull(url);
 
             string filePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
             var userDataDir = Path.Combine(Path.GetTempPath(), $"chrome-{Guid.NewGuid()}");
@@ -85,9 +85,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
                 var stdoutTask = process.StandardOutput.ReadToEndAsync();
 
                 await process.WaitForExitAsync();
-
-                var stderr = await stderrTask;
-                var stdout = await stdoutTask;
 
                 if (!File.Exists(filePath))
                 {
