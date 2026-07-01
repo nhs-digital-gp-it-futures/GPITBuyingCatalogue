@@ -1,0 +1,28 @@
+@model OrderingInformationItem
+
+
+@if (Model.Services is not null && Model.Services.Any())
+{
+    <h3>Associated services for @Model.CatalogueItemName</h3>
+    <br />
+    foreach(var service in Model.Services)
+    {
+        <h4>@service.CatalogueItemName</h4>
+        <br />
+        <nhs-table label-text="Pricing">
+            <nhs-table-column>Price per unit</nhs-table-column>
+            <nhs-table-column>Quantity</nhs-table-column>
+            <nhs-table-column>Subtotal</nhs-table-column>
+
+            @foreach (var tier in service.Price.CalculateCostPerTier(service.Quantity))
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>@($"£{tier.Price:#,###,##0.00##}") @service.Price.ToPriceUnitString()</nhs-table-cell>
+                    <nhs-table-cell>@($"{tier.Quantity:N0}")</nhs-table-cell>
+                    <nhs-table-cell>@($"£{tier.Cost:N2}")</nhs-table-cell>
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+        <br />
+    }
+}

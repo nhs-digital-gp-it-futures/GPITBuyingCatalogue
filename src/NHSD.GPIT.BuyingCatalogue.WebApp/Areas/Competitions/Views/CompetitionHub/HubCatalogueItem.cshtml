@@ -97,7 +97,7 @@
 }
 
 @if (Model.PriceProgress is TaskProgress.Completed && Model.QuantityProgress is TaskProgress.Completed)
-{
+{    
     <nhs-summary-list>
     @if (Model.Price.BillingPeriod is null)
     {
@@ -107,7 +107,9 @@
     {
         <nhs-summary-list-row label-text="Price per month">£@Model.CalculateCostPerMonth()</nhs-summary-list-row>
     }
+    
     <nhs-summary-list-row label-text="Quantity">@Model.Quantity.ToString($"#,##0")</nhs-summary-list-row>
+
     @if (Model.Price.BillingPeriod is not null)
     {
         <nhs-summary-list-row label-text="Total price">£@Model.CalculateTotalCost()</nhs-summary-list-row>

@@ -111,12 +111,12 @@ public static class CompetitionHubControllerTests
     {
         competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
         competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
-        competitionAdditionalService.AssociatedServices = associatedServices
+        competitionAdditionalService.Services = [.. associatedServices
             .Select(x => new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
             {
                 CatalogueItemType = CatalogueItemType.AssociatedService,
                 CatalogueItem = x.CatalogueItem,
-            });
+            })];
 
         competitionSolution.Services = [competitionAdditionalService];
         competitionSolution.CatalogueItem = solution.CatalogueItem;
@@ -219,12 +219,12 @@ public static class CompetitionHubControllerTests
         additionalService.CatalogueItem = service.CatalogueItem;
         additionalService.CatalogueItemId = service.CatalogueItemId;
         additionalService.Price = servicePrice;
-        additionalService.AssociatedServices = associatedServices
+        additionalService.Services = [.. associatedServices
             .Select(x => new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
             {
                 CatalogueItemType = CatalogueItemType.AssociatedService,
                 CatalogueItem = x.CatalogueItem,
-            });
+            })];
 
         competitionSolution.Services = [additionalService];
         competition.CompetitionSublocations = [new CompetitionSublocation()
@@ -349,7 +349,7 @@ public static class CompetitionHubControllerTests
     {
         competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
         competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
-        competitionAdditionalService.AssociatedServices = [
+        competitionAdditionalService.Services = [
             new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
             {
                 CatalogueItemType = CatalogueItemType.AssociatedService,
@@ -661,7 +661,7 @@ public static class CompetitionHubControllerTests
         associatedService.CatalogueItem.CataloguePrices = [cataloguePrice];
         competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
         competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
-        competitionAdditionalService.AssociatedServices = [
+        competitionAdditionalService.Services = [
             new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
             {
                 CatalogueItemType = CatalogueItemType.AssociatedService,
@@ -682,7 +682,7 @@ public static class CompetitionHubControllerTests
         competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId)
             .Returns(competitionSolution);
         listPriceService.GetCatalogueItemWithPublishedListPrices(associatedService.CatalogueItemId)
-            .Returns(competitionAdditionalService.AssociatedServices.FirstOrDefault().CatalogueItem);
+            .Returns(competitionAdditionalService.Services.FirstOrDefault().CatalogueItem);
 
         var expectedModel = new ConfirmPriceModel(
             associatedService.CatalogueItem,
@@ -1040,7 +1040,7 @@ public static class CompetitionHubControllerTests
         competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
         competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
         competitionAdditionalService.Price = competitionPrice;
-        competitionAdditionalService.AssociatedServices = [
+        competitionAdditionalService.Services = [
             new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
             {
                 CatalogueItemType = CatalogueItemType.AssociatedService,
@@ -1243,7 +1243,7 @@ public static class CompetitionHubControllerTests
 
         competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
         competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
-        competitionAdditionalService.AssociatedServices = [competitionAssociatedService];
+        competitionAdditionalService.Services = [competitionAssociatedService];
 
         competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.CatalogueItemId = solution.CatalogueItemId;
@@ -1461,7 +1461,7 @@ public static class CompetitionHubControllerTests
         competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
         competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
         competitionAdditionalService.Price = competitionPrice;
-        competitionAdditionalService.AssociatedServices = [
+        competitionAdditionalService.Services = [
             new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
             {
                 CatalogueItemType = CatalogueItemType.AssociatedService,
@@ -1499,7 +1499,7 @@ public static class CompetitionHubControllerTests
 
         var expectedModel = new ConfirmQuantitiesModel(
             associatedService.CatalogueItem,
-            competitionAdditionalService.AssociatedServices.FirstOrDefault()?.Price,
+            competitionAdditionalService.Services.FirstOrDefault()?.Price,
             [.. recipients]);
 
         var result = (await controller.ConfirmQuantities(
@@ -1630,7 +1630,7 @@ public static class CompetitionHubControllerTests
         competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
         competitionAdditionalService.Price = competitionPrice;
         competitionAdditionalService.Quantities = solutionQuantities;
-        competitionAdditionalService.AssociatedServices = [
+        competitionAdditionalService.Services = [
             new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
             {
                 CatalogueItemType = CatalogueItemType.AssociatedService,
@@ -2172,7 +2172,7 @@ public static class CompetitionHubControllerTests
 
         competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
         competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
-        competitionAdditionalService.AssociatedServices = [competitionAssociatedService];
+        competitionAdditionalService.Services = [competitionAssociatedService];
 
         competitionSolution.Services = [competitionAdditionalService];
         competition.CompetitionSolutions = [competitionSolution];
@@ -2537,12 +2537,12 @@ public static class CompetitionHubControllerTests
     {
         competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItemId;
         competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
-        competitionAdditionalService.AssociatedServices = associatedServices
+        competitionAdditionalService.Services = [.. associatedServices
             .Select(x => new CompetitionAssociatedService(competition.Id, x.CatalogueItemId)
             {
                 CatalogueItemType = CatalogueItemType.AssociatedService,
                 CatalogueItem = x.CatalogueItem,
-            });
+            })];
 
         competitionSolution.CompetitionId = competition.Id;
         competitionSolution.Competition = competition;
@@ -2563,7 +2563,7 @@ public static class CompetitionHubControllerTests
             AdditionalServiceItemId = competitionAdditionalService.CatalogueItemId,
             AdditionalServiceName = competitionAdditionalService.CatalogueItem.Name,
             AssociatedServicesRemaining = competitionAdditionalService.AssociatedServicesRemaining,
-            AssociatedServices = competitionAdditionalService.AssociatedServices.Select(s =>
+            AssociatedServices = competitionAdditionalService.Services.Select(s =>
                 new AdditionalServiceAssociatedServiceItemModel(
                     competitionAdditionalService.CatalogueItemId,
                     s.CatalogueItem,

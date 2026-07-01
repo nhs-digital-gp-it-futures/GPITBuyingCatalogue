@@ -350,7 +350,7 @@ public static class CompetitionsPriceServiceTests
         {
             Id = competitionAdditionalServiceId,
             CatalogueItem = additionalService.CatalogueItem,
-            AssociatedServices = [competitionAssociatedService],
+            Services = [competitionAssociatedService],
         };
 
         competition.OrganisationId = organisation.Id;
@@ -435,7 +435,7 @@ public static class CompetitionsPriceServiceTests
         {
             Id = competitionAdditionalServiceId,
             CatalogueItem = additionalService.CatalogueItem,
-            AssociatedServices = [competitionAssociatedService],
+            Services = [competitionAssociatedService],
         };
 
         competition.CompetitionSolutions.Add(
