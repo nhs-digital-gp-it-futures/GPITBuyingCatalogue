@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             itemRecipient.Quantity = quantity;
         }
 
-        public OrderSublocationRecipient Clone()
+        public OrderSublocationRecipient Clone(bool preserveIds = false)
         {
             return new OrderSublocationRecipient
             {
@@ -81,6 +81,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             return OrderItemSublocationRecipients
                 .FirstOrDefault(x => x.OrderItemId == orderItemId)
+                ?.Quantity;
+        }
+
+        public int? GetQuantityForItem(CatalogueItemId catalogueItemId)
+        {
+            return OrderItemSublocationRecipients
+                .FirstOrDefault(x => x.OrderItem.CatalogueItemId == catalogueItemId)
                 ?.Quantity;
         }
 

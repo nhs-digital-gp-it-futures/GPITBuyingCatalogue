@@ -293,6 +293,26 @@
                             <partial name="_OrderItemSummary" model="@associatedServiceModel" />
                         }
                     }
+                    
+                    @if (Model.PreviousAssociatedServicesForAdditionalServices.ContainsKey(additionalService.CatalogueItemId))
+                    {
+                        <h3>Previously ordered associated services</h3>
+                        @foreach (var group in Model.PreviousAssociatedServicesForAdditionalServices[additionalService.CatalogueItemId].Reverse())
+                        {
+                            <nhs-expander-v2 open="true">
+                                <nhs-expander-summary label-text="@group.Key" bold-title="true"></nhs-expander-summary>
+                                <nhs-expander-content>
+                                    @foreach (var associatedService in group.Value)
+                                    {
+                                        var previousServiceModel = Model.BuildAmendOrderItemModel(associatedService, additionalService.CatalogueItem.Name, true);
+                                        previousServiceModel.IsCardView = true;
+                                        previousServiceModel.IsAmendment = true;
+                                        <partial name="_OrderItemSummary" model="@previousServiceModel" />
+                                    }
+                                </nhs-expander-content>
+                            </nhs-expander-v2>
+                        }
+                    }
                 }
             }
 
@@ -365,6 +385,7 @@
                                 {
                                     var itemModel = Model.BuildAmendOrderItemModel(associatedService, solutionName, true);
                                     itemModel.IsCardView = true;
+                                    itemModel.IsAmendment = true;
                                     <partial name="_OrderItemSummary" model="@itemModel" />
                                 }
                             </nhs-expander-content>

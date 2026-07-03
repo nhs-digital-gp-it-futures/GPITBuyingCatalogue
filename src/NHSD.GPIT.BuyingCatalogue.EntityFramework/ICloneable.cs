@@ -2,5 +2,5 @@
 
 public interface ICloneable<out T>
 {
-    T Clone();
+    T Clone(bool preserveIds = false);
 }

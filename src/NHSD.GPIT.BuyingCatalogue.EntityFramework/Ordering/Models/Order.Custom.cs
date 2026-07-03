@@ -204,7 +204,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             foreach (OrderItem orderItemToApply in orderToApply.OrderItems)
             {
                 OrderItem currentOrderItem =
-                    OrderItems.FirstOrDefault(x => x.CatalogueItemId == orderItemToApply.CatalogueItemId);
+                    OrderItems.FirstOrDefault(x =>
+                    {
+                        if (orderItemToApply.CatalogueItem?.CatalogueItemType == CatalogueItemType.AssociatedService)
+                        {
+                            return x.Id == orderItemToApply.Id;
+                        }
+
+                        return x.CatalogueItemId == orderItemToApply.CatalogueItemId;
+                    });
 
                 if (currentOrderItem == null)
                 {
@@ -285,7 +293,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return Id.GetHashCode();
         }
 
-        public Order Clone()
+        public Order Clone(bool preserveIds = false)
         {
             return new Order
             {
@@ -294,7 +302,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 Revision = Revision,
                 OrderType = OrderType,
                 Description = Description,
-                OrderItems = OrderItems.Select(x => x.Clone()).ToList(),
+                OrderItems = OrderItems.Select(x => x.Clone(preserveIds)).ToList(),
                 OrderSublocations = OrderSublocations.Select(x => x.Clone()).ToList(),
             };
         }

@@ -307,12 +307,28 @@
                                     <partial name="OrderItem" model="@associatedServiceModel" />
                                 }
                             }
+                            
+                            @if (Model.PreviousAssociatedServicesForAdditionalServices.ContainsKey(service.CatalogueItemId))
+                            {
+                                <h3>Previously ordered associated services</h3>
+                                @foreach (var group in Model.PreviousAssociatedServicesForAdditionalServices[service.CatalogueItemId].Reverse())
+                                {
+                                    <h4>@group.Key</h4>
+                                    @foreach (var associatedService in group.Value)
+                                    {
+                                        var previousServiceModel = Model.BuildAmendOrderItemModel(associatedService, service.CatalogueItem.Name, true);
+                                        previousServiceModel.IsCardView = true;
+                                        previousServiceModel.IsAmendment = true;
+                                        <partial name="OrderItem" model="@previousServiceModel" />
+                                    }
+                                }
+                            }
                         }
 
                         <div style="page-break-after: always"></div>
                     }
 
-                @if (Model.Order.GetAssociatedServices().Any())
+                @if (Model.RolledUp.GetAssociatedServices().Any() || Model.PreviousAssociatedServicesGrouping.Any())
                     {
                         var solutionName = Model.Order.GetSolutions().First().CatalogueItem.Name;
                         <h2>@(Model.Order.GetAssociatedServices().Count() > 1 ? "Associated services" : "Associated service") details</h2>
@@ -336,6 +352,8 @@
                                 @foreach (var service in group)
                                 {
                                     var itemModel = Model.BuildAmendOrderItemModel(service, solutionName, true);
+                                    itemModel.IsCardView = true;
+                                    itemModel.IsAmendment = true;
                                     <partial name="OrderItem" model="@itemModel" />
                                 }
                             }

@@ -321,6 +321,55 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.AssociatedServicesForAdditionalServices.Should().BeEquivalentTo(expected);
         }
 
+        [Theory]
+        [MockAutoData]
+        public static void PreviousAssociatedServicesForAdditionalServices_Property_SetCorrectly(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order current,
+            OrderItem solution,
+            OrderItem ignoredAssociatedService,
+            EntityFramework.Ordering.Models.Order initialOrder,
+            EntityFramework.Ordering.Models.Order amendedOrder)
+        {
+            var additionalService1 = new OrderItem { Id = 1, CatalogueItemId = new CatalogueItemId(1, "add1"), CatalogueItem = new CatalogueItem { CatalogueItemType = CatalogueItemType.AdditionalService } };
+            var additionalService2 = new OrderItem { Id = 2, CatalogueItemId = new CatalogueItemId(2, "add2"), CatalogueItem = new CatalogueItem { CatalogueItemType = CatalogueItemType.AdditionalService } };
+
+            var associatedService1 = new OrderItem { Id = 3, CatalogueItem = new CatalogueItem { CatalogueItemType = CatalogueItemType.AssociatedService }, Parent = additionalService1 };
+            var associatedService2 = new OrderItem { Id = 4, CatalogueItem = new CatalogueItem { CatalogueItemType = CatalogueItemType.AssociatedService }, Parent = additionalService2 };
+
+            var amendAssociatedService1 = new OrderItem { Id = 5, CatalogueItem = new CatalogueItem { CatalogueItemType = CatalogueItemType.AssociatedService }, Parent = additionalService1 };
+            var amendAssociatedService2 = new OrderItem { Id = 6, CatalogueItem = new CatalogueItem { CatalogueItemType = CatalogueItemType.AssociatedService }, Parent = additionalService2 };
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            ignoredAssociatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            ignoredAssociatedService.Parent = solution;
+
+            initialOrder.OrderItems = [additionalService1, additionalService2, associatedService1, associatedService2];
+            initialOrder.OrderItems.ForEach(oi => oi.Order = initialOrder);
+
+            amendedOrder.OrderItems = [additionalService1, additionalService2, amendAssociatedService1, amendAssociatedService2, ignoredAssociatedService];
+            amendedOrder.OrderItems.ForEach(oi => oi.Order = amendedOrder);
+
+            var orderWrapper = new OrderWrapper(current, [initialOrder, amendedOrder]);
+
+            var expected = new Dictionary<CatalogueItemId, Dictionary<CallOffId, List<OrderItem>>>
+            {
+                {
+                    additionalService1.CatalogueItemId,
+                    new Dictionary<CallOffId, List<OrderItem>> { { initialOrder.CallOffId, [associatedService1] }, { amendedOrder.CallOffId, [amendAssociatedService1] } }
+                },
+                {
+                    additionalService2.CatalogueItemId,
+                    new Dictionary<CallOffId, List<OrderItem>> { { initialOrder.CallOffId, [associatedService2] }, { amendedOrder.CallOffId, [amendAssociatedService2] } }
+                },
+            };
+
+            var model = new SummaryModel(orderWrapper, internalOrgId, false, new ImplementationPlan());
+
+            model.PreviousAssociatedServicesForAdditionalServices.Should().BeEquivalentTo(expected);
+        }
+
         private static void SetInProgressCanCompleteOrder(EntityFramework.Ordering.Models.Order order)
         {
             order.Contract = new Contract() { ContractBilling = new ContractBilling(), ImplementationPlan = new ImplementationPlan(), };
