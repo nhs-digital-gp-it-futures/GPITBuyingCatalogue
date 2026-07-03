@@ -331,14 +331,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             EntityFramework.Ordering.Models.Order initialOrder,
             EntityFramework.Ordering.Models.Order amendedOrder)
         {
-            var additionalService1 = new OrderItem { Id = 1, CatalogueItemId = new CatalogueItemId(1, "add1"), CatalogueItem = new CatalogueItem { CatalogueItemType = CatalogueItemType.AdditionalService } };
-            var additionalService2 = new OrderItem { Id = 2, CatalogueItemId = new CatalogueItemId(2, "add2"), CatalogueItem = new CatalogueItem { CatalogueItemType = CatalogueItemType.AdditionalService } };
+            var additionalService1 = BuildOrderItem(
+                1,
+                new CatalogueItemId(1, "add1"),
+                CatalogueItemType.AdditionalService,
+                null);
+            var additionalService2 = BuildOrderItem(
+                2,
+                new CatalogueItemId(2, "add2"),
+                CatalogueItemType.AdditionalService,
+                null);
 
-            var associatedService1 = new OrderItem { Id = 3, CatalogueItem = new CatalogueItem { CatalogueItemType = CatalogueItemType.AssociatedService }, Parent = additionalService1 };
-            var associatedService2 = new OrderItem { Id = 4, CatalogueItem = new CatalogueItem { CatalogueItemType = CatalogueItemType.AssociatedService }, Parent = additionalService2 };
+            var associatedService1 = BuildOrderItem(
+                3,
+                default,
+                CatalogueItemType.AssociatedService,
+                additionalService1);
+            var associatedService2 = BuildOrderItem(
+                4,
+                default,
+                CatalogueItemType.AssociatedService,
+                additionalService2);
 
-            var amendAssociatedService1 = new OrderItem { Id = 5, CatalogueItem = new CatalogueItem { CatalogueItemType = CatalogueItemType.AssociatedService }, Parent = additionalService1 };
-            var amendAssociatedService2 = new OrderItem { Id = 6, CatalogueItem = new CatalogueItem { CatalogueItemType = CatalogueItemType.AssociatedService }, Parent = additionalService2 };
+            var amendAssociatedService1 = BuildOrderItem(
+                5,
+                default,
+                CatalogueItemType.AssociatedService,
+                additionalService1);
+            var amendAssociatedService2 = BuildOrderItem(
+                6,
+                default,
+                CatalogueItemType.AssociatedService,
+                additionalService2);
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
@@ -368,6 +392,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             var model = new SummaryModel(orderWrapper, internalOrgId, false, new ImplementationPlan());
 
             model.PreviousAssociatedServicesForAdditionalServices.Should().BeEquivalentTo(expected);
+        }
+
+        private static OrderItem BuildOrderItem(
+            int id,
+            CatalogueItemId catalogueItemId,
+            CatalogueItemType catalogueItemType,
+            OrderItem parent)
+        {
+            return new OrderItem
+            {
+                Id = id,
+                CatalogueItemId = catalogueItemId,
+                CatalogueItem = new CatalogueItem { CatalogueItemType = catalogueItemType },
+                Parent = parent,
+            };
         }
 
         private static void SetInProgressCanCompleteOrder(EntityFramework.Ordering.Models.Order order)
