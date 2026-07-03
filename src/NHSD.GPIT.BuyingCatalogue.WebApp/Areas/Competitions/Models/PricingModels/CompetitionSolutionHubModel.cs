@@ -64,7 +64,7 @@ public class CompetitionSolutionHubModel : NavBaseModel
                 CompetitionId = competitionSolution.CompetitionId,
                 ContractLength = contractLength,
                 AssociatedServicesAvailable = x.AssociatedServicesAvailable,
-                AssociatedServices = x.AssociatedServices.Select(s => new CatalogueItemHubModel(
+                AssociatedServices = x.CompetitionAssociatedServices.Select(s => new CatalogueItemHubModel(
                     competitionSolution.CatalogueItemId,
                     s.CatalogueItem,
                     s.Quantity,

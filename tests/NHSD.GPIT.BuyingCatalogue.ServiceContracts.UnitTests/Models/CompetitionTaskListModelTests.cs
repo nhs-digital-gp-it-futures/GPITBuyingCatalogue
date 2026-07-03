@@ -72,6 +72,38 @@ public static class CompetitionTaskListModelTests
 
     [Theory]
     [MockAutoData]
+    public static void Construct_WithoutContractLength_CalculatePriceCannotStart(
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
+    {
+        competition.CompetitionSublocations = competitionSublocations;
+        competition.ContractLength = null;
+        competition.IncludesNonPrice = null;
+
+        var model = new CompetitionTaskListModel(competition);
+
+        model.ServiceRecipients.Should().Be(TaskProgress.Completed);
+        model.ContractLength.Should().NotBe(TaskProgress.Completed);
+        model.CalculatePrice.Should().Be(TaskProgress.CannotStart);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void Construct_WithoutCompetitionSublocations_CalculatePriceCannotStart(
+        Competition competition)
+    {
+        competition.ContractLength = 5;
+        competition.IncludesNonPrice = null;
+
+        var model = new CompetitionTaskListModel(competition);
+
+        model.ServiceRecipients.Should().NotBe(TaskProgress.Completed);
+        model.ContractLength.Should().NotBe(TaskProgress.Completed);
+        model.CalculatePrice.Should().Be(TaskProgress.CannotStart);
+    }
+
+    [Theory]
+    [MockAutoData]
     public static void Construct_WithoutNonPriceElementAwardCriteria_SetsStatuses(
         Competition competition,
         List<CompetitionSublocation> competitionSublocations)

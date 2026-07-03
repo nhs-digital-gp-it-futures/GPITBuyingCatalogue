@@ -3525,7 +3525,7 @@ public static class CompetitionsServiceTests
         result.AssociatedServicesRemaining.Should().BeFalse();
         result.Services.Should().HaveCount(1);
         result.GetAdditionalServices().Should().HaveCount(1);
-        result.GetAdditionalServices().ElementAt(0).AssociatedServices.Should().BeEmpty();
+        result.GetAdditionalServices().ElementAt(0).Services.Should().BeEmpty();
         result.GetAdditionalServices().ElementAt(0).AssociatedServicesAvailable.Should().BeTrue();
         result.GetAdditionalServices().ElementAt(0).AssociatedServicesRemaining.Should().BeTrue();
     }
@@ -3593,7 +3593,7 @@ public static class CompetitionsServiceTests
         result.Services.Should().HaveCount(1);
         result.GetAdditionalServices().Should().HaveCount(1);
         result.GetAdditionalServices().ElementAt(0).CatalogueItemId.Should().Be(additionalService.CatalogueItemId);
-        result.GetAdditionalServices().ElementAt(0).AssociatedServices.Should().HaveCount(1);
+        result.GetAdditionalServices().ElementAt(0).Services.Should().HaveCount(1);
         result.GetAdditionalServices().ElementAt(0).AssociatedServicesAvailable.Should().BeTrue();
         result.GetAdditionalServices().ElementAt(0).AssociatedServicesRemaining.Should().BeTrue();
     }
@@ -3661,7 +3661,7 @@ public static class CompetitionsServiceTests
         result.Services.Should().HaveCount(1);
         result.GetAdditionalServices().Should().HaveCount(1);
         result.GetAdditionalServices().ElementAt(0).CatalogueItemId.Should().Be(additionalService.CatalogueItemId);
-        result.GetAdditionalServices().ElementAt(0).AssociatedServices.Should().HaveCount(competitionAssociatedServices.Count());
+        result.GetAdditionalServices().ElementAt(0).Services.Should().HaveCount(competitionAssociatedServices.Count());
         result.GetAdditionalServices().ElementAt(0).AssociatedServicesAvailable.Should().BeTrue();
         result.GetAdditionalServices().ElementAt(0).AssociatedServicesRemaining.Should().BeFalse();
     }
@@ -3806,8 +3806,8 @@ public static class CompetitionsServiceTests
 
         updated.Should().NotBeNull();
         updated.GetAdditionalServices().Should().HaveCount(1);
-        updated.GetAdditionalServices().ElementAt(0).AssociatedServices.Should().HaveCount(expectedCount);
-        updated.GetAdditionalServices().ElementAt(0).AssociatedServices.Should().NotContain(associatedServicesToRemove);
+        updated.GetAdditionalServices().ElementAt(0).Services.Should().HaveCount(expectedCount);
+        updated.GetAdditionalServices().ElementAt(0).Services.Should().NotContain(associatedServicesToRemove);
     }
 
     private static Organisation CommonOrganisationFactory(int customId = 0)

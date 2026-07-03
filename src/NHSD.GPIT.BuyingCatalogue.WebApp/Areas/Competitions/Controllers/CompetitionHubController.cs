@@ -502,7 +502,7 @@ public class CompetitionHubController : Controller
         if (solution is null) return BadRequest();
 
         var additionalService = solution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceItemId);
-        if (additionalService is null || !additionalService.AssociatedServices.Any())
+        if (additionalService is null || !additionalService.CompetitionAssociatedServices.Any())
         {
             return RedirectToAction(nameof(Hub), new { internalOrgId, competitionId, solutionId });
         }
@@ -516,7 +516,7 @@ public class CompetitionHubController : Controller
             AdditionalServiceItemId = additionalServiceItemId,
             AdditionalServiceName = additionalService.CatalogueItem.Name,
             AssociatedServicesRemaining = additionalService.AssociatedServicesRemaining,
-            AssociatedServices = additionalService.AssociatedServices.Select(s =>
+            AssociatedServices = additionalService.CompetitionAssociatedServices.Select(s =>
                 new AdditionalServiceAssociatedServiceItemModel(
                     additionalServiceItemId,
                     s.CatalogueItem,
@@ -603,7 +603,7 @@ public class CompetitionHubController : Controller
         var additionalService = solution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceItemId);
         if (additionalService == null) return BadRequest();
 
-        var associatedService = additionalService.AssociatedServices.FirstOrDefault(x => x.CatalogueItemId == serviceId);
+        var associatedService = additionalService.CompetitionAssociatedServices.FirstOrDefault(x => x.CatalogueItemId == serviceId);
         if (associatedService == null) return BadRequest();
 
         var model = new RemoveServiceModel(associatedService.CatalogueItem)
@@ -728,7 +728,7 @@ public class CompetitionHubController : Controller
             return competitionSolution.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
 
         var additionalService = competitionSolution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceId);
-        return additionalService?.AssociatedServices.FirstOrDefault(x => x.CatalogueItemId == serviceId);
+        return additionalService?.CompetitionAssociatedServices.FirstOrDefault(x => x.CatalogueItemId == serviceId);
     }
 
     private async Task<SelectServicesModel> GetSelectServicesModel(
@@ -754,7 +754,7 @@ public class CompetitionHubController : Controller
             var additionalService = solution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == serviceId)
                 ?? throw new ArgumentException("Service not found", nameof(serviceId));
 
-            currentServices = additionalService.AssociatedServices.Select(x => x.CatalogueItem);
+            currentServices = additionalService.CompetitionAssociatedServices.Select(x => x.CatalogueItem);
             itemName = additionalService.CatalogueItem.Name;
         }
         else

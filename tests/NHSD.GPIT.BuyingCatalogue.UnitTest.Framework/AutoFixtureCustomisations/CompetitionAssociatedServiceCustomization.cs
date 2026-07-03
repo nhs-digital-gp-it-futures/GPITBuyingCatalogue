@@ -5,16 +5,16 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 
-public sealed class CompetitionAdditionalServiceCustomization : ICustomization
+public sealed class CompetitionAssociatedServiceCustomization : ICustomization
 {
     public void Customize(IFixture fixture)
     {
-        static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<CompetitionAdditionalService> composer) => composer
+        static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<CompetitionAssociatedService> composer) => composer
             .Without(x => x.CatalogueItem)
             .Without(x => x.Services)
             .Without(x => x.Price)
             .Without(x => x.Quantities);
 
-        fixture.Customize<CompetitionAdditionalService>(ComposerTransformation);
+        fixture.Customize<CompetitionAssociatedService>(ComposerTransformation);
     }
 }
