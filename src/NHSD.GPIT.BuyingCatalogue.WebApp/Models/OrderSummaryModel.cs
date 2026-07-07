@@ -32,8 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         public IEnumerable<OrderItem> AssociatedServicesForCurrentOrder => OrderWrapper.Order.GetAssociatedServices();
 
         public IEnumerable<IGrouping<CallOffId, OrderItem>> PreviousAssociatedServicesGrouping =>
-            OrderWrapper.PreviousOrders.SelectMany(order => order.GetAssociatedServices())
-                .GroupBy(associatedService => associatedService.Order.CallOffId);
+            OrderWrapper.PreviousOrders?.SelectMany(order => order.GetAssociatedServices())
+                .GroupBy(associatedService => associatedService.Order.CallOffId) ?? [];
 
         public ImplementationPlan DefaultImplementationPlan { get; set; }
 

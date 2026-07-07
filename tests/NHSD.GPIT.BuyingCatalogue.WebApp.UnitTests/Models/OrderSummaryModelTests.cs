@@ -162,6 +162,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
 
         [Theory]
         [MockAutoData]
+        public static void PreviousAssociatedServices_DefaultsToEmptyList(
+            OrderItem orderItem,
+            Order order)
+        {
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            orderItem.Order = order;
+            order.Revision = 1;
+            order.OrderItems = [orderItem];
+
+            var orderWrapper = new OrderWrapper(order);
+
+            var model = new OrderSummaryModel(orderWrapper, new ImplementationPlan());
+
+            model.AssociatedServicesForCurrentOrder.Should().BeEquivalentTo([orderItem]);
+            model.PreviousAssociatedServicesGrouping.Should().BeEquivalentTo(new List<OrderItem>().AsEnumerable());
+        }
+
+        [Theory]
+        [MockAutoData]
         public static void AssociatedServicesForAdditionalServices_PropertyCorrectlySet(
             int orderItemId,
             OrderItem additionalService,
