@@ -457,7 +457,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             Func<ICollection<OrderSublocationRecipient>, OrderItem, bool> allValuesPred,
             Order previous = null)
         {
-            if (previous is not null && IsAmendment && HasAssociatedService())
+            if (previous is not null && IsAmendment)
             {
                 return OrderItems.All(item =>
                 {
