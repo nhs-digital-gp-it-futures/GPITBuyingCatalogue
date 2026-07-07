@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.Playwright;
-using Xunit.Abstractions;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Login;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.OrderType;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepOne;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepTwo;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepThree;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepFour;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepOne;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepThree;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepTwo;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData;
+using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering;
 
@@ -85,12 +86,12 @@ public class OrderingPages
         await OrderType.SelectFrameworkAsync(_data.Framework);
     }
 
-    public async Task StepOnePrepareOrderAsync()
+    public async Task StepOnePrepareOrderAsync([CallerMemberName] string orderDescription = "")
     {
-        _output.WriteLine("Step 1 — prepare order");
+        _output.WriteLine($"Step 1 — prepare order: {orderDescription}");
 
         await Description.NavigateAsync();
-        await Description.EnterDescriptionAsync(_data.Description);
+        await Description.EnterDescriptionAsync(orderDescription);
 
         await PrimaryContact.NavigateAsync();
         await PrimaryContact.EnterContactDetailsAsync(_data.FirstName, _data.LastName, _data.Phone, _data.ContactEmail);
@@ -225,16 +226,36 @@ public class OrderingPages
         await FundingSources.SelectFundingForSourcesAsync(_data.FundingType, fundingFilters.ToArray());
     }
 
-    public async Task StepThreeCompleteContractAsync(string associatedService = "")
+    public async Task StepThreeCompleteContractAsync(
+    string associatedService = "",
+    bool addBespokeEntries = false,
+    string implementationMilestoneName = "",
+    string implementationPaymentTrigger = "",
+    string associatedServiceMilestoneName = "",
+    string associatedServicePaymentTrigger = "",
+    string associatedServiceRequirement = "")
     {
         _output.WriteLine("Step 3 — complete contract");
 
-        await ImplementationMilestones.NavigateAndContinueAsync();
+        if (addBespokeEntries && !string.IsNullOrWhiteSpace(implementationMilestoneName))
+            await ImplementationMilestones.NavigateAndAddBespokeMilestoneAsync(
+                implementationMilestoneName, implementationPaymentTrigger);
+        else
+            await ImplementationMilestones.NavigateAndContinueAsync();
 
         if (!string.IsNullOrWhiteSpace(associatedService))
         {
-            await AssociatedServiceMilestones.NavigateAndContinueAsync();
-            await AssociatedServiceRequirements.NavigateAndContinueAsync();
+            if (addBespokeEntries && !string.IsNullOrWhiteSpace(associatedServiceMilestoneName))
+                await AssociatedServiceMilestones.NavigateAndAddBespokeMilestoneAsync(
+                    associatedService, associatedServiceMilestoneName, associatedServicePaymentTrigger);
+            else
+                await AssociatedServiceMilestones.NavigateAndContinueAsync();
+
+            if (addBespokeEntries && !string.IsNullOrWhiteSpace(associatedServiceRequirement))
+                await AssociatedServiceRequirements.NavigateAndAddRequirementAsync(
+                    associatedService, associatedServiceRequirement);
+            else
+                await AssociatedServiceRequirements.NavigateAndContinueAsync();
         }
 
         await DataProcessing.NavigateAndContinueAsync();
@@ -267,12 +288,12 @@ public class OrderingPages
     /// Completes step 1 of the associated-service order journey, including
     /// supplier selection for merger and non-merger scenarios.
     /// </summary>
-    public async Task StepOnePrepareAssociatedServiceOrderAsync(AssociatedServiceTestData data)
+    public async Task StepOnePrepareAssociatedServiceOrderAsync(AssociatedServiceTestData data, [CallerMemberName] string orderDescription = "")
     {
-        _output.WriteLine("Step 1 — prepare associated service order");
+        _output.WriteLine($"Step 1 — prepare associated service order: {orderDescription}");
 
         await Description.NavigateAsync();
-        await Description.EnterDescriptionAsync(data.Description);
+        await Description.EnterDescriptionAsync(orderDescription);
 
         await PrimaryContact.NavigateAsync();
         await PrimaryContact.EnterContactDetailsAsync(data.FirstName, data.LastName, data.Phone, data.ContactEmail);

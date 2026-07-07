@@ -1,5 +1,4 @@
-﻿using Microsoft.Playwright;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
+﻿using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Builders;
 using Xunit.Abstractions;
 
