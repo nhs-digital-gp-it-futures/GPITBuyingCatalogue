@@ -7,6 +7,7 @@ using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -406,56 +407,98 @@ public static class CompetitionOrderServiceTests
     public static async Task CreateOrder_WinningSolution_SetsRecipientQuantities(
         Organisation organisation,
         Competition competition,
-        List<CompetitionSublocation> competitionSublocations,
+        CompetitionSublocationRecipient competitionSublocationRecipient,
+        CompetitionSublocation competitionSublocation,
         Solution solution,
         CompetitionSolution competitionSolution,
-        CompetitionCatalogueItemPrice price,
-        CompetitionCatalogueItemPriceTier priceTier,
+        CompetitionCatalogueItemPrice solutionPrice,
+        CompetitionCatalogueItemPriceTier solutionPriceTier,
         AdditionalService additionalService,
-        CompetitionAdditionalService solutionService,
-        CompetitionCatalogueItemPrice servicePrice,
-        CompetitionCatalogueItemPriceTier servicePriceTier,
+        CompetitionAdditionalService competitionAdditionalService,
+        CompetitionCatalogueItemPrice additionalServicePrice,
+        CompetitionCatalogueItemPriceTier additionalServicePriceTier,
+        AssociatedService associatedService,
+        CompetitionAssociatedService competitionAssociatedService,
+        CompetitionCatalogueItemPrice associatedServicePrice,
+        CompetitionCatalogueItemPriceTier associatedServicePriceTier,
         [Frozen] BuyingCatalogueDbContext dbContext,
         CompetitionOrderService service)
     {
+        var competitionSolutionId = 1001;
+        var competitionAdditionalServiceId = 1002;
+        var competitionAssociatedServiceId = 1003;
+
         competition.OrganisationId = organisation.Id;
         competition.Organisation = organisation;
-        competition.CompetitionSublocations = competitionSublocations;
 
-        servicePrice.Tiers = new List<CompetitionCatalogueItemPriceTier> { servicePriceTier };
-        price.Tiers = new List<CompetitionCatalogueItemPriceTier> { priceTier };
+        competitionSublocationRecipient.CompetitionId = competition.Id;
+        competitionSublocationRecipient.Competition = competition;
 
-        solutionService.IsRequired = false;
-        solutionService.Price = servicePrice;
-        solutionService.CatalogueItem = additionalService.CatalogueItem;
+        competitionSublocation.CompetitionId = competition.Id;
+        competitionSublocation.Competition = competition;
+        competitionSublocation.SublocationRecipients = [competitionSublocationRecipient];
 
-        solutionService.Quantities = competition.FlattenedRecipients.Select(x =>
-                new CompetitionItemQuantity
-                {
-                    CompetitionId = competition.Id,
-                    ParentSublocationOdsCode = x.ParentSublocationOdsCode,
-                    RecipientOdsCode = x.RecipientOdsCode,
-                    Quantity = 5,
-                })
-            .ToList();
+        competition.CompetitionSublocations = [competitionSublocation];
 
-        competitionSolution.Price = price;
+        var additionalServiceQuantity = 15;
+        additionalServicePrice.Tiers = [additionalServicePriceTier];
+        competitionAdditionalService.Id = competitionAdditionalServiceId;
+        competitionAdditionalService.ParentItemId = competitionSolutionId;
+        competitionAdditionalService.Price = additionalServicePrice;
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItem.Id;
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.CompetitionId = competition.Id;
+        competitionAdditionalService.Quantities = [.. competition.FlattenedRecipients.Select(x =>
+            new CompetitionItemQuantity
+            {
+                CompetitionId = competition.Id,
+                CompetitionItemId = competitionAdditionalServiceId,
+                ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                RecipientOdsCode = x.RecipientOdsCode,
+                Quantity = additionalServiceQuantity,
+            })];
+
+        var associatedServiceQuantity = 10;
+        associatedServicePrice.Tiers = [associatedServicePriceTier];
+        competitionAssociatedService.Id = competitionAssociatedServiceId;
+        competitionAssociatedService.ParentItemId = competitionSolutionId;
+        competitionAssociatedService.Price = associatedServicePrice;
+        competitionAssociatedService.CatalogueItemId = associatedService.CatalogueItem.Id;
+        competitionAssociatedService.CatalogueItem = associatedService.CatalogueItem;
+        competitionAssociatedService.Services = [];
+        competitionAssociatedService.CompetitionId = competition.Id;
+        competitionAssociatedService.Quantities = [.. competition.FlattenedRecipients.Select(x =>
+            new CompetitionItemQuantity
+            {
+                CompetitionId = competition.Id,
+                CompetitionItemId = competitionAssociatedServiceId,
+                ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                RecipientOdsCode = x.RecipientOdsCode,
+                Quantity = associatedServiceQuantity,
+            })];
+
+        var competitionSolutionQuantity = 5;
+        solutionPrice.Tiers = [solutionPriceTier];
+        competitionSolution.Id = competitionSolutionId;
+        competitionSolution.ParentItemId = null;
+        competitionSolution.Price = solutionPrice;
+        competitionSolution.CatalogueItemId = solution.CatalogueItem.Id;
         competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.IsShortlisted = true;
         competitionSolution.IsWinningSolution = true;
-        competitionSolution.Services = [solutionService];
-
-        competitionSolution.Quantities = competition.FlattenedRecipients
+        competitionSolution.Services = [competitionAdditionalService, competitionAssociatedService];
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.Quantities = [.. competition.FlattenedRecipients
             .Select(x => new CompetitionItemQuantity()
             {
                 CompetitionId = competition.Id,
+                CompetitionItemId = competitionSolutionId,
                 ParentSublocationOdsCode = x.ParentSublocationOdsCode,
                 RecipientOdsCode = x.RecipientOdsCode,
-                Quantity = 5,
-            })
-            .ToList();
+                Quantity = competitionSolutionQuantity,
+            })];
 
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.CompetitionSolutions = [competitionSolution];
 
         dbContext.Organisations.Add(organisation);
         dbContext.Competitions.Add(competition);
@@ -469,10 +512,22 @@ public static class CompetitionOrderServiceTests
             solution.CatalogueItemId);
 
         var order = await dbContext.Order(callOffId);
+        order.FlattenedRecipients.Count().Should().Be(1);
+        order.FlattenedRecipients.First().OrderItemSublocationRecipients.Count.Should().Be(3);
 
-        order.FlattenedRecipients.SelectMany(x => x.OrderItemSublocationRecipients)
-            .GroupBy(x => x.OrderItem.CatalogueItemId)
-            .Should()
-            .HaveCount(2);
+        var additionalAssociatedServiceRecipients = order.FlattenedRecipients.First().OrderItemSublocationRecipients
+            .FirstOrDefault(x => x.OrderItem.CatalogueItemId == competitionSolution.CatalogueItemId);
+        additionalAssociatedServiceRecipients.Should().NotBeNull();
+        additionalAssociatedServiceRecipients.Quantity.Should().Be(competitionSolutionQuantity);
+
+        var additionalServiceRecipients = order.FlattenedRecipients.First().OrderItemSublocationRecipients
+            .FirstOrDefault(x => x.OrderItem.CatalogueItemId == additionalService.CatalogueItemId);
+        additionalServiceRecipients.Should().NotBeNull();
+        additionalServiceRecipients.Quantity.Should().Be(additionalServiceQuantity);
+
+        var associatedServiceRecipients = order.FlattenedRecipients.First().OrderItemSublocationRecipients
+            .FirstOrDefault(x => x.OrderItem.CatalogueItemId == associatedService.CatalogueItemId);
+        associatedServiceRecipients.Should().NotBeNull();
+        associatedServiceRecipients.Quantity.Should().Be(associatedServiceQuantity);
     }
 }
