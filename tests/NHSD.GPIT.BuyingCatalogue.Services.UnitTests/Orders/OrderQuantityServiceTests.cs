@@ -133,6 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                     x.RecipientOdsCode == i.RecipientOdsCode
                     && x.ParentSublocationOdsCode == i.ParentSublocationOdsCode);
                 i.GetQuantityForItem(actual.Id).Should().Be(quantity.Quantity);
+                i.GetQuantityForItem(actual.CatalogueItemId).Should().Be(quantity.Quantity);
             }
         }
 
