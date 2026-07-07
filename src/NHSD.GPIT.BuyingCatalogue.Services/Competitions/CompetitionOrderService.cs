@@ -15,8 +15,7 @@ public class CompetitionOrderService : ICompetitionOrderService
 {
     private readonly BuyingCatalogueDbContext dbContext;
 
-    public CompetitionOrderService(
-        BuyingCatalogueDbContext dbContext)
+    public CompetitionOrderService(BuyingCatalogueDbContext dbContext)
     {
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
@@ -89,6 +88,16 @@ public class CompetitionOrderService : ICompetitionOrderService
             .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Price)
             .ThenInclude(x => x.Tiers)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Quantities)
+            .ThenInclude(x => x.Recipient)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Price)
+            .ThenInclude(x => x.Tiers)
             .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
@@ -112,16 +121,15 @@ public class CompetitionOrderService : ICompetitionOrderService
         var nextOrderNumber = await dbContext.NextOrderNumber();
 
         var order = CreateOrder(nextOrderNumber, competition, winningSolution, orderItems);
+
         dbContext.Orders.Add(order);
-
-        AssignRecipientQuantities(order, winningSolution, orderItems);
-
         await dbContext.SaveChangesAsync();
+        await AssignRecipientQuantities(nextOrderNumber, winningSolution);
 
         return order.CallOffId;
     }
 
-    private static IEnumerable<OrderItem> CreateDirectAwardOrderItems(CompetitionSolution directAwardSolution)
+    private static List<OrderItem> CreateDirectAwardOrderItems(CompetitionSolution directAwardSolution)
     {
         var solutionOrderItem = new OrderItem(directAwardSolution.CatalogueItemId) { Created = DateTime.UtcNow };
 
@@ -135,19 +143,22 @@ public class CompetitionOrderService : ICompetitionOrderService
         return orderItems;
     }
 
-    private static IEnumerable<OrderItem> CreateOrderItems(CompetitionSolution winningSolution)
+    private static List<OrderItem> CreateOrderItems(CompetitionSolution winningSolution)
     {
         var winningSolutionOrderItem = CreateOrderItem(
             winningSolution.CatalogueItemId,
             winningSolution.Price,
             winningSolution.Price.Tiers,
             null);
-        var services = winningSolution.Services
-            .Select(x => CreateOrderItem(x.CatalogueItemId, x.Price, x.Price.Tiers, winningSolutionOrderItem))
-            .ToList();
 
         var orderItems = new List<OrderItem>() { winningSolutionOrderItem };
-        orderItems.AddRange(services);
+        foreach (var service in winningSolution.Services)
+        {
+            var serviceOrderItem = CreateOrderItem(service.CatalogueItemId, service.Price, service.Price.Tiers, winningSolutionOrderItem);
+            orderItems.Add(serviceOrderItem);
+            orderItems.AddRange([..
+                service.Services.Select(x => CreateOrderItem(x.CatalogueItemId, x.Price, x.Price.Tiers, serviceOrderItem))]);
+        }
 
         return orderItems;
     }
@@ -157,17 +168,20 @@ public class CompetitionOrderService : ICompetitionOrderService
         IPrice price,
         IEnumerable<IOrderablePriceTier> priceTiers,
         OrderItem parent)
-        => new(catalogueItemId)
+    {
+        var orderItem = new OrderItem(catalogueItemId)
         {
             Created = DateTime.UtcNow,
             OrderItemPrice = new OrderItemPrice(price)
             {
-                OrderItemPriceTiers = priceTiers.Select(
-                        y => new OrderItemPriceTier(y))
-                    .ToList(),
+                OrderItemPriceTiers = [..
+                    priceTiers.Select(y => new OrderItemPriceTier(y))],
             },
             Parent = parent,
         };
+
+        return orderItem;
+    }
 
     private static Order CreateOrder(
         int orderNumber,
@@ -183,8 +197,8 @@ public class CompetitionOrderService : ICompetitionOrderService
             Description = $"Order created from competition: {competition.Id}",
             Created = DateTime.UtcNow,
             MaximumTerm = competition.ContractLength,
-            OrderSublocations = competition.CompetitionSublocations.Select(x => new OrderSublocation(x)).ToList(),
-            OrderItems = orderItems.ToList(),
+            OrderSublocations = [.. competition.CompetitionSublocations.Select(x => new OrderSublocation(x))],
+            OrderItems = [.. orderItems],
             OrderingPartyId = competition.OrganisationId,
             SupplierId = competitionSolution.CatalogueItem.SupplierId,
             CompetitionId = competition.Id,
@@ -192,25 +206,60 @@ public class CompetitionOrderService : ICompetitionOrderService
         };
     }
 
-    private static void AssignRecipientQuantities(Order order, CompetitionSolution winningSolution, List<OrderItem> orderItems)
+    private async Task AssignRecipientQuantities(int orderNumber, CompetitionSolution winningSolution)
     {
         var competitionItemQuantities = winningSolution.Quantities
-            .Select(x => new { ItemId = winningSolution.CatalogueItemId, x.Quantity, OdsCode = x.RecipientOdsCode })
-            .Concat(
-                winningSolution.Services.SelectMany(
-                    x => x.Quantities.Select(
-                        y => new
+            .Select(x =>
+                new
+                {
+                    winningSolution.CatalogueItemId,
+                    x.Quantity,
+                    x.ParentSublocationOdsCode,
+                    x.RecipientOdsCode,
+                })
+            .Concat(winningSolution.Services.SelectMany(x =>
+                x.Quantities.Select(y =>
+                    new
+                    {
+                        x.CatalogueItemId,
+                        y.Quantity,
+                        y.ParentSublocationOdsCode,
+                        y.RecipientOdsCode,
+                    })))
+            .Concat(winningSolution.CompetitionAdditionalServices.SelectMany(x =>
+                x.CompetitionAssociatedServices.SelectMany(x =>
+                    x.Quantities.Select(y =>
+                        new
                         {
-                            ItemId = x.CatalogueItemId, y.Quantity, OdsCode = y.RecipientOdsCode,
-                        })));
+                            x.CatalogueItemId,
+                            y.Quantity,
+                            y.ParentSublocationOdsCode,
+                            y.RecipientOdsCode,
+                        }))));
+
+        var savedOrderItems = await dbContext.OrderItems
+            .Where(x => x.Order.OrderNumber == orderNumber)
+            .AsNoTracking()
+            .ToListAsync();
+
+        var orderItemSublocationRecipient = new List<OrderItemSublocationRecipient>();
 
         foreach (var itemQuantity in competitionItemQuantities)
         {
-            OrderSublocationRecipient orderRecipient =
-                order.FlattenedRecipients.FirstOrDefault(x => x.RecipientOdsCode == itemQuantity.OdsCode);
+            var orderItem = savedOrderItems.FirstOrDefault(x => x.CatalogueItemId == itemQuantity.CatalogueItemId)
+                ?? throw new InvalidOperationException("Order item not found");
 
-            var orderItem = orderItems.FirstOrDefault(item => item.CatalogueItemId == itemQuantity.ItemId);
-            orderRecipient?.SetQuantityForItem(orderItem, itemQuantity.Quantity);
+            orderItemSublocationRecipient.Add(new OrderItemSublocationRecipient
+            {
+                OrderId = orderItem.OrderId,
+                OrderItemId = orderItem.Id,
+                Quantity = itemQuantity.Quantity,
+                ParentSublocationOdsCode = itemQuantity.ParentSublocationOdsCode,
+                RecipientOdsCode = itemQuantity.RecipientOdsCode,
+            });
         }
+
+        dbContext.OrderItemSublocationRecipients.AddRange(orderItemSublocationRecipient);
+        await dbContext.SaveChangesAsync();
     }
 }
