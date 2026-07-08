@@ -80,6 +80,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 .GroupBy(service => service.ParentId)
                 .ToDictionary(group => group.Key, group => group.ToHashSet());
 
+        public Dictionary<CatalogueItemId, Dictionary<CallOffId, List<OrderItem>>> PreviousAssociatedServicesForAdditionalServices =>
+            OrderWrapper.PreviousOrders.SelectMany(order => order.GetAllAssociatedServices())
+                .Where(associatedService => associatedService.Parent.CatalogueItem.CatalogueItemType
+                    == CatalogueItemType.AdditionalService)
+                .GroupBy(associatedService => associatedService.Parent.CatalogueItemId)
+                .ToDictionary(
+                    grouping => grouping.Key,
+                    grouping => grouping.GroupBy(associatedService => associatedService.Order.CallOffId)
+                        .ToDictionary(innerGroup => innerGroup.Key, innerGroup => innerGroup.ToList()));
+
         public AmendOrderItemModel BuildAmendOrderItemModel(
             OrderItem item,
             string solutionName = null,

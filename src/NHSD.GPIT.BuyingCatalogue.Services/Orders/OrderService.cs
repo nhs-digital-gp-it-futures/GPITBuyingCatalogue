@@ -967,6 +967,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.OrderItemSublocationRecipients)
                 .ThenInclude(z => z.OrderItem)
+                .ThenInclude(z => z.CatalogueItem)
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.RecipientOdsOrganisation)

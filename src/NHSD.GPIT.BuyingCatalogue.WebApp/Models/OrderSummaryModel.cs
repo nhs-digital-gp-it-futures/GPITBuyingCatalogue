@@ -32,8 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         public IEnumerable<OrderItem> AssociatedServicesForCurrentOrder => OrderWrapper.Order.GetAssociatedServices();
 
         public IEnumerable<IGrouping<CallOffId, OrderItem>> PreviousAssociatedServicesGrouping =>
-            OrderWrapper.PreviousOrders.SelectMany(order => order.GetAssociatedServices())
-                .GroupBy(associatedService => associatedService.Order.CallOffId);
+            OrderWrapper.PreviousOrders?.SelectMany(order => order.GetAssociatedServices())
+                .GroupBy(associatedService => associatedService.Order.CallOffId) ?? [];
 
         public ImplementationPlan DefaultImplementationPlan { get; set; }
 
@@ -54,6 +54,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
                 .Where(service => service.Parent.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService)
                 .GroupBy(service => service.ParentId)
                 .ToDictionary(group => group.Key, group => group.ToHashSet());
+
+        public Dictionary<CatalogueItemId, Dictionary<CallOffId, List<OrderItem>>> PreviousAssociatedServicesForAdditionalServices =>
+            OrderWrapper.PreviousOrders.SelectMany(order => order.GetAllAssociatedServices())
+                .Where(associatedService => associatedService.Parent.CatalogueItem.CatalogueItemType
+                    == CatalogueItemType.AdditionalService)
+                .GroupBy(associatedService => associatedService.Parent.CatalogueItemId)
+                .ToDictionary(
+                    grouping => grouping.Key,
+                    grouping => grouping.GroupBy(associatedService => associatedService.Order.CallOffId)
+                        .ToDictionary(innerGroup => innerGroup.Key, innerGroup => innerGroup.ToList()));
 
         public AmendOrderItemModel BuildAmendOrderItemModel(OrderItem solution, string solutionName = null, bool fromPreviousRevision = false)
         {

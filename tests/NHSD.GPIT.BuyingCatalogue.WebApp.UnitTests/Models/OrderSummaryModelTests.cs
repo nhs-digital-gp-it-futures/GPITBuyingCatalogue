@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -161,6 +162,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
 
         [Theory]
         [MockAutoData]
+        public static void PreviousAssociatedServices_DefaultsToEmptyList(
+            OrderItem orderItem,
+            Order order)
+        {
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            orderItem.Order = order;
+            order.Revision = 1;
+            order.OrderItems = [orderItem];
+
+            var orderWrapper = new OrderWrapper(order);
+
+            var model = new OrderSummaryModel(orderWrapper, new ImplementationPlan());
+
+            model.AssociatedServicesForCurrentOrder.Should().BeEquivalentTo([orderItem]);
+            model.PreviousAssociatedServicesGrouping.Should().BeEquivalentTo(new List<OrderItem>().AsEnumerable());
+        }
+
+        [Theory]
+        [MockAutoData]
         public static void AssociatedServicesForAdditionalServices_PropertyCorrectlySet(
             int orderItemId,
             OrderItem additionalService,
@@ -194,6 +214,93 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
             var model = new OrderSummaryModel(orderWrapper, new ImplementationPlan());
 
             model.AssociatedServicesForAdditionalServices.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void PreviousAssociatedServicesForAdditionalServices_Property_SetCorrectly(
+            Order current,
+            OrderItem solution,
+            OrderItem ignoredAssociatedService,
+            Order initialOrder,
+            Order amendedOrder)
+        {
+            var additionalService1 = BuildOrderItem(
+                1,
+                new CatalogueItemId(1, "add1"),
+                CatalogueItemType.AdditionalService,
+                null);
+            var additionalService2 = BuildOrderItem(
+                2,
+                new CatalogueItemId(2, "add2"),
+                CatalogueItemType.AdditionalService,
+                null);
+
+            var associatedService1 = BuildOrderItem(
+                3,
+                default,
+                CatalogueItemType.AssociatedService,
+                additionalService1);
+            var associatedService2 = BuildOrderItem(
+                4,
+                default,
+                CatalogueItemType.AssociatedService,
+                additionalService2);
+
+            var amendAssociatedService1 = BuildOrderItem(
+                5,
+                default,
+                CatalogueItemType.AssociatedService,
+                additionalService1);
+            var amendAssociatedService2 = BuildOrderItem(
+                6,
+                default,
+                CatalogueItemType.AssociatedService,
+                additionalService2);
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            ignoredAssociatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            ignoredAssociatedService.Parent = solution;
+
+            initialOrder.OrderItems = [additionalService1, additionalService2, associatedService1, associatedService2];
+            initialOrder.OrderItems.ForEach(oi => oi.Order = initialOrder);
+
+            amendedOrder.OrderItems = [additionalService1, additionalService2, amendAssociatedService1, amendAssociatedService2, ignoredAssociatedService];
+            amendedOrder.OrderItems.ForEach(oi => oi.Order = amendedOrder);
+
+            var orderWrapper = new OrderWrapper(current, [initialOrder, amendedOrder]);
+
+            var expected = new Dictionary<CatalogueItemId, Dictionary<CallOffId, List<OrderItem>>>
+            {
+                {
+                    additionalService1.CatalogueItemId,
+                    new Dictionary<CallOffId, List<OrderItem>> { { initialOrder.CallOffId, [associatedService1] }, { amendedOrder.CallOffId, [amendAssociatedService1] } }
+                },
+                {
+                    additionalService2.CatalogueItemId,
+                    new Dictionary<CallOffId, List<OrderItem>> { { initialOrder.CallOffId, [associatedService2] }, { amendedOrder.CallOffId, [amendAssociatedService2] } }
+                },
+            };
+
+            var model = new OrderSummaryModel(orderWrapper, new ImplementationPlan());
+
+            model.PreviousAssociatedServicesForAdditionalServices.Should().BeEquivalentTo(expected);
+        }
+
+        private static OrderItem BuildOrderItem(
+            int id,
+            CatalogueItemId catalogueItemId,
+            CatalogueItemType catalogueItemType,
+            OrderItem parent)
+        {
+            return new OrderItem
+            {
+                Id = id,
+                CatalogueItemId = catalogueItemId,
+                CatalogueItem = new CatalogueItem { CatalogueItemType = catalogueItemType },
+                Parent = parent,
+            };
         }
     }
 }

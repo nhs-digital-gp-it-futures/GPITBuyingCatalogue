@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
@@ -25,10 +27,16 @@ public class OrderItemRecipientRowModel
 
         CatalogueItemId = amendOrderItemModel.OrderItem.CatalogueItemId;
         OrderItemId = recipient.OrderItemSublocationRecipients
-            .Where(x => x.OrderItem?.CatalogueItemId == CatalogueItemId)
+            .Where(OrderItemFilterPredicate)
             .OrderByDescending(x => x.OrderItemId)
             .FirstOrDefault()
             ?.OrderItemId ?? amendOrderItemModel.OrderItem.Id;
+        return;
+
+        bool OrderItemFilterPredicate(OrderItemSublocationRecipient oisr) =>
+            oisr.OrderItem?.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService
+                ? oisr.OrderItem?.CatalogueItemId == CatalogueItemId
+                : oisr.OrderItem.Id == amendOrderItemModel.OrderItem.Id;
     }
 
     public OrderSublocationRecipient ServiceRecipient { get; init; }

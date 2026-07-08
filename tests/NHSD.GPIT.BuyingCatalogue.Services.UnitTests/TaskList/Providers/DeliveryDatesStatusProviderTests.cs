@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using LinqKit;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -154,6 +155,86 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             var actual = service.Get(new OrderWrapper(order), state);
 
             actual.Should().Be(TaskProgress.Completed);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Get_AmendedOrder_NewRecipientDeliveryDateEntered_ReturnsAmended(
+            Order previousOrder,
+            OrderItem solution,
+            OrderSublocation orderSublocation,
+            OrderSublocationRecipient existingRecipient,
+            OrderSublocationRecipient newRecipient,
+            DateTime deliveryDate,
+            DeliveryDatesStatusProvider service)
+        {
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.ParentId = null;
+
+            existingRecipient.OrderItemSublocationRecipients =
+            [
+                new OrderItemSublocationRecipient(previousOrder.Id, existingRecipient.RecipientOdsCode, solution),
+            ];
+
+            orderSublocation.SublocationRecipients = [existingRecipient];
+
+            previousOrder.OrderItems = [solution];
+            previousOrder.OrderSublocations = [orderSublocation];
+
+            var amendedOrder = previousOrder.BuildAmendment(2);
+
+            var amendedSolution = amendedOrder.OrderItems.First();
+
+            var amendedSublocation = amendedOrder.OrderSublocations.First();
+            newRecipient.SetDeliveryDateForItem(amendedSolution, deliveryDate);
+            amendedSublocation.SublocationRecipients.Add(newRecipient);
+
+            var state = new OrderProgress { SolutionOrService = TaskProgress.Completed };
+
+            var actual = service.Get(new OrderWrapper(amendedOrder, [previousOrder]), state);
+
+            actual.Should().Be(TaskProgress.Amended);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Get_AmendedOrder_NewOrderItemDeliveryDateEntered_ReturnsAmended(
+            CatalogueItemId catalogueItemId,
+            Order previousOrder,
+            OrderItem solution,
+            OrderItem additionalService,
+            OrderSublocation orderSublocation,
+            OrderSublocationRecipient existingRecipient,
+            DateTime deliveryDate,
+            DeliveryDatesStatusProvider service)
+        {
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.ParentId = null;
+
+            existingRecipient.OrderItemSublocationRecipients =
+            [
+                new OrderItemSublocationRecipient(previousOrder.Id, existingRecipient.RecipientOdsCode, solution),
+            ];
+
+            orderSublocation.SublocationRecipients = [existingRecipient];
+
+            previousOrder.OrderItems = [solution];
+            previousOrder.OrderSublocations = [orderSublocation];
+
+            var amendedOrder = previousOrder.BuildAmendment(2);
+
+            additionalService.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            additionalService.CatalogueItemId = catalogueItemId;
+            amendedOrder.OrderItems.Add(additionalService);
+
+            var amendedRecipient = amendedOrder.FlattenedRecipients.First();
+            amendedRecipient.SetDeliveryDateForItem(additionalService, deliveryDate);
+
+            var state = new OrderProgress { SolutionOrService = TaskProgress.Completed };
+
+            var actual = service.Get(new OrderWrapper(amendedOrder, [previousOrder]), state);
+
+            actual.Should().Be(TaskProgress.Amended);
         }
     }
 }
