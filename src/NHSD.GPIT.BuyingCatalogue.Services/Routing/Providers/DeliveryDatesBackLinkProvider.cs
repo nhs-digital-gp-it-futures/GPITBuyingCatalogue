@@ -48,9 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 
             var solution = order.GetSolutionOrderItem();
             var orderItem = order.OrderItem(orderItemId.Value);
-            var item = orderItem.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
-                ? orderItem.Parent
-                : orderItem;
 
             if (order.OrderType.AssociatedServicesOnly
                 || solution == null)

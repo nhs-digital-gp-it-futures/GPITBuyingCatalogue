@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -11,19 +12,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
         {
         }
 
-        public RemoveServiceModel(
-            CatalogueItem service)
+        public RemoveServiceModel(CatalogueItem service)
         {
             ServiceName = service.Name;
             ServiceType = service.CatalogueItemType;
         }
 
-        public IList<SelectOption<bool>> RemoveServiceOptions => new List<SelectOption<bool>>
-        {
+        public IList<SelectOption<bool>> RemoveServiceOptions =>
+        [
             new($"Yes, I confirm I want to remove {ServiceName}", true),
             new($"No, I want to keep my current {ServiceType}s", false),
-        };
+        ];
 
+        [Required]
         public CatalogueItemType ServiceType { get; set; }
 
         public string ServiceName { get; set; }
