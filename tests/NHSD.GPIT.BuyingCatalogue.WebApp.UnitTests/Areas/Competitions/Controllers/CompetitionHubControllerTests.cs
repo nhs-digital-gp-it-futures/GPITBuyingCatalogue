@@ -24,6 +24,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controllers;
@@ -550,6 +551,29 @@ public static class CompetitionHubControllerTests
                     { "priceId", model.SelectedPriceId.GetValueOrDefault() },
                     { nameof(serviceId), serviceId },
                 });
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task ConfirmPrice_NullSolution_ReturnsBadRequest(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        CatalogueItem catalogueItem,
+        CataloguePrice cataloguePrice,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId)
+            .Returns((CompetitionSolution)null);
+
+        var result = await controller.ConfirmPrice(
+            internalOrgId,
+            competition.Id,
+            catalogueItem.Id,
+            cataloguePrice.CataloguePriceId);
+
+        result.Should().BeOfType<BadRequestResult>();
     }
 
     [Theory]
@@ -2090,6 +2114,30 @@ public static class CompetitionHubControllerTests
 
     [Theory]
     [MockAutoData]
+    public static async Task RemoveAdditionalServiceAssociatedService_NullSolution_ReturnsBadRequestResult(
+        string internalOrgId,
+        Competition competition,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceItemId,
+        CatalogueItemId serviceId,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solutionId)
+            .Returns((CompetitionSolution)null);
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competition.Id,
+            solutionId,
+            additionalServiceItemId,
+            serviceId);
+
+        result.Should().BeOfType<BadRequestResult>();
+    }
+
+    [Theory]
+    [MockAutoData]
     public static async Task RemoveAdditionalServiceAssociatedService_IncorrectAdditionalServiceId_ReturnsBadRequestResult(
         string internalOrgId,
         Competition competition,
@@ -2147,6 +2195,33 @@ public static class CompetitionHubControllerTests
 
     [Theory]
     [MockAutoData]
+    public static async Task RemoveAdditionalServiceAssociatedService_NullService_ReturnsBadRequestResult(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        CatalogueItemId additionalServiceItemId,
+        CatalogueItemId serviceId,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionSolution.Services = [];
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId)
+            .Returns(competitionSolution);
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competition.Id,
+            competitionSolution.CatalogueItemId,
+            additionalServiceItemId,
+            serviceId);
+
+        result.Should().BeOfType<BadRequestResult>();
+    }
+
+    [Theory]
+    [MockAutoData]
     public static async Task RemoveAdditionalServiceAssociatedService_Valid_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
@@ -2182,6 +2257,38 @@ public static class CompetitionHubControllerTests
 
         var viewResult = result.Should().BeOfType<ViewResult>();
         viewResult.Subject.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveAdditionalServiceAssociatedService_Confirmed_InvalidModel(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId serviceId,
+        RemoveServiceModel model,
+        RemoveServiceModelValidator systemUnderTest,
+        CompetitionHubController controller)
+    {
+        model.ConfirmRemoveService = null;
+        var validationResult = systemUnderTest.Validate(model);
+        foreach (var failure in validationResult.Errors)
+        {
+            controller.ModelState.AddModelError(failure.PropertyName, failure.ErrorMessage);
+        }
+
+        var result = await controller.RemoveAdditionalServiceAssociatedService(
+            internalOrgId,
+            competitionId,
+            solutionId,
+            additionalServiceId,
+            serviceId,
+            model);
+
+        result.Should().NotBeNull();
+        result.Should().BeOfType<ViewResult>();
+        result.As<ViewResult>().ViewName.Should().Be("Services/RemoveService");
     }
 
     [Theory]
@@ -2522,6 +2629,7 @@ public static class CompetitionHubControllerTests
         CompetitionSolution competitionSolution,
         AdditionalService additionalService,
         CompetitionAdditionalService competitionAdditionalService,
+        CompetitionItemQuantity competitionItemQuantity,
         List<AssociatedService> associatedServices,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
@@ -2533,6 +2641,7 @@ public static class CompetitionHubControllerTests
             {
                 CatalogueItemType = CatalogueItemType.AssociatedService,
                 CatalogueItem = x.CatalogueItem,
+                Quantities = [competitionItemQuantity],
             })];
 
         competitionSolution.CompetitionId = competition.Id;
