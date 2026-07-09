@@ -1015,6 +1015,7 @@ public static class CompetitionHubControllerTests
         AdditionalService additionalService,
         CompetitionAdditionalService competitionAdditionalService,
         AssociatedService associatedService,
+        CompetitionItemQuantity competitionItemQuantity,
         CompetitionCatalogueItemPrice competitionPrice,
         CompetitionCatalogueItemPrice servicePrice,
         CompetitionSublocation sublocation,
@@ -1037,6 +1038,7 @@ public static class CompetitionHubControllerTests
                 CatalogueItemType = CatalogueItemType.AssociatedService,
                 CatalogueItem = associatedService.CatalogueItem,
                 Price = servicePrice,
+                Quantities = [competitionItemQuantity],
             }
         ];
 
