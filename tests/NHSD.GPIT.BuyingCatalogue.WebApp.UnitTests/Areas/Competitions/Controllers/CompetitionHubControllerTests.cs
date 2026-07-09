@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -25,6 +26,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
+using NSubstitute.ExceptionExtensions;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controllers;
@@ -1944,6 +1946,28 @@ public static class CompetitionHubControllerTests
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.ParentItemType));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SelectAssociatedServices_WithAdditionalServiceParent_ThrowsArgumentNullException(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        Solution solution,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.CatalogueItemId = solution.CatalogueItemId;
+        competition.CompetitionSolutions = [competitionSolution];
+
+        competitionsService
+            .GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId)
+            .Returns(competitionSolution);
+
+        Func<Task> act = async () => await controller.SelectAssociatedServices(internalOrgId, competition.Id, solution.CatalogueItemId, null, CatalogueItemType.AdditionalService);
+        await act.Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Theory]
