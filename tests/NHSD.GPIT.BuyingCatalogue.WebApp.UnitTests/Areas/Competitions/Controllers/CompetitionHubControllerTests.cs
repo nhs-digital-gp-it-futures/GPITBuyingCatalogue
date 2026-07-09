@@ -4,13 +4,9 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
-using Azure;
 using FluentAssertions;
-using FluentAssertions.Common;
-using Flurl;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.SignalR;
 using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -23,8 +19,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
-using NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices;
-using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
@@ -882,10 +876,10 @@ public static class CompetitionHubControllerTests
         CompetitionCatalogueItemPrice competitionPrice,
         Solution solution,
         CompetitionSublocation sublocation,
+        CompetitionSublocationRecipient competitionSublocationRecipient,
+        EntityFramework.OdsOrganisations.Models.OdsOrganisation odsOrganisation,
         Organisation organisation,
         [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IGpPracticeService gpPracticeService,
-        [Frozen] IOdsService odsService,
         CompetitionHubController controller)
     {
         competitionPrice.ProvisioningType = ProvisioningType.Declarative;
@@ -895,38 +889,37 @@ public static class CompetitionHubControllerTests
         competitionSolution.Price = competitionPrice;
         competition.Organisation = organisation;
 
+        competitionSublocationRecipient.ParentSublocation = sublocation;
+        sublocation.SublocationOrganisation = odsOrganisation;
+        sublocation.SublocationRecipients = [competitionSublocationRecipient];
+
         competition.CompetitionSolutions = [competitionSolution];
         competition.CompetitionSublocations = [sublocation];
 
         competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
         competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
-        gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns([]);
-        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                Arg.Any<string>(),
-                Arg.Any<IEnumerable<string>>())
-            .Returns([]);
+
         var recipients = competition.FlattenedRecipients.Select(recipient =>
         {
-            var quantity = competitionSolution.Quantities.FirstOrDefault(quantity =>
-                quantity.RecipientOdsCode == recipient.RecipientOdsCode);
+            var quantity = competitionSolution.Quantities.FirstOrDefault(q => q.RecipientOdsCode == recipient.RecipientOdsCode);
+
             return new ServiceRecipientQuantityDto(
                 recipient.ParentSublocationOdsCode,
                 recipient.RecipientOdsCode,
                 recipient.RecipientOrganisation.Name,
                 quantity?.Quantity,
-                null);
+                recipient.ParentSublocation.SublocationOrganisation?.Name);
         });
 
         var expectedModel = new SublocationQuantityHubModel(
             competition.Organisation,
             solution.CatalogueItem)
         {
-            SubLocations = CreateSublocationHelper.CreateSubLocations(recipients)
+            SubLocations = [.. CreateSublocationHelper.CreateSubLocations(recipients)
                 .Select(s => new SubLocationModel(s)
                 {
                     ForwardingLink = "testUrl",
-                })
-                .ToArray(),
+                })],
         };
 
         var result = (await controller.CompetitionSublocationHub(internalOrgId, competition.Id, solution.CatalogueItemId))
@@ -951,11 +944,11 @@ public static class CompetitionHubControllerTests
         CompetitionCatalogueItemPrice competitionPrice,
         Solution solution,
         CompetitionSublocation sublocation,
+        CompetitionSublocationRecipient competitionSublocationRecipient,
+        EntityFramework.OdsOrganisations.Models.OdsOrganisation odsOrganisation,
         Organisation organisation,
         AdditionalService service,
         [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IGpPracticeService gpPracticeService,
-        [Frozen] IOdsService odsService,
         CompetitionHubController controller)
     {
         competitionPrice.ProvisioningType = ProvisioningType.Declarative;
@@ -964,6 +957,10 @@ public static class CompetitionHubControllerTests
         solutionService.CatalogueItem = service.CatalogueItem;
         solutionService.CatalogueItemId = service.CatalogueItemId;
         solutionService.Price = competitionPrice;
+
+        competitionSublocationRecipient.ParentSublocation = sublocation;
+        sublocation.SublocationOrganisation = odsOrganisation;
+        sublocation.SublocationRecipients = [competitionSublocationRecipient];
 
         competitionSolution.CatalogueItem = solution.CatalogueItem;
         competitionSolution.CatalogueItemId = solution.CatalogueItemId;
@@ -974,33 +971,27 @@ public static class CompetitionHubControllerTests
 
         competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
         competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
-        gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns([]);
-        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                Arg.Any<string>(),
-                Arg.Any<IEnumerable<string>>())
-            .Returns([]);
         var recipients = competition.FlattenedRecipients.Select(recipient =>
         {
-            var quantity = competitionSolution.Quantities.FirstOrDefault(quantity =>
-                quantity.RecipientOdsCode == recipient.RecipientOdsCode);
+            var quantity = competitionSolution.Quantities.FirstOrDefault(q => q.RecipientOdsCode == recipient.RecipientOdsCode);
+
             return new ServiceRecipientQuantityDto(
                 recipient.ParentSublocationOdsCode,
                 recipient.RecipientOdsCode,
                 recipient.RecipientOrganisation.Name,
                 quantity?.Quantity,
-                null);
+                recipient.ParentSublocation.SublocationOrganisation?.Name);
         });
 
         var expectedModel = new SublocationQuantityHubModel(
             competition.Organisation,
             solutionService.CatalogueItem)
         {
-            SubLocations = CreateSublocationHelper.CreateSubLocations(recipients)
+            SubLocations = [.. CreateSublocationHelper.CreateSubLocations(recipients)
                 .Select(s => new SubLocationModel(s)
                 {
                     ForwardingLink = "testUrl",
-                })
-                .ToArray(),
+                })],
         };
 
         var result = (await controller.CompetitionSublocationHub(internalOrgId, competition.Id, solution.CatalogueItemId, null, service.CatalogueItemId))
@@ -1027,10 +1018,10 @@ public static class CompetitionHubControllerTests
         CompetitionCatalogueItemPrice competitionPrice,
         CompetitionCatalogueItemPrice servicePrice,
         CompetitionSublocation sublocation,
+        CompetitionSublocationRecipient competitionSublocationRecipient,
+        EntityFramework.OdsOrganisations.Models.OdsOrganisation odsOrganisation,
         CataloguePrice cataloguePrice,
         [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IGpPracticeService gpPracticeService,
-        [Frozen] IOdsService odsService,
         CompetitionHubController controller)
     {
         competitionPrice.ProvisioningType = ProvisioningType.Declarative;
@@ -1049,6 +1040,10 @@ public static class CompetitionHubControllerTests
             }
         ];
 
+        competitionSublocationRecipient.ParentSublocation = sublocation;
+        sublocation.SublocationOrganisation = odsOrganisation;
+        sublocation.SublocationRecipients = [competitionSublocationRecipient];
+
         competitionSolution.Services = [competitionAdditionalService];
         competition.Organisation = organisation;
         competitionSolution.CatalogueItem = solution.CatalogueItem;
@@ -1059,34 +1054,28 @@ public static class CompetitionHubControllerTests
 
         competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id).Returns(competition);
         competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, solution.CatalogueItemId).Returns(competitionSolution);
-        gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns([]);
-        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                Arg.Any<string>(),
-                Arg.Any<IEnumerable<string>>())
-            .Returns([]);
 
         var recipients = competition.FlattenedRecipients.Select(recipient =>
         {
-            var quantity = competitionSolution.Quantities.FirstOrDefault(quantity =>
-                quantity.RecipientOdsCode == recipient.RecipientOdsCode);
+            var quantity = competitionSolution.Quantities.FirstOrDefault(q => q.RecipientOdsCode == recipient.RecipientOdsCode);
+
             return new ServiceRecipientQuantityDto(
                 recipient.ParentSublocationOdsCode,
                 recipient.RecipientOdsCode,
                 recipient.RecipientOrganisation.Name,
                 quantity?.Quantity,
-                null);
+                recipient.ParentSublocation.SublocationOrganisation?.Name);
         });
 
         var expectedModel = new SublocationQuantityHubModel(
             competition.Organisation,
             associatedService.CatalogueItem)
         {
-            SubLocations = CreateSublocationHelper.CreateSubLocations(recipients)
+            SubLocations = [.. CreateSublocationHelper.CreateSubLocations(recipients)
                 .Select(s => new SubLocationModel(s)
                 {
                     ForwardingLink = "testUrl",
-                })
-                .ToArray(),
+                })],
         };
 
         var result = (await controller.CompetitionSublocationHub(internalOrgId, competition.Id, solution.CatalogueItemId, additionalService.CatalogueItemId, associatedService.CatalogueItemId))
