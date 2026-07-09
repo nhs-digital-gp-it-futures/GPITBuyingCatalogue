@@ -290,10 +290,8 @@ public class CompetitionHubController : Controller
         if (item is null) return BadRequest();
 
         var quantities = item.Quantities;
-        var recipients = await GetRecipientQuantities(
-            competition.FlattenedRecipients.ToList(),
-            quantities,
-            internalOrgId);
+        var recipients = GetRecipientDtos([.. competition.FlattenedRecipients], quantities);
+
         var catalogueItem = item.CatalogueItem;
 
         var model = new SublocationQuantityHubModel(
@@ -701,9 +699,8 @@ public class CompetitionHubController : Controller
             .Where(x => parentOdsCode == null || x.ParentSublocationOdsCode == parentOdsCode)
             .Select(x =>
         {
-            var quantity = recipientQuantities?.FirstOrDefault(y => x.RecipientOdsCode == y.RecipientOdsCode)
-                    ?.Quantity
-                ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.RecipientOdsCode)?.NumberOfPatients;
+            var quantity = recipientQuantities?.FirstOrDefault(y => x.RecipientOdsCode == y.RecipientOdsCode)?.Quantity
+                    ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.RecipientOdsCode)?.NumberOfPatients;
 
             var location = organisations?.FirstOrDefault(y => x.RecipientOdsCode == y.OrgId)?.Location;
 
@@ -714,6 +711,22 @@ public class CompetitionHubController : Controller
                 quantity,
                 location);
         });
+    }
+
+    private static List<ServiceRecipientQuantityDto> GetRecipientDtos(
+        IReadOnlyList<CompetitionSublocationRecipient> competitionRecipients,
+        ICollection<CompetitionItemQuantity> recipientQuantities,
+        string parentOdsCode = null)
+    {
+        return [.. competitionRecipients
+            .Where(competitionRecipient => parentOdsCode is null || competitionRecipient.ParentSublocationOdsCode == parentOdsCode)
+            .Select(x =>
+                new ServiceRecipientQuantityDto(
+                    x.ParentSublocationOdsCode,
+                    x.RecipientOdsCode,
+                    x.RecipientOrganisation?.Name,
+                    recipientQuantities?.FirstOrDefault(y => x.RecipientOdsCode == y.RecipientOdsCode)?.Quantity,
+                    x.ParentSublocation.SublocationOrganisation?.Name))];
     }
 
     private static CompetitionCatalogueItem GetServiceItem(
