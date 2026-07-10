@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FluentValidation.TestHelper;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
@@ -44,6 +45,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
             SelectServicesModelValidator systemUnderTest)
         {
             model.AssociatedServicesOnly = true;
+            model.Services.ForEach(x => x.IsSelected = false);
+
+            var result = systemUnderTest.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor("Services[0].IsSelected")
+                .WithErrorMessage(SelectServicesModelValidator.NoSelectionMadeErrorMessage);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Validate_NoSelectionMadeForAdditionalServiceParentItem_ThrowsValidationError(
+            SelectServicesModel model,
+            SelectServicesModelValidator systemUnderTest)
+        {
+            model.ParentItemType = CatalogueItemType.AdditionalService;
             model.Services.ForEach(x => x.IsSelected = false);
 
             var result = systemUnderTest.TestValidate(model);

@@ -268,6 +268,58 @@ public static class CompetitionSolutionTests
 
     [Theory]
     [MockAutoData]
+    public static void CalculateTotalPrice_SolutionWithAssociatedAndAdditionalServicesAndPrices_ReturnsExpected(
+        CompetitionSolution solution,
+        CompetitionAssociatedService associatedService,
+        CompetitionAdditionalService additionalService)
+    {
+        const int contractLength = 12;
+        const int price = 1000;
+        const int quantity = 5;
+        const int solutionAndAssociatedServicePrice = (price * quantity) * 2;
+        const int additionalServicePrice = (price * quantity) * 12;
+        const int expectedPrice = solutionAndAssociatedServicePrice + additionalServicePrice;
+
+        associatedService.Price = new CompetitionCatalogueItemPrice
+        {
+            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
+            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
+            ProvisioningType = ProvisioningType.Patient,
+            BillingPeriod = null,
+            Tiers = [new CompetitionCatalogueItemPriceTier { LowerRange = 0, UpperRange = null, Price = price }],
+        };
+
+        additionalService.Price = new CompetitionCatalogueItemPrice
+        {
+            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
+            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
+            ProvisioningType = ProvisioningType.Patient,
+            BillingPeriod = TimeUnit.PerMonth,
+            Tiers = [new CompetitionCatalogueItemPriceTier { LowerRange = 0, UpperRange = null, Price = price }],
+        };
+
+        associatedService.Quantities = [new CompetitionItemQuantity { Quantity = quantity }];
+        additionalService.Quantities = [new CompetitionItemQuantity { Quantity = quantity }];
+        additionalService.Services = [associatedService];
+
+        solution.Services = [additionalService];
+        solution.Price = new CompetitionCatalogueItemPrice
+        {
+            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
+            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
+            ProvisioningType = ProvisioningType.Patient,
+            BillingPeriod = TimeUnit.PerYear,
+            Tiers = [new CompetitionCatalogueItemPriceTier { LowerRange = 0, UpperRange = null, Price = price }],
+        };
+        solution.Quantities = [new CompetitionItemQuantity { Quantity = quantity }];
+
+        var total = solution.CalculateTotalPrice(contractLength);
+
+        total.Should().Be(expectedPrice);
+    }
+
+    [Theory]
+    [MockAutoData]
     public static void CalculateTotalPrice_SolutionWithNullServices_ReturnsExpected(
         CompetitionSolution solution)
     {

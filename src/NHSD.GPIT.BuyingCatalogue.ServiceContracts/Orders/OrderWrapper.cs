@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                     return null;
                 }
 
-                Order output = orderedPreviousOrders.First().Clone();
+                Order output = orderedPreviousOrders.First().Clone(true);
 
                 foreach (OrderSublocationRecipient recipient in output.GetOrderRecipients())
                 {
@@ -57,14 +57,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
             rolledUpLazy = new Lazy<Order>(() =>
             {
-                var output = Previous?.Clone();
+                var output = Previous?.Clone(true);
 
                 if (output == null)
                 {
-                    return Order.Clone();
+                    return Order.Clone(true);
                 }
 
-                output.Apply(Order.Clone());
+                output.Apply(Order.Clone(true));
                 output.Revision = Order.Revision;
 
                 return output;
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             .Any(item => item?.CatalogueItem?.CatalogueItemType == CatalogueItemType.AssociatedService);
 
         public ICollection<OrderItem> OrderItems =>
-            Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.CatalogueItemId).Count > 0)
+            Order.OrderItems.Where(oi => DetermineOrderRecipients(oi).Count > 0)
                 .ToList();
 
         public Order Last => previous.Any() ? previous.Last().Value : null;
@@ -124,9 +124,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             return callOffId.ToString();
         }
 
-        public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId)
+        public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(OrderItem orderItem)
         {
-            return Order.DetermineOrderRecipients(Previous, catalogueItemId);
+            return Order.DetermineOrderRecipients(Previous, orderItem.Id);
         }
 
         public bool CanComplete()
@@ -143,8 +143,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             {
                 Order.OrderItems.ToList().ForEach(i =>
                 {
+                    var item = i.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+                        ? i.Parent
+                        : i;
                     if (Previous == null
-                        || !Previous.Exists(i.CatalogueItemId)
+                        || !Previous.Exists(item.CatalogueItemId)
                         || Previous.FlattenedRecipients.All(x => x.RecipientOdsCode != recipientOdsCode))
                     {
                         newRecipient.SetDeliveryDateForItem(i, Order.DeliveryDate.Value);

@@ -117,6 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             var additionalService = order.OrderItems.ElementAt(1);
             additionalService.CatalogueItem.CatalogueItemType = catalogueItemType;
             additionalService.OrderItemPrice = null;
+            additionalService.ParentId = solution.Id;
 
             var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
 
@@ -153,6 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             service.CatalogueItem.CataloguePrices = service.CatalogueItem.CataloguePrices.Take(1).ToList();
             service.CatalogueItem.CatalogueItemType = catalogueItemType;
             service.OrderItemPrice = null;
+            service.ParentId = solution.Id;
 
             var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
 
@@ -246,9 +248,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
-            order.OrderItems.ElementAt(0).CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            var solution = order.OrderItems.ElementAt(0);
+            var associatedService = order.OrderItems.ElementAt(2);
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.ElementAt(1).CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
-            order.OrderItems.ElementAt(2).CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            associatedService.ParentId = solution.Id;
 
             var result = provider.Process(new OrderWrapper(order), new RouteValues(
                 internalOrgId,

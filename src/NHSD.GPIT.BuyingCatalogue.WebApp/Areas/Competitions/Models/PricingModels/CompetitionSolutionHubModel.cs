@@ -9,70 +9,84 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingMode
 
 public class CompetitionSolutionHubModel : NavBaseModel
 {
-    public CompetitionSolutionHubModel()
-    {
-    }
-
     public CompetitionSolutionHubModel(
         string internalOrgId,
         CompetitionSolution competitionSolution,
-        Competition competition)
+        IEnumerable<CompetitionSublocationRecipient> flattenedRecipients,
+        int? contractLength)
     {
         SolutionId = competitionSolution.CatalogueItemId;
         SolutionName = competitionSolution.CatalogueItem.Name;
-
-        CatalogueItems = new[]
-            {
-                new CatalogueItemHubModel(
-                    competitionSolution.CatalogueItemId,
-                    competitionSolution.CatalogueItem,
-                    competitionSolution.Quantity,
-                    competition.FlattenedRecipients.ToDictionary(
-                        x => x,
-                        x => competitionSolution.Quantities
-                            .FirstOrDefault(y => y.RecipientOdsCode == x.RecipientOdsCode)
-                            ?.Quantity),
-                    competitionSolution.Price)
-                {
-                    InternalOrgId = internalOrgId,
-                    CompetitionId = competitionSolution.CompetitionId,
-                    ContractLength = competition.ContractLength,
-                },
-            }.Union(
-                competitionSolution.Services.Select(x => new CatalogueItemHubModel(
+        SolutionItem = new CatalogueItemHubModel(
+            competitionSolution.CatalogueItemId,
+            competitionSolution.CatalogueItem,
+            competitionSolution.Quantity,
+            flattenedRecipients.ToDictionary(
+                x => x,
+                x => competitionSolution.Quantities
+                    .FirstOrDefault(y => y.RecipientOdsCode == x.RecipientOdsCode)
+                    ?.Quantity),
+            competitionSolution.Price)
+        {
+            InternalOrgId = internalOrgId,
+            CompetitionId = competitionSolution.CompetitionId,
+            ContractLength = contractLength,
+            AssociatedServicesAvailable = competitionSolution.AssociatedServicesAvailable,
+            AssociatedServicesRemaining = competitionSolution.AssociatedServicesRemaining,
+            AssociatedServices = competitionSolution.Services
+                .Where(x => x.CatalogueItemType == CatalogueItemType.AssociatedService)
+                .Select(x => new CatalogueItemHubModel(
                     competitionSolution.CatalogueItemId,
                     x.CatalogueItem,
                     x.Quantity,
-                    competition.FlattenedRecipients.ToDictionary(
+                    flattenedRecipients.ToDictionary(
                         y => y,
                         y => x.Quantities.FirstOrDefault(z => z.RecipientOdsCode == y.RecipientOdsCode)?.Quantity),
                     x.Price)
                 {
                     InternalOrgId = internalOrgId,
                     CompetitionId = competitionSolution.CompetitionId,
-                    ContractLength = competition.ContractLength,
-                }))
-            .ToList();
+                    ContractLength = contractLength,
+                }),
+        };
+
+        AdditionalServices = competitionSolution.GetAdditionalServices()
+            .Select(x => new CatalogueItemHubModel(
+                competitionSolution.CatalogueItemId,
+                x.CatalogueItem,
+                x.Quantity,
+                flattenedRecipients.ToDictionary(
+                    y => y,
+                    y => x.Quantities.FirstOrDefault(z => z.RecipientOdsCode == y.RecipientOdsCode)?.Quantity),
+                x.Price)
+            {
+                InternalOrgId = internalOrgId,
+                CompetitionId = competitionSolution.CompetitionId,
+                ContractLength = contractLength,
+                AssociatedServicesAvailable = x.AssociatedServicesAvailable,
+                AssociatedServices = x.CompetitionAssociatedServices.Select(s => new CatalogueItemHubModel(
+                    competitionSolution.CatalogueItemId,
+                    s.CatalogueItem,
+                    s.Quantity,
+                    flattenedRecipients.ToDictionary(
+                        y => y,
+                        y => s.Quantities.FirstOrDefault(z => z.RecipientOdsCode == y.RecipientOdsCode)?.Quantity),
+                    s.Price)
+                {
+                    InternalOrgId = internalOrgId,
+                    CompetitionId = competitionSolution.CompetitionId,
+                    ContractLength = contractLength,
+                }),
+            });
     }
 
-    public CatalogueItemId SolutionId { get; set; }
+    public CatalogueItemId SolutionId { get; }
 
-    public string SolutionName { get; set; }
-
-    public bool AssociatedServicesAvailable { get; set; }
-
-    public bool AssociatedServicesRemaining { get; set; }
+    public string SolutionName { get; }
 
     public string AssociatedServicesUrl { get; set; }
 
-    public List<CatalogueItemHubModel> CatalogueItems { get; set; }
+    public CatalogueItemHubModel SolutionItem { get; set; }
 
-    public IEnumerable<CatalogueItemHubModel> AssociatedServices =>
-        GetCatalogueItemsByType(CatalogueItemType.AssociatedService);
-
-    public CatalogueItemHubModel GetCatalogueItem(CatalogueItemId catalogueItemId) =>
-        CatalogueItems.FirstOrDefault(x => x.CatalogueItemId == catalogueItemId);
-
-    public IEnumerable<CatalogueItemHubModel> GetCatalogueItemsByType(CatalogueItemType catalogueItemType) =>
-        CatalogueItems.Where(x => x.CatalogueItemType == catalogueItemType).OrderBy(x => x.CatalogueItemName);
+    public IEnumerable<CatalogueItemHubModel> AdditionalServices { get; set; }
 }

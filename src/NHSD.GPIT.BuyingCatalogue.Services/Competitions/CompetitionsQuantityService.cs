@@ -55,6 +55,24 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task SetAdditionalServiceAssociatedServiceQuantity(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId serviceId,
+        IEnumerable<ServiceRecipientQuantityDto> serviceRecipients)
+    {
+        var service = await GetAdditionalServiceAssociatedService(internalOrgId, competitionId, solutionId, additionalServiceId, serviceId);
+        if (service is null) return;
+
+        var quantitiesDict = service.Quantities.ToDictionary(x => x.RecipientOdsCode);
+
+        serviceRecipients.ForEach(recipient => UpdateRecipientQuantity(recipient, service, competitionId, quantitiesDict));
+
+        await dbContext.SaveChangesAsync();
+    }
+
     public async Task ResetSolutionQuantities(string internalOrgId, int competitionId, CatalogueItemId solutionId)
     {
         var solution = await GetSolution(internalOrgId, competitionId, solutionId);
@@ -73,6 +91,22 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
         CatalogueItemId serviceId)
     {
         var service = await GetSolutionService(internalOrgId, competitionId, solutionId, serviceId);
+        if (service is null) return;
+
+        service.Quantity = null;
+        service.Quantities.Clear();
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task ResetAdditionalServiceAssociatedServiceQuantities(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId serviceId)
+    {
+        var service = await GetAdditionalServiceAssociatedService(internalOrgId, competitionId, solutionId, additionalServiceId, serviceId);
         if (service is null) return;
 
         service.Quantity = null;
@@ -136,5 +170,30 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
         var service = solution?.Services.FirstOrDefault(x => x.CatalogueItemId == serviceId);
 
         return service;
+    }
+
+    private async Task<CompetitionCatalogueItem> GetAdditionalServiceAssociatedService(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId serviceId)
+    {
+        var competition = await dbContext.Competitions
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .FirstOrDefaultAsync(x =>
+                x.Organisation.InternalIdentifier == internalOrgId &&
+                x.Id == competitionId);
+
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.CatalogueItemId == solutionId);
+        var additionalService = solution?.Services.FirstOrDefault(x => x.CatalogueItemId == additionalServiceId);
+        var associatedService = await dbContext.CompetitionCatalogueItems
+            .Include(x => x.Quantities)
+            .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
+                x.CatalogueItemId == serviceId &&
+                x.ParentItemId == additionalService.Id);
+
+        return associatedService;
     }
 }

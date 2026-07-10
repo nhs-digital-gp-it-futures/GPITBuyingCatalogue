@@ -99,5 +99,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             result.ControllerName.Should().Be(Constants.Controllers.Prices);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
+
+        [Theory]
+        [MockAutoData]
+        public void Process_FromManageAssociatedServices_ExpectedResult(
+            string internalOrgId,
+            Order order,
+            OrderItem solution,
+            CallOffId callOffId,
+            ConfirmPriceBackLinkProvider provider)
+        {
+            var associatedService = order.OrderItems.First();
+            associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            associatedService.Parent = solution;
+            associatedService.CatalogueItem.CataloguePrices = new List<CataloguePrice>
+            {
+                associatedService.CatalogueItem.CataloguePrices.First(),
+            };
+
+            order.OrderItems.Add(solution);
+
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, associatedService.CatalogueItemId)
+            {
+                Source = RoutingSource.ManageAssociatedServices,
+                OrderItemId = associatedService.Id,
+            });
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                catalogueItemId = solution.CatalogueItemId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.ManageAssociatedServices);
+            result.ControllerName.Should().Be(Constants.Controllers.AssociatedServices);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
     }
 }

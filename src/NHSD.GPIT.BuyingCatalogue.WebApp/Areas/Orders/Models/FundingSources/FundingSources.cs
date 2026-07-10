@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -31,22 +32,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
             SelectedFramework = order.SelectedFramework;
 
-            var completedOrderItems = order.OrderItems.Where(oi =>
+            var completedOrderItems = order.OrderItems.Where(orderItem =>
             {
-                var recipients = orderWrapper.DetermineOrderRecipients(oi.CatalogueItemId);
-                return recipients.Count > 0 && recipients.AllQuantitiesEntered(oi);
+                var recipients = orderWrapper.DetermineOrderRecipients(orderItem);
+                return recipients.Count > 0 && recipients.AllQuantitiesEntered(orderItem);
             }).ToList();
 
             if (order.HasSingleFundingType)
             {
-                OrderItemsSingleFundingType = completedOrderItems.Where(oi => ((IPrice)oi.OrderItemPrice).CostForBillingPeriod(oi.TotalQuantity(orderWrapper.DetermineOrderRecipients(oi.CatalogueItemId))) != 0).ToList();
+                OrderItemsSingleFundingType = completedOrderItems.Where(oi => ((IPrice)oi.OrderItemPrice).CostForBillingPeriod(oi.TotalQuantity(orderWrapper.DetermineOrderRecipients(oi))) != 0).ToList();
             }
             else
             {
-                OrderItemsSelectable = completedOrderItems.Where(oi => ((IPrice)oi.OrderItemPrice).CostForBillingPeriod(oi.TotalQuantity(orderWrapper.DetermineOrderRecipients(oi.CatalogueItemId))) != 0).ToList();
+                OrderItemsSelectable = completedOrderItems.Where(oi => ((IPrice)oi.OrderItemPrice).CostForBillingPeriod(oi.TotalQuantity(orderWrapper.DetermineOrderRecipients(oi))) != 0).ToList();
             }
 
-            OrderItemsNoFundingRequired = completedOrderItems.Where(oi => ((IPrice)oi.OrderItemPrice).CostForBillingPeriod(oi.TotalQuantity(orderWrapper.DetermineOrderRecipients(oi.CatalogueItemId))) == 0).ToList();
+            OrderItemsNoFundingRequired = completedOrderItems.Where(oi => ((IPrice)oi.OrderItemPrice).CostForBillingPeriod(oi.TotalQuantity(orderWrapper.DetermineOrderRecipients(oi))) == 0).ToList();
         }
 
         public Order Order { get; set; }
@@ -62,5 +63,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
         public List<OrderItem> OrderItemsNoFundingRequired { get; set; }
 
         public EntityFramework.Catalogue.Models.Framework SelectedFramework { get; set; }
+
+        public static string GetItemName(OrderItem orderItem) => IsParentAdditionalService(orderItem)
+            ? $"{orderItem.Parent.CatalogueItem.Name} - {orderItem.CatalogueItem.Name}"
+            : orderItem.CatalogueItem.Name;
+
+        private static bool IsParentAdditionalService(OrderItem orderItem) =>
+            orderItem.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService;
     }
 }

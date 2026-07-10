@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(wrapper);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem);
             var orderRecipientDtos = QuantityController.GetRecipientDtos(orderRecipients, orderItem);
 
             var expectedModel = new SublocationQuantityHubModel(
@@ -68,7 +68,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     .ToArray(),
             };
 
-            var result = await controller.SublocationHub(internalOrgId, order.CallOffId, solution.CatalogueItemId);
+            var result = await controller.SublocationHub(internalOrgId, order.CallOffId, solution.CatalogueItemId, orderItem.Id);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            var model = actualResult.Model.Should().BeOfType<SublocationQuantityHubModel>().Subject;
+
+            model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_SublocationHub_AssociatedService_For_AddititionalService_Returns_Expected(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            OrderItem associatedService,
+            OrderItem parent,
+            [Frozen] IOrderService orderService,
+            QuantityController controller)
+        {
+            ArrangeOrderItems(order, associatedService, parent);
+
+            var wrapper = new OrderWrapper(order);
+
+            orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(wrapper);
+
+            var orderRecipients = wrapper.DetermineOrderRecipients(parent);
+            var orderRecipientDtos = QuantityController.GetRecipientDtos(orderRecipients, associatedService);
+
+            var expectedModel = new SublocationQuantityHubModel(
+                order.OrderingParty,
+                associatedService.CatalogueItem,
+                associatedService.OrderItemPrice)
+            {
+                Caption = $"{parent.CatalogueItem.Name} - {associatedService.CatalogueItem.Name}",
+                Source = RoutingSource.ManageAssociatedServices,
+                SubLocations = CreateSublocationHelper.CreateSubLocations(orderRecipientDtos)
+                    .Select(sublocation => new SubLocationModel(sublocation)
+                    {
+                        ForwardingLink = "testUrl",
+                    })
+                    .ToArray(),
+            };
+
+            var result = await controller.SublocationHub(internalOrgId, order.CallOffId, associatedService.CatalogueItemId, associatedService.Id, RoutingSource.ManageAssociatedServices);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SublocationQuantityHubModel>().Subject;
@@ -95,14 +137,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(wrapper);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem);
 
-            orderRecipients.ForEach(x => x.SetQuantityForItem(solution, 5));
+            orderRecipients.ForEach(x =>
+            {
+                x.OrderItemSublocationRecipients.Clear();
+                x.SetQuantityForItem(orderItem, 5);
+            });
 
             var result = await controller.SublocationHub(
                 internalOrgId,
                 order.CallOffId,
-                solution.CatalogueItemId,
+                orderItem.CatalogueItemId,
+                orderItem.Id,
                 model);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -131,14 +178,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(wrapper);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem);
 
-            orderRecipients.First().SetQuantityForItem(solution, null);
+            orderRecipients.First().SetQuantityForItem(orderItem, null);
 
             var result = await controller.SublocationHub(
                 internalOrgId,
                 order.CallOffId,
-                solution.CatalogueItemId,
+                orderItem.CatalogueItemId,
+                orderItem.Id,
                 model);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -146,6 +194,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             actualResult.Should().NotBeNull();
             actualResult.ActionName.Should().Be(nameof(OrderController.Order));
             actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_SublocationHub_IncompleteRecipients_RedirectsToManageAssociatedServices(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            OrderItem associatedService,
+            SublocationQuantityHubModel model,
+            [Frozen] IOrderService orderService,
+            QuantityController controller)
+        {
+            model.Source = RoutingSource.ManageAssociatedServices;
+
+            var parent = order.OrderItems.First();
+            associatedService.Parent = parent;
+            order.OrderItems.Add(associatedService);
+
+            var wrapper = new OrderWrapper(order);
+
+            orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(wrapper);
+
+            var orderRecipients = wrapper.DetermineOrderRecipients(parent);
+
+            orderRecipients.First().SetQuantityForItem(associatedService, null);
+
+            var result = await controller.SublocationHub(
+                internalOrgId,
+                order.CallOffId,
+                associatedService.CatalogueItemId,
+                associatedService.Id,
+                model);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.Should().NotBeNull();
+            actualResult.ActionName.Should().Be(nameof(AssociatedServicesController.ManageAssociatedServices));
+            actualResult.ControllerName.Should().Be(typeof(AssociatedServicesController).ControllerName());
         }
 
         [Theory]
@@ -182,7 +268,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 internalOrgId,
                 callOffId,
                 orderItem.CatalogueItemId,
-                parentOdsCode);
+                parentOdsCode,
+                orderItem.Id);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
@@ -194,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                         x.ParentSublocationOdsCode,
                         x.RecipientOdsCode,
                         x.RecipientOdsOrganisation?.Name,
-                        x.GetQuantityForItem(orderItem.CatalogueItemId),
+                        x.GetQuantityForItem(orderItem.Id),
                         x.ParentSublocation.SublocationOrganisation.Name));
 
             var expected = new SelectServiceRecipientQuantityModel(
@@ -203,7 +290,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 orderItem.CatalogueItem,
                 orderItem.OrderItemPrice,
                 recipients,
-                null);
+                null)
+            {
+                Caption = $"Order {callOffId}",
+            };
             expected.SubLocations.ForEach(x => x.ServiceRecipients.ForEach(y => y.InputQuantity = string.Empty));
 
             model.Should()
@@ -251,7 +341,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 internalOrgId,
                 callOffId,
                 orderItem.CatalogueItemId,
-                parentOdsCode);
+                parentOdsCode,
+                orderItem.Id);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
@@ -263,7 +354,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                         x.ParentSublocationOdsCode,
                         x.RecipientOdsCode,
                         x.RecipientOdsOrganisation?.Name,
-                        x.GetQuantityForItem(orderItem.CatalogueItemId),
+                        x.GetQuantityForItem(orderItem.Id),
                         x.ParentSublocation.SublocationOrganisation.Name));
 
             var expected = new SelectServiceRecipientQuantityModel(
@@ -272,7 +363,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 orderItem.CatalogueItem,
                 orderItem.OrderItemPrice,
                 recipients,
-                null);
+                null)
+            {
+                Caption = $"Order {callOffId}",
+            };
             expected.SubLocations.ForEach(x =>
                 x.ServiceRecipients.ForEach(y => y.InputQuantity = $"{NumberOfPatients}"));
 
@@ -324,7 +418,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 internalOrgId,
                 callOffId,
                 orderItem.CatalogueItemId,
-                parentOdsCode);
+                parentOdsCode,
+                orderItem.Id);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
@@ -336,7 +431,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                         recipient.ParentSublocationOdsCode,
                         recipient.RecipientOdsCode,
                         recipient.RecipientOdsOrganisation?.Name,
-                        recipient.GetQuantityForItem(orderItem.CatalogueItemId),
+                        recipient.GetQuantityForItem(orderItem.Id),
                         recipient.ParentSublocation.SublocationOrganisation.Name));
 
             var expected = new SelectServiceRecipientQuantityModel(
@@ -345,7 +440,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 orderItem.CatalogueItem,
                 orderItem.OrderItemPrice,
                 recipients,
-                null);
+                null)
+            {
+                Caption = $"Order {callOffId}",
+            };
 
             expected.SubLocations.ForEach(x =>
                 x.ServiceRecipients.ForEach(y => y.InputQuantity = $"{NumberOfPatients}"));
@@ -365,6 +463,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             string parentOdsCode,
+            int orderItemId,
             SelectServiceRecipientQuantityModel model,
             QuantityController controller)
         {
@@ -375,6 +474,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 callOffId,
                 catalogueItemId,
                 parentOdsCode,
+                orderItemId,
                 model);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
@@ -407,7 +507,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             mockOrderQuantityService
                 .When(x => x.SetServiceRecipientQuantities(
                     order.Id,
-                    orderItem.CatalogueItemId,
+                    orderItem.Id,
                     Arg.Any<List<OrderItemRecipientQuantityDto>>()))
                 .Do(x => actual = x.Arg<List<OrderItemRecipientQuantityDto>>());
 
@@ -418,6 +518,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 callOffId,
                 orderItem.CatalogueItemId,
                 parentOdsCode,
+                orderItem.Id,
                 model);
 
             foreach (OrderItemRecipientQuantityDto dto in actual)
@@ -440,6 +541,71 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
+        public static async Task Get_ViewQuantity_ReturnsBadRequest_If_No_PreviousOrder(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            int orderItemId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService mockOrderService,
+            QuantityController controller)
+        {
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
+
+            var result = await controller.ViewServiceRecipientQuantity(internalOrgId, callOffId, catalogueItemId, orderItemId);
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_ViewServiceRecipientQuantityWithLatestCallOffId_ExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            EntityFramework.Ordering.Models.Order amendment,
+            OrderSublocation sublocation,
+            [Frozen] IOrderService orderService,
+            QuantityController controller)
+        {
+            order.Revision = 1;
+            amendment.OrderNumber = order.OrderNumber;
+            amendment.Revision = 2;
+
+            var orderItem = order.OrderItems.First();
+            order.OrderItems = [orderItem];
+
+            var sublocationRecipient = new OrderSublocationRecipient("r1", sublocation.SublocationOdsCode);
+            sublocation.SublocationRecipients = [sublocationRecipient];
+            order.OrderSublocations = [sublocation];
+
+            var amendSublocation = new OrderSublocation { SublocationOdsCode = sublocation.SublocationOdsCode };
+            var amendSublocationRecipient = new OrderSublocationRecipient("r2", sublocation.SublocationOdsCode);
+            amendSublocation.SublocationRecipients = [amendSublocationRecipient];
+            amendment.OrderSublocations = [amendSublocation];
+
+            amendment.OrderItems = [orderItem];
+
+            orderService.GetOrderWithOrderItems(amendment.CallOffId, internalOrgId).Returns(new OrderWrapper(amendment, [order]));
+
+            var result = await controller.ViewServiceRecipientQuantity(
+                internalOrgId,
+                amendment.CallOffId,
+                orderItem.CatalogueItemId,
+                orderItem.Id);
+
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new ViewServiceRecipientQuantityModel(orderItem, [sublocationRecipient])
+            {
+                InternalOrgId = internalOrgId, CallOffId = amendment.CallOffId,
+            };
+
+            actual.Should().NotBeNull();
+            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Get_ViewServiceRecipientQuantity_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -453,17 +619,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             amendment.OrderNumber = order.OrderNumber;
             amendment.Revision = 2;
 
+            var orderItem = order.OrderItems.First();
+            orderItem.Id = 0;
+            order.OrderItems = [orderItem];
+
             var sublocationRecipient = new OrderSublocationRecipient("r1", sublocation.SublocationOdsCode);
             sublocation.SublocationRecipients = [sublocationRecipient];
             order.OrderSublocations = [sublocation];
 
-            var amendSublocation = new OrderSublocation();
-            amendSublocation.SublocationOdsCode = sublocation.SublocationOdsCode;
+            var amendSublocation = new OrderSublocation { SublocationOdsCode = sublocation.SublocationOdsCode };
             var amendSublocationRecipient = new OrderSublocationRecipient("r2", sublocation.SublocationOdsCode);
             amendSublocation.SublocationRecipients = [sublocationRecipient, amendSublocationRecipient];
             amendment.OrderSublocations = [amendSublocation];
 
-            var orderItem = order.OrderItems.First();
             amendment.OrderItems = [orderItem];
 
             orderService.GetOrderWithOrderItems(amendment.CallOffId, internalOrgId).Returns(new OrderWrapper(amendment, [order]));
@@ -472,6 +640,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 internalOrgId,
                 callOffId,
                 orderItem.CatalogueItemId,
+                orderItem.Id,
                 amendment.CallOffId);
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
@@ -503,21 +672,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(wrapper);
 
-            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem);
             var orderRecipientDtos = QuantityController.GetRecipientDtos(orderRecipients, orderItem);
 
             var expectedModel = new ConfirmQuantitiesModel(
                 orderItem.CatalogueItem,
                 orderItem.OrderItemPrice,
-                orderRecipientDtos);
+                orderRecipientDtos)
+            {
+                Caption = $"Order {order.CallOffId}",
+            };
 
-            var result = await controller.ConfirmQuantities(internalOrgId, order.CallOffId, solution.CatalogueItemId);
+            var result = await controller.ConfirmQuantities(internalOrgId, order.CallOffId, solution.CatalogueItemId, orderItem.Id);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<ConfirmQuantitiesModel>().Subject;
 
             model.Should()
                 .BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.ContinueLink));
+        }
+
+        private static void ArrangeOrderItems(EntityFramework.Ordering.Models.Order order, OrderItem associatedService, OrderItem parent)
+        {
+            order.OrderItems.Clear();
+            associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            parent.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            associatedService.Parent = parent;
+            order.OrderItems.AddRange(new List<OrderItem> { associatedService, parent });
         }
     }
 }

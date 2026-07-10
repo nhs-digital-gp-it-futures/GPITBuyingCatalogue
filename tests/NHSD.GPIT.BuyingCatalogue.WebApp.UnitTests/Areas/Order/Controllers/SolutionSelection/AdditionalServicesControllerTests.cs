@@ -70,8 +70,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 InternalOrgId = internalOrgId,
                 AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly,
-                SolutionName = order.OrderType.GetSolutionNameFromOrder(order),
-                SolutionId = solutionId,
+                ParentItemName = order.OrderType.GetSolutionNameFromOrder(order),
+                ParentItemId = solutionId,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -127,8 +127,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             callOffId = new CallOffId(callOffId.OrderNumber, revision);
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            model.Services.ForEach(x => x.IsSelected = false);
 
-            for (var i = 0; i < order.OrderItems.Count; i++)
+            for (var i = 1; i < order.OrderItems.Count; i++)
             {
                 model.Services[i].CatalogueItemId = order.OrderItems.ElementAt(i).CatalogueItemId;
                 model.Services[i].IsSelected = true;
@@ -145,7 +147,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             IEnumerable<CatalogueItemId> newServiceIds = null;
 
             mockOrderItemService
-                .When(x => x.AddOrderItems(internalOrgId, callOffId, Arg.Any<IEnumerable<CatalogueItemId>>()))
+                .When(x => x.AddOrderItems(
+                    internalOrgId,
+                    callOffId,
+                    Arg.Any<IEnumerable<CatalogueItemId>>(),
+                    order.GetSolutionOrderItem().Id))
                 .Do(x => newServiceIds = x.Arg<IEnumerable<CatalogueItemId>>());
 
             var result = await controller.SelectAdditionalServices(internalOrgId, callOffId, model);

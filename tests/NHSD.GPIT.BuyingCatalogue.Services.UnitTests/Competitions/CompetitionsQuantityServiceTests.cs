@@ -125,6 +125,72 @@ public static class CompetitionsQuantityServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
+    public static async Task SetAdditionalServiceAssociatedServiceQuantity_SetsQuantity(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        AdditionalService additionalService,
+        AssociatedService associatedService,
+        OdsOrganisation sublocation,
+        List<OdsOrganisation> odsOrganisations,
+        int quantity,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsQuantityService service)
+    {
+        int competitionAdditionalServiceId = 101;
+
+        var competitionAssociatedService = new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
+        {
+            CatalogueItem = associatedService.CatalogueItem,
+            ParentItemId = competitionAdditionalServiceId,
+        };
+
+        var competitionAdditionalService = new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId, true)
+        {
+            Id = competitionAdditionalServiceId,
+            CatalogueItem = additionalService.CatalogueItem,
+            Services = [competitionAssociatedService],
+        };
+
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competition.CompetitionSolutions.Add(
+            new CompetitionSolution(competition.Id, solution.CatalogueItemId)
+            {
+                IsShortlisted = true,
+                Services = [competitionAdditionalService],
+            });
+
+        context.OdsOrganisations.AddRange(odsOrganisations);
+        context.AdditionalServices.Add(additionalService);
+        context.Solutions.Add(solution);
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.CompetitionCatalogueItems.Add(competitionAssociatedService);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.SetAdditionalServiceAssociatedServiceQuantity(
+            organisation.InternalIdentifier,
+            competition.Id,
+            solution.CatalogueItemId,
+            additionalService.CatalogueItemId,
+            associatedService.CatalogueItemId,
+            odsOrganisations.Select(x => new ServiceRecipientQuantityDto(sublocation.Id, x.Id, x.Name, quantity)));
+
+        var updatedAssociatedService = await context.CompetitionCatalogueItems
+             .Include(x => x.Price)
+             .ThenInclude(x => x.Tiers)
+             .FirstOrDefaultAsync(x => x.CompetitionId == competition.Id &&
+                 x.CatalogueItemId == associatedService.CatalogueItemId &&
+                 x.ParentItemId == competitionAdditionalServiceId);
+
+        updatedAssociatedService.Quantities.Should().HaveCount(odsOrganisations.Count);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
     public static async Task ResetSolutionQuantities_Resets(
         Organisation organisation,
         Competition competition,
@@ -234,5 +300,82 @@ public static class CompetitionsQuantityServiceTests
 
         updatedService.Quantities.Should().BeNullOrEmpty();
         updatedService.Quantity.Should().BeNull();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task ResetAdditionalServiceAssociatedServiceQuantities_Resets(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        AdditionalService additionalService,
+        AssociatedService associatedService,
+        OdsOrganisation sublocation,
+        List<OdsOrganisation> odsOrganisations,
+        int quantity,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsQuantityService service)
+    {
+        int competitionAdditionalServiceId = 1001;
+
+        var competitionAssociatedService = new CompetitionAssociatedService(competition.Id, associatedService.CatalogueItemId)
+        {
+            CatalogueItem = associatedService.CatalogueItem,
+            ParentItemId = competitionAdditionalServiceId,
+        };
+
+        var competitionAdditionalService = new CompetitionAdditionalService(competition.Id, additionalService.CatalogueItemId, true)
+        {
+            Id = competitionAdditionalServiceId,
+            CatalogueItem = additionalService.CatalogueItem,
+            Services = [competitionAssociatedService],
+            Quantity = quantity,
+            Quantities = [.. odsOrganisations.Select(x => new CompetitionItemQuantity()
+                {
+                    CompetitionId = competition.Id,
+                    ParentSublocationOdsCode = sublocation.Id,
+                    RecipientOdsCode = x.Id,
+                    Quantity = quantity,
+                })],
+        };
+
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competition.CompetitionSolutions.Add(
+            new CompetitionSolution(competition.Id, solution.CatalogueItemId)
+            {
+                IsShortlisted = true,
+                Services = [competitionAdditionalService],
+            });
+
+        context.Solutions.Add(solution);
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.CompetitionCatalogueItems.Add(competitionAssociatedService);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.ResetAdditionalServiceAssociatedServiceQuantities(
+            organisation.InternalIdentifier,
+            competition.Id,
+            solution.CatalogueItemId,
+            additionalService.CatalogueItemId,
+            associatedService.CatalogueItemId);
+
+        var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Quantities)
+            .FirstOrDefaultAsync(x => x.Id == competition.Id);
+
+        var updatedAssociatedService = await context.CompetitionCatalogueItems
+             .Include(x => x.Price)
+             .ThenInclude(x => x.Tiers)
+             .FirstOrDefaultAsync(x => x.CompetitionId == competition.Id &&
+                 x.CatalogueItemId == associatedService.CatalogueItemId &&
+                 x.ParentItemId == competitionAdditionalServiceId);
+
+        updatedAssociatedService.Quantities.Should().BeNullOrEmpty();
+        updatedAssociatedService.Quantity.Should().BeNull();
     }
 }

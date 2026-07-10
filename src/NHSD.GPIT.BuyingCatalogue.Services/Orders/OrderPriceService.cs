@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.orderQuantityService = orderQuantityService ?? throw new ArgumentNullException(nameof(orderQuantityService));
         }
 
-        public async Task UpdatePrice(int orderId, CatalogueItemId catalogueItemId, List<PricingTierDto> agreedPrices)
+        public async Task UpdatePrice(int orderId, int orderItemId, List<PricingTierDto> agreedPrices)
         {
             if (agreedPrices == null)
             {
@@ -33,8 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.OrderItemPrice)
                 .ThenInclude(x => x.OrderItemPriceTiers)
                 .Where(x => x.OrderItemPrice != null)
-                .FirstOrDefaultAsync(x => x.OrderId == orderId
-                    && x.CatalogueItemId == catalogueItemId);
+                .FirstOrDefaultAsync(x => x.Id == orderItemId && x.OrderId == orderId);
 
             if (orderItem != null)
             {
@@ -57,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             }
         }
 
-        public async Task UpsertPrice(int orderId, CataloguePrice price, List<PricingTierDto> agreedPrices)
+        public async Task UpsertPrice(int orderId, int orderItemId, CataloguePrice price, List<PricingTierDto> agreedPrices)
         {
             if (price == null)
             {
@@ -72,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var orderItem = await dbContext.OrderItems
                 .Include(x => x.OrderItemPrice)
                 .ThenInclude(x => x.OrderItemPriceTiers)
-                .FirstOrDefaultAsync(x => x.OrderId == orderId
+                .FirstOrDefaultAsync(x => x.OrderId == orderId && x.Id == orderItemId
                     && x.CatalogueItemId == price.CatalogueItemId);
 
             if (orderItem == null)
@@ -87,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
                 if (existingPrice.HasDifferentQuantityBasisThan(price))
                 {
-                    await orderQuantityService.ResetItemQuantities(orderId, orderItem.CatalogueItemId);
+                    await orderQuantityService.ResetItemQuantities(orderItemId);
                 }
 
                 dbContext.OrderItemPrices.Remove(orderItem.OrderItemPrice);

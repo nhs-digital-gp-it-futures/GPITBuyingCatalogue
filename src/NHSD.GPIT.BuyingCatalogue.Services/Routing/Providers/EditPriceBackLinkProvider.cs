@@ -36,6 +36,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
+            if (routeValues.Source == RoutingSource.ManageAssociatedServices)
+            {
+                var associatedService = order.OrderItem(routeValues.OrderItemId!.Value);
+                var catalogueItemId = associatedService.Parent.CatalogueItemId;
+                return new RoutingResult
+                {
+                    ActionName = Constants.Actions.ManageAssociatedServices,
+                    ControllerName = Constants.Controllers.AssociatedServices,
+                    RouteValues = new
+                    {
+                        routeValues.InternalOrgId, routeValues.CallOffId, catalogueItemId,
+                    },
+                };
+            }
+
             return new RoutingResult
             {
                 ActionName = Constants.Actions.TaskList,

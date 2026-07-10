@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             int orderId,
             int contractId,
             bool requiresExplanation,
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             RequirementsService service)
         {
             FluentActions
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                     () => service.AddRequirement(
                         orderId,
                         contractId,
-                        catalogueItemId,
+                        orderItemId,
                         details,
                         requiresExplanation))
                 .Should()
@@ -121,17 +121,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             Contract contract,
             RequirementsService service)
         {
-            order.OrderItems.Add(
-                new OrderItem()
+            var orderItem = new OrderItem()
+            {
+                CatalogueItemId = catalogueItemId,
+                CatalogueItem = new CatalogueItem()
                 {
-                    CatalogueItemId = catalogueItemId,
-                    CatalogueItem = new CatalogueItem()
-                    {
-                        Name = "Test",
-                        Id = catalogueItemId,
-                        CatalogueItemType = CatalogueItemType.AssociatedService,
-                    },
-                });
+                    Name = "Test",
+                    Id = catalogueItemId,
+                    CatalogueItemType = CatalogueItemType.AssociatedService,
+                },
+            };
+            order.OrderItems.Add(orderItem);
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             await service.AddRequirement(
                 order.Id,
                 contract.Id,
-                catalogueItemId,
+                orderItem.Id,
                 details,
                 requiresExplanation);
 
@@ -212,7 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
            int orderId,
            int itemId,
            bool requiresExplanation,
-           CatalogueItemId catalogueItemId,
+           int orderItemId,
            RequirementsService service)
         {
             FluentActions
@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                     () => service.EditRequirement(
                         orderId,
                         itemId,
-                        catalogueItemId,
+                        orderItemId,
                         details,
                         requiresExplanation))
                 .Should()
@@ -267,7 +267,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             await service.EditRequirement(
                 order.Id,
                 item.Id,
-                catalogueItemId,
+                orderItem.Id,
                 details,
                 requiresExplanation);
 

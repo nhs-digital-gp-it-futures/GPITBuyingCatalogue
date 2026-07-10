@@ -34,5 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
         Task<CatalogueItemId> AddAssociatedService(int supplierId, AssociatedServicesDetailsModel model);
 
         Task<List<CatalogueItem>> GetAssociatedServiceReferences(CatalogueItemId associatedServiceId);
+
+        Task<IDictionary<CatalogueItemId, int>> GetCountOfAssociatedServicesForCatalogueItems(HashSet<CatalogueItemId> catalogueItems);
     }
 }

@@ -5,6 +5,7 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList
@@ -26,7 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public TaskListModel(
             string internalOrgId,
             CallOffId callOffId,
-            OrderWrapper wrapper)
+            OrderWrapper wrapper,
+            IDictionary<CatalogueItemId, int> associatedServicesForAdditionalServices)
         {
             var rolledUpOrder = wrapper?.RolledUp;
 
@@ -61,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         internalOrgId,
                         callOffId,
                         OrderType,
-                        wrapper.DetermineOrderRecipients(CatalogueSolution.CatalogueItemId),
+                        wrapper.DetermineOrderRecipients(CatalogueSolution),
                         CatalogueSolution)
                     {
                         FromPreviousRevision = Previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
@@ -72,21 +74,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                             : 0,
                         PreviousRecipients = Previous?.FlattenedRecipients.Count() ?? 0,
                         CanBeRemoved = false,
+                        Source = RoutingSource.TaskList,
+                        OrderItemId = CatalogueSolution.Id,
                     });
             }
 
             AdditionalServices.ForEach(x => taskModels.Add(
                 x.CatalogueItemId,
-                new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, wrapper.DetermineOrderRecipients(x.CatalogueItemId), x)
+                new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, wrapper.DetermineOrderRecipients(x), x)
                 {
                     FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
                     HasNewRecipients = wrapper.HasNewOrderRecipients,
                     NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
+                    AssociatedServicesCatalogueItemsCount = associatedServicesForAdditionalServices.TryGetValue(x.CatalogueItemId, out var associatedServicesCount) ? associatedServicesCount : 0,
                     PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                         ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
                         : 0,
                     PreviousRecipients = Previous?.FlattenedRecipients.Count() ?? 0,
+                    AssociatedServicesOrderItems = x.Services.ToList(),
+                    PreviousAssociatedServicesOrderItems = wrapper.PreviousOrders
+                        .SelectMany(order => order.GetAdditionalServices())
+                        .FirstOrDefault(additionalService => additionalService.CatalogueItemId == x.CatalogueItemId)
+                        ?.Services.Count,
                     CanBeRemoved = !(IsAmendment && (Previous?.Exists(x.CatalogueItemId) ?? false)),
+                    Source = RoutingSource.TaskList,
+                    OrderItemId = x.Id,
                 }));
 
             AssociatedServices.ForEach(x => AddTaskModelForAssociatedService(
@@ -94,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 internalOrgId,
                 callOffId,
                 x,
-                wrapper.DetermineOrderRecipients(x.CatalogueItemId)
+                wrapper.DetermineOrderRecipients(x)
                     .ToList(),
                 !OrderType.MergerOrSplit));
 
@@ -106,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         internalOrgId,
                         callOffId,
                         item,
-                        wrapper.DetermineOrderRecipients(item.CatalogueItemId).ToList(),
+                        wrapper.DetermineOrderRecipients(item).ToList(),
                         false));
 
                 taskModelsForPrevious.Add(
@@ -207,6 +219,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     ? orderItem.CatalogueItem.CataloguePrices.First().CataloguePriceId
                     : 0,
                 CanBeRemoved = canBeRemoved,
+                Source = RoutingSource.TaskList,
+                OrderItemId = orderItem.Id,
             };
         }
     }

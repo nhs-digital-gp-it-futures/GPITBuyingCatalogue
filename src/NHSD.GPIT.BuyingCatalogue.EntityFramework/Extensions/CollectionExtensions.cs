@@ -20,11 +20,11 @@ public static class CollectionExtensions
 
     public static bool AllDeliveryDatesEntered(
         this IEnumerable<OrderSublocationRecipient> recipients,
-        CatalogueItemId catalogueItemId)
+        int orderItemId)
     {
         ArgumentNullException.ThrowIfNull(recipients);
 
-        return recipients.All(r => r.GetDeliveryDateForItem(catalogueItemId).HasValue);
+        return recipients.All(r => r.GetDeliveryDateForItem(orderItemId).HasValue);
     }
 
     public static bool AllQuantitiesEntered(this ICollection<OrderSublocationRecipient> recipients, OrderItem orderItem)
@@ -34,7 +34,7 @@ public static class CollectionExtensions
             return false;
         }
 
-        return recipients.All(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue);
+        return recipients.All(x => x.GetQuantityForItem(orderItem.Id).HasValue);
     }
 
     public static bool SomeNewQuantitiesEntered(
@@ -44,7 +44,7 @@ public static class CollectionExtensions
         if (orderItem.OrderItemPrice == null || recipients == null)
             return false;
 
-        var count = recipients.Count(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue);
+        var count = recipients.Count(x => x.GetQuantityForItem(orderItem.Id).HasValue);
         return count > 0;
     }
 }

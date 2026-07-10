@@ -20,11 +20,26 @@ public interface ICompetitionsQuantityService
         CatalogueItemId serviceId,
         IEnumerable<ServiceRecipientQuantityDto> serviceRecipients);
 
+    Task SetAdditionalServiceAssociatedServiceQuantity(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId serviceId,
+        IEnumerable<ServiceRecipientQuantityDto> serviceRecipients);
+
     Task ResetSolutionQuantities(string internalOrgId, int competitionId, CatalogueItemId solutionId);
 
     Task ResetServiceQuantities(
         string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
+        CatalogueItemId serviceId);
+
+    Task ResetAdditionalServiceAssociatedServiceQuantities(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
         CatalogueItemId serviceId);
 }

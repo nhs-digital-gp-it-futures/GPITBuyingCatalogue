@@ -32,12 +32,16 @@ public class OrderingInformationModel : NavBaseModel
             competitionSolution.Price,
             competitionSolution.Quantity ?? competitionSolution.Quantities.Sum(y => y.Quantity));
 
-        Items = competitionSolution.Services.Select(
-                x => new OrderingInformationItem(
+        Items = [.. competitionSolution.Services.Select(x => new OrderingInformationItem(
                     x.CatalogueItem,
                     x.Price,
-                    x.Quantity ?? x.Quantities.Sum(y => y.Quantity)))
-            .ToList();
+                    x.Quantity ?? x.Quantities.Sum(y => y.Quantity))
+                {
+                    Services = x.Services.Select(y => new OrderingInformationItem(
+                        y.CatalogueItem,
+                        y.Price,
+                        y.Quantity ?? y.Quantities.Sum(z => z.Quantity))),
+                })];
     }
 
     public string InternalOrgId { get; set; }
@@ -63,13 +67,16 @@ public class OrderingInformationModel : NavBaseModel
         GetItemByItemType(CatalogueItemType.AdditionalService);
 
     public decimal CalculateTotalOneOffCost() => SolutionDisplay.Price.CalculateOneOffCost(SolutionDisplay.Quantity)
-        + Items.Sum(x => x.Price.CalculateOneOffCost(x.Quantity));
+        + Items.Sum(x => x.Price.CalculateOneOffCost(x.Quantity))
+        + Items.SelectMany(x => x.Services).Sum(x => x.Price.CalculateOneOffCost(x.Quantity));
 
     public decimal CalculateTotalMonthlyCost() => SolutionDisplay.Price.CalculateCostPerMonth(SolutionDisplay.Quantity)
-        + Items.Sum(x => x.Price.CalculateCostPerMonth(x.Quantity));
+        + Items.Sum(x => x.Price.CalculateCostPerMonth(x.Quantity))
+        + Items.SelectMany(x => x.Services).Sum(x => x.Price.CalculateCostPerMonth(x.Quantity));
 
     public decimal CalculateTotalYearlyCost() => SolutionDisplay.Price.CalculateCostPerYear(SolutionDisplay.Quantity)
-        + Items.Sum(x => x.Price.CalculateCostPerYear(x.Quantity));
+        + Items.Sum(x => x.Price.CalculateCostPerYear(x.Quantity))
+        + Items.SelectMany(x => x.Services).Sum(x => x.Price.CalculateCostPerYear(x.Quantity));
 
     [ExcludeFromCodeCoverage]
     public decimal CalculateTotalCost() => CompetitionSolution.CalculateTotalPrice(ContractLength).GetValueOrDefault();

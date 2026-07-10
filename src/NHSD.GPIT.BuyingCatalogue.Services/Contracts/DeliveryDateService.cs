@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             var orderItems = order.OrderItems.ToList();
 
             orderItems.ForEach(i => wrapper
-                .DetermineOrderRecipients(i.CatalogueItemId)
+                .DetermineOrderRecipients(i)
                 .ForEach(r => r.SetDeliveryDateForItem(i, deliveryDate)));
 
             await dbContext.SaveChangesAsync();

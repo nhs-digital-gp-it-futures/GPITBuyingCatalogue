@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Contrac
             : this(callOffId, internalOrgId, associatedServices)
         {
             ItemId = item.Id;
-            SelectedOrderItemId = item.OrderItem.CatalogueItemId;
+            SelectedOrderItemId = item.OrderItem.Id;
             Name = item.Milestone?.Title;
             PaymentTrigger = item.Milestone?.PaymentTrigger;
         }
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Contrac
 
         public string InternalOrgId { get; set; }
 
-        public CatalogueItemId SelectedOrderItemId { get; set; }
+        public int? SelectedOrderItemId { get; set; }
 
         [StringLength(100)]
         public string Name { get; set; }
@@ -53,7 +53,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Contrac
         public override string Advice => IsEdit ? "Edit this associated service milestone." : "Add an associated service milestone.";
 
         public IEnumerable<SelectOption<string>> OrderItemOptions => AssociatedServices.Select(x =>
-            new SelectOption<string>(x.CatalogueItem.Name, x.CatalogueItem.Id.ToString())).ToList();
+        {
+            var text = x.Parent is null
+                ? x.CatalogueItem.Name
+                : $"{x.Parent.CatalogueItem.Name} - {x.CatalogueItem.Name}";
+            return new SelectOption<string>(text, x.Id.ToString());
+        }).ToList();
 
         public IEnumerable<OrderItem> AssociatedServices { get; set; }
     }

@@ -74,6 +74,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 ? "You can download a summary of this terminated contract for your records."
                 : "You can download and review your order summary here.";
 
+        public IDictionary<int?, HashSet<OrderItem>> AssociatedServicesForAdditionalServices =>
+            Order.GetAllAssociatedServices()
+                .Where(service => service.Parent.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService)
+                .GroupBy(service => service.ParentId)
+                .ToDictionary(group => group.Key, group => group.ToHashSet());
+
+        public Dictionary<CatalogueItemId, Dictionary<CallOffId, List<OrderItem>>> PreviousAssociatedServicesForAdditionalServices =>
+            OrderWrapper.PreviousOrders.SelectMany(order => order.GetAllAssociatedServices())
+                .Where(associatedService => associatedService.Parent.CatalogueItem.CatalogueItemType
+                    == CatalogueItemType.AdditionalService)
+                .GroupBy(associatedService => associatedService.Parent.CatalogueItemId)
+                .ToDictionary(
+                    grouping => grouping.Key,
+                    grouping => grouping.GroupBy(associatedService => associatedService.Order.CallOffId)
+                        .ToDictionary(innerGroup => innerGroup.Key, innerGroup => innerGroup.ToList()));
+
         public AmendOrderItemModel BuildAmendOrderItemModel(
             OrderItem item,
             string solutionName = null,
@@ -83,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             var previous = orderLinkedList.Find(item.Order)?.Previous;
 
             var recipients = item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
-                ? item.Order.DetermineOrderRecipients(previous?.Value, item.CatalogueItemId)
+                ? item.Order.DetermineOrderRecipients(previous?.Value, item.Id)
                 : RolledUp.GetOrderRecipients().ToList();
 
             var previousRecipients = item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
@@ -105,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 recipients,
                 previousRecipients,
                 item,
-                Previous?.OrderItem(item.CatalogueItemId),
+                OrderWrapper.PreviousOrders.AsEnumerable().LastOrDefault()?.OrderItem(item.CatalogueItemId),
                 new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(item.CatalogueItemId)))
             {
                 InternalOrgId = InternalOrgId,

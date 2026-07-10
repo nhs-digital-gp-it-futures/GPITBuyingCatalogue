@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
@@ -10,16 +10,15 @@ public sealed class CompetitionSolutionEntityTypeConfiguration : IEntityTypeConf
     {
         builder.Property(x => x.Justification).HasMaxLength(1000);
 
-        builder.HasMany(x => x.Services)
-            .WithOne()
-            .HasForeignKey(x => x.ParentItemId)
-            .HasConstraintName("FK_CompetitionCatalogueItems_Parent")
-            .OnDelete(DeleteBehavior.NoAction);
-
         builder.HasMany(x => x.Scores)
             .WithOne()
             .HasForeignKey(x => x.CompetitionSolutionId)
             .HasConstraintName("FK_SolutionScores_Solution")
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Ignore(x => x.CompetitionAdditionalServices);
+        builder.Ignore(x => x.CompetitionAssociatedServices);
+        builder.Ignore(x => x.AssociatedServicesAvailable);
+        builder.Ignore(x => x.AssociatedServicesRemaining);
     }
 }

@@ -11,9 +11,9 @@
 <partial name="Partials/_BackLink" model="Model" />
 
 @{
-    var solutions = Model.RolledUp.GetSolutions().ToList();
-    var additionalServices = Model.RolledUp.GetAdditionalServices().ToList();
-    var associatedServices = Model.RolledUp.GetAssociatedServices().ToList();
+    var solutions = Model.Order.GetSolutions().ToList();
+    var additionalServices = Model.Order.GetAdditionalServices().ToList();
+    var associatedServices = Model.Order.GetAssociatedServices().ToList();
 
     var orderSolution = Model.Order.OrderType.AssociatedServicesOnly ? Model.Order.AssociatedServicesOnlyDetails.Solution : Model.Order.GetSolutionOrderItem()?.CatalogueItem;
     var frameworks = orderSolution != null ? orderSolution?.Solution?.FrameworkSolutions?.Select(x => x.Framework).Distinct().ToList() : Enumerable.Empty<NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.Framework>().ToList();
@@ -282,6 +282,37 @@
                 {
                     var itemModel = Model.BuildAmendOrderItemModel(additionalService);
                     <partial name="_OrderItemSummary" model="@itemModel" />
+                    
+                    @if (Model.AssociatedServicesForAdditionalServices.ContainsKey(additionalService.Id))
+                    {
+                        var headingText = $"{additionalService.CatalogueItem.Name} - Associated Service details";
+                        <h3>@headingText</h3>
+                        @foreach (var associatedService in Model.AssociatedServicesForAdditionalServices[additionalService.Id])
+                        {
+                            var associatedServiceModel = Model.BuildAmendOrderItemModel(associatedService, additionalService.CatalogueItem.Name);
+                            <partial name="_OrderItemSummary" model="@associatedServiceModel" />
+                        }
+                    }
+                    
+                    @if (Model.PreviousAssociatedServicesForAdditionalServices.ContainsKey(additionalService.CatalogueItemId))
+                    {
+                        <h3>Previously ordered associated services</h3>
+                        @foreach (var group in Model.PreviousAssociatedServicesForAdditionalServices[additionalService.CatalogueItemId].Reverse())
+                        {
+                            <nhs-expander-v2 open="true">
+                                <nhs-expander-summary label-text="@group.Key" bold-title="true"></nhs-expander-summary>
+                                <nhs-expander-content>
+                                    @foreach (var associatedService in group.Value)
+                                    {
+                                        var previousServiceModel = Model.BuildAmendOrderItemModel(associatedService, additionalService.CatalogueItem.Name, true);
+                                        previousServiceModel.IsCardView = true;
+                                        previousServiceModel.IsAmendment = true;
+                                        <partial name="_OrderItemSummary" model="@previousServiceModel" />
+                                    }
+                                </nhs-expander-content>
+                            </nhs-expander-v2>
+                        }
+                    }
                 }
             }
 
@@ -315,7 +346,7 @@
                 </nhs-expander-v2>
             }
 
-            @if (associatedServices.Any())
+            @if (associatedServices.Any() || Model.PreviousAssociatedServicesGrouping.Any())
             {
                 var heading = associatedServices.Count == 1
                 ? "Associated service"
@@ -354,6 +385,7 @@
                                 {
                                     var itemModel = Model.BuildAmendOrderItemModel(associatedService, solutionName, true);
                                     itemModel.IsCardView = true;
+                                    itemModel.IsAmendment = true;
                                     <partial name="_OrderItemSummary" model="@itemModel" />
                                 }
                             </nhs-expander-content>

@@ -32,8 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         public IEnumerable<OrderItem> AssociatedServicesForCurrentOrder => OrderWrapper.Order.GetAssociatedServices();
 
         public IEnumerable<IGrouping<CallOffId, OrderItem>> PreviousAssociatedServicesGrouping =>
-            OrderWrapper.PreviousOrders.SelectMany(order => order.GetAssociatedServices())
-                .GroupBy(associatedService => associatedService.Order.CallOffId);
+            OrderWrapper.PreviousOrders?.SelectMany(order => order.GetAssociatedServices())
+                .GroupBy(associatedService => associatedService.Order.CallOffId) ?? [];
 
         public ImplementationPlan DefaultImplementationPlan { get; set; }
 
@@ -49,12 +49,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public bool HasSpecificRequirements => BespokeBilling != null && BespokeBilling.Requirements.Any();
 
+        public IDictionary<int?, HashSet<OrderItem>> AssociatedServicesForAdditionalServices =>
+            Order.GetAllAssociatedServices()
+                .Where(service => service.Parent.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService)
+                .GroupBy(service => service.ParentId)
+                .ToDictionary(group => group.Key, group => group.ToHashSet());
+
+        public Dictionary<CatalogueItemId, Dictionary<CallOffId, List<OrderItem>>> PreviousAssociatedServicesForAdditionalServices =>
+            OrderWrapper.PreviousOrders.SelectMany(order => order.GetAllAssociatedServices())
+                .Where(associatedService => associatedService.Parent.CatalogueItem.CatalogueItemType
+                    == CatalogueItemType.AdditionalService)
+                .GroupBy(associatedService => associatedService.Parent.CatalogueItemId)
+                .ToDictionary(
+                    grouping => grouping.Key,
+                    grouping => grouping.GroupBy(associatedService => associatedService.Order.CallOffId)
+                        .ToDictionary(innerGroup => innerGroup.Key, innerGroup => innerGroup.ToList()));
+
         public AmendOrderItemModel BuildAmendOrderItemModel(OrderItem solution, string solutionName = null, bool fromPreviousRevision = false)
         {
             var orderLinkedList = new LinkedList<Order>([.. OrderWrapper.PreviousOrders, OrderWrapper.Order]);
             var previous = orderLinkedList.Find(solution.Order)?.Previous;
             var recipients = solution.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
-                ? solution.Order.DetermineOrderRecipients(previous?.Value, solution.CatalogueItemId)
+                ? solution.Order.DetermineOrderRecipients(previous?.Value, solution.Id)
                 : RolledUp.GetOrderRecipients().ToList();
             var previousRecipients = solution.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService
                 ? []
@@ -71,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
                 recipients,
                 previousRecipients,
                 solution,
-                Previous?.OrderItem(solution.CatalogueItemId),
+                OrderWrapper.PreviousOrders.AsEnumerable().LastOrDefault()?.OrderItem(solution.CatalogueItemId),
                 new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(solution.CatalogueItemId)))
             {
                 OrderWrapper = OrderWrapper,

@@ -154,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 User.UserId());
 
             return RedirectToAction(
-                nameof(OrderController.Completed),
+                nameof(Completed),
                 typeof(OrderController).ControllerName(),
                 new { internalOrgId, callOffId });
         }
