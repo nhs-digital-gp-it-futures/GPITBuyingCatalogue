@@ -2180,7 +2180,12 @@ public static class CompetitionHubControllerTests
         competitionsService.GetCompetitionSolution(internalOrgId, competition.Id, competitionSolution.CatalogueItemId)
             .Returns(competitionSolution);
 
-        var expectedModel = new RemoveServiceModel(competitionAssociatedService.CatalogueItem) { EntityType = "Competition" };
+        var expectedModel = new RemoveServiceModel
+        {
+            ServiceName = competitionAssociatedService.CatalogueItem.Name,
+            ServiceType = competitionAssociatedService.CatalogueItem.CatalogueItemType,
+            EntityType = "Competition",
+        };
 
         var result = await controller.RemoveAdditionalServiceAssociatedService(
             internalOrgId,
@@ -2320,7 +2325,12 @@ public static class CompetitionHubControllerTests
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        var expectedModel = new RemoveServiceModel(solutionService.CatalogueItem) { EntityType = "Competition" };
+        var expectedModel = new RemoveServiceModel
+        {
+            ServiceName = solutionService.CatalogueItem.Name,
+            ServiceType = solutionService.CatalogueItem.CatalogueItemType,
+            EntityType = "Competition",
+        };
 
         var result = await controller.RemoveAssociatedService(internalOrgId, competition.Id, competitionSolution.CatalogueItemId, solutionService.CatalogueItemId);
 

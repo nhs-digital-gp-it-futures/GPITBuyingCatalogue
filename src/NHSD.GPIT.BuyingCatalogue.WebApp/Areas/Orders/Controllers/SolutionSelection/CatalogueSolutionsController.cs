@@ -406,8 +406,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var (backlink, entityType) = GetBackLinkAndEntityType(source, service, internalOrgId, callOffId);
 
-            var model = new RemoveServiceModel(service.CatalogueItem)
+            var model = new RemoveServiceModel
             {
+                ServiceName = service.CatalogueItem.Name,
+                ServiceType = service.CatalogueItem.CatalogueItemType,
                 BackLink = backlink,
                 EntityType = entityType,
                 Source = source,

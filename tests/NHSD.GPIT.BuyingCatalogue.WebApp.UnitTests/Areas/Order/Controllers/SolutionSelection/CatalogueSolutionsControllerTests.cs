@@ -961,7 +961,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new RemoveServiceModel(orderItem.CatalogueItem);
+            var expected = new RemoveServiceModel
+            {
+                ServiceName = orderItem.CatalogueItem.Name,
+                ServiceType = orderItem.CatalogueItem.CatalogueItemType,
+            };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
@@ -1009,9 +1013,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new RemoveServiceModel(orderItem.CatalogueItem)
+            var expected = new RemoveServiceModel
             {
-                Source = source, EntityType = CatalogueItemType.AdditionalService.Name(),
+                ServiceName = orderItem.CatalogueItem.Name,
+                ServiceType = orderItem.CatalogueItem.CatalogueItemType,
+                Source = source, 
+                EntityType = CatalogueItemType.AdditionalService.Name(),
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));

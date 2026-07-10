@@ -606,8 +606,10 @@ public class CompetitionHubController : Controller
         var associatedService = additionalService.CompetitionAssociatedServices.FirstOrDefault(x => x.CatalogueItemId == serviceId);
         if (associatedService == null) return BadRequest();
 
-        var model = new RemoveServiceModel(associatedService.CatalogueItem)
+        var model = new RemoveServiceModel
         {
+            ServiceName = associatedService.CatalogueItem.Name,
+            ServiceType = associatedService.CatalogueItem.CatalogueItemType,
             BackLink = Url.Action(nameof(Hub), new { internalOrgId, competitionId, solutionId }),
             EntityType = "Competition",
         };
@@ -656,8 +658,10 @@ public class CompetitionHubController : Controller
         var service = solution.GetAssociatedServices().FirstOrDefault(x => x.CatalogueItemId == serviceId);
         if (service == null) return BadRequest();
 
-        var model = new RemoveServiceModel(service.CatalogueItem)
+        var model = new RemoveServiceModel
         {
+            ServiceName = service.CatalogueItem.Name,
+            ServiceType = service.CatalogueItem.CatalogueItemType,
             BackLink = Url.Action(nameof(Hub), new { internalOrgId, competitionId, solutionId }),
             EntityType = "Competition",
         };
