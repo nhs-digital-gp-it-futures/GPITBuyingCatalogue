@@ -1017,7 +1017,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 ServiceName = orderItem.CatalogueItem.Name,
                 ServiceType = orderItem.CatalogueItem.CatalogueItemType,
-                Source = source, 
+                Source = source,
                 EntityType = CatalogueItemType.AdditionalService.Name(),
             };
 
