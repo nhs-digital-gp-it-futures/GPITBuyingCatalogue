@@ -290,10 +290,8 @@ public class CompetitionHubController : Controller
         if (item is null) return BadRequest();
 
         var quantities = item.Quantities;
-        var recipients = await GetRecipientQuantities(
-            competition.FlattenedRecipients.ToList(),
-            quantities,
-            internalOrgId);
+        var recipients = GetRecipientDtos([.. competition.FlattenedRecipients], quantities);
+
         var catalogueItem = item.CatalogueItem;
 
         var model = new SublocationQuantityHubModel(
@@ -718,6 +716,19 @@ public class CompetitionHubController : Controller
                 quantity,
                 location);
         });
+    }
+
+    private static List<ServiceRecipientQuantityDto> GetRecipientDtos(
+        IReadOnlyList<CompetitionSublocationRecipient> competitionRecipients,
+        ICollection<CompetitionItemQuantity> recipientQuantities)
+    {
+        return [.. competitionRecipients.Select(x =>
+            new ServiceRecipientQuantityDto(
+                x.ParentSublocationOdsCode,
+                x.RecipientOdsCode,
+                x.RecipientOrganisation?.Name,
+                recipientQuantities?.FirstOrDefault(y => x.RecipientOdsCode == y.RecipientOdsCode)?.Quantity,
+                x.ParentSublocation.SublocationOrganisation?.Name))];
     }
 
     private static CompetitionCatalogueItem GetServiceItem(
