@@ -5,7 +5,12 @@ VALUES
     (2, 'OrderEnteredSecondExpiryThreshold', 1),
     (3, 'PasswordEnteredFirstExpiryThreshold', 2),
     (4, 'PasswordEnteredSecondExpiryThreshold', 2),
-    (5, 'PasswordEnteredThirdExpiryThreshold', 2)
+    (5, 'PasswordEnteredThirdExpiryThreshold', 2),
+    (6, 'InactivityEnteredFirstExpiryThreshold', 3),
+    (7, 'InactivityEnteredSecondExpiryThreshold', 3),
+    (8, 'InactivityEnteredThirdExpiryThreshold', 3),
+    (9, 'InactivityEnteredFourthExpiryThreshold', 3),
+    (10, 'InactivityEnteredFifthExpiryThreshold', 3)
 )
 
 AS SOURCE ([Id], [Name], [EmailPreferenceTypeId])
