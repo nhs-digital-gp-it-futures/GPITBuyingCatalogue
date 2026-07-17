@@ -27,6 +27,7 @@
      LastUpdatedBy int NULL,
      HasOptedInUserResearch BIT DEFAULT 0 NOT NULL,
      AcceptedTermsOfUseDate DATETIME2(7) NULL,
+     DeactivationReasonId INT NULL,
      SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
      SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
      PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
@@ -34,5 +35,6 @@
      CONSTRAINT AK_AspNetUsers_NormalizedUserName UNIQUE (NormalizedUserName),
      CONSTRAINT AK_AspNetUsers_NormalizedEmail UNIQUE (NormalizedEmail),
      CONSTRAINT FK_AspNetUsers_OrganisationId FOREIGN KEY (PrimaryOrganisationId) REFERENCES organisations.Organisations (Id),
-     CONSTRAINT FK_AspNetUsers_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
+     CONSTRAINT FK_AspNetUsers_AccountDeactivationReasons FOREIGN KEY (DeactivationReasonId) REFERENCES users.AccountDeactivationReasons (Id),
+     CONSTRAINT FK_AspNetUsers_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),     
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = users.AspNetUsers_History));

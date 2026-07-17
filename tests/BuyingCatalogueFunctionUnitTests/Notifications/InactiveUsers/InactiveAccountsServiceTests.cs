@@ -451,7 +451,7 @@ public static class InactiveAccountsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task Raise_4MonthsInactivity_CreatesNotification(
+    public static async Task Raise_4MonthsInactivity_DoesntCreateNotification(
         QueueOptions queueOptions,
         [Frozen] IOptions<QueueOptions> options,
         [Frozen] BuyingCatalogueDbContext context,
@@ -487,6 +487,8 @@ public static class InactiveAccountsServiceTests
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
 
+        updatedUser.Disabled.Should().BeFalse();
+        updatedUser.DeactivationReason.Should().BeNull();
         updatedUser.Events.Should().BeEmpty();
         notifications.Should().NotContain(x => x.To == user.Email);
     }
@@ -529,6 +531,8 @@ public static class InactiveAccountsServiceTests
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
 
+        updatedUser.Disabled.Should().BeFalse();
+        updatedUser.DeactivationReason.Should().BeNull();
         updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventTypeEnum.InactivityEnteredFirstExpiryThreshold);
         notifications.Should().Contain(x => x.To == user.Email);
     }
@@ -572,6 +576,8 @@ public static class InactiveAccountsServiceTests
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
 
+        updatedUser.Disabled.Should().BeFalse();
+        updatedUser.DeactivationReason.Should().BeNull();
         updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventTypeEnum.InactivityEnteredSecondExpiryThreshold);
         notifications.Should().Contain(x => x.To == user.Email);
     }
@@ -616,6 +622,8 @@ public static class InactiveAccountsServiceTests
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
 
+        updatedUser.Disabled.Should().BeFalse();
+        updatedUser.DeactivationReason.Should().BeNull();
         updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventTypeEnum.InactivityEnteredThirdExpiryThreshold);
         notifications.Should().Contain(x => x.To == user.Email);
     }
@@ -661,6 +669,8 @@ public static class InactiveAccountsServiceTests
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
 
+        updatedUser.Disabled.Should().BeFalse();
+        updatedUser.DeactivationReason.Should().BeNull();
         updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventTypeEnum.InactivityEnteredForthExpiryThreshold);
         notifications.Should().Contain(x => x.To == user.Email);
     }
@@ -709,6 +719,7 @@ public static class InactiveAccountsServiceTests
         var notifications = await context.EmailNotifications.ToListAsync();
 
         updatedUser.Disabled.Should().BeTrue();
+        updatedUser.DeactivationReason.Should().Be(AccountDeactivationReasonEnum.Inactivity);
         updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventTypeEnum.InactivityEnteredFifthExpiryThreshold);
         notifications.Should().Contain(x => x.To == user.Email && x.EmailNotificationType == EmailNotificationTypeEnum.AccountDeactivation);
     }
@@ -751,6 +762,8 @@ public static class InactiveAccountsServiceTests
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
 
+        updatedUser.Disabled.Should().BeTrue();
+        updatedUser.DeactivationReason.Should().Be(AccountDeactivationReasonEnum.Inactivity);
         updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventTypeEnum.InactivityEnteredFifthExpiryThreshold);
         notifications.Should().Contain(x => x.To == user.Email);
     }

@@ -27,6 +27,7 @@
 :r ./InsertOrganisationTypes.sql
 :r ./InsertSolutionStandardStatuses.sql
 :r ./InsertAccountRequestStatuses.sql
+:r ./InsertAccountDeactivationReasons.sql
 
 -- Organisation Data
 :r ./CreateExecutiveAgency.sql
@@ -85,3 +86,4 @@
 -----------------------------------------------------------------
 
 :r ./InsertUserLoginEvents.sql
+:r ./UpdateAspNetUsersDeactivationReason.sql

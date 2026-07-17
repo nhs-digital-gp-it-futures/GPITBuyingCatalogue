@@ -112,6 +112,41 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
         [Theory]
         [MockInMemoryDbAutoData]
+        public static async Task Create_DisabledAccount_UserAddedToDbContext(
+            string expectedToken,
+            [Frozen] IPasswordResetCallback mockPasswordResetCallback,
+            [Frozen] IPasswordService mockPasswordService,
+            [Frozen] UserManager<AspNetUser> userManager,
+            CreateUserService service)
+        {
+            var role = "Buyer";
+            var expectedUser = CreateAspNetUser();
+
+            mockPasswordResetCallback.GetPasswordResetCallback(Arg.Any<PasswordResetToken>()).Returns(new Uri("http://www.test.com"));
+
+            mockPasswordService.GeneratePasswordResetTokenAsync(Arg.Is<string>(e => e == expectedUser.Email))
+                .Returns(new PasswordResetToken(expectedToken, expectedUser));
+
+            var result = await service.Create(
+                expectedUser.PrimaryOrganisationId,
+                expectedUser.FirstName,
+                expectedUser.LastName,
+                expectedUser.Email,
+                role,
+                true);
+
+            var actual = await userManager.Users.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).FirstAsync(u => u.Id == result.Id);
+            actual.PrimaryOrganisationId.Should().Be(expectedUser.PrimaryOrganisationId);
+            actual.FirstName.Should().Be(expectedUser.FirstName);
+            actual.LastName.Should().Be(expectedUser.LastName);
+            actual.Email.Should().Be(expectedUser.Email);
+            actual.AspNetUserRoles.Select(r => r.Role).Should().Contain(x => x.Name == role);
+            actual.Disabled.Should().BeTrue();
+            actual.DeactivationReason.Should().Be(AccountDeactivationReasonEnum.Manual);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
         public static async Task Create_NewApplicationUser_SendsEmail(
             string expectedToken,
             [Frozen] AccountTemplateSettings settings,

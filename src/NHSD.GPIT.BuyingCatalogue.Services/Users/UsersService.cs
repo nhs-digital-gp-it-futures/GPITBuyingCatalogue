@@ -79,6 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             user.UserName = email;
             user.Disabled = disabled;
             user.PrimaryOrganisationId = organisationId;
+            user.DeactivationReason = disabled ? AccountDeactivationReasonEnum.Manual : null;
 
             var userRoles = await userManager.GetRolesAsync(user);
 

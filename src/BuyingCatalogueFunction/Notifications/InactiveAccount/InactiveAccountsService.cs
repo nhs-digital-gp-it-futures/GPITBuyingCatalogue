@@ -171,6 +171,7 @@ public class InactiveAccountsService(
         }
 
         user.Disabled = true;
+        user.DeactivationReason = AccountDeactivationReasonEnum.Inactivity;
         await dbContext.SaveChangesAsync();
     }
 }

@@ -214,6 +214,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             actual.Email.Should().Be(email);
             actual.UserName.Should().Be(email);
             actual.Disabled.Should().Be(false);
+            actual.DeactivationReason.Should().BeNull();
+            actual.AspNetUserRoles.Select(u => u.Role).Should().Contain(x => x.Name == accountType);
+            actual.PrimaryOrganisationId.Should().Be(organisationId);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task UpdateUser_DisableAccount_UpdatesDatabaseCorrectly(
+            string firstName,
+            string lastName,
+            string email,
+            string accountType,
+            int organisationId,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] UserManager<AspNetUser> userManager,
+            AspNetUser user,
+            UsersService service)
+        {
+            user.Disabled = true;
+
+            context.Roles.Add(new() { Name = accountType, NormalizedName = accountType.ToUpperInvariant() });
+            context.AspNetUsers.Add(user);
+            await context.SaveChangesAsync();
+
+            await service.UpdateUser(user.Id, firstName, lastName, email, true, accountType, organisationId);
+
+            var actual = await userManager.Users.Include(u => u.AspNetUserRoles)
+                .ThenInclude(r => r.Role)
+                .FirstAsync(u => u.Id == user.Id);
+
+            actual.FirstName.Should().Be(firstName);
+            actual.LastName.Should().Be(lastName);
+            actual.Email.Should().Be(email);
+            actual.UserName.Should().Be(email);
+            actual.Disabled.Should().Be(true);
+            actual.DeactivationReason.Should().Be(AccountDeactivationReasonEnum.Manual);
             actual.AspNetUserRoles.Select(u => u.Role).Should().Contain(x => x.Name == accountType);
             actual.PrimaryOrganisationId.Should().Be(organisationId);
         }

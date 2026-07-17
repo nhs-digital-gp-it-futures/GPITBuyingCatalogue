@@ -37,6 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 
         public DateTime PasswordUpdatedDate { get; set; }
 
+        public AccountDeactivationReasonEnum? DeactivationReason { get; set; }
+
         public DateTime Created { get; set; }
 
         public DateTime LastUpdated { get; set; }
