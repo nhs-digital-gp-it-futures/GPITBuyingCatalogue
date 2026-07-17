@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             actual.Email.Should().Be(expectedUser.Email);
             actual.AspNetUserRoles.Select(r => r.Role).Should().Contain(x => x.Name == role);
             actual.Disabled.Should().BeTrue();
-            actual.DeactivationReason.Should().Be(AccountDeactivationReasonEnum.Manual);
+            actual.DeactivationReason.Should().Be(AccountDeactivationReason.Manual);
         }
 
         [Theory]

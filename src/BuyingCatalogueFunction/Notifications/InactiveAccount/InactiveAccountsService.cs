@@ -13,7 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace BuyingCatalogueFunction.Notifications.InactiveAccount;
 
-public class InactiveAccountsService(
+public partial class InactiveAccountsService(
     BuyingCatalogueDbContext dbContext,
     IOptions<QueueOptions> options,
     QueueServiceClient queueServiceClient,
@@ -24,13 +24,13 @@ public class InactiveAccountsService(
     private readonly BuyingCatalogueDbContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     private readonly ILogger<InactiveAccountsService> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-    private static List<(int Threshold, InactiveAccountEventTypeEnum Event)> InactivityThresholdsMap =>
+    private static List<(int Threshold, InactiveAccountEventType Event)> InactivityThresholdsMap =>
     [
-        (30, InactiveAccountEventTypeEnum.InactivityEnteredFirstExpiryThreshold),
-        (14, InactiveAccountEventTypeEnum.InactivityEnteredSecondExpiryThreshold),
-        (7, InactiveAccountEventTypeEnum.InactivityEnteredThirdExpiryThreshold),
-        (1, InactiveAccountEventTypeEnum.InactivityEnteredForthExpiryThreshold),
-        (0, InactiveAccountEventTypeEnum.InactivityEnteredFifthExpiryThreshold),
+        (30, InactiveAccountEventType.InactivityEnteredFirstExpiryThreshold),
+        (14, InactiveAccountEventType.InactivityEnteredSecondExpiryThreshold),
+        (7, InactiveAccountEventType.InactivityEnteredThirdExpiryThreshold),
+        (1, InactiveAccountEventType.InactivityEnteredForthExpiryThreshold),
+        (0, InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold),
     ];
 
     public async Task<ICollection<AspNetUser>> GetInactiveAccounts(DateOnly utcToday)
@@ -60,7 +60,7 @@ public class InactiveAccountsService(
 
         var eventType = DetermineEventToRaise(user, utcToday);
 
-        if (eventType == InactiveAccountEventTypeEnum.Nothing)
+        if (eventType == InactiveAccountEventType.Nothing)
         {
             return;
         }
@@ -80,12 +80,12 @@ public class InactiveAccountsService(
         return utcToday.AddMonths(-6);
     }
 
-    private static InactiveAccountEventTypeEnum DetermineEventToRaise(AspNetUser user, DateOnly utcToday)
+    private static InactiveAccountEventType DetermineEventToRaise(AspNetUser user, DateOnly utcToday)
     {
         // we shouldn't trigger this condition when deployed but adding it for completeness
         if (GetInactivityStartThresholdDate(utcToday) < DateOnly.FromDateTime(user.LastLoginDate()))
         {
-            return InactiveAccountEventTypeEnum.Nothing;
+            return InactiveAccountEventType.Nothing;
         }
 
         var endThreshold = GetInactivityEndThresholdDate(utcToday);
@@ -94,30 +94,32 @@ public class InactiveAccountsService(
 
         if (timeSpanSinceLastLogin.Days <= 0)
         {
-            return InactiveAccountEventTypeEnum.InactivityEnteredFifthExpiryThreshold;
+            return InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold;
         }
 
-        var eventToRaise = InactivityThresholdsMap.OrderBy(x => x.Threshold)
+        var eventToRaise = InactivityThresholdsMap
             .Where(x => timeSpanSinceLastLogin.Days == x.Threshold)
+            .OrderBy(x => x.Threshold)
             .Select(x => x.Event)
             .FirstOrDefault();
 
         return user.Events.Any(x => x.EventTypeId == (int)eventToRaise)
-            ? InactiveAccountEventTypeEnum.Nothing
+            ? InactiveAccountEventType.Nothing
             : eventToRaise;
     }
 
-    private async Task<EmailNotification> CreateNotification(AspNetUser user, InactiveAccountEventTypeEnum eventType)
+    private async Task<EmailNotification> CreateNotification(AspNetUser user, InactiveAccountEventType eventType)
     {
         user.Events.Add(new AspNetUserEvent((int)eventType));
 
         var notification = new EmailNotification { To = user.Email };
 
-        if (eventType == InactiveAccountEventTypeEnum.InactivityEnteredFifthExpiryThreshold)
+        if (eventType == InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold)
         {
             await DeactivateUserAccount(user.Id);
             notification.JsonFrom(new AccountDeactivationEmailModel());
-            logger.LogInformation("Deactiving inactive user account for {UserId} due to inactivity", user.Id);
+
+            LogUserDeactivationNotice(logger, user.Id);
         }
         else
         {
@@ -127,9 +129,7 @@ public class InactiveAccountsService(
                 DaysFromThreshold = daysFromThreshold
             });
 
-            logger.LogInformation("Notifying user {UserId} that their account will be deactiviated in {DaysFromThreshold} due to inactivity", 
-                user.Id,
-                daysFromThreshold);
+            LogUserInactivityNotice(logger, user.Id, daysFromThreshold);
         }
 
         dbContext.Add(notification);
@@ -141,7 +141,7 @@ public class InactiveAccountsService(
     private async Task DispatchNotification(
         AspNetUser user,
         EmailNotification notification,
-        InactiveAccountEventTypeEnum eventType)
+        InactiveAccountEventType eventType)
     {
         var queueName = options.Value.SendEmailNotifications;
         var client = queueServiceClient.GetQueueClient(queueName);
@@ -152,10 +152,13 @@ public class InactiveAccountsService(
         }
         catch (Exception e)
         {
-            logger.LogError(
+            LogNotificationQueueDispatchError(
+                logger,
                 e,
-                "{UserId}, {EventType} - Notifications saved but problem dispatching to queue {Queue}",
-                user.Id, eventType, queueName);
+                user.Id,
+                eventType,
+                queueName);
+
             throw;
         }
     }
@@ -167,11 +170,41 @@ public class InactiveAccountsService(
 
         if (user is null)
         {
-            logger.LogWarning("No user found with id {userId} to deactivate", userId);
+            LogNoUserFoundWarning(logger, userId);
+            return;
         }
 
         user.Disabled = true;
-        user.DeactivationReason = AccountDeactivationReasonEnum.Inactivity;
+        user.DeactivationReason = AccountDeactivationReason.Inactivity;
         await dbContext.SaveChangesAsync();
     }
+
+    [LoggerMessage(
+        EventId = 100,
+        Level = LogLevel.Information,
+        Message = "Deactiving inactive user account for {UserId} due to inactivity")]
+    private static partial void LogUserDeactivationNotice(ILogger logger, int userId);
+        
+    [LoggerMessage(
+        EventId = 200,
+        Level = LogLevel.Information,
+        Message = "Notifying user {UserId} that their account will be deactiviated in {DaysFromThreshold} due to inactivity")]
+    private static partial void LogUserInactivityNotice(ILogger logger, int userId, int daysFromThreshold);
+        
+    [LoggerMessage(
+        EventId = 300,
+        Level = LogLevel.Error,
+        Message = "{UserId}, {EventType} - Notifications saved but problem dispatching to queue {Queue}")]
+    private static partial void LogNotificationQueueDispatchError(
+        ILogger logger,
+        Exception exception,
+        int userId,
+        InactiveAccountEventType eventType,
+        string queue);
+
+    [LoggerMessage(
+        EventId = 400,
+        Level = LogLevel.Warning,
+        Message = "No user found with id {UserId} to deactivate")]
+    private static partial void LogNoUserFoundWarning(ILogger logger, int userId);
 }

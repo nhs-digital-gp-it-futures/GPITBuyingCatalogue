@@ -1,6 +1,6 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 
-public enum InactiveAccountEventTypeEnum
+public enum InactiveAccountEventType
 {
     Nothing = EventTypeEnum.Nothing,
     InactivityEnteredFirstExpiryThreshold = EventTypeEnum.InactivityEnteredFirstExpiryThreshold,

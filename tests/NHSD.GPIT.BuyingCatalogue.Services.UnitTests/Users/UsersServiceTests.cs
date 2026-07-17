@@ -249,7 +249,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             actual.Email.Should().Be(email);
             actual.UserName.Should().Be(email);
             actual.Disabled.Should().Be(true);
-            actual.DeactivationReason.Should().Be(AccountDeactivationReasonEnum.Manual);
+            actual.DeactivationReason.Should().Be(AccountDeactivationReason.Manual);
             actual.AspNetUserRoles.Select(u => u.Role).Should().Contain(x => x.Name == accountType);
             actual.PrimaryOrganisationId.Should().Be(organisationId);
         }

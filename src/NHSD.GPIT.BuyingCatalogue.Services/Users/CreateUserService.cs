@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                 PrimaryOrganisationId = primaryOrganisationId,
                 Disabled = isDisabled,
                 HasOptedInUserResearch = optedInUserResearch,
-                DeactivationReason = isDisabled ? AccountDeactivationReasonEnum.Manual : null,
+                DeactivationReason = isDisabled ? AccountDeactivationReason.Manual : null,
             };
 
             await userManager.CreateAsync(aspNetUser);

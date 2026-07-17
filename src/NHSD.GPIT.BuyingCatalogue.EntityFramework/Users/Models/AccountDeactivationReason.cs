@@ -1,6 +1,6 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
-public enum AccountDeactivationReasonEnum
+public enum AccountDeactivationReason
 {
     Manual = 0,
     Inactivity,

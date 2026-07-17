@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BuyingCatalogueFunction.Notifications.InactiveAccount;
 
-public class InactiveAccountsFunction(
+public partial class InactiveAccountsFunction(
     ILogger<InactiveAccountsFunction> logger,
     IInactiveAccountsService inactiveAccountsService)
 {
@@ -15,11 +15,11 @@ public class InactiveAccountsFunction(
     [Function("InactiveAccountsFunction")]
     public async Task Run([TimerTrigger("0 0 7 * * *", RunOnStartup = true)] TimerInfo timerInfo)
     {
-        logger.LogInformation("Inactive Accounts: Executed at {Date}", DateTime.UtcNow);
+        LogExecuteDateTime(logger, DateTime.UtcNow);
 
         if (timerInfo.ScheduleStatus is not null)
         {
-            logger.LogInformation("Inactive Accounts: Next timer schedule at {Next}", timerInfo.ScheduleStatus.Next);
+            LogNextScheduledDateTime(logger, timerInfo.ScheduleStatus.Next);
         }
 
         await Run();
@@ -33,7 +33,7 @@ public class InactiveAccountsFunction(
 
         if (users.Count == 0)
         {
-            logger.LogInformation("Inactive Accounts: No inactive users found");
+            LogNoInactiveUsers(logger);
             return;
         }
 
@@ -43,10 +43,37 @@ public class InactiveAccountsFunction(
             {
                 await inactiveAccountsService.Raise(user, utcToday);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                logger.LogError("Inactive Accounts: User {UserId}. Check inner exception", user.Id);
+                LogInactityNotificationError(logger, e, user.Id);
             }
         }
     }
+
+    [LoggerMessage(
+        EventId = 100,
+        Level = LogLevel.Information,
+        Message = "Inactive Accounts: Executed at {Date}")]
+    private static partial void LogExecuteDateTime(ILogger logger, DateTime date);
+
+    [LoggerMessage(
+        EventId = 200,
+        Level = LogLevel.Information,
+        Message = "Inactive Accounts: Next timer schedule at {Next}")]
+    private static partial void LogNextScheduledDateTime(ILogger logger, DateTime next);
+
+    [LoggerMessage(
+        EventId = 300,
+        Level = LogLevel.Information,
+        Message = "Inactive Accounts: No inactive users found")]
+    private static partial void LogNoInactiveUsers(ILogger logger);
+
+    [LoggerMessage(
+        EventId = 400,
+        Level = LogLevel.Error,
+        Message = "Inactive Accounts: Exception raising a deactivation notice for User {UserId}")]
+    private static partial void LogInactityNotificationError(
+        ILogger logger,
+        Exception exception,
+        int userId);
 }
