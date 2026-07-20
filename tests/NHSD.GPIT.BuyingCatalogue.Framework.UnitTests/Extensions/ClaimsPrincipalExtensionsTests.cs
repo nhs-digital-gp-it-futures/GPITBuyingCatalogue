@@ -4,7 +4,9 @@ using System.Linq;
 using System.Security.Claims;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
@@ -158,6 +160,93 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             var user = CreatePrincipal("userId", expected.ToString());
 
             user.UserId().Should().Be(expected);
+        }
+
+        [Theory]
+        [MockInlineAutoData(Permissions.ManageCatalogueSolutions, true)]
+        [MockInlineAutoData(Permissions.ManageContractingVehicles, true)]
+        [MockInlineAutoData(Permissions.ManageSupplierDefinedEpics, true)]
+        [MockInlineAutoData(Permissions.ManageCapabilitiesAndEpics, true)]
+        [MockInlineAutoData(Permissions.ManageInteroperability, true)]
+        [MockInlineAutoData(Permissions.ManageBuyerOrganisations, false)]
+        [MockInlineAutoData(Permissions.ManageSupplierOrganisations, false)]
+        [MockInlineAutoData(Permissions.ManageUsers, false)]
+        [MockInlineAutoData(Permissions.ManageAccountCreationRequests, false)]
+        [MockInlineAutoData(Permissions.ManageAllowedEmailDomains, false)]
+        [MockInlineAutoData(Permissions.ManageAllOrders, false)]
+        public static void User_CanManageSolutions_ReturnsExpected(string claim, bool expected)
+        {
+            var user = CreatePrincipal(Permissions.ClaimType, claim);
+
+            user.CanManageSolutions().Should().Be(expected);
+        }
+
+        [Theory]
+        [MockInlineAutoData(Permissions.ManageCatalogueSolutions, false)]
+        [MockInlineAutoData(Permissions.ManageContractingVehicles, false)]
+        [MockInlineAutoData(Permissions.ManageSupplierDefinedEpics, false)]
+        [MockInlineAutoData(Permissions.ManageCapabilitiesAndEpics, false)]
+        [MockInlineAutoData(Permissions.ManageInteroperability, false)]
+        [MockInlineAutoData(Permissions.ManageBuyerOrganisations, true)]
+        [MockInlineAutoData(Permissions.ManageSupplierOrganisations, true)]
+        [MockInlineAutoData(Permissions.ManageUsers, false)]
+        [MockInlineAutoData(Permissions.ManageAccountCreationRequests, false)]
+        [MockInlineAutoData(Permissions.ManageAllowedEmailDomains, false)]
+        [MockInlineAutoData(Permissions.ManageAllOrders, false)]
+        public static void User_CanManageOrganisations_ReturnsExpected(string claim, bool expected)
+        {
+            var user = CreatePrincipal(Permissions.ClaimType, claim);
+
+            user.CanManageOrganisations().Should().Be(expected);
+        }
+
+        [Theory]
+        [MockInlineAutoData(Permissions.ManageCatalogueSolutions, false)]
+        [MockInlineAutoData(Permissions.ManageContractingVehicles, false)]
+        [MockInlineAutoData(Permissions.ManageSupplierDefinedEpics, false)]
+        [MockInlineAutoData(Permissions.ManageCapabilitiesAndEpics, false)]
+        [MockInlineAutoData(Permissions.ManageInteroperability, false)]
+        [MockInlineAutoData(Permissions.ManageBuyerOrganisations, false)]
+        [MockInlineAutoData(Permissions.ManageSupplierOrganisations, false)]
+        [MockInlineAutoData(Permissions.ManageUsers, true)]
+        [MockInlineAutoData(Permissions.ManageAccountCreationRequests, true)]
+        [MockInlineAutoData(Permissions.ManageAllowedEmailDomains, true)]
+        [MockInlineAutoData(Permissions.ManageAllOrders, false)]
+        public static void User_CanManageUsers_ReturnsExpected(string claim, bool expected)
+        {
+            var user = CreatePrincipal(Permissions.ClaimType, claim);
+
+            user.CanManageUsers().Should().Be(expected);
+        }
+
+        [Theory]
+        [MockInlineAutoData(Permissions.ManageCatalogueSolutions, false)]
+        [MockInlineAutoData(Permissions.ManageContractingVehicles, false)]
+        [MockInlineAutoData(Permissions.ManageSupplierDefinedEpics, false)]
+        [MockInlineAutoData(Permissions.ManageCapabilitiesAndEpics, false)]
+        [MockInlineAutoData(Permissions.ManageInteroperability, false)]
+        [MockInlineAutoData(Permissions.ManageBuyerOrganisations, false)]
+        [MockInlineAutoData(Permissions.ManageSupplierOrganisations, false)]
+        [MockInlineAutoData(Permissions.ManageUsers, false)]
+        [MockInlineAutoData(Permissions.ManageAccountCreationRequests, false)]
+        [MockInlineAutoData(Permissions.ManageAllowedEmailDomains, false)]
+        [MockInlineAutoData(Permissions.ManageAllOrders, true)]
+        public static void User_CanManageOrders_ReturnsExpected(string claim, bool expected)
+        {
+            var user = CreatePrincipal(Permissions.ClaimType, claim);
+
+            user.CanManageOrders().Should().Be(expected);
+        }
+
+        [Fact]
+        public static void IsAdminUser_Returns_Expected()
+        {
+            var user = CreatePrincipal(ClaimTypes.Role, OrganisationFunction.Authority.Name);
+
+            user.CanManageOrders().Should().Be(true);
+            user.CanManageUsers().Should().Be(true);
+            user.CanManageOrganisations().Should().Be(true);
+            user.CanManageSolutions().Should().Be(true);
         }
 
         private static ClaimsPrincipal CreatePrincipal(string claim, string value)

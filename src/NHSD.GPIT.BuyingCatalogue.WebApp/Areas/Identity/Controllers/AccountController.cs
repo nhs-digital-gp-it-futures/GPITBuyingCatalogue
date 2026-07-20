@@ -237,7 +237,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             if (!string.IsNullOrWhiteSpace(returnUrl))
                 return returnUrl;
 
-            var isAdmin = await userManager.IsInRoleAsync(user, OrganisationFunction.Authority.Name);
+            var isAdmin = await userManager.IsInRoleAsync(user, OrganisationFunction.Authority.Name)
+                || await userManager.IsInRoleAsync(user, OrganisationFunction.Onboarding.Name)
+                || await userManager.IsInRoleAsync(user, OrganisationFunction.View.Name);
 
             return isAdmin
                 ? Url.Action(

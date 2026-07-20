@@ -70,6 +70,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     .AddPolicy("AccountManager", policy => policy.RequireClaim(
                             ClaimTypes.Role,
                             OrganisationFunction.AccountManager.Name))
+                    .AddPolicy("ManageCatalogueSolutions", policy => policy.RequireClaim(
+                        Permissions.ClaimType,
+                        Permissions.ManageCatalogueSolutions))
+                    .AddPolicy("ManageContractingVehicles", policy => policy.RequireClaim(
+                        Permissions.ClaimType,
+                        Permissions.ManageContractingVehicles))
+                    .AddPolicy("ManageSupplierDefinedEpics", policy => policy.RequireClaim(
+                        Permissions.ClaimType,
+                        Permissions.ManageSupplierDefinedEpics))
+                    .AddPolicy("ManageCapabilitiesAndEpics", policy => policy.RequireClaim(
+                        Permissions.ClaimType,
+                        Permissions.ManageCapabilitiesAndEpics))
+                    .AddPolicy("ManageInteroperability", policy => policy.RequireClaim(
+                        Permissions.ClaimType,
+                        Permissions.ManageInteroperability))
+                    .AddPolicy("ManageBuyerOrganisations", policy => policy.RequireClaim(
+                        Permissions.ClaimType,
+                        Permissions.ManageBuyerOrganisations))
+                    .AddPolicy("ManageSupplierOrganisations", policy => policy.RequireClaim(
+                        Permissions.ClaimType,
+                        Permissions.ManageSupplierOrganisations))
+                    .AddPolicy("ManageUsers", policy => policy.RequireClaim(
+                        Permissions.ClaimType,
+                        Permissions.ManageUsers))
+                    .AddPolicy("ManageAllowedEmailDomains", policy => policy.RequireClaim(
+                        Permissions.ClaimType,
+                        Permissions.ManageAllowedEmailDomains))
+                    .AddPolicy("ManageAccountCreationRequests", policy => policy.RequireClaim(
+                        Permissions.ClaimType,
+                        Permissions.ManageAccountCreationRequests))
+                    .AddPolicy("ManageAllOrders", policy => policy.RequireClaim(
+                        Permissions.ClaimType,
+                        Permissions.ManageAllOrders))
                     .AddPolicy("Development", policy => policy.Requirements.Add(new DevelopmentRequirement()));
             }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
+using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
@@ -45,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         public static bool IsAdmin(this ClaimsPrincipal user)
         {
-            return HasOrganisationClaim(user, OrganisationFunction.Authority.Name);
+            return HasOrganisationClaim(user, OrganisationFunction.Authority.Name) || HasOrganisationClaim(user, OrganisationFunction.Onboarding.Name) || HasOrganisationClaim(user, OrganisationFunction.View.Name);
         }
 
         public static bool IsBuyer(this ClaimsPrincipal user)
@@ -66,6 +67,45 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             var idValue = GetClaimValue(user, Constants.CatalogueClaims.UserId);
 
             return int.Parse(idValue, NumberStyles.Integer, CultureInfo.InvariantCulture);
+        }
+
+        public static bool CanManageSolutions(this ClaimsPrincipal user)
+        {
+            ArgumentNullException.ThrowIfNull(user);
+
+            return user.IsInRole(OrganisationFunction.Authority.Name) || user.HasClaim(c =>
+                c.Value is Permissions.ManageCatalogueSolutions
+                    or Permissions.ManageContractingVehicles
+                    or Permissions.ManageSupplierDefinedEpics
+                    or Permissions.ManageCapabilitiesAndEpics
+                    or Permissions.ManageInteroperability);
+        }
+
+        public static bool CanManageOrganisations(this ClaimsPrincipal user)
+        {
+            ArgumentNullException.ThrowIfNull(user);
+
+            return user.IsInRole(OrganisationFunction.Authority.Name) || user.HasClaim(c =>
+                c.Value is Permissions.ManageBuyerOrganisations
+                or Permissions.ManageSupplierOrganisations);
+        }
+
+        public static bool CanManageUsers(this ClaimsPrincipal user)
+        {
+            ArgumentNullException.ThrowIfNull(user);
+
+            return user.IsInRole(OrganisationFunction.Authority.Name) || user.HasClaim(c =>
+                c.Value is Permissions.ManageUsers
+                or Permissions.ManageAccountCreationRequests
+                or Permissions.ManageAllowedEmailDomains);
+        }
+
+        public static bool CanManageOrders(this ClaimsPrincipal user)
+        {
+            ArgumentNullException.ThrowIfNull(user);
+
+            return user.IsInRole(OrganisationFunction.Authority.Name) || user.HasClaim(c =>
+                c.Value is Permissions.ManageAllOrders);
         }
 
         private static string GetClaimValue(ClaimsPrincipal user, string claimType)

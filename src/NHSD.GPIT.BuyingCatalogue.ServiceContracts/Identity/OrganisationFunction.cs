@@ -9,6 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
         public static readonly OrganisationFunction Authority = new(1, "Authority", "Admin", AuthorityAdvice, AuthorityAdvice);
         public static readonly OrganisationFunction Buyer = new(2, "Buyer", "Buyer", string.Format(BuyerAdvice, " for your organisation"), string.Format(BuyerAdvice, string.Empty));
         public static readonly OrganisationFunction AccountManager = new(3, "AccountManager", "Account manager", string.Format(AccountManagerAdvice, "your"), string.Format(AccountManagerAdvice, "their buyer"));
+        public static readonly OrganisationFunction Onboarding = new(4, "Onboarding", "Onboarding", string.Empty, string.Empty);
+        public static readonly OrganisationFunction View = new(5, "View", "View", string.Empty, string.Empty);
 
         private const string AuthorityAdvice = "This type of user is an administrator on behalf of NHS Digital.";
 
