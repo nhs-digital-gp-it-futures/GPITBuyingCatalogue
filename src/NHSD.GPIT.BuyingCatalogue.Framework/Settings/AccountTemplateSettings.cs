@@ -17,5 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
         public string InvalidOdsCodeTemplateId { get; set; }
 
         public string AccountSubmittedTemplateId { get; set; }
+
+        public string AccountDeactivationTemplateId { get; set; }
     }
 }

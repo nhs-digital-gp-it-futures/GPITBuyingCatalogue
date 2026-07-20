@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -15,10 +16,14 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
+using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
+using NuGet.Configuration;
 using Xunit;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
@@ -148,7 +153,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             AspNetUser user,
             LoginViewModel model,
             UserManager<AspNetUser> mockUserManager,
-            SignInManager<AspNetUser> mockSignInManager)
+            SignInManager<AspNetUser> mockSignInManager,
+            IUsersService usersService)
         {
             const string expectedErrorMessage = "There is a problem accessing your account.";
 
@@ -158,7 +164,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 .FindByNameAsync(model.EmailAddress)
                 .Returns(user);
 
-            var controller = CreateController(mockUserManager, mockSignInManager);
+            var controller = CreateController(
+                mockUserManager,
+                mockSignInManager,
+                usersService: usersService);
 
             var result = await controller.Login(model);
 
@@ -168,6 +177,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             controller.ModelState[nameof(model.DisabledError)]?.Errors.Should().Contain(x => x.ErrorMessage.Contains(expectedErrorMessage));
 
             var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
+
+            await usersService.Received().SendDeactivatedUserEmail(user.Email);
 
             actualResult.ViewName.Should().BeNull();
             actualResult.Model.Should().BeAssignableTo<LoginViewModel>();
@@ -856,7 +867,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             SignInManager<AspNetUser> signInManager,
             IPasswordService passwordService = null,
             IOdsService odsService = null,
-            IPasswordResetCallback passwordResetCallback = null)
+            IPasswordResetCallback passwordResetCallback = null,
+            IUsersService usersService = null)
         {
             return new AccountController(
                 signInManager,
@@ -864,6 +876,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 odsService ?? Substitute.For<IOdsService>(),
                 passwordService ?? Substitute.For<IPasswordService>(),
                 passwordResetCallback ?? Substitute.For<IPasswordResetCallback>(),
+                usersService ?? Substitute.For<IUsersService>(),
                 new DisabledErrorMessageSettings());
         }
     }

@@ -13,9 +13,11 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
@@ -402,6 +404,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             var result = await service.IsAccountManagerLimit(testOrgId);
 
             result.Should().BeFalse();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task SendDeactivatedUserEmail_SendsCorrectEmailTemplate(
+            AspNetUser user,
+            [Frozen] AccountTemplateSettings accountTemplateSettings,
+            [Frozen] IGovNotifyEmailService govNotifyEmailService,
+            UsersService service)
+        {
+            accountTemplateSettings.AccountDeactivationTemplateId = "TestTemplateId";
+
+            await service.SendDeactivatedUserEmail(user.Email);
+            await govNotifyEmailService.Received().SendEmailAsync(
+                user.Email,
+                accountTemplateSettings.AccountDeactivationTemplateId,
+                null);
         }
 
         private static async Task AddAccountManagerToOrganisation(
