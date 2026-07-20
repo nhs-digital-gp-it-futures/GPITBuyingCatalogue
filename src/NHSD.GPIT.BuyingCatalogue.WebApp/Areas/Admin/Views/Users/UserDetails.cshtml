@@ -52,6 +52,11 @@
                                        value-name="Value"
                                        display-name="Text" />
                 </nhs-fieldset-form-label>
+                
+                @if (!Model.IsActive!.Value == true && Model.DeactviationReason is not null)
+                {
+                    <p>Deactivation reason: @Model.DeactviationReason</p>
+                }
             </div>
 
             <nhs-submit-button/>

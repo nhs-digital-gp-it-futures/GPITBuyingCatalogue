@@ -32,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
             EmailAddress = user.Email;
             SelectedAccountType = user.GetRoleName();
             IsActive = !user.Disabled;
+            DeactviationReason = user.DeactivationReason;
         }
 
         public UserDetailsModel(Organisation organisation)
@@ -135,11 +136,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 
         public bool? IsActive { get; set; }
 
-        public IEnumerable<SelectOption<bool>> StatusOptions => new List<SelectOption<bool>>
-        {
+        public IEnumerable<SelectOption<bool>> StatusOptions =>
+        [
             new("Active", true),
-            new("Inactive", false),
-        };
+            new("Deactivated", false),
+        ];
+
+        public AccountDeactivationReason? DeactviationReason { get; set; }
 
         public string ControllerName { get; set; }
     }

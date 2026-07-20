@@ -73,6 +73,11 @@
                                        display-name="Text" />
                 </nhs-fieldset-form-label>
 
+                @if (!Model.IsActive!.Value == true && Model.DeactviationReason is not null)
+                {
+                    <p>Deactivation reason: @Model.DeactviationReason</p>
+                }
+
                 <div data-test-id="add-user-button">
                     <nhs-submit-button />
                 </div>
