@@ -6,6 +6,12 @@ namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Tests.Admin;
 
 public class AdminTests : BaseTest
 {
+    private static readonly string[] ContractingVehicleFundingTypes =
+    [
+        "GPIT funding",
+        "Local funding"
+    ];
+
     public AdminTests(TestServerFixture fixture, ITestOutputHelper output)
         : base(fixture, output) { }
 
@@ -46,7 +52,7 @@ public class AdminTests : BaseTest
         await AdminPages.CreateContractingVehicleAsync(
             name: data.ContractingVehicleName,
             maxDuration: data.ContractingVehicleDuration,
-            fundingTypes: new[] { "GPIT funding", "Local funding" });
+            fundingTypes: ContractingVehicleFundingTypes);
     }
 
     [Fact]
