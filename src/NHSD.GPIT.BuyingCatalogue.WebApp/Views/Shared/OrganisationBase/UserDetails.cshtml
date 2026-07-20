@@ -1,7 +1,7 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
-@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.UserDetailsModel
+﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
+
+@model UserDetailsModel
 @{
     ViewBag.Title = Model.Title;
 }
@@ -68,7 +68,7 @@
                                          label-hint="Select one option."
                                          size="Medium">
                     <nhs-radio-buttons asp-for="IsActive"
-                                       values="@Model.StatusOptions.Cast<object>()"
+                                       values="UserDetailsModel.StatusOptions.Cast<object>()"
                                        value-name="Value"
                                        display-name="Text" />
                 </nhs-fieldset-form-label>
