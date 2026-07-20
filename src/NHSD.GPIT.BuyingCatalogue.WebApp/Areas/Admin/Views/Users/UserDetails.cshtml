@@ -1,4 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels.UserDetailsModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels
+
+@model UserDetailsModel
 @{
     ViewBag.Title = Model.Title;
 }
@@ -48,7 +50,7 @@
                                          label-hint="Select one option."
                                          size="Medium">
                     <nhs-radio-buttons asp-for="IsActive"
-                                       values="@Model.StatusOptions.Cast<object>()"
+                                       values="UserDetailsModel.StatusOptions.Cast<object>()"
                                        value-name="Value"
                                        display-name="Text" />
                 </nhs-fieldset-form-label>

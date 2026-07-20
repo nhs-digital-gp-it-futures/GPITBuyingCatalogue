@@ -4,7 +4,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 public enum AccountDeactivationReason
 {
-
     [Display(Name = "Manual")]
     Manual = 0,
 
