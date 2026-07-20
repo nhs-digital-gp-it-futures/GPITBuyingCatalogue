@@ -9,14 +9,12 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.Services.Email;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
-using NuGet.Configuration;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 {
@@ -32,9 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         private readonly IOdsService odsService;
         private readonly IPasswordService passwordService;
         private readonly IPasswordResetCallback passwordResetCallback;
+        private readonly IUsersService userService;
         private readonly DisabledErrorMessageSettings disabledErrorMessageSettings;
-        private readonly AccountTemplateSettings settings;
-        private readonly IGovNotifyEmailService govNotifyEmailService;
 
         public AccountController(
             SignInManager<AspNetUser> signInManager,
@@ -42,18 +39,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             IOdsService odsService,
             IPasswordService passwordService,
             IPasswordResetCallback passwordResetCallback,
-            DisabledErrorMessageSettings disabledErrorMessageSettings,
-            AccountTemplateSettings settings,
-            IGovNotifyEmailService govNotifyEmailService)
+            IUsersService userService,
+            DisabledErrorMessageSettings disabledErrorMessageSettings)
         {
             this.signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
             this.passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
+            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.disabledErrorMessageSettings = disabledErrorMessageSettings ?? throw new ArgumentNullException(nameof(disabledErrorMessageSettings));
-            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            this.govNotifyEmailService = govNotifyEmailService ?? throw new ArgumentNullException(nameof(govNotifyEmailService));
         }
 
         [HttpGet("Login")]
@@ -85,7 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
             if (user.Disabled)
             {
-                await govNotifyEmailService.SendEmailAsync(user.Email, settings.AccountDeactivationTemplateId, null);
+                await userService.SendDeactivatedUserEmail(user.Email);
+
                 var disabledErrorFormat = string.Format(
                     CultureInfo.CurrentCulture,
                     UserDisabledErrorMessageTemplate,

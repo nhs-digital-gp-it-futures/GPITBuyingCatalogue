@@ -19,6 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
@@ -153,8 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             LoginViewModel model,
             UserManager<AspNetUser> mockUserManager,
             SignInManager<AspNetUser> mockSignInManager,
-            AccountTemplateSettings accountTemplateSettings,
-            IGovNotifyEmailService govNotifyEmailService)
+            IUsersService usersService)
         {
             const string expectedErrorMessage = "There is a problem accessing your account.";
 
@@ -164,13 +164,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 .FindByNameAsync(model.EmailAddress)
                 .Returns(user);
 
-            accountTemplateSettings.AccountDeactivationTemplateId = "TestTemplateId";
-
             var controller = CreateController(
                 mockUserManager,
                 mockSignInManager,
-                govNotifyEmailService: govNotifyEmailService,
-                accountTemplateSettings: accountTemplateSettings);
+                usersService: usersService);
 
             var result = await controller.Login(model);
 
@@ -181,10 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
             var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
 
-            await govNotifyEmailService.Received().SendEmailAsync(
-                user.Email,
-                accountTemplateSettings.AccountDeactivationTemplateId,
-                null);
+            await usersService.Received().SendDeactivatedUserEmail(user.Email);
 
             actualResult.ViewName.Should().BeNull();
             actualResult.Model.Should().BeAssignableTo<LoginViewModel>();
@@ -874,8 +868,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             IPasswordService passwordService = null,
             IOdsService odsService = null,
             IPasswordResetCallback passwordResetCallback = null,
-            IGovNotifyEmailService govNotifyEmailService = null,
-            AccountTemplateSettings accountTemplateSettings = null)
+            IUsersService usersService = null)
         {
             return new AccountController(
                 signInManager,
@@ -883,9 +876,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 odsService ?? Substitute.For<IOdsService>(),
                 passwordService ?? Substitute.For<IPasswordService>(),
                 passwordResetCallback ?? Substitute.For<IPasswordResetCallback>(),
-                new DisabledErrorMessageSettings(),
-                accountTemplateSettings ?? new AccountTemplateSettings(),
-                govNotifyEmailService ?? Substitute.For<IGovNotifyEmailService>());
+                usersService ?? Substitute.For<IUsersService>(),
+                new DisabledErrorMessageSettings());
         }
     }
 }
