@@ -1,4 +1,6 @@
 ﻿using System.Text.RegularExpressions;
+using Deque.AxeCore.Commons;
+using Deque.AxeCore.Playwright;
 using Microsoft.Playwright;
 using static Microsoft.Playwright.Assertions;
 
@@ -27,4 +29,27 @@ public abstract class BasePage
 
     protected async Task AssertUrlContainsAsync(string fragment) =>
         await Expect(Page).ToHaveURLAsync(new Regex(fragment));
+
+    // Runs axe-core against the current page, restricted to the WCAG rule sets.
+    // Returns the full result object for the caller to inspect or format.
+    public async Task<AxeResult> RunAccessibilityScanAsync()
+    {
+        var options = new AxeRunOptions
+        {
+            RunOnly = new RunOnlyOptions
+            {
+                Type = "tag",
+                Values = new List<string>
+            {
+                "wcag2a",
+                "wcag2aa",
+                "wcag21a",
+                "wcag21aa",
+                "wcag22aa"
+            }
+            }
+        };
+
+        return await Page.RunAxe(options);
+    }
 }

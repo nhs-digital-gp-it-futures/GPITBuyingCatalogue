@@ -353,4 +353,31 @@ public class OrderingPages
         await DataProcessing.NavigateAndContinueAsync();
         await Declaration.NavigateAndAgreeAsync();
     }
+
+    // Navigates to the "What do you want to order?" page and stops there,
+    // without selecting an order type. Used for scanning that page.
+    public async Task GoToOrderTypePageAsync()
+    {
+        _output.WriteLine("Go to order type page");
+        await Dashboard.GoToOrdersAsync();
+        await Dashboard.CreateNewOrderAsync();
+        await OrderType.StartOrderAsync();
+        await OrderType.AssertOnPageAsync();
+    }
+
+    // Drives the order journey as far as the Declaration page and stops there,
+    // without completing it. Used for scanning that page.
+    public async Task GoToDeclarationPageAsync(string solutionName)
+    {
+        _output.WriteLine("Go to declaration page");
+        await LoginAsync();
+        await CreateNewOrderAsync();
+        await StepOnePrepareOrderAsync();
+        await StepTwoAddSolutionsAndServicesAsync(solutionName: solutionName);
+        await StepTwoDeliveryAndFundingAsync();
+        await ImplementationMilestones.NavigateAndContinueAsync();
+        await DataProcessing.NavigateAndContinueAsync();
+        await Declaration.NavigateAsync();
+        await Declaration.AssertOnPageAsync();
+    }
 }

@@ -38,4 +38,12 @@ public class OrderTypePage : BasePage
         await Page.GetByRole(AriaRole.Radio, new() { Name = name }).CheckAsync();
         await ClickSaveAndContinueAsync();
     }
+
+    public async Task StartOrderAsync()
+    {
+        await StartOrderButton.ClickAsync();
+    }
+
+    public async Task AssertOnPageAsync() =>
+        await AssertHeadingAsync("What do you want to order?");
 }

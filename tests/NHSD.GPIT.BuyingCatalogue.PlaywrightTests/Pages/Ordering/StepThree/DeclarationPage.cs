@@ -17,4 +17,10 @@ public class DeclarationPage : BasePage
         await AgreeCheckbox.CheckAsync();
         await ClickSaveAndContinueAsync();
     }
+
+    public async Task NavigateAsync() =>
+    await NavigationLink.ClickAsync();
+
+    public async Task AssertOnPageAsync() =>
+        await AssertHeadingAsync("Declaration");
 }
