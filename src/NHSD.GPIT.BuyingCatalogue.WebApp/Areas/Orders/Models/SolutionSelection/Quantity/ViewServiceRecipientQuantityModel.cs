@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     ParentSublocationOdsCode = x.ParentSublocationOdsCode,
                     RecipientOdsCode = x.RecipientOdsCode,
                     Name = x.RecipientOdsOrganisation?.Name,
-                    Quantity = x.GetQuantityForItem(orderItem.CatalogueItemId).GetValueOrDefault(),
+                    Quantity = x.GetQuantityForItem(orderItem.Id).GetValueOrDefault(),
                 })
                 .ToArray();
         }

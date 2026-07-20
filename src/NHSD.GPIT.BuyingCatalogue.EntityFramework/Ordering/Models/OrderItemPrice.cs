@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public ICollection<OrderItemPriceTier> OrderItemPriceTiers { get; set; }
 
-        public OrderItemPrice Clone() => new(this);
+        public OrderItemPrice Clone(bool preserveIds = false) => new(this);
 
         public string ToPriceUnitString()
         {

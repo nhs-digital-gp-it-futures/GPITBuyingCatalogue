@@ -242,8 +242,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             FundingSourceController controller)
         {
             orderItemServiceMock
-                .GetOrderItem(order.CallOffId, internalOrgId, orderItem.CatalogueItemId)
+                .GetOrderItem(order.CallOffId, internalOrgId, orderItem.Id)
                 .Returns(orderItem);
+
+            order.OrderItems.Add(orderItem);
 
             var orderWrapper = new OrderWrapper(order);
             orderService
@@ -252,11 +254,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
 
             var expectedViewData = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, orderWrapper, orderItem);
 
-            var actual = await controller.FundingSource(internalOrgId, order.CallOffId, orderItem.CatalogueItemId);
+            var actual = await controller.FundingSource(internalOrgId, order.CallOffId, orderItem.Id);
 
             await orderItemServiceMock
                 .Received()
-                .GetOrderItem(order.CallOffId, internalOrgId, orderItem.CatalogueItemId);
+                .GetOrderItem(order.CallOffId, internalOrgId, orderItem.Id);
 
             actual.Should().BeOfType<ViewResult>();
             actual.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.BackLinkText));
@@ -271,17 +273,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] IOrderItemService orderItemServiceMock,
             FundingSourceController controller)
         {
+            order.OrderItems.Add(orderItem);
             var orderWrapper = new OrderWrapper(order);
             var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, orderWrapper, orderItem)
             {
                 SelectedFundingType = OrderItemFundingType.CentralFunding,
             };
 
-            var actual = await controller.FundingSource(internalOrgId, order.CallOffId, orderItem.CatalogueItemId, model);
+            var actual = await controller.FundingSource(internalOrgId, order.CallOffId, orderItem.Id, model);
 
             await orderItemServiceMock
                 .Received()
-                .UpdateOrderItemFunding(order.CallOffId, internalOrgId, orderItem.CatalogueItemId, model.SelectedFundingType);
+                .UpdateOrderItemFunding(order.CallOffId, internalOrgId, orderItem.Id, model.SelectedFundingType);
 
             var actualResult = actual.Should().BeOfType<RedirectToActionResult>().Subject;
             actualResult.ActionName.Should().Be(nameof(FundingSourceController.FundingSources));
@@ -302,6 +305,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] IOrderService orderServiceMock,
             FundingSourceController controller)
         {
+            order.OrderItems.Add(orderItem);
             var orderWrapper = new OrderWrapper(order);
             var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, orderWrapper, orderItem);
 
@@ -311,7 +315,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
 
             controller.ModelState.AddModelError("test", "test");
 
-            var actual = await controller.FundingSource(internalOrgId, order.CallOffId, orderItem.CatalogueItemId, model);
+            var actual = await controller.FundingSource(internalOrgId, order.CallOffId, orderItem.Id, model);
 
             actual.Should().BeOfType<ViewResult>();
             actual.As<ViewResult>().ViewData.ModelState.ValidationState.Should().Be(ModelValidationState.Invalid);

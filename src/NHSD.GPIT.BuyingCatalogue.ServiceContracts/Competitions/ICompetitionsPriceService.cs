@@ -22,4 +22,13 @@ public interface ICompetitionsPriceService
         CatalogueItemId serviceId,
         CataloguePrice cataloguePrice,
         IEnumerable<PricingTierDto> agreedPrices);
+
+    Task SetAdditionalServiceAssociatedServicePrice(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemId serviceId,
+        CataloguePrice cataloguePrice,
+        IEnumerable<PricingTierDto> agreedPrices);
 }

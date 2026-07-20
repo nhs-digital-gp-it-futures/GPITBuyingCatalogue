@@ -133,12 +133,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [Theory]
         [MockAutoData]
         public static void PropertiesCorrectlySet(
-            CallOffId callOffId,
             OrderItem orderItem,
             OrderItem previousOrderItem,
             bool fromPreviousRevision,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
+            var callOffId = new CallOffId(1, 2);
             var model = new AmendOrderItemModel(
                 callOffId,
                 OrderTypeEnum.Solution,
@@ -226,12 +226,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             EntityFramework.Ordering.Models.Order order,
             CatalogueItem catalogueItem,
             OrderItem orderItem,
+            OrderItem solutionItem,
             List<OrderItemPriceTier> priceTiers)
         {
+            solutionItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solutionItem.ParentId = null;
+
             catalogueItem.CatalogueItemType = catalogueItemType;
             orderItem.CatalogueItem = catalogueItem;
             orderItem.OrderItemPrice.CataloguePriceCalculationType = calculationType;
             orderItem.OrderItemPrice.OrderItemPriceTiers = priceTiers;
+            orderItem.ParentId = catalogueItemType == CatalogueItemType.Solution ? null : solutionItem.Id;
+
+            order.OrderItems = catalogueItemType == CatalogueItemType.Solution
+                ? [orderItem]
+                : [solutionItem, orderItem];
 
             var amendment = order.BuildAmendment(2);
 
@@ -249,12 +258,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             EntityFramework.Ordering.Models.Order order,
             CatalogueItem catalogueItem,
             OrderItem orderItem,
+            OrderItem solutionItem,
             List<OrderItemPriceTier> priceTiers)
         {
+            solutionItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solutionItem.ParentId = null;
+
             catalogueItem.CatalogueItemType = catalogueItemType;
             orderItem.CatalogueItem = catalogueItem;
             orderItem.OrderItemPrice.CataloguePriceCalculationType = calculationType;
             orderItem.OrderItemPrice.OrderItemPriceTiers = priceTiers;
+            orderItem.ParentId = catalogueItemType == CatalogueItemType.Solution ? null : solutionItem.Id;
+
+            order.OrderItems = catalogueItemType == CatalogueItemType.Solution
+                ? [orderItem]
+                : [solutionItem, orderItem];
 
             var amendment = order.BuildAmendment(2);
 
@@ -273,12 +291,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             EntityFramework.Ordering.Models.Order order,
             CatalogueItem catalogueItem,
             OrderItem orderItem,
+            OrderItem solutionItem,
             List<OrderItemPriceTier> priceTiers)
         {
+            solutionItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solutionItem.ParentId = null;
+
             catalogueItem.CatalogueItemType = catalogueItemType;
             orderItem.CatalogueItem = catalogueItem;
             orderItem.OrderItemPrice.CataloguePriceCalculationType = calculationType;
             orderItem.OrderItemPrice.OrderItemPriceTiers = priceTiers;
+            orderItem.ParentId = solutionItem.Id;
+
+            order.OrderItems = new List<OrderItem> { solutionItem, orderItem };
 
             var amendment = order.BuildAmendment(2);
 

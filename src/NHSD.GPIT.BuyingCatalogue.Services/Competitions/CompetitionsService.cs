@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
@@ -18,13 +20,16 @@ public class CompetitionsService : ICompetitionsService
 {
     private readonly BuyingCatalogueDbContext dbContext;
     private readonly IOdsService odsService;
+    private readonly IAssociatedServicesService associatedServicesService;
 
     public CompetitionsService(
         BuyingCatalogueDbContext dbContext,
-        IOdsService odsService)
+        IOdsService odsService,
+        IAssociatedServicesService associatedServicesService)
     {
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
+        this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
     }
 
     public async Task<Competition> GetCompetitionCriteriaReview(string internalOrgId, int competitionId) =>
@@ -82,6 +87,9 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Services).ThenInclude(x => x.CatalogueItem.Supplier)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Services).ThenInclude(x => x.Quantities)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Services).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Services).ThenInclude(x => x.Services).ThenInclude(x => x.CatalogueItem.Supplier)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Services).ThenInclude(x => x.Services).ThenInclude(x => x.Quantities)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Services).ThenInclude(x => x.Services).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
             .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
@@ -116,6 +124,10 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Services)
             .ThenInclude(x => x.CatalogueItem)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.CatalogueItem)
             .IgnoreQueryFilters()
             .AsSplitQuery();
 
@@ -134,6 +146,10 @@ public class CompetitionsService : ICompetitionsService
             .ThenInclude(x => x.CatalogueItem)
             .ThenInclude(x => x.Supplier)
             .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.CatalogueItem)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Services)
             .ThenInclude(x => x.CatalogueItem)
             .Include(x => x.CompetitionSolutions)
@@ -196,6 +212,21 @@ public class CompetitionsService : ICompetitionsService
             .ThenInclude(x => x.CataloguePrices)
             .ThenInclude(x => x.CataloguePriceTiers)
             .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Quantities)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Price)
+            .ThenInclude(x => x.Tiers)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.CatalogueItem)
+            .ThenInclude(x => x.CataloguePrices)
+            .ThenInclude(x => x.CataloguePriceTiers)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Quantities)
             .Include(x => x.CompetitionSolutions)
@@ -262,6 +293,72 @@ public class CompetitionsService : ICompetitionsService
             .CountAsync();
     }
 
+    public async Task<CompetitionSolution> GetCompetitionSolution(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId)
+    {
+        var solution = await dbContext.CompetitionSolutions
+           .Include(x => x.CatalogueItem.Supplier)
+           .Include(x => x.Price)
+           .ThenInclude(x => x.Tiers)
+           .Include(x => x.Quantities)
+           .Include(x => x.CatalogueItem)
+           .ThenInclude(x => x.CataloguePrices)
+           .ThenInclude(x => x.CataloguePriceTiers)
+           .Include(x => x.Services)
+           .ThenInclude(x => x.Price)
+           .ThenInclude(x => x.Tiers)
+           .Include(x => x.Services)
+           .ThenInclude(x => x.Quantities)
+           .Include(x => x.Services)
+           .ThenInclude(x => x.CatalogueItem)
+           .ThenInclude(x => x.CataloguePrices)
+           .ThenInclude(x => x.CataloguePriceTiers)
+           .Include(x => x.Services)
+           .ThenInclude(x => x.Services)
+           .ThenInclude(x => x.Price)
+           .ThenInclude(x => x.Tiers)
+           .Include(x => x.Services)
+           .ThenInclude(x => x.Services)
+           .ThenInclude(x => x.Quantities)
+           .Include(x => x.Services)
+           .ThenInclude(x => x.Services)
+           .ThenInclude(x => x.CatalogueItem)
+           .ThenInclude(x => x.CataloguePrices)
+           .ThenInclude(x => x.CataloguePriceTiers)
+           .Where(x => x.CompetitionId == competitionId &&
+               x.Competition.Organisation.InternalIdentifier == internalOrgId &&
+               x.CatalogueItemId == solutionId)
+           .FirstOrDefaultAsync();
+
+        var solutionAssociatedServices = solution.GetAssociatedServices();
+        var associatedServices = await associatedServicesService.
+            GetPublishedAssociatedServicesForCatalogueItem(solutionId, PracticeReorganisationTypeEnum.None);
+
+        solution.AssociatedServicesAvailable = associatedServices?.Count > 0;
+        solution.AssociatedServicesRemaining = associatedServices?.Any(x =>
+            solutionAssociatedServices.All(y => x.Id != y.CatalogueItemId)) ?? false;
+
+        foreach (var service in solution.Services)
+        {
+            // get the associated services for any additional services
+            if (service is CompetitionAdditionalService additionalService)
+            {
+                var avialableAssociatedServices = await associatedServicesService.
+                    GetPublishedAssociatedServicesForCatalogueItem(
+                        additionalService.CatalogueItemId,
+                        PracticeReorganisationTypeEnum.None);
+
+                additionalService.AssociatedServicesAvailable = avialableAssociatedServices?.Count > 0;
+                additionalService.AssociatedServicesRemaining = avialableAssociatedServices?.Any(x =>
+                    additionalService.CompetitionAssociatedServices.All(y => x.Id != y.CatalogueItemId)) ?? false;
+            }
+        }
+
+        return solution;
+    }
+
     public async Task<ICollection<CompetitionSolution>> GetNonShortlistedSolutions(
         string internalOrgId,
         int competitionId)
@@ -279,7 +376,8 @@ public class CompetitionsService : ICompetitionsService
         int competitionId,
         IEnumerable<CompetitionSolution> competitionSolutions)
     {
-        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+        var competition = await dbContext.Competitions
+            .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Services)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
@@ -616,6 +714,9 @@ public class CompetitionsService : ICompetitionsService
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Services).ThenInclude(x => x.CatalogueItem)
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Services).ThenInclude(x => x.Quantities)
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Services).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
+                .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Services).ThenInclude(x => x.Services).ThenInclude(x => x.CatalogueItem)
+                .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Services).ThenInclude(x => x.Services).ThenInclude(x => x.Quantities)
+                .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Services).ThenInclude(x => x.Services).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
                 .AsSplitQuery()
                 .FirstOrDefaultAsync(
                 x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
@@ -693,6 +794,71 @@ public class CompetitionsService : ICompetitionsService
             .ToList();
 
         selectedAssociatedServices.ForEach(x => solution.Services.Add(x));
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task AddAssociatedServicesToAdditionalService(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId? additionalServiceId,
+        IEnumerable<CatalogueItemId> selectedAssociatedServices)
+    {
+        if (!additionalServiceId.HasValue)
+            throw new ArgumentNullException(nameof(additionalServiceId));
+
+        ArgumentNullException.ThrowIfNull(selectedAssociatedServices);
+
+        var solution = await dbContext.CompetitionSolutions
+            .Include(x => x.Services)
+            .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
+                x.Competition.Organisation.InternalIdentifier == internalOrgId &&
+                x.CatalogueItemId == solutionId);
+
+        var additionalService = solution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceId)
+            ?? throw new InvalidOperationException($"Additional service with id {additionalServiceId} not found for solution {solutionId}");
+
+        dbContext.CompetitionCatalogueItems.AddRange(selectedAssociatedServices.Select(x =>
+            new CompetitionAssociatedService()
+            {
+                CompetitionId = competitionId,
+                ParentItemId = additionalService.Id,
+                CatalogueItemId = x,
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+            }));
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task RemoveAssociatedServicesFromAdditionalService(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceItemId,
+        CatalogueItemId serviceId)
+    {
+        var solution = await dbContext.CompetitionSolutions
+            .Include(x => x.Services)
+            .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
+                x.Competition.Organisation.InternalIdentifier == internalOrgId &&
+                x.CatalogueItemId == solutionId);
+
+        var additionalService = solution.GetAdditionalServices().FirstOrDefault(x => x.CatalogueItemId == additionalServiceItemId);
+        if (additionalService == null) return;
+
+        var associatedService = await dbContext.CompetitionCatalogueItems
+            .Include(x => x.Price)
+            .FirstOrDefaultAsync(x => x.CompetitionId == competitionId &&
+                x.CatalogueItemId == serviceId &&
+                x.ParentItemId == additionalService.Id);
+
+        if (associatedService == null) return;
+
+        if (associatedService.Price is not null)
+            dbContext.RemoveRange(associatedService.Price);
+
+        dbContext.Remove(associatedService);
 
         await dbContext.SaveChangesAsync();
     }
@@ -836,6 +1002,14 @@ public class CompetitionsService : ICompetitionsService
             .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Quantities)
             .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Price)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Quantities)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Services)
             .ThenInclude(x => x.Price)
             .AsNoTracking()

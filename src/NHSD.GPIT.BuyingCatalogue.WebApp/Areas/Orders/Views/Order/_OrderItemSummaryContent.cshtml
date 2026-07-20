@@ -37,8 +37,7 @@
             @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient => Model.OrderWrapper.GetCallOffIdForPreviousRecipient(recipient, orderIdWithCatalogueItem)))
             {
                 var callOffId = Model.OrderWrapper.GetCallOffIdForPreviousRecipient(serviceRecipient, orderIdWithCatalogueItem);
-                var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId) 
-                    { CatalogueItemId = Model.Previous.CatalogueItemId };
+                var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId);
 
                 <nhs-table-row-container>
                     <partial name="_OrderItemRecipientRow" model="@itemRecipientRowModel" />
@@ -47,8 +46,7 @@
         }
          @foreach (var serviceRecipient in Model.RolledUpRecipientsForItem.Where(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)))
         {
-            var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, Model.CallOffId.ToString())
-                { CatalogueItemId = Model.OrderItem.CatalogueItemId };
+            var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, Model.CallOffId.ToString());
             <nhs-table-row-container>
                 <partial name="_OrderItemRecipientRow" model="itemRecipientRowModel" />
             </nhs-table-row-container>

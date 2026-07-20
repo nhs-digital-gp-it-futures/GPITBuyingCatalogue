@@ -53,6 +53,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                     .ThenInclude(x => x.ContractBillingItems)
                         .ThenInclude(x => x.OrderItem)
                             .ThenInclude(x => x.CatalogueItem)
+                .Include(x => x.ContractBilling)
+                    .ThenInclude(contractBilling => contractBilling.ContractBillingItems)
+                        .ThenInclude(billingItem => billingItem.OrderItem)
+                            .ThenInclude(orderItem => orderItem.Parent)
+                                .ThenInclude(parent => parent.CatalogueItem)
                 .FirstOrDefaultAsync(x => x.OrderId == orderId);
 
             var output = await AddContract(contract, orderId);
@@ -69,6 +74,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                     .ThenInclude(x => x.Requirements)
                         .ThenInclude(x => x.OrderItem)
                             .ThenInclude(x => x.CatalogueItem)
+                .Include(x => x.ContractBilling)
+                    .ThenInclude(contractBilling => contractBilling.Requirements)
+                        .ThenInclude(requirement => requirement.OrderItem)
+                            .ThenInclude(orderItem => orderItem.Parent)
+                                .ThenInclude(parent => parent.CatalogueItem)
                 .FirstOrDefaultAsync(x => x.OrderId == orderId);
 
             var output = await AddContract(contract, orderId);

@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels.OrderingInformationModels;
 using Xunit;
@@ -135,18 +136,18 @@ public static class OrderingInformationModelTests
         Solution solution,
         CompetitionSolution competitionSolution,
         AdditionalService additionalService,
-        CompetitionAdditionalService solutionService,
+        CompetitionAdditionalService competitionAdditionalService,
+        AssociatedService associatedService,
+        CompetitionAssociatedService competitionAssociatedService,
         int recipientQuantity)
     {
         competition.CompetitionSublocations = competitionSublocations;
         competition.Organisation = organisation;
 
-        competitionSolution.CatalogueItem = solution.CatalogueItem;
-        competitionSolution.Services = [solutionService];
-
-        solutionService.CatalogueItem = additionalService.CatalogueItem;
-        solutionService.Quantity = null;
-        solutionService.Quantities = competition.FlattenedRecipients
+        competitionAssociatedService.CatalogueItemId = associatedService.CatalogueItem.Id;
+        competitionAssociatedService.CatalogueItem = associatedService.CatalogueItem;
+        competitionAssociatedService.Quantity = null;
+        competitionAssociatedService.Quantities = [.. competition.FlattenedRecipients
             .Select(x =>
                 new CompetitionItemQuantity()
                 {
@@ -154,20 +155,50 @@ public static class OrderingInformationModelTests
                     ParentSublocationOdsCode = x.ParentSublocationOdsCode,
                     RecipientOdsCode = x.RecipientOdsCode,
                     Quantity = recipientQuantity,
-                })
-            .ToList();
+                })];
+
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItem.Id;
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.Quantity = null;
+        competitionAdditionalService.Services = [competitionAssociatedService];
+        competitionAdditionalService.Quantities = [.. competition.FlattenedRecipients
+            .Select(x =>
+                new CompetitionItemQuantity()
+                {
+                    CompetitionId = competition.Id,
+                    ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                    RecipientOdsCode = x.RecipientOdsCode,
+                    Quantity = recipientQuantity,
+                })];
+
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.Services = [competitionAdditionalService];
 
         var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
+
+        var expectedServices = new List<OrderingInformationItem>
+        {
+            new(
+                competitionAssociatedService.CatalogueItem,
+                competitionAssociatedService.Price,
+                competitionAssociatedService.Quantities.Sum(x => x.Quantity)),
+        };
 
         var expectedItems = new List<OrderingInformationItem>
         {
             new(
-                solutionService.CatalogueItem,
-                solutionService.Price,
-                solutionService.Quantities.Sum(x => x.Quantity)),
+                competitionAdditionalService.CatalogueItem,
+                competitionAdditionalService.Price,
+                competitionAdditionalService.Quantities.Sum(x => x.Quantity))
+            {
+                Services = expectedServices,
+            },
         };
 
         model.Items.Should().BeEquivalentTo(expectedItems);
+        model.Items.Count.Should().Be(1);
+        model.Items.ElementAt(0).Services.Count().Should().Be(1);
+        model.Items.ElementAt(0).Services.Should().BeEquivalentTo(expectedServices);
     }
 
     [Theory]
@@ -205,68 +236,199 @@ public static class OrderingInformationModelTests
     [Theory]
     [MockAutoData]
     public static void CalculateTotalOneOffCost_ReturnsExpected(
-        OrderingInformationModel model,
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        int recipientCount,
+        int recipientQuantity,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        AssociatedService associatedService,
+        CompetitionAssociatedService competitionAssociatedService,
         CompetitionCatalogueItemPrice solutionPrice,
+        CompetitionCatalogueItemPrice additionalServicePrice,
+        CompetitionCatalogueItemPrice associatedServicePrice,
         CompetitionCatalogueItemPriceTier tier)
     {
-        solutionPrice.BillingPeriod = null;
-        solutionPrice.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
-
         tier.LowerRange = 0;
         tier.UpperRange = null;
 
-        solutionPrice.Tiers = new List<CompetitionCatalogueItemPriceTier> { tier };
+        competition.CompetitionSublocations = competitionSublocations;
+        competition.Organisation = organisation;
 
-        model.SolutionDisplay.Price = solutionPrice;
+        associatedServicePrice.BillingPeriod = null;
+        associatedServicePrice.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
+        associatedServicePrice.Tiers = [tier];
+        competitionAssociatedService.Price = associatedServicePrice;
+        competitionAssociatedService.CatalogueItemId = associatedService.CatalogueItem.Id;
+        competitionAssociatedService.CatalogueItem = associatedService.CatalogueItem;
+        competitionAssociatedService.Quantity = null;
+        competitionAssociatedService.Quantities = [.. competition.FlattenedRecipients
+            .Select(x =>
+                new CompetitionItemQuantity()
+                {
+                    CompetitionId = competition.Id,
+                    ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                    RecipientOdsCode = x.RecipientOdsCode,
+                    Quantity = recipientQuantity,
+                })];
 
+        additionalServicePrice.BillingPeriod = null;
+        additionalServicePrice.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
+        additionalServicePrice.Tiers = [tier];
+        competitionAdditionalService.Price = additionalServicePrice;
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItem.Id;
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.Services = [competitionAssociatedService];
+        competitionAdditionalService.Quantity = null;
+        competitionAdditionalService.Quantities = [.. competition.FlattenedRecipients
+            .Select(x =>
+                new CompetitionItemQuantity()
+                {
+                    CompetitionId = competition.Id,
+                    ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                    RecipientOdsCode = x.RecipientOdsCode,
+                    Quantity = recipientQuantity,
+                })];
+
+        solutionPrice.BillingPeriod = null;
+        solutionPrice.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
+        solutionPrice.Tiers = [tier];
+        competitionSolution.CatalogueItemId = solution.CatalogueItem.Id;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.Services = [competitionAdditionalService];
+        competitionSolution.Price = solutionPrice;
+
+        var solutionTotalQuantity = competitionSolution.Quantities.Sum(x => x.Quantity);
+        var expectedTotalCost = ((IPrice)competitionSolution.Price).CalculateOneOffCost(solutionTotalQuantity.Value)
+            + ((IPrice)competitionAssociatedService.Price).CalculateOneOffCost(solutionTotalQuantity.Value)
+            + ((IPrice)competitionAdditionalService.Price).CalculateOneOffCost(solutionTotalQuantity.Value);
+
+        var model = new OrderingInformationModel(competition, competitionSolution, recipientCount);
         var result = model.CalculateTotalOneOffCost();
 
-        result.Should().Be(tier.Price);
+        result.Should().Be(expectedTotalCost);
     }
 
     [Theory]
     [MockAutoData]
     public static void CalculateTotalMonthlyCost_ReturnsExpected(
-        OrderingInformationModel model,
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        int recipientCount,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        AssociatedService associatedService,
+        CompetitionAssociatedService competitionAssociatedService,
         CompetitionCatalogueItemPrice solutionPrice,
+        CompetitionCatalogueItemPrice additionalServicePrice,
+        CompetitionCatalogueItemPrice associatedServicePrice,
         CompetitionCatalogueItemPriceTier tier)
     {
-        solutionPrice.BillingPeriod = TimeUnit.PerMonth;
-        solutionPrice.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
-
         tier.LowerRange = 0;
         tier.UpperRange = null;
 
-        solutionPrice.Tiers = new List<CompetitionCatalogueItemPriceTier> { tier };
+        competition.CompetitionSublocations = competitionSublocations;
+        competition.Organisation = organisation;
 
-        model.SolutionDisplay.Price = solutionPrice;
-        model.SolutionDisplay.Quantity = 1;
+        associatedServicePrice.BillingPeriod = TimeUnit.PerMonth;
+        associatedServicePrice.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
+        associatedServicePrice.Tiers = [tier];
+        competitionAssociatedService.Price = associatedServicePrice;
+        competitionAssociatedService.CatalogueItemId = associatedService.CatalogueItem.Id;
+        competitionAssociatedService.CatalogueItem = associatedService.CatalogueItem;
+        competitionAssociatedService.Quantity = 1;
 
+        additionalServicePrice.BillingPeriod = TimeUnit.PerMonth;
+        additionalServicePrice.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
+        additionalServicePrice.Tiers = [tier];
+        competitionAdditionalService.Price = additionalServicePrice;
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItem.Id;
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.Services = [competitionAssociatedService];
+        competitionAdditionalService.Quantity = 1;
+
+        solutionPrice.BillingPeriod = TimeUnit.PerMonth;
+        solutionPrice.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
+        solutionPrice.Tiers = [tier];
+        competitionSolution.CatalogueItemId = solution.CatalogueItem.Id;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.Services = [competitionAdditionalService];
+        competitionSolution.Price = solutionPrice;
+
+        var solutionTotalQuantity = competitionSolution.Quantities.Sum(x => x.Quantity);
+        var expectedTotalCost = ((IPrice)competitionSolution.Price).CalculateCostPerMonth(solutionTotalQuantity.Value)
+            + ((IPrice)competitionAssociatedService.Price).CalculateCostPerMonth(solutionTotalQuantity.Value)
+            + ((IPrice)competitionAdditionalService.Price).CalculateCostPerMonth(solutionTotalQuantity.Value);
+
+        var model = new OrderingInformationModel(competition, competitionSolution, recipientCount);
         var result = model.CalculateTotalMonthlyCost();
 
-        result.Should().Be(tier.Price);
+        result.Should().Be(expectedTotalCost);
     }
 
     [Theory]
     [MockAutoData]
     public static void CalculateTotalYearlyCost_ReturnsExpected(
-        OrderingInformationModel model,
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        int recipientCount,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        CompetitionAdditionalService competitionAdditionalService,
+        AssociatedService associatedService,
+        CompetitionAssociatedService competitionAssociatedService,
         CompetitionCatalogueItemPrice solutionPrice,
+        CompetitionCatalogueItemPrice additionalServicePrice,
+        CompetitionCatalogueItemPrice associatedServicePrice,
         CompetitionCatalogueItemPriceTier tier)
     {
-        solutionPrice.BillingPeriod = TimeUnit.PerYear;
-        solutionPrice.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
-
         tier.LowerRange = 0;
         tier.UpperRange = null;
 
-        solutionPrice.Tiers = new List<CompetitionCatalogueItemPriceTier> { tier };
+        competition.CompetitionSublocations = competitionSublocations;
+        competition.Organisation = organisation;
 
-        model.SolutionDisplay.Price = solutionPrice;
-        model.SolutionDisplay.Quantity = 1;
+        associatedServicePrice.BillingPeriod = TimeUnit.PerYear;
+        associatedServicePrice.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
+        associatedServicePrice.Tiers = [tier];
+        competitionAssociatedService.Price = associatedServicePrice;
+        competitionAssociatedService.CatalogueItemId = associatedService.CatalogueItem.Id;
+        competitionAssociatedService.CatalogueItem = associatedService.CatalogueItem;
+        competitionAssociatedService.Quantity = 1;
 
+        additionalServicePrice.BillingPeriod = TimeUnit.PerYear;
+        additionalServicePrice.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
+        additionalServicePrice.Tiers = [tier];
+        competitionAdditionalService.Price = additionalServicePrice;
+        competitionAdditionalService.CatalogueItemId = additionalService.CatalogueItem.Id;
+        competitionAdditionalService.CatalogueItem = additionalService.CatalogueItem;
+        competitionAdditionalService.Services = [competitionAssociatedService];
+        competitionAdditionalService.Quantity = 1;
+
+        solutionPrice.BillingPeriod = TimeUnit.PerYear;
+        solutionPrice.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
+        solutionPrice.Tiers = [tier];
+        competitionSolution.CatalogueItemId = solution.CatalogueItem.Id;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.Services = [competitionAdditionalService];
+        competitionSolution.Price = solutionPrice;
+
+        var solutionTotalQuantity = competitionSolution.Quantities.Sum(x => x.Quantity);
+        var expectedTotalCost = ((IPrice)competitionSolution.Price).CalculateCostPerYear(solutionTotalQuantity.Value)
+            + ((IPrice)competitionAssociatedService.Price).CalculateCostPerYear(solutionTotalQuantity.Value)
+            + ((IPrice)competitionAdditionalService.Price).CalculateCostPerYear(solutionTotalQuantity.Value);
+
+        var model = new OrderingInformationModel(competition, competitionSolution, recipientCount);
         var result = model.CalculateTotalYearlyCost();
 
-        result.Should().Be(tier.Price);
+        result.Should().Be(expectedTotalCost);
     }
 }

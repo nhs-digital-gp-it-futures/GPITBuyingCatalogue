@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels.OrderingInformationModels;
@@ -26,4 +27,6 @@ public class OrderingInformationItem
     public IPrice Price { get; set; }
 
     public int Quantity { get; set; }
+
+    public IEnumerable<OrderingInformationItem> Services { get; set; } = [];
 }

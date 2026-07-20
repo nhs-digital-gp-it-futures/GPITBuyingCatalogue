@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
@@ -262,6 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new()
                 {
                     CatalogueItemId = solution.CatalogueItemId,
+                    OrderItemId = solution.Id,
                     Description = solution.CatalogueItem.Name,
                 },
             };
@@ -269,12 +271,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             toRemove.AddRange(order.GetAdditionalServices().Select(x => new ServiceModel
             {
                 CatalogueItemId = x.CatalogueItemId,
+                OrderItemId = x.Id,
                 Description = x.CatalogueItem.Name,
             }));
 
-            toRemove.AddRange(order.GetAssociatedServices().Select(x => new ServiceModel
+            toRemove.AddRange(order.GetAllAssociatedServices().Select(x => new ServiceModel
             {
                 CatalogueItemId = x.CatalogueItemId,
+                OrderItemId = x.Id,
                 Description = x.CatalogueItem.Name,
             }));
 
@@ -305,7 +309,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
 
                 await contractsService.RemoveContract(orderId);
-                await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
+                await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.OrderItemId));
                 await orderItemService.AddOrderItems(internalOrgId, callOffId, model.ToAdd.Select(x => x.CatalogueItemId));
             }
 
@@ -341,6 +345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             toRemove.AddRange(order.GetAssociatedServices().Select(x => new ServiceModel
             {
+                OrderItemId = x.Id,
                 CatalogueItemId = x.CatalogueItemId,
                 Description = x.CatalogueItem.Name,
             }));
@@ -377,7 +382,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
 
             await contractsService.RemoveContract(orderId);
-            await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
+            await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.OrderItemId));
             await orderService.SetSolutionId(internalOrgId, callOffId, model.ToAdd.First().CatalogueItemId);
 
             return RedirectToAction(
@@ -386,10 +391,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new { internalOrgId, callOffId, source = RoutingSource.EditSolution });
         }
 
-        [HttpGet("remove-service/{catalogueItemId}")]
-        public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
+        [HttpGet("remove-service/{orderItemId}")]
+        public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, int orderItemId, RoutingSource? source = null)
         {
-            var service = await orderItemService.GetOrderItem(callOffId, internalOrgId, catalogueItemId);
+            var service = await orderItemService.GetOrderItem(callOffId, internalOrgId, orderItemId);
 
             if (service == null)
             {
@@ -399,34 +404,68 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     new { internalOrgId, callOffId });
             }
 
-            var model = new RemoveServiceModel(service.CatalogueItem)
+            var (backlink, entityType) = GetBackLinkAndEntityType(source, service, internalOrgId, callOffId);
+
+            var model = new RemoveServiceModel
             {
-                BackLink = Url.Action(
-                    nameof(TaskListController.TaskList),
-                    typeof(TaskListController).ControllerName(),
-                    new { internalOrgId, callOffId }),
+                ServiceName = service.CatalogueItem.Name,
+                ServiceType = service.CatalogueItem.CatalogueItemType,
+                BackLink = backlink,
+                EntityType = entityType,
+                Source = source,
             };
 
             return View("Services/RemoveService", model);
         }
 
-        [HttpPost("remove-service/{catalogueItemId}")]
-        public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RemoveServiceModel model)
+        [HttpPost("remove-service/{orderItemId}")]
+        public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, int orderItemId, RemoveServiceModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View("Services/RemoveService", model);
             }
 
+            var service = await orderItemService.GetOrderItem(callOffId, internalOrgId, orderItemId);
+            var parent = service.Parent;
+
             if (model.ConfirmRemoveService ?? false)
             {
-                await orderItemService.DeleteOrderItems(internalOrgId, callOffId, new List<CatalogueItemId> { catalogueItemId });
+                var toRemove = service.Services.Select(item => item.Id).ToList();
+                toRemove.Add(orderItemId);
+                await orderItemService.DeleteOrderItems(internalOrgId, callOffId, toRemove);
+            }
+
+            if (model.Source == RoutingSource.ManageAssociatedServices)
+            {
+                return RedirectToAction(
+                    nameof(AssociatedServicesController.ManageAssociatedServices),
+                    typeof(AssociatedServicesController).ControllerName(),
+                    new { internalOrgId, callOffId, catalogueItemId = parent.CatalogueItemId });
             }
 
             return RedirectToAction(
                     nameof(TaskListController.TaskList),
                     typeof(TaskListController).ControllerName(),
                     new { internalOrgId, callOffId });
+        }
+
+        private (string BackLink, string EntityType) GetBackLinkAndEntityType(RoutingSource? source, OrderItem service, string internalOrgId, CallOffId callOffId)
+        {
+            if (source == RoutingSource.ManageAssociatedServices)
+            {
+                return (Url.Action(
+                        nameof(AssociatedServicesController.ManageAssociatedServices),
+                        typeof(AssociatedServicesController).ControllerName(),
+                        new { internalOrgId, callOffId, catalogueItemId = service.Parent.CatalogueItemId }),
+                    CatalogueItemType.AdditionalService.Name());
+            }
+
+            return (Url.Action(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+                "Order");
         }
 
         private async Task<SelectSolutionModel> GetSelectModel(

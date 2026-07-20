@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> AddMilestone(string internalOrgId, CallOffId callOffId)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var associatedServices = order.GetAssociatedServices();
+            var associatedServices = order.GetAllAssociatedServices();
 
             var model = new ContractBillingItemModel(callOffId, internalOrgId, associatedServices)
             {
@@ -86,15 +86,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 
             if (!ModelState.IsValid)
             {
-                model.AssociatedServices = order.GetAssociatedServices();
+                model.AssociatedServices = order.GetAllAssociatedServices();
                 return View("ContractBillingItem", model);
             }
 
-            if (order?.GetAssociatedService(model.SelectedOrderItemId) is null)
+            if (model.SelectedOrderItemId is null || order?.GetAssociatedService(model.SelectedOrderItemId.Value) is null)
                 return NotFound();
 
             var contract = await contractsService.GetContract(order.Id);
-            await contractBillingService.AddBespokeContractBillingItem(order.Id, contract.Id, model.SelectedOrderItemId, model.Name, model.PaymentTrigger);
+            await contractBillingService.AddBespokeContractBillingItem(order.Id, contract.Id, model.SelectedOrderItemId.Value, model.Name, model.PaymentTrigger);
 
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
         }
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> EditMilestone(string internalOrgId, CallOffId callOffId, int itemId)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var associatedServices = order.GetAssociatedServices();
+            var associatedServices = order.GetAllAssociatedServices();
 
             var contractBillingItem = await contractBillingService.GetContractBillingItem(order.Id, itemId);
 
@@ -128,10 +128,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 return View("ContractBillingItem", model);
             }
 
-            if (order?.GetAssociatedService(model.SelectedOrderItemId) is null)
+            if (model.SelectedOrderItemId is null || order?.GetAssociatedService(model.SelectedOrderItemId.Value) is null)
                 return NotFound();
 
-            await contractBillingService.EditContractBillingItem(order.Id, model.ItemId, model.SelectedOrderItemId, model.Name, model.PaymentTrigger);
+            await contractBillingService.EditContractBillingItem(order.Id, model.ItemId, model.SelectedOrderItemId.Value, model.Name, model.PaymentTrigger);
 
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
         }

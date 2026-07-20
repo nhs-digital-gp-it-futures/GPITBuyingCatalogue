@@ -154,15 +154,21 @@ public class CompetitionTaskListModel
 
         if (CompareAndScoreSolutions is not (TaskProgress.NotApplicable or TaskProgress.Completed)) return;
 
-        List<CompetitionSolutionProgress> solutionProgressStatuses = competition.CompetitionSolutions
-            .Select(x => new CompetitionSolutionProgress(x))
-            .ToList();
+        if (ServiceRecipients is not TaskProgress.Completed || ContractLength is not TaskProgress.Completed)
+        {
+            CalculatePrice = TaskProgress.CannotStart;
+        }
+        else
+        {
+            List<CompetitionSolutionProgress> solutionProgressStatuses = [..
+                competition.CompetitionSolutions.Select(x => new CompetitionSolutionProgress(x))];
 
-        CalculatePrice = CompletedInProgressOrNotStarted(
-            competition,
-            _ => solutionProgressStatuses.All(x => x.Progress is TaskProgress.Completed),
-            _ => solutionProgressStatuses.Any(x => x.Progress is TaskProgress.InProgress or TaskProgress.Completed)
-                && !solutionProgressStatuses.All(x => x.Progress is TaskProgress.Completed));
+            CalculatePrice = CompletedInProgressOrNotStarted(
+                competition,
+                _ => solutionProgressStatuses.All(x => x.Progress is TaskProgress.Completed),
+                _ => solutionProgressStatuses.Any(x => x.Progress is TaskProgress.InProgress or TaskProgress.Completed)
+                    && !solutionProgressStatuses.All(x => x.Progress is TaskProgress.Completed));
+        }
 
         if (CalculatePrice is not TaskProgress.Completed) return;
 

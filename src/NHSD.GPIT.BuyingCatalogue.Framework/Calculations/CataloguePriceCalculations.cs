@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
         {
             var total = order?.OrderItems.Sum(x =>
                 ((IPrice)x.OrderItemPrice).CalculateOneOffCost(
-                    x.TotalQuantity(order.DetermineOrderRecipients(previous, x.CatalogueItemId)))) ?? decimal.Zero;
+                    x.TotalQuantity(order.DetermineOrderRecipients(previous, x.Id)))) ?? decimal.Zero;
 
             if (roundResult)
             {
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
         {
             var total = order?.OrderItems.Sum(x =>
                 ((IPrice)x.OrderItemPrice).CalculateCostPerYear(
-                    x.TotalQuantity(order.DetermineOrderRecipients(previous, x.CatalogueItemId)))) ?? decimal.Zero;
+                    x.TotalQuantity(order.DetermineOrderRecipients(previous, x.Id)))) ?? decimal.Zero;
 
             if (roundResult)
             {
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             return TotalCost(orderedRevisions, roundResult);
         }
 
-        public static decimal TotalCostForOrderItem(this OrderWrapper orderWrapper, CatalogueItemId catalogueItemId)
+        public static decimal TotalCostForOrderItem(this OrderWrapper orderWrapper, int orderItemId)
         {
             if (orderWrapper == null)
             {
@@ -73,9 +73,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             }
 
             var order = orderWrapper.Order;
-            var orderItem = orderWrapper.Order.OrderItem(catalogueItemId);
+            var orderItem = orderWrapper.Order.OrderItem(orderItemId);
 
-            var recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId);
+            if (orderItem == null) return decimal.Zero;
+
+            var recipients = orderWrapper.DetermineOrderRecipients(orderItem);
 
             return CalculateForTerm(orderItem, order.GetTerm(), recipients);
         }
@@ -111,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
                 foreach (var item in order.OrderItems)
                 {
-                    var qty = item.TotalQuantity(order.DetermineOrderRecipients(previous, item.CatalogueItemId));
+                    var qty = item.TotalQuantity(order.DetermineOrderRecipients(previous, item.Id));
                     if (!cumulativeOffsets.TryAdd(item.CatalogueItemId, qty))
                         cumulativeOffsets[item.CatalogueItemId] += qty;
                 }
@@ -161,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 if (item?.OrderItemPrice is not IPrice price)
                     return decimal.Zero;
 
-                var quantity = item.TotalQuantity(order.DetermineOrderRecipients(previous, item.CatalogueItemId));
+                var quantity = item.TotalQuantity(order.DetermineOrderRecipients(previous, item.Id));
                 var offset = quantityOffsets.TryGetValue(item.CatalogueItemId, out var val) ? val : 0;
 
                 return price.CalculateCostPerMonth(quantity, offset);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
@@ -48,13 +49,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public ICollection<OrderItem> Services { get; set; } = new HashSet<OrderItem>();
 
-        public OrderItem Clone() => new(CatalogueItemId)
+        public OrderItem Clone(bool preserveIds = false)
         {
-            OrderItemPrice = OrderItemPrice?.Clone(),
-            EstimationPeriod = EstimationPeriod,
-            CatalogueItem = CatalogueItem,
-            CatalogueItemId = CatalogueItemId,
-            OrderItemFunding = OrderItemFunding?.Clone(),
-        };
+            return new OrderItem(CatalogueItemId)
+            {
+                Id = preserveIds ? Id : 0,
+                OrderItemPrice = OrderItemPrice?.Clone(),
+                EstimationPeriod = EstimationPeriod,
+                CatalogueItem = CatalogueItem,
+                CatalogueItemId = CatalogueItemId,
+                OrderItemFunding = OrderItemFunding?.Clone(),
+            };
+        }
     }
 }

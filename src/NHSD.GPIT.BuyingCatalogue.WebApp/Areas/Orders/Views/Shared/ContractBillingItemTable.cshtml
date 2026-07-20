@@ -12,8 +12,11 @@
     }
     @foreach (var item in Model.ContractBillingItems)
     {
+        var itemName = item.OrderItem.Parent is not null
+            ? $"{item.OrderItem.Parent.CatalogueItem.Name} - {item.OrderItem.CatalogueItem.Name}"
+            : item.OrderItem.CatalogueItem.Name;
         <nhs-table-row-container>
-            <nhs-table-cell>@item.OrderItem.CatalogueItem.Name</nhs-table-cell>
+            <nhs-table-cell>@itemName</nhs-table-cell>
             <nhs-table-cell style="word-break:break-word">@item.Milestone.Title</nhs-table-cell>
             <nhs-table-cell style="word-break:break-word">@item.Milestone.PaymentTrigger</nhs-table-cell>
             @if (Model.IsAction)

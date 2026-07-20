@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderItem OrderItem { get; set; }
 
-        public OrderItemSublocationRecipient Clone()
+        public OrderItemSublocationRecipient Clone(bool preserveIds = false)
         {
             return new OrderItemSublocationRecipient
             {

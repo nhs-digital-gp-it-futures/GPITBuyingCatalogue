@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderItem OrderItem { get; set; }
 
-        public OrderItemFunding Clone() =>
+        public OrderItemFunding Clone(bool preserveIds = false) =>
             new() { OrderItemId = OrderItemId, OrderItemFundingType = OrderItemFundingType };
     }
 }

@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList
 {
@@ -23,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             IsPerServiceRecipient = ((IPrice)rolledUpOrderItem.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
             IsAssociatedService = rolledUpOrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService;
+            IsParentAdditionalService = rolledUpOrderItem.Parent?.CatalogueItem?.CatalogueItemType == CatalogueItemType.AdditionalService;
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             OrderType = orderType;
@@ -64,15 +66,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool IsAssociatedService { get; set; }
 
+        public bool IsParentAdditionalService { get; set; }
+
+        public int AssociatedServicesCatalogueItemsCount { get; set; }
+
+        public List<OrderItem> AssociatedServicesOrderItems { get; set; } = new();
+
+        public int? PreviousAssociatedServicesOrderItems { get; set; }
+
         public bool CanBeRemoved { get; set; }
+
+        public int? OrderItemId { get; set; }
+
+        public RoutingSource Source { get; set; }
 
         public TaskProgress PriceStatus
         {
             get
             {
-                return (rolledUpOrderItem?.OrderItemPrice?.OrderItemPriceTiers?.Count ?? 0) == 0
-                    ? TaskProgress.NotStarted
-                    : TaskProgress.Completed;
+                return GetPriceStatus(rolledUpOrderItem);
             }
         }
 
@@ -100,5 +112,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     : TaskProgress.NotStarted;
             }
         }
+
+        public TaskProgress AssociatedServicesStatus
+        {
+            get
+            {
+                if ((!HasNewRecipients && PreviousAssociatedServicesOrderItems > 0)
+                    || (PreviousAssociatedServicesOrderItems > 0 && AssociatedServicesOrderItems.Count == 0))
+                {
+                    return TaskProgress.Completed;
+                }
+
+                if (AssociatedServicesOrderItems.Count > 0)
+                {
+                    return AssociatedServicesOrderItems.All(orderItem =>
+                        GetPriceStatus(orderItem) == TaskProgress.Completed
+                    && RolledUpOrderRecipients.AllQuantitiesEntered(orderItem))
+                        ? IsCompletedOrAmended()
+                        : TaskProgress.InProgress;
+                }
+
+                return QuantityStatus is not (TaskProgress.Completed or TaskProgress.Amended) ? TaskProgress.Optional : TaskProgress.NotStarted;
+            }
+        }
+
+        private static TaskProgress GetPriceStatus(OrderItem orderItem)
+        {
+            return (orderItem?.OrderItemPrice?.OrderItemPriceTiers?.Count ?? 0) == 0
+                ? TaskProgress.NotStarted
+                : TaskProgress.Completed;
+        }
+
+        private TaskProgress IsCompletedOrAmended() => IsAmendment && FromPreviousRevision ? TaskProgress.Amended : TaskProgress.Completed;
     }
 }

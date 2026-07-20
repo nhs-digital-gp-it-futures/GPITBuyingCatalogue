@@ -30,6 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing
 
         public override string Advice => AdviceText;
 
+        public override string Caption { get; set; }
+
         public string Hint => HintText;
 
         public string Label => string.Format(LabelText, Basis);

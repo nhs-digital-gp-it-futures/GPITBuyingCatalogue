@@ -1215,6 +1215,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
+            var solution = order.OrderItems.First();
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.ParentId = null;
+
+            order.OrderSublocations.Clear();
+            order.OrderItems = [solution];
+
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
@@ -1347,6 +1354,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task TerminateOrder_WithCompletedAmendment_TerminatesAllRevisions(
             Organisation organisation,
             Order originalOrder,
+            OrderItem solution,
             [Frozen] BuyingCatalogueDbContext context,
             AspNetUser user,
             DateTime terminationDate,
@@ -1357,6 +1365,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             originalOrder.OrderingPartyId = organisation.Id;
             originalOrder.Revision = 1;
             originalOrder.OrderNumber = originalOrder.ContractOrderNumber.Id;
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.ParentId = null;
+
+            originalOrder.OrderItems = [solution];
 
             var amendedOrder = originalOrder.BuildAmendment(2);
             amendedOrder.Completed = DateTime.UtcNow;
@@ -1813,11 +1826,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task GetPagedOrders_WithCompletedAmendment_ReturnsSingleRevision(
             Organisation organisation,
             Order originalOrder,
+            OrderItem solution,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
             originalOrder.OrderNumber = originalOrder.ContractOrderNumber.Id;
             originalOrder.Revision = 1;
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.ParentId = null;
+
+            originalOrder.OrderItems = [solution];
+
             var amendedOrder = originalOrder.BuildAmendment(2);
 
             amendedOrder.Completed = DateTime.UtcNow;
@@ -1981,11 +2001,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task GetOrdersBySearchTerm_WithInProgressAmendment_ReturnsAllOrders(
             Organisation organisation,
             Order originalOrder,
+            OrderItem solution,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
             originalOrder.Revision = 1;
             originalOrder.OrderNumber = originalOrder.ContractOrderNumber.Id;
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            solution.ParentId = null;
+
+            originalOrder.OrderItems = new List<OrderItem> { solution };
             var amendedOrder = originalOrder.BuildAmendment(2);
 
             amendedOrder.Completed = null;

@@ -9,15 +9,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         {
         }
 
-        public OrderItemRecipientModel(OrderSublocationRecipient recipient, CatalogueItemId catalogueItemId)
+        public OrderItemRecipientModel(OrderSublocationRecipient recipient, int orderItemId)
         {
-            CatalogueItemId = catalogueItemId;
-            DeliveryDate = recipient.GetDeliveryDateForItem(catalogueItemId);
+            OrderItemId = orderItemId;
+            DeliveryDate = recipient.GetDeliveryDateForItem(orderItemId);
             OdsCode = recipient.RecipientOdsCode;
             RecipientName = recipient.RecipientOdsOrganisation?.Name;
         }
 
-        public CatalogueItemId CatalogueItemId { get; set; }
+        public int OrderItemId { get; set; }
 
         public DateTime? DeliveryDate { get; set; }
 

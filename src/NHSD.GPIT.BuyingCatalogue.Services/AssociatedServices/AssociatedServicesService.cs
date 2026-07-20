@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 
@@ -159,6 +158,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .ThenInclude(x => x.AdditionalService)
                 .Select(ssa => ssa.CatalogueItem)
                 .ToListAsync();
+
+        public async Task<IDictionary<CatalogueItemId, int>> GetCountOfAssociatedServicesForCatalogueItems(HashSet<CatalogueItemId> catalogueItems)
+            => await dbContext.SupplierServiceAssociations
+                .Where(ssa => catalogueItems.Contains(ssa.CatalogueItemId))
+                .GroupBy(ssa => ssa.CatalogueItemId)
+                .Select(group => new
+                {
+                    CatalogueItemId = group.Key,
+                    Count = group.Count(),
+                })
+                .ToDictionaryAsync(group => group.CatalogueItemId, group => group.Count);
 
         public async Task<CatalogueItemId> AddAssociatedService(
             int supplierId,

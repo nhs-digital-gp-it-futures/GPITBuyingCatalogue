@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OdsOrganisation SublocationOrganisation { get; set; }
 
-        public OrderSublocation Clone()
+        public OrderSublocation Clone(bool preserveIds = false)
         {
             return new OrderSublocation
             {

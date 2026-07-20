@@ -277,10 +277,10 @@
                         <h1>Items added to this order</h1>
                     }
 
-                    @if (Model.RolledUp.GetSolutions().Any())
+                    @if (Model.Order.GetSolutions().Any())
                     {
-                        <h2>@(Model.RolledUp.GetSolutions().Count() > 1 ? "Catalogue solutions" : "Catalogue solution")</h2>
-                        @foreach (var solution in Model.RolledUp.GetSolutions())
+                        <h2>@(Model.Order.GetSolutions().Count() > 1 ? "Catalogue solutions" : "Catalogue solution")</h2>
+                        @foreach (var solution in Model.Order.GetSolutions())
                         {
                             var itemModel = Model.BuildAmendOrderItemModel(solution);
                             <partial name="OrderItem" model="@itemModel" />
@@ -289,22 +289,48 @@
                         <div style="page-break-after: always"></div>
                     }
 
-                    @if (Model.RolledUp.GetAdditionalServices().Any())
+                    @if (Model.Order.GetAdditionalServices().Any())
                     {
-                        <h2>@(Model.RolledUp.GetAdditionalServices().Count() > 1 ? "Additional services" : "Additional service")</h2>
-                        @foreach (var service in Model.RolledUp.GetAdditionalServices())
+                        <h2>@(Model.Order.GetAdditionalServices().Count() > 1 ? "Additional services" : "Additional service")</h2>
+                        @foreach (var service in Model.Order.GetAdditionalServices())
                         {
                             var itemModel = Model.BuildAmendOrderItemModel(service);
                             <partial name="OrderItem" model="@itemModel" />
+                            
+                            @if (Model.AssociatedServicesForAdditionalServices.ContainsKey(service.Id))
+                            {
+                                var headingText = $"{service.CatalogueItem.Name} - Associated Service details";
+                                <h3>@headingText</h3>
+                                @foreach (var associatedService in Model.AssociatedServicesForAdditionalServices[service.Id])
+                                {
+                                    var associatedServiceModel = Model.BuildAmendOrderItemModel(associatedService, service.CatalogueItem.Name);
+                                    <partial name="OrderItem" model="@associatedServiceModel" />
+                                }
+                            }
+                            
+                            @if (Model.PreviousAssociatedServicesForAdditionalServices.ContainsKey(service.CatalogueItemId))
+                            {
+                                <h3>Previously ordered associated services</h3>
+                                @foreach (var group in Model.PreviousAssociatedServicesForAdditionalServices[service.CatalogueItemId].Reverse())
+                                {
+                                    <h4>@group.Key</h4>
+                                    @foreach (var associatedService in group.Value)
+                                    {
+                                        var previousServiceModel = Model.BuildAmendOrderItemModel(associatedService, service.CatalogueItem.Name, true);
+                                        previousServiceModel.IsAmendment = true;
+                                        <partial name="OrderItem" model="@previousServiceModel" />
+                                    }
+                                }
+                            }
                         }
 
                         <div style="page-break-after: always"></div>
                     }
 
-                @if (Model.RolledUp.GetAssociatedServices().Any())
+                @if (Model.Order.GetAssociatedServices().Any() || Model.PreviousAssociatedServicesGrouping.Any())
                     {
-                        var solutionName = Model.RolledUp.GetSolutions().First().CatalogueItem.Name;
-                        <h2>@(Model.RolledUp.GetAssociatedServices().Count() > 1 ? "Associated services" : "Associated service") details</h2>
+                        var solutionName = Model.Order.GetSolutions().First().CatalogueItem.Name;
+                        <h2>@(Model.Order.GetAssociatedServices().Count() > 1 ? "Associated services" : "Associated service") details</h2>
                         if (Model.AssociatedServicesForCurrentOrder.Any())
                         {
                             <h3>Associated Services for this order</h3>
@@ -325,6 +351,7 @@
                                 @foreach (var service in group)
                                 {
                                     var itemModel = Model.BuildAmendOrderItemModel(service, solutionName, true);
+                                    itemModel.IsAmendment = true;
                                     <partial name="OrderItem" model="@itemModel" />
                                 }
                             }
@@ -544,7 +571,7 @@
                                             @foreach (var item in Model.BespokeBilling.ContractBillingItems)
                                             {
                                                 <tr>
-                                                    <td>@item.OrderItem.CatalogueItem.Name</td>
+                                                    <td>@($"{item.OrderItem.Parent.CatalogueItem.Name} - {item.OrderItem.CatalogueItem.Name}")</td>
                                                     <td>@item.Milestone.Title</td>
                                                     <td>@item.Milestone.PaymentTrigger</td>
                                                 </tr>
@@ -574,7 +601,7 @@
                                             @foreach (var item in Model.BespokeBilling.Requirements)
                                             {
                                                 <tr>
-                                                    <td>@item.OrderItem.CatalogueItem.Name</td>
+                                                    <td>@($"{item.OrderItem.Parent.CatalogueItem.Name} - {item.OrderItem.CatalogueItem.Name}")</td>
                                                     <td>@item.Details</td>
                                                     <td>@item.RequiresExplanation.ToYesNo()</td>
                                                 </tr>

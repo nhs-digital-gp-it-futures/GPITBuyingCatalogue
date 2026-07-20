@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
         Task AddBespokeContractBillingItem(
             int orderId,
             int contractId,
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             string name,
             string paymentTrigger);
 
@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
         Task EditContractBillingItem(
             int orderId,
             int itemId,
-            CatalogueItemId catalogueItemId,
+            int orderItemId,
             string name,
             string paymentTrigger);
 

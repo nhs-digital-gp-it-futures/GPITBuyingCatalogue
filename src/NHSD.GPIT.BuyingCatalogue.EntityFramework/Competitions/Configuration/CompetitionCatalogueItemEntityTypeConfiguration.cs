@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -40,5 +40,11 @@ public sealed class CompetitionCatalogueItemEntityTypeConfiguration : IEntityTyp
             .HasForeignKey(x => x.CompetitionItemId)
             .HasConstraintName("FK_CompetitionItemQuantities_CompetitionItem")
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Services)
+            .WithOne()
+            .HasForeignKey(x => x.ParentItemId)
+            .HasConstraintName("FK_CompetitionCatalogueItems_Parent")
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

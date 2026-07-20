@@ -10,6 +10,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -93,11 +94,17 @@ namespace BuyingCatalogueFunctionTests.Notifications.ContractExpiry.Services
         public static async Task DoesntReturnOrdersThatHaveBothEvents_MultipleRevisions(
             ContractExpiryService service,
             [Frozen] BuyingCatalogueDbContext dbContext,
-            Order order)
+            Order order,
+            OrderItem orderItem)
         {
             Initialise(order);
             order.Revision = 1;
             order.ContractOrderNumber.Id = order.OrderNumber;
+
+            orderItem.ParentId = null;
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            
+            order.OrderItems = [orderItem];
             var amendment = order.BuildAmendment(2);
             amendment.Completed = DateTime.UtcNow.Date;
             amendment.ContractOrderNumber = order.ContractOrderNumber;
@@ -130,11 +137,17 @@ namespace BuyingCatalogueFunctionTests.Notifications.ContractExpiry.Services
         public static async Task ReturnsOrder_MultipleRevisions(
             ContractExpiryService service,
             [Frozen] BuyingCatalogueDbContext dbContext,
-            Order order)
+            Order order,
+            OrderItem orderItem)
         {
             Initialise(order);
             order.Revision = 1;
             order.ContractOrderNumber.Id = order.OrderNumber;
+
+            orderItem.ParentId = null;
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            order.OrderItems = [orderItem];
             var amendment = order.BuildAmendment(2);
             amendment.Completed = DateTime.UtcNow.Date;
             amendment.ContractOrderNumber = order.ContractOrderNumber;

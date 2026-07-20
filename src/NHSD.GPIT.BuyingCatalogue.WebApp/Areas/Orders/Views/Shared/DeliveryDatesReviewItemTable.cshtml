@@ -1,0 +1,36 @@
+@using System
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared.DeliveryDatesReviewItemTableModel
+
+<nhs-expander-v2 open="true">
+    <nhs-expander-summary label-text="@Model.LabelText" bold-title="true">
+    </nhs-expander-summary>
+    <nhs-expander-content>
+        <nhs-table>
+            <nhs-table-column>Organisation</nhs-table-column>
+            <nhs-table-column>ODS code</nhs-table-column>
+            @if (Model.ShowPlannedDeliveryDate)
+            {
+                <nhs-table-column>Planned delivery date</nhs-table-column>
+            }
+            <nhs-table-column></nhs-table-column>
+            @foreach (var (odsCode, name, deliveryDate) in Model.Recipients)
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>@name</nhs-table-cell>
+                    <nhs-table-cell>@odsCode</nhs-table-cell>
+                    @if (Model.ShowPlannedDeliveryDate)
+                    {
+                        <nhs-table-cell>@GetFormattedDate(deliveryDate)</nhs-table-cell>
+                    }
+                    <nhs-table-cell><a class="nhsuk-link nhsuk-link--no-visited-state" style="float: right;" href="@Model.EditDatesUrl">Change</a></nhs-table-cell>
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+    </nhs-expander-content>
+</nhs-expander-v2>
+
+@{
+    string GetFormattedDate(DateTime? date) => date.HasValue
+        ? $"{date.Value:d MMMM yyyy}"
+        : "No date entered";
+}

@@ -18,7 +18,7 @@
         <nhs-validation-summary/>
 
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.SolutionName"
+                        caption="@Model.ParentItemName"
                         advice="@advice"/>
 
         <form method="post" autocomplete="off">
@@ -31,7 +31,7 @@
                         <a href="@Url.Action(
                                             nameof(SolutionsController.AdditionalServices),
                                             typeof(SolutionsController).ControllerName(),
-                                            new { solutionId = @Model.SolutionId, area = typeof(SolutionsController).AreaName() })" target="_blank">
+                                            new { solutionId = @Model.ParentItemId, area = typeof(SolutionsController).AreaName() })" target="_blank">
                             Find out more (opens in new tab)
                         </a>
                     </p>

@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             dbOrder.DeliveryDate.Should().Be(deliveryDate);
             dbOrder.OrderItems.ForEach(x =>
                 order.FlattenedRecipients.ForEach(r =>
-                    r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(deliveryDate)));
+                    r.GetDeliveryDateForItem(x.Id).Should().Be(deliveryDate)));
         }
 
         [Theory]
@@ -115,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                 .FirstAsync(x => x.Id == order.Id);
 
             dbOrder.OrderItems.ForEach(x =>
-                order.FlattenedRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(null)));
+                order.FlattenedRecipients.ForEach(r => r.GetDeliveryDateForItem(x.Id).Should().Be(null)));
         }
 
         [Theory]
@@ -159,13 +159,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                 .Where(o => o.CatalogueItemId == orderItem.CatalogueItemId)
                 .ForEach(x =>
                     order.FlattenedRecipients.ForEach(r =>
-                        r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(newDate)));
+                        r.GetDeliveryDateForItem(x.Id).Should().Be(newDate)));
 
             dbOrder.OrderItems
                 .Where(o => o.CatalogueItemId != orderItem.CatalogueItemId)
                 .ForEach(x =>
                     order.FlattenedRecipients.ForEach(r =>
-                        r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(initialDate)));
+                        r.GetDeliveryDateForItem(x.Id).Should().Be(initialDate)));
         }
 
         [Theory]
@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             dbOrder.DeliveryDate.Should().BeNull();
             dbOrder.OrderItems.ForEach(x =>
-                order.FlattenedRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().BeNull()));
+                order.FlattenedRecipients.ForEach(r => r.GetDeliveryDateForItem(x.Id).Should().BeNull()));
         }
 
         [Theory]
@@ -225,13 +225,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             dbOrder.OrderItems
                 .Where(o => o.CatalogueItemId == orderItem.CatalogueItemId)
                 .ForEach(x => order.FlattenedRecipients.ForEach(r =>
-                    r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(DateTime.Today.AddDays(1))));
+                    r.GetDeliveryDateForItem(x.Id).Should().Be(DateTime.Today.AddDays(1))));
 
             dbOrder.OrderItems
                 .Where(o => o.CatalogueItemId != orderItem.CatalogueItemId)
                 .ForEach(x =>
                     order.FlattenedRecipients.ForEach(r =>
-                        r.GetDeliveryDateForItem(x.CatalogueItemId).Should().BeNull()));
+                        r.GetDeliveryDateForItem(x.Id).Should().BeNull()));
         }
     }
 }

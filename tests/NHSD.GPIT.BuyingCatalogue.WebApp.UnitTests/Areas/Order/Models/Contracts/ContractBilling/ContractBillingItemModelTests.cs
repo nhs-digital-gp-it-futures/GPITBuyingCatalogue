@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
 
             model.Name.Should().Be(item.Milestone?.Title);
             model.PaymentTrigger.Should().Be(item.Milestone?.PaymentTrigger);
-            model.SelectedOrderItemId.Should().Be(item.OrderItem.CatalogueItemId);
+            model.SelectedOrderItemId.Should().Be(item.OrderItem.Id);
             model.IsEdit.Should().BeTrue();
             model.Advice.Should().Be("Edit this associated service milestone.");
         }

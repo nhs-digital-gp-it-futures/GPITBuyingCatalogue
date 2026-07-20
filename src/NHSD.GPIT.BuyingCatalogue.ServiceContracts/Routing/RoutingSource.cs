@@ -2,11 +2,11 @@
 {
     public enum RoutingSource
     {
-        AddAssociatedServices,
         Dashboard,
         EditSolution,
         SelectAssociatedServices,
         SelectSolution,
         TaskList,
+        ManageAssociatedServices,
     }
 }

@@ -29,6 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             IsOrderItemAdded = previous == null;
             OrderItem = orderItem;
             Previous = previous;
+            IsAmendment = callOffId.IsAmendment;
             FundingTypeDescriptionModel = fundingTypeDescription;
             rolledUpRecipients = recipients
                 .ForCatalogueItem(orderItem.CatalogueItemId)
@@ -47,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public OrderType OrderType { get; }
 
-        public bool IsAmendment => CallOffId.IsAmendment;
+        public bool IsAmendment { get; set; }
 
         public bool CanEdit { get; set; }
 
