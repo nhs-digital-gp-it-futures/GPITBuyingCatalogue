@@ -71,38 +71,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                             ClaimTypes.Role,
                             OrganisationFunction.AccountManager.Name))
                     .AddPolicy("ManageCatalogueSolutions", policy => policy.RequireClaim(
-                        Permissions.ClaimType,
-                        Permissions.ManageCatalogueSolutions))
+                        CataloguePermissions.ClaimType,
+                        CataloguePermissions.ManageCatalogueSolutions))
                     .AddPolicy("ManageContractingVehicles", policy => policy.RequireClaim(
-                        Permissions.ClaimType,
-                        Permissions.ManageContractingVehicles))
+                        CataloguePermissions.ClaimType,
+                        CataloguePermissions.ManageContractingVehicles))
                     .AddPolicy("ManageSupplierDefinedEpics", policy => policy.RequireClaim(
-                        Permissions.ClaimType,
-                        Permissions.ManageSupplierDefinedEpics))
+                        CataloguePermissions.ClaimType,
+                        CataloguePermissions.ManageSupplierDefinedEpics))
                     .AddPolicy("ManageCapabilitiesAndEpics", policy => policy.RequireClaim(
-                        Permissions.ClaimType,
-                        Permissions.ManageCapabilitiesAndEpics))
+                        CataloguePermissions.ClaimType,
+                        CataloguePermissions.ManageCapabilitiesAndEpics))
                     .AddPolicy("ManageInteroperability", policy => policy.RequireClaim(
-                        Permissions.ClaimType,
-                        Permissions.ManageInteroperability))
+                        CataloguePermissions.ClaimType,
+                        CataloguePermissions.ManageInteroperability))
                     .AddPolicy("ManageBuyerOrganisations", policy => policy.RequireClaim(
-                        Permissions.ClaimType,
-                        Permissions.ManageBuyerOrganisations))
+                        CataloguePermissions.ClaimType,
+                        CataloguePermissions.ManageBuyerOrganisations))
                     .AddPolicy("ManageSupplierOrganisations", policy => policy.RequireClaim(
-                        Permissions.ClaimType,
-                        Permissions.ManageSupplierOrganisations))
+                        CataloguePermissions.ClaimType,
+                        CataloguePermissions.ManageSupplierOrganisations))
                     .AddPolicy("ManageUsers", policy => policy.RequireClaim(
-                        Permissions.ClaimType,
-                        Permissions.ManageUsers))
+                        CataloguePermissions.ClaimType,
+                        CataloguePermissions.ManageUsers))
                     .AddPolicy("ManageAllowedEmailDomains", policy => policy.RequireClaim(
-                        Permissions.ClaimType,
-                        Permissions.ManageAllowedEmailDomains))
+                        CataloguePermissions.ClaimType,
+                        CataloguePermissions.ManageAllowedEmailDomains))
                     .AddPolicy("ManageAccountCreationRequests", policy => policy.RequireClaim(
-                        Permissions.ClaimType,
-                        Permissions.ManageAccountCreationRequests))
+                        CataloguePermissions.ClaimType,
+                        CataloguePermissions.ManageAccountCreationRequests))
                     .AddPolicy("ManageAllOrders", policy => policy.RequireClaim(
-                        Permissions.ClaimType,
-                        Permissions.ManageAllOrders))
+                        CataloguePermissions.ClaimType,
+                        CataloguePermissions.ManageAllOrders))
                     .AddPolicy("Development", policy => policy.Requirements.Add(new DevelopmentRequirement()));
             }
 

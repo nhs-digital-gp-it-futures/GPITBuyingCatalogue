@@ -74,11 +74,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             ArgumentNullException.ThrowIfNull(user);
 
             return user.IsInRole(OrganisationFunction.Authority.Name) || user.HasClaim(c =>
-                c.Value is Permissions.ManageCatalogueSolutions
-                    or Permissions.ManageContractingVehicles
-                    or Permissions.ManageSupplierDefinedEpics
-                    or Permissions.ManageCapabilitiesAndEpics
-                    or Permissions.ManageInteroperability);
+                c.Value is CataloguePermissions.ManageCatalogueSolutions
+                    or CataloguePermissions.ManageContractingVehicles
+                    or CataloguePermissions.ManageSupplierDefinedEpics
+                    or CataloguePermissions.ManageCapabilitiesAndEpics
+                    or CataloguePermissions.ManageInteroperability);
         }
 
         public static bool CanManageOrganisations(this ClaimsPrincipal user)
@@ -86,8 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             ArgumentNullException.ThrowIfNull(user);
 
             return user.IsInRole(OrganisationFunction.Authority.Name) || user.HasClaim(c =>
-                c.Value is Permissions.ManageBuyerOrganisations
-                or Permissions.ManageSupplierOrganisations);
+                c.Value is CataloguePermissions.ManageBuyerOrganisations
+                or CataloguePermissions.ManageSupplierOrganisations);
         }
 
         public static bool CanManageUsers(this ClaimsPrincipal user)
@@ -95,9 +95,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             ArgumentNullException.ThrowIfNull(user);
 
             return user.IsInRole(OrganisationFunction.Authority.Name) || user.HasClaim(c =>
-                c.Value is Permissions.ManageUsers
-                or Permissions.ManageAccountCreationRequests
-                or Permissions.ManageAllowedEmailDomains);
+                c.Value is CataloguePermissions.ManageUsers
+                or CataloguePermissions.ManageAccountCreationRequests
+                or CataloguePermissions.ManageAllowedEmailDomains);
         }
 
         public static bool CanManageOrders(this ClaimsPrincipal user)
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             ArgumentNullException.ThrowIfNull(user);
 
             return user.IsInRole(OrganisationFunction.Authority.Name) || user.HasClaim(c =>
-                c.Value is Permissions.ManageAllOrders);
+                c.Value is CataloguePermissions.ManageAllOrders);
         }
 
         private static string GetClaimValue(ClaimsPrincipal user, string claimType)

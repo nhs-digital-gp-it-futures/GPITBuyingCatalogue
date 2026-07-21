@@ -1,4 +1,5 @@
 DECLARE @ClaimType NVARCHAR(50) = 'permission';
+DECLARE @OnboardingRole NVARCHAR(50) = 'Onboarding';
 
 DECLARE @Claims TABLE
 (
@@ -32,10 +33,10 @@ FROM @Claims;
 
 INSERT INTO @RoleClaimMap
 VALUES
-    ('Onboarding', 'ManageCatalogueSolutions'),
-    ('Onboarding', 'ManageContractingVehicles'),
-    ('Onboarding', 'ManageSupplierDefinedEpics'),
-    ('Onboarding', 'ManageSupplierOrganisations');
+    (@OnboardingRole, 'ManageCatalogueSolutions'),
+    (@OnboardingRole, 'ManageContractingVehicles'),
+    (@OnboardingRole, 'ManageSupplierDefinedEpics'),
+    (@OnboardingRole, 'ManageSupplierOrganisations');
 
 INSERT INTO @RoleClaimMap
 VALUES
