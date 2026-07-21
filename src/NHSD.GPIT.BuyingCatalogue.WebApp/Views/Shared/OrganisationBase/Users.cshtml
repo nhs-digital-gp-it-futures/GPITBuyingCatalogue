@@ -74,7 +74,7 @@
                             </nhs-table-cell>
                             <nhs-table-cell>
                                 @{
-                                    var status = item.Disabled ? AccountStatus.Inactive : AccountStatus.Active;
+                                    var status = item.Disabled ? AccountStatus.Deactivated : AccountStatus.Active;
                                     <nhs-tag status-enum="@status"/>
                                 }
                             </nhs-table-cell>
