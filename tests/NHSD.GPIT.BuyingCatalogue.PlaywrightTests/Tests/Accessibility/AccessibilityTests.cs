@@ -49,9 +49,6 @@ public class AccessibilityTests : BaseTest
         // Print the full report for the POC comparison against WAVE
         AccessibilityReporter.Report(result, Output, "What do you want to order? (order type page)");
 
-        // Print the full report for the POC comparison against WAVE
-        AccessibilityReporter.Report(result, Output, "What do you want to order? (order type page)");
-
         var blocking = result.Violations
             .Where(v => v.Impact == "critical" || v.Impact == "serious")
             .ToList();
