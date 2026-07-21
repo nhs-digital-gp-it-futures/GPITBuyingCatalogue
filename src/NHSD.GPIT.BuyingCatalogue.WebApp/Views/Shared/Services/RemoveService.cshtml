@@ -3,10 +3,10 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.RemoveServiceModel;
 
 @{
-    ViewBag.Title = $"Remove {Model.ServiceType}";
-    var removeTextPrefix = $"Removing an {Model.ServiceType} will also remove any quantities and prices you've previously entered for it";
+    ViewBag.Title = $"Remove {Model.ServiceType.DisplayName().ToLowerInvariant()}";
+    var removeTextPrefix = $"Removing an {Model.ServiceType.DisplayName().ToLowerInvariant()} will also remove any quantities and prices you've previously entered for it";
     var removeText = Model.ServiceType == CatalogueItemType.AdditionalService
-        ? $"{removeTextPrefix}. You will also remove any associated services that have been added to this ${Model.ServiceType.DisplayName().ToLowerInvariant()}."
+        ? $"{removeTextPrefix}. You will also remove any associated services that have been added to this {Model.ServiceType.DisplayName().ToLowerInvariant()}."
         : $"{removeTextPrefix}.";
 }
 
@@ -17,9 +17,9 @@
         <nhs-validation-summary RadioId="ConfirmRemoveService" />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.ServiceName"
-                        advice="Confirm you want to remove this @Model.ServiceType from your @Model.EntityType.ToLowerInvariant()." />
+                        advice="Confirm you want to remove this @Model.ServiceType.DisplayName().ToLowerInvariant() from your @Model.EntityType.ToLowerInvariant()." />
 
-        <nhs-warning-callout label-text="Removing an @Model.ServiceType">
+        <nhs-warning-callout label-text="Removing an @Model.ServiceType.DisplayName().ToLowerInvariant()">
             <p>@removeText</p>
         </nhs-warning-callout>
 
