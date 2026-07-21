@@ -68,33 +68,6 @@
                 <br/>
             </div>
         }
-        <div data-test-id="order-items-table">
-            <nhs-table label-text="Selected solutions and services">
-                <nhs-table-column>
-                    Solution or service name
-                </nhs-table-column>
-                <nhs-table-column>
-                    Type of solution or service
-                </nhs-table-column>
-                <nhs-table-column>
-                    Funding type
-                </nhs-table-column>
-                @foreach (var orderItem in Model.OrderItems)
-                {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>
-                            @orderItem.Name
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            @orderItem.Type.AsString(EnumFormat.DisplayName)
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <span data-test-id="funding-type">@orderItem.SelectedFundingType.Description()</span>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                }
-            </nhs-table>
-        </div>
     }
     else
     {
