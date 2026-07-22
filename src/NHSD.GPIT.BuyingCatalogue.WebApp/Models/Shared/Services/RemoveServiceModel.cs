@@ -10,7 +10,7 @@ public class RemoveServiceModel : NavBaseModel
     public IList<SelectOption<bool>> RemoveServiceOptions =>
     [
         new($"Yes, I confirm I want to remove {ServiceName}", true),
-        new($"No, I want to keep my current {ServiceType}s", false),
+        new($"No, I want to keep {ServiceName}", false),
     ];
 
     public required CatalogueItemType ServiceType { get; set; }
