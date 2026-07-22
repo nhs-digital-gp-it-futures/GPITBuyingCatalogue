@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
 
         private const string AccountManagerAdvice = "This type of user can manage user accounts for {0} organisation.";
 
-        private static readonly IEnumerable<OrganisationFunction> Values = new[] { Authority, Buyer, AccountManager };
+        private static readonly IEnumerable<OrganisationFunction> Values = new[] { Authority, Buyer, AccountManager, Onboarding, View };
 
         private OrganisationFunction(int value, string name, string displayName, string advice, string internalAdvice)
         {
