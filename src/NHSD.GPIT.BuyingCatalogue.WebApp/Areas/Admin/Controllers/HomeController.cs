@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "AdminOnly,Onboarding,View")]
+    [Authorize(Roles = "Authority,Onboarding,View")]
     [Area("Admin")]
     [Route("admin")]
     public sealed class HomeController : Controller
