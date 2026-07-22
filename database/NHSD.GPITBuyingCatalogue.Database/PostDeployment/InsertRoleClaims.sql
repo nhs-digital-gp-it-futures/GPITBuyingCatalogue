@@ -40,7 +40,7 @@ VALUES
 
 INSERT INTO @RoleClaimMap
 VALUES
-    ('View', 'ManageAllOrders');
+    ('ReadOnly', 'ManageAllOrders');
 
 MERGE INTO users.AspNetRoleClaims AS TARGET
 USING (

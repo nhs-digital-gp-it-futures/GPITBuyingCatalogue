@@ -3,10 +3,10 @@
     {
         if (User.IsAdmin())
         {
-            return ("User has inadequate permissions", "Only users with full admin permissions can access this section of the Buying Catalogue.");
+            return ("You have insufficient permissions to access this section of the Buying Catalogue.", "Only users with full admin permissions can access this section of the Buying Catalogue.");
         }
 
-        return !User.IsAdmin() ? ("You're not logged in as an admin", "Only users with an admin account can access this section of the Buying Catalogue.") : ("You're not logged in as a buyer", "Only users with a buyer account can create and manage orders on the Buying Catalogue.");
+        return !User.IsAdmin() ? ("You have insufficient permissions to access this section of the Buying Catalogue.", "Only users with an admin account can access this section of the Buying Catalogue.") : ("You're not logged in as a buyer", "Only users with a buyer account can create and manage orders on the Buying Catalogue.");
     }
 
     (string title, string advice) = GetTitleAndAdvice();

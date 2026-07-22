@@ -239,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
             var isAdmin = await userManager.IsInRoleAsync(user, OrganisationFunction.Authority.Name)
                 || await userManager.IsInRoleAsync(user, OrganisationFunction.Onboarding.Name)
-                || await userManager.IsInRoleAsync(user, OrganisationFunction.View.Name);
+                || await userManager.IsInRoleAsync(user, OrganisationFunction.ReadOnly.Name);
 
             return isAdmin
                 ? Url.Action(

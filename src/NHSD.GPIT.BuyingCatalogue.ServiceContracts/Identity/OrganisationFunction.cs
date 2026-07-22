@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
         public static readonly OrganisationFunction Buyer = new(2, "Buyer", "Buyer", string.Format(BuyerAdvice, " for your organisation"), string.Format(BuyerAdvice, string.Empty));
         public static readonly OrganisationFunction AccountManager = new(3, "AccountManager", "Account manager", string.Format(AccountManagerAdvice, "your"), string.Format(AccountManagerAdvice, "their buyer"));
         public static readonly OrganisationFunction Onboarding = new(4, "Onboarding", "Onboarding", string.Empty, string.Empty);
-        public static readonly OrganisationFunction View = new(5, "View", "View", string.Empty, string.Empty);
+        public static readonly OrganisationFunction ReadOnly = new(5, "ReadOnly", "ReadOnly", string.Empty, string.Empty);
 
         private const string AuthorityAdvice = "This type of user is an administrator on behalf of NHS Digital.";
 
@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
 
         private const string AccountManagerAdvice = "This type of user can manage user accounts for {0} organisation.";
 
-        private static readonly IEnumerable<OrganisationFunction> Values = new[] { Authority, Buyer, AccountManager, Onboarding, View };
+        private static readonly IEnumerable<OrganisationFunction> Values = new[] { Authority, Buyer, AccountManager, Onboarding, ReadOnly };
 
         private OrganisationFunction(int value, string name, string displayName, string advice, string internalAdvice)
         {
