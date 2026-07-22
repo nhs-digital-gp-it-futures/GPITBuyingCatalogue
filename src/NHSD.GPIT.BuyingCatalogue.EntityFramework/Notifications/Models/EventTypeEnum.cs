@@ -12,6 +12,6 @@
         InactivityEnteredSecondExpiryThreshold = 7,
         InactivityEnteredThirdExpiryThreshold = 8,
         InactivityEnteredForthExpiryThreshold = 9,
-        InactivityEnteredFifthExpiryThreshold = 10,
+        InactivityEnteredExpiredThreshold = 10,
     }
 }

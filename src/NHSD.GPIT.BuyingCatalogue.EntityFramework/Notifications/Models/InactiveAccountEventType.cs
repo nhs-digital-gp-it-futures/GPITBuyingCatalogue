@@ -7,5 +7,5 @@ public enum InactiveAccountEventType
     InactivityEnteredSecondExpiryThreshold = EventTypeEnum.InactivityEnteredSecondExpiryThreshold,
     InactivityEnteredThirdExpiryThreshold = EventTypeEnum.InactivityEnteredThirdExpiryThreshold,
     InactivityEnteredForthExpiryThreshold = EventTypeEnum.InactivityEnteredForthExpiryThreshold,
-    InactivityEnteredFifthExpiryThreshold = EventTypeEnum.InactivityEnteredFifthExpiryThreshold,
+    InactivityEnteredExpiredThreshold = EventTypeEnum.InactivityEnteredExpiredThreshold,
 }

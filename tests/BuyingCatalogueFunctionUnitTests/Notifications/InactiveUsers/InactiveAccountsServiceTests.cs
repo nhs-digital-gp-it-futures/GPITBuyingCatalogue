@@ -425,7 +425,7 @@ public static class InactiveAccountsServiceTests
         var notificationEvent2 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredSecondExpiryThreshold);
         var notificationEvent3 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredThirdExpiryThreshold);
         var notificationEvent4 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredForthExpiryThreshold);
-        var notificationEvent5 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold);
+        var notificationEvent5 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredExpiredThreshold);
         var user = new AspNetUser
         {
             Id = userId,
@@ -693,7 +693,7 @@ public static class InactiveAccountsServiceTests
         var notificationEvent2 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredSecondExpiryThreshold);
         var notificationEvent3 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredThirdExpiryThreshold);
         var notificationEvent4 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredForthExpiryThreshold);
-        var notificationEvent5 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold);
+        var notificationEvent5 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredExpiredThreshold);
         var user = new AspNetUser
         {
             Id = userId,
@@ -720,7 +720,7 @@ public static class InactiveAccountsServiceTests
 
         updatedUser.Disabled.Should().BeTrue();
         updatedUser.DeactivationReason.Should().Be(AccountDeactivationReason.Inactivity);
-        updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold);
+        updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventType.InactivityEnteredExpiredThreshold);
         notifications.Should().Contain(x => x.To == user.Email && x.EmailNotificationType == EmailNotificationTypeEnum.AccountDeactivation);
     }
 
@@ -764,7 +764,7 @@ public static class InactiveAccountsServiceTests
 
         updatedUser.Disabled.Should().BeTrue();
         updatedUser.DeactivationReason.Should().Be(AccountDeactivationReason.Inactivity);
-        updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold);
+        updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventType.InactivityEnteredExpiredThreshold);
         notifications.Should().Contain(x => x.To == user.Email);
     }
 }

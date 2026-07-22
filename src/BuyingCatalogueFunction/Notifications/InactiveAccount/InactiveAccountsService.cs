@@ -30,7 +30,7 @@ public partial class InactiveAccountsService(
         (14, InactiveAccountEventType.InactivityEnteredSecondExpiryThreshold),
         (7, InactiveAccountEventType.InactivityEnteredThirdExpiryThreshold),
         (1, InactiveAccountEventType.InactivityEnteredForthExpiryThreshold),
-        (0, InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold),
+        (0, InactiveAccountEventType.InactivityEnteredExpiredThreshold),
     ];
 
     public async Task<ICollection<AspNetUser>> GetInactiveAccounts(DateOnly utcToday)
@@ -48,13 +48,13 @@ public partial class InactiveAccountsService(
                      u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredSecondExpiryThreshold) &&
                      u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredThirdExpiryThreshold) &&
                      u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredForthExpiryThreshold) &&
-                     u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredFifthExpiryThreshold))
+                     u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredExpiredThreshold))
                 && ((u.LoginEvents.Count > 0 && DateOnly.FromDateTime(u.LoginEvents.Max(le => le.Date)) <= inactivityThresholdDate)
                 || (u.LoginEvents.Count == 0 && DateOnly.FromDateTime(u.Created) <= inactivityThresholdDate)))
             .ToListAsync();
     }
 
-    public async Task Raise(AspNetUser user, DateOnly utcToday)
+    public async Task<EmailNotification> Raise(AspNetUser user, DateOnly utcToday, EmailPreferenceType defaultEmailPreference)
     {
         dbContext.Attach(user);
 
@@ -62,12 +62,40 @@ public partial class InactiveAccountsService(
 
         if (eventType == InactiveAccountEventType.Nothing)
         {
-            return;
+            return null;
         }
 
-        var notification = await CreateNotification(user, eventType);
+        if (eventType == InactiveAccountEventType.InactivityEnteredExpiredThreshold)
+        {
+            await DeactivateUserAccount(user.Id);
+        }
 
-        await DispatchNotification(user, notification, eventType);
+        return await CreateNotification(user, eventType);
+    }
+
+    public async Task DispatchNotification(
+        AspNetUser user,
+        EmailNotification notification)
+    {
+        var queueName = options.Value.SendEmailNotifications;
+        var client = queueServiceClient.GetQueueClient(queueName);
+
+        try
+        {
+            await client.SendMessageAsync(Convert.ToBase64String(Encoding.UTF8.GetBytes(notification.Id.ToString())));
+            dbContext.Add(notification);
+            await dbContext.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            LogNotificationQueueDispatchError(
+                logger,
+                e,
+                user.Id,
+                queueName);
+
+            throw;
+        }
     }
 
     private static DateOnly GetInactivityStartThresholdDate(DateOnly utcToday)
@@ -94,7 +122,7 @@ public partial class InactiveAccountsService(
 
         if (timeSpanSinceLastLogin.Days <= 0)
         {
-            return InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold;
+            return InactiveAccountEventType.InactivityEnteredExpiredThreshold;
         }
 
         var eventToRaise = InactivityThresholdsMap
@@ -114,7 +142,7 @@ public partial class InactiveAccountsService(
 
         var notification = new EmailNotification { To = user.Email };
 
-        if (eventType == InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold)
+        if (eventType == InactiveAccountEventType.InactivityEnteredExpiredThreshold)
         {
             await DeactivateUserAccount(user.Id);
             notification.JsonFrom(new AccountDeactivationEmailModel());
@@ -132,35 +160,7 @@ public partial class InactiveAccountsService(
             LogUserInactivityNotice(logger, user.Id, daysFromThreshold);
         }
 
-        dbContext.Add(notification);
-        await dbContext.SaveChangesAsync();
-
         return notification;
-    }
-
-    private async Task DispatchNotification(
-        AspNetUser user,
-        EmailNotification notification,
-        InactiveAccountEventType eventType)
-    {
-        var queueName = options.Value.SendEmailNotifications;
-        var client = queueServiceClient.GetQueueClient(queueName);
-
-        try
-        {
-            await client.SendMessageAsync(Convert.ToBase64String(Encoding.UTF8.GetBytes(notification.Id.ToString())));
-        }
-        catch (Exception e)
-        {
-            LogNotificationQueueDispatchError(
-                logger,
-                e,
-                user.Id,
-                eventType,
-                queueName);
-
-            throw;
-        }
     }
 
     private async Task DeactivateUserAccount(int userId)
@@ -194,12 +194,11 @@ public partial class InactiveAccountsService(
     [LoggerMessage(
         EventId = 300,
         Level = LogLevel.Error,
-        Message = "{UserId}, {EventType} - Notifications saved but problem dispatching to queue {Queue}")]
+        Message = "{UserId} - Notifications saved but problem dispatching to queue {Queue}")]
     private static partial void LogNotificationQueueDispatchError(
         ILogger logger,
         Exception exception,
         int userId,
-        InactiveAccountEventType eventType,
         string queue);
 
     [LoggerMessage(
