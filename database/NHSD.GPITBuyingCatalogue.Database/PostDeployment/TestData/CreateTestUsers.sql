@@ -90,7 +90,7 @@ BEGIN
     DECLARE @AdminRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'Authority');
     DECLARE @AccountManagerRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'AccountManager');
     DECLARE @OnboardingRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'Onboarding');
-    DECLARE @ViewRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'View');
+    DECLARE @ViewRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'ReadOnly');
 
     INSERT INTO users.AspNetUserRoles(RoleId, UserId) VALUES (@BuyerRoleId, @aliceId), (@BuyerRoleId, @sueId);
     INSERT INTO users.AspNetUserRoles(RoleId, UserId) VALUES (@AdminRoleId, @bobId);
