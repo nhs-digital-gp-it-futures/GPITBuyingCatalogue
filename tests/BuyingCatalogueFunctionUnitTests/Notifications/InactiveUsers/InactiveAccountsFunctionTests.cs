@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using BuyingCatalogueFunction.Notifications;
 using BuyingCatalogueFunction.Notifications.InactiveAccount;
+using BuyingCatalogueFunction.Notifications.Interfaces;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NSubstitute.Core;
 using Xunit;
@@ -62,6 +64,7 @@ public static class InactiveAccountsFunctionTests
     public static async Task Run_WithInactiveUsers(
         [Frozen] ILogger<InactiveAccountsFunction> logger,
         [Frozen] IInactiveAccountsService inactiveAccountsService,
+        [Frozen] IEmailPreferenceService emailPreferenceService,
         InactiveAccountsFunction inactiveAccountsFunction)
     {
         SetLoggingLevels(logger);
@@ -83,6 +86,12 @@ public static class InactiveAccountsFunctionTests
         };
 
         inactiveAccountsService.GetInactiveAccounts(Arg.Any<DateOnly>()).Returns(users);
+
+        emailPreferenceService.GetDefaultEmailPreference(EmailPreferenceTypeEnum.InactiveAccount)
+            .Returns(new EmailPreferenceType());
+
+        emailPreferenceService.ShouldTriggerForUser(Arg.Any<EmailPreferenceType>(), Arg.Any<int>())
+            .Returns(true);
 
         await inactiveAccountsFunction.Run(timerInfo);
 
@@ -104,20 +113,67 @@ public static class InactiveAccountsFunctionTests
             .Received(1)
             .Raise(
                 Arg.Is<AspNetUser>(x => x.Id == users[0].Id),
-                Arg.Any<DateOnly>());
+                Arg.Any<DateOnly>(),
+                Arg.Any<EmailPreferenceType>());
 
         await inactiveAccountsService
             .Received(1)
             .Raise(
                 Arg.Is<AspNetUser>(x => x.Id == users[1].Id),
-                Arg.Any<DateOnly>());
+                Arg.Any<DateOnly>(),
+                Arg.Any<EmailPreferenceType>());
+
+        await inactiveAccountsService
+            .Received(2)
+            .DispatchNotification(Arg.Any<AspNetUser>(), Arg.Any<EmailNotification>());
     }
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task Run_ThrowsException_HandlesAsExpected(
+    public static async Task Run_WithUsersUnsubscribedToNotifications(
         [Frozen] ILogger<InactiveAccountsFunction> logger,
         [Frozen] IInactiveAccountsService inactiveAccountsService,
+        [Frozen] IEmailPreferenceService emailPreferenceService,
+        InactiveAccountsFunction inactiveAccountsFunction)
+    {
+        SetLoggingLevels(logger);
+
+        var timerInfo = new TimerInfo
+        {
+            ScheduleStatus = new ScheduleStatus
+            {
+                Last = DateTime.UtcNow.AddDays(-1),
+                Next = DateTime.UtcNow.AddDays(1),
+                LastUpdated = DateTime.UtcNow,
+            },
+        };
+
+        var users = new List<AspNetUser>
+        {
+            new() { Id = 1 }
+        };
+
+        inactiveAccountsService.GetInactiveAccounts(Arg.Any<DateOnly>()).Returns(users);
+        emailPreferenceService.GetDefaultEmailPreference(EmailPreferenceTypeEnum.InactiveAccount)
+            .Returns(new EmailPreferenceType());
+
+        emailPreferenceService.ShouldTriggerForUser(Arg.Any<EmailPreferenceType>(), users[0].Id)
+            .Returns(false);
+
+        await inactiveAccountsFunction.Run(timerInfo);
+
+        await inactiveAccountsService
+            .DidNotReceive()
+            .DispatchNotification(Arg.Any<AspNetUser>(), Arg.Any<EmailNotification>());
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task DispatchNotification_ThrowsException_HandlesAsExpected(
+        EmailNotification notification,
+        [Frozen] ILogger<InactiveAccountsFunction> logger,
+        [Frozen] IInactiveAccountsService inactiveAccountsService,
+        [Frozen] IEmailPreferenceService emailPreferenceService,
         InactiveAccountsFunction inactiveAccountsFunction)
     {
         SetLoggingLevels(logger);
@@ -135,12 +191,21 @@ public static class InactiveAccountsFunctionTests
         var users = new List<AspNetUser>
         {
             new() { Id = 1 },
-            new() { Id = 2 },
         };
 
         inactiveAccountsService.GetInactiveAccounts(Arg.Any<DateOnly>()).Returns(users);
-        inactiveAccountsService.Raise(Arg.Any<AspNetUser>(), Arg.Any<DateOnly>())
-            .Returns(Task.FromException(new InvalidOperationException("Failed to raise notification")));
+
+        emailPreferenceService.GetDefaultEmailPreference(EmailPreferenceTypeEnum.InactiveAccount)
+            .Returns(new EmailPreferenceType());
+
+        emailPreferenceService.ShouldTriggerForUser(Arg.Any<EmailPreferenceType>(), Arg.Any<int>())
+            .Returns(true);
+
+        inactiveAccountsService.Raise(Arg.Any<AspNetUser>(), Arg.Any<DateOnly>(), Arg.Any<EmailPreferenceType>())
+            .Returns(notification);
+
+        inactiveAccountsService.DispatchNotification(Arg.Any<AspNetUser>(), Arg.Any<EmailNotification>())
+            .Returns(Task.FromException(new InvalidOperationException("Failed to dispatch notification")));
 
         await inactiveAccountsFunction.Run(timerInfo);
 

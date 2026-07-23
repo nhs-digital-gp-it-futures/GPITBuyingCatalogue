@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using BuyingCatalogueFunction.Notifications.Interfaces;
-using DurableTask.Core.History;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
@@ -32,7 +31,8 @@ public partial class InactiveAccountsFunction(
 
     private async Task Run()
     {
-        logger.LogInformation("Inactive Accounts: Evaluating Inactive Users");
+        LogEvaluatingInactiveUsers(logger);
+
         var utcToday = DateOnly.FromDateTime(DateTime.UtcNow);
         var users = await inactiveAccountsService.GetInactiveAccounts(utcToday);
 
@@ -88,6 +88,12 @@ public partial class InactiveAccountsFunction(
 
     [LoggerMessage(
         EventId = 400,
+        Level = LogLevel.Information,
+        Message = "Inactive Accounts: Evaluating Inactive Users")]
+    private static partial void LogEvaluatingInactiveUsers(ILogger logger);
+
+    [LoggerMessage(
+        EventId = 500,
         Level = LogLevel.Warning,
         Message = "Inactive Accounts: {EmailPreferenceType} not found or a ManagedEmailPreference is not configured")]
     private static partial void LogManagedEmailPreferenceNotConfigured(
@@ -95,7 +101,7 @@ public partial class InactiveAccountsFunction(
         EmailPreferenceTypeEnum emailPreferenceType);
 
     [LoggerMessage(
-        EventId = 500,
+        EventId = 600,
         Level = LogLevel.Error,
         Message = "Inactive Accounts: Exception raising a deactivation notice for User {UserId}")]
     private static partial void LogInactityNotificationError(
