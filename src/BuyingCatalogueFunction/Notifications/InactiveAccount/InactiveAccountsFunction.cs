@@ -54,12 +54,8 @@ public partial class InactiveAccountsFunction(
         {
             try
             {
-                var notification = await inactiveAccountsService.Raise(user, utcToday, defaultEmailPreference);
-
-                var shouldProcess = await emailPreferenceService.ShouldTriggerForUser(defaultEmailPreference, user.Id);
-                if (!shouldProcess) continue;
-
-                await inactiveAccountsService.DispatchNotification(user, notification);
+                var shouldNotify = await emailPreferenceService.ShouldTriggerForUser(defaultEmailPreference, user.Id);
+                await inactiveAccountsService.Raise(user, utcToday, defaultEmailPreference, shouldNotify);
             }
             catch (Exception e)
             {

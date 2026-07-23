@@ -485,7 +485,7 @@ public static class InactiveAccountsServiceTests
 
         var defaultEmailPreference = GetEmailPreferenceType(user);
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference);
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, false);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
@@ -531,7 +531,7 @@ public static class InactiveAccountsServiceTests
 
         var defaultEmailPreference = GetEmailPreferenceType(user);
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference);
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, true);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
@@ -578,7 +578,7 @@ public static class InactiveAccountsServiceTests
 
         var defaultEmailPreference = GetEmailPreferenceType(user);
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference);
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, true);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
@@ -626,7 +626,7 @@ public static class InactiveAccountsServiceTests
 
         var defaultEmailPreference = GetEmailPreferenceType(user);
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference);
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, true);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
@@ -675,7 +675,7 @@ public static class InactiveAccountsServiceTests
 
         var defaultEmailPreference = GetEmailPreferenceType(user);
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference);
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, true);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
@@ -726,7 +726,7 @@ public static class InactiveAccountsServiceTests
 
         var defaultEmailPreference = GetEmailPreferenceType(user);
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference);
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, true);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
@@ -772,7 +772,7 @@ public static class InactiveAccountsServiceTests
 
         var defaultEmailPreference = GetEmailPreferenceType(user);
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference);
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, true);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();

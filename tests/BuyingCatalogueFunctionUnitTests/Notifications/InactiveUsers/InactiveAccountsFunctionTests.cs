@@ -85,11 +85,10 @@ public static class InactiveAccountsFunctionTests
             new() { Id = 2 },
         };
 
-        inactiveAccountsService.GetInactiveAccounts(Arg.Any<DateOnly>()).Returns(users);
-
+        inactiveAccountsService.GetInactiveAccounts(Arg.Any<DateOnly>())
+            .Returns(users);
         emailPreferenceService.GetDefaultEmailPreference(EmailPreferenceTypeEnum.InactiveAccount)
             .Returns(new EmailPreferenceType());
-
         emailPreferenceService.ShouldTriggerForUser(Arg.Any<EmailPreferenceType>(), Arg.Any<int>())
             .Returns(true);
 
@@ -114,18 +113,16 @@ public static class InactiveAccountsFunctionTests
             .Raise(
                 Arg.Is<AspNetUser>(x => x.Id == users[0].Id),
                 Arg.Any<DateOnly>(),
-                Arg.Any<EmailPreferenceType>());
+                Arg.Any<EmailPreferenceType>(),
+                true);
 
         await inactiveAccountsService
             .Received(1)
             .Raise(
                 Arg.Is<AspNetUser>(x => x.Id == users[1].Id),
                 Arg.Any<DateOnly>(),
-                Arg.Any<EmailPreferenceType>());
-
-        await inactiveAccountsService
-            .Received(2)
-            .DispatchNotification(Arg.Any<AspNetUser>(), Arg.Any<EmailNotification>());
+                Arg.Any<EmailPreferenceType>(),
+                true);
     }
 
     [Theory]
@@ -153,24 +150,20 @@ public static class InactiveAccountsFunctionTests
             new() { Id = 1 }
         };
 
-        inactiveAccountsService.GetInactiveAccounts(Arg.Any<DateOnly>()).Returns(users);
+        inactiveAccountsService.GetInactiveAccounts(Arg.Any<DateOnly>())
+            .Returns(users);
         emailPreferenceService.GetDefaultEmailPreference(EmailPreferenceTypeEnum.InactiveAccount)
             .Returns(new EmailPreferenceType());
-
         emailPreferenceService.ShouldTriggerForUser(Arg.Any<EmailPreferenceType>(), users[0].Id)
             .Returns(false);
 
         await inactiveAccountsFunction.Run(timerInfo);
 
-        await inactiveAccountsService
-            .DidNotReceive()
-            .DispatchNotification(Arg.Any<AspNetUser>(), Arg.Any<EmailNotification>());
     }
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task DispatchNotification_ThrowsException_HandlesAsExpected(
-        EmailNotification notification,
+    public static async Task Run_CatchesException_HandlesAsExpected(
         [Frozen] ILogger<InactiveAccountsFunction> logger,
         [Frozen] IInactiveAccountsService inactiveAccountsService,
         [Frozen] IEmailPreferenceService emailPreferenceService,
@@ -193,19 +186,14 @@ public static class InactiveAccountsFunctionTests
             new() { Id = 1 },
         };
 
-        inactiveAccountsService.GetInactiveAccounts(Arg.Any<DateOnly>()).Returns(users);
-
+        inactiveAccountsService.GetInactiveAccounts(Arg.Any<DateOnly>())
+            .Returns(users);
+        inactiveAccountsService.Raise(Arg.Any<AspNetUser>(), Arg.Any<DateOnly>(), Arg.Any<EmailPreferenceType>(), true)
+            .Returns(Task.FromException(new InvalidOperationException("Failed to dispatch notification")));
         emailPreferenceService.GetDefaultEmailPreference(EmailPreferenceTypeEnum.InactiveAccount)
             .Returns(new EmailPreferenceType());
-
         emailPreferenceService.ShouldTriggerForUser(Arg.Any<EmailPreferenceType>(), Arg.Any<int>())
             .Returns(true);
-
-        inactiveAccountsService.Raise(Arg.Any<AspNetUser>(), Arg.Any<DateOnly>(), Arg.Any<EmailPreferenceType>())
-            .Returns(notification);
-
-        inactiveAccountsService.DispatchNotification(Arg.Any<AspNetUser>(), Arg.Any<EmailNotification>())
-            .Returns(Task.FromException(new InvalidOperationException("Failed to dispatch notification")));
 
         await inactiveAccountsFunction.Run(timerInfo);
 
@@ -253,7 +241,7 @@ public static class InactiveAccountsFunctionTests
 
     private static List<(string LogLevel, string Message)> GetLogMessages(ILogger logger)
     {
-        return logger.ReceivedCalls()
+        return [.. logger.ReceivedCalls()
             .Where(call => call.GetMethodInfo().Name == nameof(ILogger.Log))
             .Select(call =>
             {
@@ -262,7 +250,6 @@ public static class InactiveAccountsFunctionTests
                 return (
                     LogLevel: arguments[0]?.ToString() ?? string.Empty,
                     Message: arguments[2]?.ToString() ?? string.Empty);
-            })
-            .ToList();
+            })];
     }
 }

@@ -10,7 +10,5 @@ public interface IInactiveAccountsService
 {
     Task<ICollection<AspNetUser>> GetInactiveAccounts(DateOnly utcToday);
 
-    Task<EmailNotification> Raise(AspNetUser user, DateOnly utcToday, EmailPreferenceType defaultEmailPreference);
-
-    Task DispatchNotification(AspNetUser user, EmailNotification notification);
+    Task Raise(AspNetUser user, DateOnly utcToday, EmailPreferenceType defaultEmailPreference, bool shouldNotify);
 }
