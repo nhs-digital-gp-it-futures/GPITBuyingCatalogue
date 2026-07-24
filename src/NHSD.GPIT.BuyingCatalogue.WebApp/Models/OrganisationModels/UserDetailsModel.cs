@@ -32,7 +32,7 @@ public sealed class UserDetailsModel : NavBaseModel
         EmailAddress = user.Email;
         SelectedAccountType = user.GetRoleName();
         IsActive = !user.Disabled;
-        DeactviationReason = user.DeactivationReason;
+        DeactivationReason = user.DeactivationReason;
     }
 
     public UserDetailsModel(Organisation organisation)
@@ -142,7 +142,7 @@ public sealed class UserDetailsModel : NavBaseModel
 
     public bool? IsActive { get; set; }
 
-    public AccountDeactivationReason? DeactviationReason { get; set; }
+    public AccountDeactivationReason? DeactivationReason { get; set; }
 
     public string ControllerName { get; set; }
 }
