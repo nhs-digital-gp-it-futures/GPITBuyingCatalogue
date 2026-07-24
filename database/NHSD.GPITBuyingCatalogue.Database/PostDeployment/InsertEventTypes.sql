@@ -10,7 +10,7 @@ VALUES
     (7, 'InactivityEnteredSecondExpiryThreshold', 3),
     (8, 'InactivityEnteredThirdExpiryThreshold', 3),
     (9, 'InactivityEnteredFourthExpiryThreshold', 3),
-    (10, 'InactivityEnteredFifthExpiryThreshold', 3)
+    (10, 'InactivityEnteredFifthExpiryThreshold', null)
 )
 
 AS SOURCE ([Id], [Name], [EmailPreferenceTypeId])

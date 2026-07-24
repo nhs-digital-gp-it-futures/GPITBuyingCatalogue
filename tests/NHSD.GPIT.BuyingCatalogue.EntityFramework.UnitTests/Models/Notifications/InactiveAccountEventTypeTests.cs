@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Notificatio
         [InlineAutoData(InactiveAccountEventType.InactivityEnteredSecondExpiryThreshold, EventTypeEnum.InactivityEnteredSecondExpiryThreshold)]
         [InlineAutoData(InactiveAccountEventType.InactivityEnteredThirdExpiryThreshold, EventTypeEnum.InactivityEnteredThirdExpiryThreshold)]
         [InlineAutoData(InactiveAccountEventType.InactivityEnteredForthExpiryThreshold, EventTypeEnum.InactivityEnteredForthExpiryThreshold)]
-        [InlineAutoData(InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold, EventTypeEnum.InactivityEnteredFifthExpiryThreshold)]
+        [InlineAutoData(InactiveAccountEventType.InactivityEnteredExpiredThreshold, EventTypeEnum.InactivityEnteredExpiredThreshold)]
         public static void InactiveAccountEventTypeEnum_Values(
         InactiveAccountEventType inactiveAccountEventTypeEnum,
         EventTypeEnum expectedEventTypeEnum)

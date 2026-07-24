@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -425,7 +426,7 @@ public static class InactiveAccountsServiceTests
         var notificationEvent2 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredSecondExpiryThreshold);
         var notificationEvent3 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredThirdExpiryThreshold);
         var notificationEvent4 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredForthExpiryThreshold);
-        var notificationEvent5 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold);
+        var notificationEvent5 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredExpiredThreshold);
         var user = new AspNetUser
         {
             Id = userId,
@@ -482,7 +483,9 @@ public static class InactiveAccountsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow));
+        var defaultEmailPreference = GetEmailPreferenceType(user);
+
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, false);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
@@ -526,7 +529,9 @@ public static class InactiveAccountsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow));
+        var defaultEmailPreference = GetEmailPreferenceType(user);
+
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, true);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
@@ -571,7 +576,9 @@ public static class InactiveAccountsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow));
+        var defaultEmailPreference = GetEmailPreferenceType(user);
+
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, true);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
@@ -617,7 +624,9 @@ public static class InactiveAccountsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow));
+        var defaultEmailPreference = GetEmailPreferenceType(user);
+
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, true);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
@@ -664,7 +673,9 @@ public static class InactiveAccountsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow));
+        var defaultEmailPreference = GetEmailPreferenceType(user);
+
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, true);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
@@ -693,7 +704,7 @@ public static class InactiveAccountsServiceTests
         var notificationEvent2 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredSecondExpiryThreshold);
         var notificationEvent3 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredThirdExpiryThreshold);
         var notificationEvent4 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredForthExpiryThreshold);
-        var notificationEvent5 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold);
+        var notificationEvent5 = new AspNetUserEvent((int)InactiveAccountEventType.InactivityEnteredExpiredThreshold);
         var user = new AspNetUser
         {
             Id = userId,
@@ -713,14 +724,16 @@ public static class InactiveAccountsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow));
+        var defaultEmailPreference = GetEmailPreferenceType(user);
+
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, true);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
 
         updatedUser.Disabled.Should().BeTrue();
         updatedUser.DeactivationReason.Should().Be(AccountDeactivationReason.Inactivity);
-        updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold);
+        updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventType.InactivityEnteredExpiredThreshold);
         notifications.Should().Contain(x => x.To == user.Email && x.EmailNotificationType == EmailNotificationTypeEnum.AccountDeactivation);
     }
 
@@ -757,14 +770,63 @@ public static class InactiveAccountsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.Raise(user, DateOnly.FromDateTime(utcNow));
+        var defaultEmailPreference = GetEmailPreferenceType(user);
+
+        await service.Raise(user, DateOnly.FromDateTime(utcNow), defaultEmailPreference, true);
 
         var updatedUser = await context.AspNetUsers.Include(x => x.Events).FirstAsync(x => x.Id == user.Id);
         var notifications = await context.EmailNotifications.ToListAsync();
 
         updatedUser.Disabled.Should().BeTrue();
         updatedUser.DeactivationReason.Should().Be(AccountDeactivationReason.Inactivity);
-        updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventType.InactivityEnteredFifthExpiryThreshold);
+        updatedUser.Events.Should().Contain(x => x.EventTypeId == (int)InactiveAccountEventType.InactivityEnteredExpiredThreshold);
         notifications.Should().Contain(x => x.To == user.Email);
+    }
+
+    private static EmailPreferenceType GetEmailPreferenceType(AspNetUser user)
+    {
+        return new EmailPreferenceType()
+        {
+            Id = (int)EmailPreferenceTypeEnum.InactiveAccount,
+            Name = "InactiveAccount",
+            RoleType = EmailPreferenceRoleType.All,
+            UserPreferences = 
+            [
+                new UserEmailPreference()
+                {
+                    UserId = user.Id,
+                    EmailPreferenceTypeId = (int)EmailPreferenceTypeEnum.InactiveAccount,
+                    Enabled = true,
+                }
+            ],
+            DefaultEnabled = true,
+            SupportedEventTypes =
+            [
+                new EventType()
+                {
+                    Id = 6,
+                    Name = "InactivityEnteredFirstExpiryThreshold",
+                    EmailPreferenceTypeId = (int)EmailPreferenceTypeEnum.InactiveAccount,
+                },
+                new EventType()
+                {
+                    Id = 7,
+                    Name = "InactivityEnteredSecondExpiryThreshold",
+                    EmailPreferenceTypeId = (int)EmailPreferenceTypeEnum.InactiveAccount,
+                },
+                new EventType()
+                {
+                    Id = 8,
+                    Name = "InactivityEnteredThirdExpiryThreshold",
+                    EmailPreferenceTypeId = (int)EmailPreferenceTypeEnum.InactiveAccount,
+                },
+                new EventType()
+                {
+                    Id = 9,
+                    Name = "InactivityEnteredFourthExpiryThreshold",
+                    EmailPreferenceTypeId = (int)EmailPreferenceTypeEnum.InactiveAccount,
+                },
+            ],
+        };
     }
 }

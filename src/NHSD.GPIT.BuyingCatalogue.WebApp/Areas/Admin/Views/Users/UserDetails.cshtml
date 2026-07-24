@@ -55,9 +55,9 @@
                                        display-name="Text" />
                 </nhs-fieldset-form-label>
                 
-                @if (!Model.IsActive!.Value == true && Model.DeactviationReason is not null)
+                @if (!Model.IsActive == true && Model.DeactivationReason is not null)
                 {
-                    <p>Deactivation reason: @Model.DeactviationReason</p>
+                    <p>Deactivation reason: @Model.DeactivationReason</p>
                 }
             </div>
 

@@ -27,7 +27,7 @@ public class UserDetailsModel : NavBaseModel
         Email = user.Email;
         SelectedAccountType = user.GetRoleName();
         IsActive = !user.Disabled;
-        DeactviationReason = user.DeactivationReason;
+        DeactivationReason = user.DeactivationReason;
     }
 
     public static IEnumerable<SelectOption<bool>> StatusOptions =>
@@ -102,5 +102,5 @@ public class UserDetailsModel : NavBaseModel
 
     public IEnumerable<SelectOption<string>> Organisations { get; set; }
 
-    public AccountDeactivationReason? DeactviationReason { get; set; }
+    public AccountDeactivationReason? DeactivationReason { get; set; }
 }
