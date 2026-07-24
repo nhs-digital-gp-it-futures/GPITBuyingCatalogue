@@ -48,6 +48,7 @@ public partial class InactiveAccountsFunction(
         if (defaultEmailPreference is null)
         {
             LogManagedEmailPreferenceNotConfigured(logger, EmailPreferenceTypeEnum.InactiveAccount);
+            return;
         }
 
         foreach (var user in users)
@@ -90,7 +91,7 @@ public partial class InactiveAccountsFunction(
 
     [LoggerMessage(
         EventId = 500,
-        Level = LogLevel.Warning,
+        Level = LogLevel.Error,
         Message = "Inactive Accounts: {EmailPreferenceType} not found or a ManagedEmailPreference is not configured")]
     private static partial void LogManagedEmailPreferenceNotConfigured(
         ILogger logger, 

@@ -216,6 +216,56 @@ public static class InactiveAccountsFunctionTests
             log.Message.StartsWith("Inactive Accounts: Exception raising a deactivation notice for User"));
     }
 
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task Run_NullDefaultEmailPreference_HandlesAsExpected(
+        [Frozen] ILogger<InactiveAccountsFunction> logger,
+        [Frozen] IInactiveAccountsService inactiveAccountsService,
+        InactiveAccountsFunction inactiveAccountsFunction)
+    {
+        SetLoggingLevels(logger);
+
+        var timerInfo = new TimerInfo
+        {
+            ScheduleStatus = new ScheduleStatus
+            {
+                Last = DateTime.UtcNow.AddDays(-1),
+                Next = DateTime.UtcNow.AddDays(1),
+                LastUpdated = DateTime.UtcNow,
+            },
+        };
+
+        var users = new List<AspNetUser>
+        {
+            new() { Id = 1 },
+        };
+
+        inactiveAccountsService.GetInactiveAccounts(Arg.Any<DateOnly>())
+            .Returns(users);
+        inactiveAccountsService.Raise(Arg.Any<AspNetUser>(), Arg.Any<DateOnly>(), Arg.Any<EmailPreferenceType>(), true)
+            .Returns(Task.FromException(new InvalidOperationException("Failed to dispatch notification")));
+
+        await inactiveAccountsFunction.Run(timerInfo);
+
+        var logs = GetLogMessages(logger);
+
+        logs.Should().Contain(log =>
+            log.LogLevel == LogLevel.Information.ToString() &&
+            log.Message.StartsWith("Inactive Accounts: Executed at"));
+
+        logs.Should().Contain(log =>
+            log.LogLevel == LogLevel.Information.ToString() &&
+            log.Message.StartsWith("Inactive Accounts: Next timer schedule at"));
+
+        logs.Should().Contain(log =>
+            log.LogLevel == LogLevel.Information.ToString() &&
+            log.Message.Equals("Inactive Accounts: Evaluating Inactive Users"));
+
+        logs.Should().Contain(log =>
+            log.LogLevel == LogLevel.Error.ToString() &&
+            log.Message.Equals("Inactive Accounts: InactiveAccount not found or a ManagedEmailPreference is not configured"));
+    }
+
     private static void SetLoggingLevels(ILogger logger)
     {
         logger.IsEnabled(LogLevel.Information).Returns(true);
