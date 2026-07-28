@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -70,9 +71,10 @@ public sealed class UsersService(
             .ToListAsync();
     }
 
-    public async Task UpdateUser(int userId, string firstName, string lastName, string email, bool disabled, string organisationFunction, int organisationId)
+    public async Task UpdateUser(int userId, string firstName, string lastName, string email, bool disabled, string organisationFunction, int organisationId, DateTime? reactivationDate)
     {
         var user = await userManager.Users.FirstAsync(u => u.Id == userId);
+        var isReactivation = user.Disabled && !disabled;
 
         user.FirstName = firstName;
         user.LastName = lastName;
@@ -81,6 +83,13 @@ public sealed class UsersService(
         user.Disabled = disabled;
         user.PrimaryOrganisationId = organisationId;
         user.DeactivationReason = disabled ? AccountDeactivationReason.Manual : null;
+        user.ReactivationDate = reactivationDate;
+
+        if (isReactivation)
+        {
+            user.Events.Add(new AspNetUserEvent((int)EventTypeEnum.UserAccountReactivated));
+            await govNotifyEmailService.SendEmailAsync(email, accountTemplateSettings.AccountReactivationTemplateId, null);
+        }
 
         var userRoles = await userManager.GetRolesAsync(user);
 

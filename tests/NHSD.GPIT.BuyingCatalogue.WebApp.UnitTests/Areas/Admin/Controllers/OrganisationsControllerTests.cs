@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -621,10 +622,63 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             user.PrimaryOrganisationId = organisationId;
             model.EmailAddress = "a@b.com";
+            model.OriginalDisabledValue = false;
+            model.OriginalReactivationDate = null;
+            model.IsActive = true;
 
             mockUsersService.GetUser(user.Id).Returns(user);
 
-            mockUsersService.UpdateUser(user.Id, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId).Returns(Task.CompletedTask);
+            mockUsersService.UpdateUser(user.Id, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId, model.ReactivationDate).Returns(Task.CompletedTask);
+
+            var result = (await controller.EditUser(organisationId, user.Id, model)).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrganisationsController.Users));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_EditUser_ValidModel_ReactivatedUser_ReturnsExpectedResult(
+            int organisationId,
+            AspNetUser user,
+            UserDetailsModel model,
+            [Frozen] IUsersService mockUsersService,
+            OrganisationsController controller)
+        {
+            user.PrimaryOrganisationId = organisationId;
+            model.EmailAddress = "a@b.com";
+            model.OriginalDisabledValue = true;
+            model.OriginalReactivationDate = null;
+            model.IsActive = true;
+
+            mockUsersService.GetUser(user.Id).Returns(user);
+
+            mockUsersService.UpdateUser(user.Id, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId, model.ReactivationDate).Returns(Task.CompletedTask);
+
+            var result = (await controller.EditUser(organisationId, user.Id, model)).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrganisationsController.Users));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_EditUser_ValidModel_PreviouslyReactivatedUser_ReturnsExpectedResult(
+            int organisationId,
+            AspNetUser user,
+            UserDetailsModel model,
+            [Frozen] IUsersService mockUsersService,
+            OrganisationsController controller)
+        {
+            user.PrimaryOrganisationId = organisationId;
+            model.EmailAddress = "a@b.com";
+            model.OriginalDisabledValue = false;
+            model.OriginalReactivationDate = DateTime.UtcNow.AddDays(-20);
+            model.IsActive = true;
+
+            mockUsersService.GetUser(user.Id).Returns(user);
+
+            mockUsersService.UpdateUser(user.Id, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId, model.ReactivationDate).Returns(Task.CompletedTask);
 
             var result = (await controller.EditUser(organisationId, user.Id, model)).As<RedirectToActionResult>();
 

@@ -155,7 +155,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 model.EmailAddress,
                 !model.IsActive!.Value,
                 model.SelectedAccountType,
-                organisationId);
+                organisationId,
+                model.ReactivationDate);
 
             return RedirectToAction(
                 nameof(Users),

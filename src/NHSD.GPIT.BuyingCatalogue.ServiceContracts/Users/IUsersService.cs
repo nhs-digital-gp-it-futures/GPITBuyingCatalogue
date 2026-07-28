@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
@@ -21,7 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
             string email,
             bool disabled,
             string organisationFunction,
-            int organisationId);
+            int organisationId,
+            DateTime? reactivationDate);
 
         Task<bool> EmailAddressExists(string emailAddress, int userId = 0);
 

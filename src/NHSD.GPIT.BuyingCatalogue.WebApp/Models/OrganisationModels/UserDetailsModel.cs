@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -33,6 +34,8 @@ public sealed class UserDetailsModel : NavBaseModel
         SelectedAccountType = user.GetRoleName();
         IsActive = !user.Disabled;
         DeactivationReason = user.DeactivationReason;
+        OriginalDisabledValue = user.Disabled;
+        OriginalReactivationDate = user.ReactivationDate;
     }
 
     public UserDetailsModel(Organisation organisation)
@@ -145,4 +148,26 @@ public sealed class UserDetailsModel : NavBaseModel
     public AccountDeactivationReason? DeactivationReason { get; set; }
 
     public string ControllerName { get; set; }
+
+    public bool OriginalDisabledValue { get; set; }
+
+    public DateTime? OriginalReactivationDate { get; set; }
+
+    public DateTime? ReactivationDate
+    {
+        get
+        {
+            if (IsActive == false)
+            {
+                return null;
+            }
+
+            if (OriginalDisabledValue && IsActive == true)
+            {
+                return DateTime.UtcNow;
+            }
+
+            return OriginalReactivationDate;
+        }
+    }
 }

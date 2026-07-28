@@ -54,6 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                 Disabled = isDisabled,
                 HasOptedInUserResearch = optedInUserResearch,
                 DeactivationReason = isDisabled ? AccountDeactivationReason.Manual : null,
+                Created = DateTime.UtcNow,
             };
 
             await userManager.CreateAsync(aspNetUser);

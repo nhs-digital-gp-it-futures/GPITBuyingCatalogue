@@ -144,7 +144,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 model.Email,
                 !model.IsActive!.Value,
                 model.SelectedAccountType,
-                model.SelectedOrganisationId!.Value);
+                model.SelectedOrganisationId!.Value,
+                model.ReactivationDate);
 
             return RedirectToAction(nameof(Index));
         }
