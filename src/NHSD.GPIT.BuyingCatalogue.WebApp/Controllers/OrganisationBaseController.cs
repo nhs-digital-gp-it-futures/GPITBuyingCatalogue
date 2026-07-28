@@ -154,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.EmailAddress,
-                Disabled = !model.IsActive!.Value,
+                Disabled = model.IsActive != true,
                 OrganisationFunction = model.SelectedAccountType,
                 OrganisationId = organisationId,
                 ReactivationDate = model.ReactivationDate,
