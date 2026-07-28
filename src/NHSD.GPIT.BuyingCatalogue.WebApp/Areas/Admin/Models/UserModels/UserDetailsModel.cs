@@ -107,7 +107,7 @@ public class UserDetailsModel : NavBaseModel
 
     public AccountDeactivationReason? DeactivationReason { get; set; }
 
-    public bool OriginalDisabledValue { get; set; }
+    public bool OriginalDisabledValue { get; set; } = false;
 
     public DateTime? OriginalReactivationDate { get; set; }
 

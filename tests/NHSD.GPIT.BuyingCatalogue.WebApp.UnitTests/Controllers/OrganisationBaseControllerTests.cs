@@ -294,7 +294,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             mockUsersService.GetUser(user.Id).Returns(user);
 
-            mockUsersService.UpdateUser(user.Id, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId, model.ReactivationDate).Returns(Task.CompletedTask);
+            mockUsersService.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = user.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.EmailAddress,
+                Disabled = !model.IsActive!.Value,
+                OrganisationFunction = model.SelectedAccountType,
+                OrganisationId = organisationId,
+                ReactivationDate = model.ReactivationDate,
+            }).Returns(Task.CompletedTask);
 
             var result = (await controller.EditUser(organisationId, user.Id, model)).As<RedirectToActionResult>();
 
@@ -319,7 +329,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             mockUsersService.GetUser(user.Id).Returns(user);
 
-            mockUsersService.UpdateUser(user.Id, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId, model.ReactivationDate).Returns(Task.CompletedTask);
+            mockUsersService.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = user.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.EmailAddress,
+                Disabled = !model.IsActive!.Value,
+                OrganisationFunction = model.SelectedAccountType,
+                OrganisationId = organisationId,
+                ReactivationDate = model.ReactivationDate,
+            }).Returns(Task.CompletedTask);
 
             var result = (await controller.EditUser(organisationId, user.Id, model)).As<RedirectToActionResult>();
 
@@ -344,7 +364,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             mockUsersService.GetUser(user.Id).Returns(user);
 
-            mockUsersService.UpdateUser(user.Id, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId, model.ReactivationDate).Returns(Task.CompletedTask);
+            mockUsersService.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = user.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.EmailAddress,
+                Disabled = !model.IsActive!.Value,
+                OrganisationFunction = model.SelectedAccountType,
+                OrganisationId = organisationId,
+                ReactivationDate = model.ReactivationDate,
+            }).Returns(Task.CompletedTask);
 
             var result = (await controller.EditUser(organisationId, user.Id, model)).As<RedirectToActionResult>();
 

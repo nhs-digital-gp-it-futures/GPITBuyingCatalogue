@@ -149,7 +149,7 @@ public sealed class UserDetailsModel : NavBaseModel
 
     public string ControllerName { get; set; }
 
-    public bool OriginalDisabledValue { get; set; }
+    public bool OriginalDisabledValue { get; set; } = false;
 
     public DateTime? OriginalReactivationDate { get; set; }
 

@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
@@ -202,7 +203,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             context.AspNetUsers.Add(user);
             await context.SaveChangesAsync();
 
-            await service.UpdateUser(user.Id, user.FirstName, user.LastName, user.Email, false, accountType, user.PrimaryOrganisationId, null);
+            await service.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Disabled = false,
+                OrganisationFunction = accountType,
+                OrganisationId = user.PrimaryOrganisationId,
+                ReactivationDate = null,
+            });
 
             var actual = await userManager.Users.Include(u => u.AspNetUserRoles)
                 .ThenInclude(r => r.Role)
@@ -233,7 +244,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             context.AspNetUsers.Add(user);
             await context.SaveChangesAsync();
 
-            await service.UpdateUser(user.Id, user.FirstName, user.LastName, user.Email, true, accountType, user.PrimaryOrganisationId, null);
+            await service.UpdateUser(new UpdateUserRequest()
+                {
+                    UserId = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Disabled = true,
+                    OrganisationFunction = accountType,
+                    OrganisationId = user.PrimaryOrganisationId,
+                    ReactivationDate = null,
+                });
 
             var actual = await userManager.Users.Include(u => u.AspNetUserRoles)
                 .ThenInclude(r => r.Role)
@@ -268,7 +289,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             context.AspNetUsers.Add(user);
             await context.SaveChangesAsync();
 
-            await service.UpdateUser(user.Id, user.FirstName, user.LastName, user.Email, false, accountType, user.PrimaryOrganisationId, reactivationDate);
+            await service.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Disabled = false,
+                OrganisationFunction = accountType,
+                OrganisationId = user.PrimaryOrganisationId,
+                ReactivationDate = reactivationDate,
+            });
 
             await govNotifyEmailService.Received().SendEmailAsync(
                 user.Email,

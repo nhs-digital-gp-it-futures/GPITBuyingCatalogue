@@ -71,31 +71,32 @@ public sealed class UsersService(
             .ToListAsync();
     }
 
-    public async Task UpdateUser(int userId, string firstName, string lastName, string email, bool disabled, string organisationFunction, int organisationId, DateTime? reactivationDate)
+    public async Task UpdateUser(UpdateUserRequest req)
     {
-        var user = await userManager.Users.FirstAsync(u => u.Id == userId);
-        var isReactivation = user.Disabled && !disabled;
+        ArgumentNullException.ThrowIfNull(req);
 
-        user.FirstName = firstName;
-        user.LastName = lastName;
-        user.Email = email;
-        user.UserName = email;
-        user.Disabled = disabled;
-        user.PrimaryOrganisationId = organisationId;
-        user.DeactivationReason = disabled ? AccountDeactivationReason.Manual : null;
-        user.ReactivationDate = reactivationDate;
+        var user = await userManager.Users.FirstAsync(u => u.Id == req.UserId);
+        var isReactivation = user.Disabled && !req.Disabled;
+
+        user.FirstName = req.FirstName;
+        user.LastName = req.LastName;
+        user.Email = req.Email;
+        user.UserName = req.Email;
+        user.Disabled = req.Disabled;
+        user.PrimaryOrganisationId = req.OrganisationId;
+        user.DeactivationReason = req.Disabled ? AccountDeactivationReason.Manual : null;
+        user.ReactivationDate = req.ReactivationDate;
 
         if (isReactivation)
         {
             user.Events.Add(new AspNetUserEvent((int)EventTypeEnum.UserAccountReactivated));
-            await govNotifyEmailService.SendEmailAsync(email, accountTemplateSettings.AccountReactivationTemplateId, null);
+            await govNotifyEmailService.SendEmailAsync(req.Email, accountTemplateSettings.AccountReactivationTemplateId, null);
         }
 
         var userRoles = await userManager.GetRolesAsync(user);
 
         await userManager.RemoveFromRolesAsync(user, userRoles);
-        await userManager.AddToRoleAsync(user, organisationFunction);
-
+        await userManager.AddToRoleAsync(user, req.OrganisationFunction);
         await userManager.UpdateAsync(user);
     }
 
