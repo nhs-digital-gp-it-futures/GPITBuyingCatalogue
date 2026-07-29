@@ -9,12 +9,16 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
         public static readonly OrganisationFunction Authority = new(1, "Authority", "Admin", AuthorityAdvice, AuthorityAdvice);
         public static readonly OrganisationFunction Buyer = new(2, "Buyer", "Buyer", string.Format(BuyerAdvice, " for your organisation"), string.Format(BuyerAdvice, string.Empty));
         public static readonly OrganisationFunction AccountManager = new(3, "AccountManager", "Account manager", string.Format(AccountManagerAdvice, "your"), string.Format(AccountManagerAdvice, "their buyer"));
-        public static readonly OrganisationFunction Onboarding = new(4, "Onboarding", "Onboarding", string.Empty, string.Empty);
-        public static readonly OrganisationFunction ReadOnly = new(5, "ReadOnly", "Read only", string.Empty, string.Empty);
+        public static readonly OrganisationFunction Onboarding = new(4, "Onboarding", "Onboarding", OnboardingAdvice, OnboardingAdvice);
+        public static readonly OrganisationFunction ReadOnly = new(5, "ReadOnly", "Read only", ReadOnlyAdvice, ReadOnlyAdvice);
 
         private const string AuthorityAdvice = "This type of user is an administrator on behalf of NHS Digital.";
 
         private const string BuyerAdvice = "This type of user can place orders on the Buying Catalogue{0}.";
+
+        private const string OnboardingAdvice = "This type of user can manage onboarding within the Buying Catalogue.";
+
+        private const string ReadOnlyAdvice = "This type of user has read only access to view existing orders.";
 
         private const string AccountManagerAdvice = "This type of user can manage user accounts for {0} organisation.";
 
