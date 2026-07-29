@@ -9,7 +9,6 @@
     <Authors>NHSD</Authors>
     <Product>NHSD.GPIT.BuyingCatalogue</Product>
     <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
