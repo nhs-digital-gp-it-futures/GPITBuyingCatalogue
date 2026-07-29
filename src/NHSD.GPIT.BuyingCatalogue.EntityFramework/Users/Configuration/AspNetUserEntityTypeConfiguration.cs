@@ -64,6 +64,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
                 .HasColumnName("DeactivationReasonId")
                 .HasConversion<int?>();
 
+            builder.Property(u => u.ReactivationDate);
+
             builder.HasMany(x => x.Events)
                 .WithOne()
                 .HasForeignKey(x => x.UserId);

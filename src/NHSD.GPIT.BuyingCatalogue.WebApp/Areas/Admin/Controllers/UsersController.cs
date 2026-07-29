@@ -137,14 +137,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (user == null)
                 return NotFound();
 
-            await usersService.UpdateUser(
-                userId,
-                model.FirstName,
-                model.LastName,
-                model.Email,
-                !model.IsActive!.Value,
-                model.SelectedAccountType,
-                model.SelectedOrganisationId!.Value);
+            await usersService.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = userId,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                Disabled = model.IsActive != true,
+                OrganisationFunction = model.SelectedAccountType,
+                OrganisationId = model.SelectedOrganisationId.Value,
+                ReactivationDate = model.ReactivationDate,
+            });
 
             return RedirectToAction(nameof(Index));
         }

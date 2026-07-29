@@ -452,6 +452,54 @@ public static class InactiveAccountsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
+    public static async Task GetInactiveAccounts_ReactivatedAccountsWithinThressold_NotReturned(
+        [Frozen] BuyingCatalogueDbContext context,
+        InactiveAccountsService service)
+    {
+        var utcNow = DateTime.UtcNow;
+
+        var user1 = new AspNetUser
+        {
+            Id = 1,
+            FirstName = "user",
+            LastName = "one",
+            UserName = "user.one@email.com",
+            NormalizedUserName = "USER.ONE@EMAIL.COM",
+            Email = "user.one@email.com",
+            NormalizedEmail = "USER.ONE@EMAIL.COM",
+            Disabled = false,
+            ReactivationDate = DateTime.UtcNow.AddDays(-1),
+            Created = utcNow.AddMonths(-12),
+        };
+
+        var user2Id = 2;
+        var user2LastLoginDate = utcNow.AddMonths(-10);
+        var user2LastLoginEvent = new AspNetUserLoginEvent { UserId = user2Id, Date = user2LastLoginDate };
+        var user2 = new AspNetUser
+        {
+            Id = user2Id,
+            FirstName = "user",
+            LastName = "one",
+            UserName = "user.one@email.com",
+            NormalizedUserName = "USER.ONE@EMAIL.COM",
+            Email = "user.one@email.com",
+            NormalizedEmail = "USER.ONE@EMAIL.COM",
+            Disabled = false,
+            ReactivationDate = DateTime.UtcNow.AddDays(-1),
+            LoginEvents = [user2LastLoginEvent],
+        };
+
+        await context.AspNetUsers.AddAsync(user1);
+        await context.AspNetUsers.AddAsync(user2);
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var result = await service.GetInactiveAccounts(DateOnly.FromDateTime(utcNow));
+        result.Should().BeEmpty();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
     public static async Task Raise_4MonthsInactivity_DoesntCreateNotification(
         QueueOptions queueOptions,
         [Frozen] IOptions<QueueOptions> options,

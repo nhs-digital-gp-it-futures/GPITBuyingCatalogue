@@ -19,5 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
         public string AccountSubmittedTemplateId { get; set; }
 
         public string AccountDeactivationTemplateId { get; set; }
+
+        public string AccountReactivationTemplateId { get; set; }
     }
 }

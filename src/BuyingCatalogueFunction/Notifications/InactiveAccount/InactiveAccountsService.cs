@@ -43,14 +43,27 @@ public partial class InactiveAccountsService(
             .AsNoTracking()
             .Include(x => x.LoginEvents)
             .Include(x => x.Events)
-            .Where(u => !u.Disabled
-                && !(u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredFirstExpiryThreshold) &&
-                     u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredSecondExpiryThreshold) &&
-                     u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredThirdExpiryThreshold) &&
-                     u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredForthExpiryThreshold) &&
-                     u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredExpiredThreshold))
-                && ((u.LoginEvents.Count > 0 && DateOnly.FromDateTime(u.LoginEvents.Max(le => le.Date)) <= inactivityThresholdDate)
-                || (u.LoginEvents.Count == 0 && DateOnly.FromDateTime(u.Created) <= inactivityThresholdDate)))
+            .Where(u => !u.Disabled 
+                &&
+                !(
+                    u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredFirstExpiryThreshold) &&
+                    u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredSecondExpiryThreshold) &&
+                    u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredThirdExpiryThreshold) &&
+                    u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredForthExpiryThreshold) &&
+                    u.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.InactivityEnteredExpiredThreshold)
+                )
+                &&  
+                (
+                    (
+                        u.ReactivationDate == null &&
+                        (
+                            u.LoginEvents.Count > 0 && DateOnly.FromDateTime(u.LoginEvents.Max(le => le.Date)) <= inactivityThresholdDate ||
+                            u.LoginEvents.Count == 0 && DateOnly.FromDateTime(u.Created) <= inactivityThresholdDate
+                        )
+                    ) || 
+                    u.ReactivationDate != null && DateOnly.FromDateTime(u.ReactivationDate.Value) <= inactivityThresholdDate
+                )
+             )
             .ToListAsync();
     }
 
