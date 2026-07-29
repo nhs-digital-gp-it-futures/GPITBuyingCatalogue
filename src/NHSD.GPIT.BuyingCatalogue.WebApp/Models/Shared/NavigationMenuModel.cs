@@ -39,13 +39,13 @@ public readonly struct NavigationMenuModel
     private static readonly Func<IUrlHelper, KeyValuePair<string, string>> AdminHome = urlHelper => new KeyValuePair<string, string>(
         "Home",
         urlHelper.Action(
-            nameof(NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers.HomeController.Index),
-            typeof(NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers.HomeController)
+            nameof(Areas.Admin.Controllers.HomeController.Index),
+            typeof(Areas.Admin.Controllers.HomeController)
                 .ControllerName(),
             new
             {
                 area =
-                    typeof(NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers.HomeController)
+                    typeof(Areas.Admin.Controllers.HomeController)
                         .AreaName(),
             }));
 
