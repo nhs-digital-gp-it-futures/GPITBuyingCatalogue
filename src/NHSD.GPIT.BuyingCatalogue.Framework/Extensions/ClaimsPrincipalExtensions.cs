@@ -46,7 +46,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         public static bool IsAdmin(this ClaimsPrincipal user)
         {
-            return HasOrganisationClaim(user, OrganisationFunction.Authority.Name) || HasOrganisationClaim(user, OrganisationFunction.Onboarding.Name) || HasOrganisationClaim(user, OrganisationFunction.ReadOnly.Name);
+            return IsFullAdmin(user) || IsOnboarding(user) || IsReadOnly(user);
+        }
+
+        public static bool IsFullAdmin(this ClaimsPrincipal user)
+        {
+            return HasOrganisationClaim(user, OrganisationFunction.Authority.Name);
         }
 
         public static bool IsBuyer(this ClaimsPrincipal user)
@@ -57,6 +62,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
         public static bool IsAccountManager(this ClaimsPrincipal user)
         {
             return HasOrganisationClaim(user, OrganisationFunction.AccountManager.Name);
+        }
+
+        public static bool IsOnboarding(this ClaimsPrincipal user)
+        {
+            return HasOrganisationClaim(user, OrganisationFunction.Onboarding.Name);
+        }
+
+        public static bool IsReadOnly(this ClaimsPrincipal user)
+        {
+            return HasOrganisationClaim(user, OrganisationFunction.ReadOnly.Name);
         }
 
         public static int UserId(this ClaimsPrincipal user)

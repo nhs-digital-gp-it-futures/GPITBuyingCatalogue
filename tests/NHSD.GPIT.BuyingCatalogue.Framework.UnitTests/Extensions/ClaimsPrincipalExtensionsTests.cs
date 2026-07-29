@@ -13,6 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 {
     public static class ClaimsPrincipalExtensionsTests
     {
+        public static TheoryData<string> AdminRoles =>
+        [
+            OrganisationFunction.Authority.Name,
+            OrganisationFunction.Onboarding.Name,
+            OrganisationFunction.ReadOnly.Name,
+        ];
+
         [Fact]
         public static void GetPrimaryOrganisationName_NullPrincipal_ThrowsException()
         {
@@ -151,6 +158,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 
             // ReSharper disable once ExpressionIsAlwaysNull
             Assert.Throws<ArgumentNullException>(() => user.UserId());
+        }
+
+        [Theory]
+        [MockMemberAutoData(nameof(AdminRoles))]
+        public static void AdminRoles_True_WithClaim(string role)
+        {
+            var user = CreatePrincipal(ClaimTypes.Role, role);
+
+            user.IsFullAdmin().Should().Be(role == OrganisationFunction.Authority.Name);
+            user.IsOnboarding().Should().Be(role == OrganisationFunction.Onboarding.Name);
+            user.IsReadOnly().Should().Be(role == OrganisationFunction.ReadOnly.Name);
+            user.IsAccountManager().Should().BeFalse();
+            user.IsBuyer().Should().BeFalse();
         }
 
         [Fact]

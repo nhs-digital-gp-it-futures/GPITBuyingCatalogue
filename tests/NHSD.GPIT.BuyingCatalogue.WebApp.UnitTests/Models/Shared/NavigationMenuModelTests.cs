@@ -203,7 +203,7 @@ public static class NavigationMenuModelTests
 
     [Theory]
     [MockAutoData]
-    public static void Construct_AdminUser_ExpectedLinks(
+    public static void Construct_FullAdminUser_ExpectedLinks(
         string internalOrgId,
         IUrlHelper urlHelper,
         RouteValueDictionary routeValues)
@@ -250,6 +250,94 @@ public static class NavigationMenuModelTests
                     x => string.Equals(x.Action, nameof(CatalogueSolutionsController.Index)) && string.Equals(
                         x.Controller,
                         typeof(CatalogueSolutionsController).ControllerName())));
+
+        urlHelper.Received()
+            .Action(
+                Arg.Is<UrlActionContext>(
+                    x => string.Equals(x.Action, nameof(AccountController.Logout)) && string.Equals(
+                        x.Controller,
+                        typeof(AccountController).ControllerName())));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void Construct_OnboardingUser_ExpectedLinks(
+        string internalOrgId,
+        IUrlHelper urlHelper,
+        RouteValueDictionary routeValues)
+    {
+        var claimsPrincipal = new ClaimsPrincipal(
+            new ClaimsIdentity(
+                new[]
+                {
+                    new Claim(
+                        ClaimTypes.Role,
+                        OrganisationFunction.Onboarding.Name),
+                    new Claim(Framework.Constants.CatalogueClaims.PrimaryOrganisationInternalIdentifier, internalOrgId),
+                },
+                "someAuthType"));
+
+        var model = new NavigationMenuModel(claimsPrincipal, urlHelper, routeValues);
+
+        model.Links.Should().HaveCount(4);
+
+        urlHelper.Received()
+            .Action(
+                Arg.Is<UrlActionContext>(
+                    x => string.Equals(x.Action, nameof(HomeController.Index)) && string.Equals(
+                        x.Controller,
+                        typeof(HomeController).ControllerName())));
+
+        urlHelper.Received()
+            .Action(
+                Arg.Is<UrlActionContext>(
+                    x => string.Equals(x.Action, nameof(SuppliersController.Index)) && string.Equals(
+                        x.Controller,
+                        typeof(SuppliersController).ControllerName())));
+
+        urlHelper.Received()
+            .Action(
+                Arg.Is<UrlActionContext>(
+                    x => string.Equals(x.Action, nameof(CatalogueSolutionsController.Index)) && string.Equals(
+                        x.Controller,
+                        typeof(CatalogueSolutionsController).ControllerName())));
+
+        urlHelper.Received()
+            .Action(
+                Arg.Is<UrlActionContext>(
+                    x => string.Equals(x.Action, nameof(AccountController.Logout)) && string.Equals(
+                        x.Controller,
+                        typeof(AccountController).ControllerName())));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void Construct_ReadOnlyUser_ExpectedLinks(
+        string internalOrgId,
+        IUrlHelper urlHelper,
+        RouteValueDictionary routeValues)
+    {
+        var claimsPrincipal = new ClaimsPrincipal(
+            new ClaimsIdentity(
+                new[]
+                {
+                    new Claim(
+                        ClaimTypes.Role,
+                        OrganisationFunction.ReadOnly.Name),
+                    new Claim(Framework.Constants.CatalogueClaims.PrimaryOrganisationInternalIdentifier, internalOrgId),
+                },
+                "someAuthType"));
+
+        var model = new NavigationMenuModel(claimsPrincipal, urlHelper, routeValues);
+
+        model.Links.Should().HaveCount(2);
+
+        urlHelper.Received()
+            .Action(
+                Arg.Is<UrlActionContext>(
+                    x => string.Equals(x.Action, nameof(HomeController.Index)) && string.Equals(
+                        x.Controller,
+                        typeof(HomeController).ControllerName())));
 
         urlHelper.Received()
             .Action(
