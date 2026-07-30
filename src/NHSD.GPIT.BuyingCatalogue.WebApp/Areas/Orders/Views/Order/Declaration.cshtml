@@ -19,6 +19,7 @@
         <form method="post">
             <input type="hidden" asp-for="CallOffId" />
             <nhs-fieldset-form-label asp-for="@Model">
+                <legend name="accept disclaimer"></legend>
                 <nhs-checkbox-container>
                     <nhs-checkbox asp-for="DeclarationAccepted"
                                   label-text="I understand and agree to the above statements"/>
