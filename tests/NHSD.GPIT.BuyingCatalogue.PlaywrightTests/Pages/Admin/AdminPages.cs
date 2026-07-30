@@ -1,7 +1,9 @@
 ﻿using Microsoft.Playwright;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin.ContractingVehicles;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin.EmailDomains;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin.Interoperability;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin.Solutions;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin.Users;
@@ -38,6 +40,9 @@ public class AdminPages
     public SupplierContactsPage SupplierContacts { get; }
     public AddSupplierContactPage AddSupplierContact { get; }
     public SupplierStatusPage SupplierStatus { get; }
+    public MapCapabilitiesPage MapCapabilities { get; }
+    public ManageSolutionsPage ManageSolutions { get; }
+    public AddSolutionPage AddSolution { get; }
 
     public AdminPages(IPage page, ITestOutputHelper output, AdminTestData data)
     {
@@ -66,6 +71,9 @@ public class AdminPages
         SupplierContacts = new SupplierContactsPage(page);
         AddSupplierContact = new AddSupplierContactPage(page);
         SupplierStatus = new SupplierStatusPage(page);
+        MapCapabilities = new MapCapabilitiesPage(page);
+        ManageSolutions = new ManageSolutionsPage(page);
+        AddSolution = new AddSolutionPage(page);
     }
 
     public async Task LoginAsAdminAsync()
@@ -181,5 +189,45 @@ public class AdminPages
         await SupplierStatus.SetStatusAndSaveAsync("Active");
         await ManageSuppliers.AssertOnPageAsync();
         await ManageSuppliers.AssertSupplierExistsAsync(name);
+    }
+
+    public async Task MapCapabilitiesAndEpicsAsync(string capabilitiesFile, string epicsFile)
+    {
+        _output.WriteLine("Map capabilities and epics via CSV upload");
+        await Dashboard.GoToManageCapabilitiesAndEpicsAsync();
+
+        await MapCapabilities.AssertOnCapabilitiesPageAsync();
+        await MapCapabilities.UploadCapabilitiesAsync(capabilitiesFile);
+
+        await MapCapabilities.AssertOnEpicsPageAsync();
+        await MapCapabilities.UploadEpicsAsync(epicsFile);
+
+        await MapCapabilities.ReturnToAdminHomeAsync();
+    }
+
+    public async Task CreateSolutionAsync(AdminTestData data, string supplierValue, string framework, string supplierContactName)
+    {
+        _output.WriteLine($"Create catalogue solution: {data.SolutionName}");
+        await Dashboard.GoToManageCatalogueSolutionsAsync();
+        await ManageSolutions.AssertOnPageAsync();
+        await ManageSolutions.GoToAddSolutionAsync();
+        await AddSolution.AssertOnPageAsync();
+
+        await AddSolution.CreateSolutionAsync(data.SolutionName, supplierValue, framework);
+        await AddSolution.AddDescriptionAsync(data.SolutionSummary, data.SolutionFullDescription);
+        await AddSolution.AddFeaturesAsync(data.SolutionFeature1, data.SolutionFeature2);
+        await AddSolution.AddApplicationTypeAsync(data.StorageSpace, data.ProcessingPower);
+        await AddSolution.AddHostingTypeAsync(data.HostingSummary, data.HostingDataCentreModel);
+        await AddSolution.AddListPriceAsync();
+        await AddSolution.AddCapabilitiesAsync();
+        await AddSolution.AddSupplierDetailsAsync(supplierContactName);
+        await AddSolution.AddServiceLevelAgreementAsync(
+            data.SlaSupportType, data.SlaServiceType, data.SlaServiceLevel, data.SlaHowMeasured);
+        await AddSolution.PublishSolutionAsync();
+
+        // Confirm the solution now appears in the list
+        //await Dashboard.GoToManageCatalogueSolutionsAsync();
+        //await ManageSolutions.AssertOnPageAsync();
+        await ManageSolutions.AssertSolutionExistsAsync(data.SolutionName);
     }
 }
