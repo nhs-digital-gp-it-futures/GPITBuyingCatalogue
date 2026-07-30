@@ -10,7 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AccountRequestsModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
-[Authorize(Policy = "AdminOnly")]
+[Authorize(Policy = "ManageAccountCreationRequests")]
 [Area("Admin")]
 [Route("admin/users/account-requests")]
 public class AccountRequestsController(IAccountRequestsService accountRequestsService) : Controller

@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
-[Authorize(Policy = "AdminOnly")]
+[Authorize(Policy = "ManageContractingVehicles")]
 [Area("Admin")]
 [Route("admin/frameworks")]
 public class FrameworksController : Controller

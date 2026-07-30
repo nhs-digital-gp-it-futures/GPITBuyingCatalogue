@@ -4,6 +4,7 @@ using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -15,6 +16,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers;
 
 public static class EmailDomainManagementControllerTests
 {
+    [Fact]
+    public static void ClassIsCorrectlyDecorated()
+    {
+        typeof(EmailDomainManagementController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "AdminOnly");
+        typeof(EmailDomainManagementController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
+    }
+
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
