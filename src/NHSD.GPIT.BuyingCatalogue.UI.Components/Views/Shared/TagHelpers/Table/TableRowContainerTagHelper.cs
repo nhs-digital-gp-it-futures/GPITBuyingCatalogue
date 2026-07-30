@@ -19,12 +19,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
             if (!context.Items.TryGetValue(TagHelperConstants.ColumnNameContextName, out object columnNames))
                 return;
 
-            var columnNamesConverted = (List<(TagHelperContent Content, bool Numeric)>)columnNames;
+            var columnNamesConverted =
+                (List<(TagHelperContent HeaderContent, TagHelperContent CellHeadingContent, bool Numeric)>)columnNames;
 
             if (columnNamesConverted.Count == 0)
                 return;
 
-            var cellColumnNames = new Queue<TagHelperContent>(columnNamesConverted.Select(c => c.Content).ToList());
+            var cellColumnNames =
+                new Queue<TagHelperContent>(columnNamesConverted.Select(c => c.CellHeadingContent).ToList());
 
             context.Items.Add(TagHelperConstants.CellColumnContextName, cellColumnNames);
         }
