@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "ManageSupplierOrganisations")]
     [Area("Admin")]
     [Route("admin/manage-suppliers/{supplierId:int}/services/{associatedServiceId}")]
     public class AssociatedServiceListPriceController(

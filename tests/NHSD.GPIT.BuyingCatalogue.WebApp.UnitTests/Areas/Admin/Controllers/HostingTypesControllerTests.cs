@@ -3,6 +3,7 @@ using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -16,6 +17,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 {
     public static class HostingTypesControllerTests
     {
+        [Fact]
+        public static void ClassIsCorrectlyDecorated()
+        {
+            typeof(HostingTypesController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "AdminOnly");
+            typeof(HostingTypesController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
+        }
+
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {

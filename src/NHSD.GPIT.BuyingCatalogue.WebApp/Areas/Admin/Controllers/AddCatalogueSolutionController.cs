@@ -12,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsMode
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "ManageCatalogueSolutions")]
     [Area("Admin")]
     [Route("admin/catalogue-solutions/add-solution")]
     public sealed class AddCatalogueSolutionController : Controller
