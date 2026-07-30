@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -17,6 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers;
 
 public static class CatalogueSolutionStandardsControllerTests
 {
+    [Fact]
+    public static void ClassIsCorrectlyDecorated()
+    {
+        typeof(CatalogueSolutionStandardsController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "AdminOnly");
+        typeof(CatalogueSolutionStandardsController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
+    }
+
     [Theory]
     [MockAutoData]
     public static async Task Index_ReturnsViewWithModel(

@@ -5,6 +5,7 @@ using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -22,6 +23,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 {
     public static class CatalogueSolutionListPriceControllerTests
     {
+        [Fact]
+        public static void ClassIsCorrectlyDecorated()
+        {
+            typeof(CatalogueSolutionListPriceController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "ManageCatalogueSolutions");
+            typeof(CatalogueSolutionListPriceController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
+        }
+
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -16,6 +17,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers;
 
 public static class AccountRequestsControllerTests
 {
+    [Fact]
+    public static void ClassIsCorrectlyDecorated()
+    {
+        typeof(AccountRequestsController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "ManageAccountCreationRequests");
+        typeof(AccountRequestsController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
+    }
+
     [Theory]
     [MockAutoData]
     public static async Task Index_ReturnsViewWithModel(
