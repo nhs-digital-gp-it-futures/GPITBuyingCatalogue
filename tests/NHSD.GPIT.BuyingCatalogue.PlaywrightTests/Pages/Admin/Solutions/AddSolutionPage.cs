@@ -16,7 +16,6 @@ public class AddSolutionPage : BasePage
     public async Task AssertOnPageAsync() =>
         await AssertHeadingAsync("Add a solution");
 
-    // Fills the initial "Add a solution" form and lands on the task list
     public async Task CreateSolutionAsync(string solutionName, string supplierValue, string framework)
     {
         await SolutionNameInput.FillAsync(solutionName);
@@ -28,8 +27,7 @@ public class AddSolutionPage : BasePage
 
     private async Task AssertOnTaskListAsync() =>
         await Expect(Page.GetByText(TaskListText)).ToBeVisibleAsync();
-
-    // Clicks the Edit link on a given row of the task list
+    
     private async Task EditSectionAsync(string sectionName) =>
         await Page.GetByRole(AriaRole.Row, new() { Name = sectionName })
             .GetByRole(AriaRole.Link, new() { Name = "Edit" })
@@ -189,8 +187,7 @@ public class AddSolutionPage : BasePage
         await ClickSaveAndContinueLinkAsync();
         await AssertOnTaskListAsync();
     }
-
-    // Publishes the solution
+    
     public async Task PublishSolutionAsync()
     {
         await Page.GetByText("Publish", new() { Exact = true }).ClickAsync();

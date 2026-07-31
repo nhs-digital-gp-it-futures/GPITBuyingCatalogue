@@ -224,10 +224,6 @@ public class AdminPages
         await AddSolution.AddServiceLevelAgreementAsync(
             data.SlaSupportType, data.SlaServiceType, data.SlaServiceLevel, data.SlaHowMeasured);
         await AddSolution.PublishSolutionAsync();
-
-        // Confirm the solution now appears in the list
-        //await Dashboard.GoToManageCatalogueSolutionsAsync();
-        //await ManageSolutions.AssertOnPageAsync();
         await ManageSolutions.AssertSolutionExistsAsync(data.SolutionName);
     }
 }

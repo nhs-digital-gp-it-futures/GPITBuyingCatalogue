@@ -1,14 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Base;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin.Capabilities;
 
 public class MapCapabilitiesPage : BasePage
 {
-    // Both the capabilities page and the epics page use a single file input with id "File"
     private ILocator FileInput => Page.Locator("#File");
 
     private ILocator UploadCapabilitiesButton => Page.GetByRole(AriaRole.Button, new() { Name = "Upload Capabilities" });
