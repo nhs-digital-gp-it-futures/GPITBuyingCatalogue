@@ -68,16 +68,16 @@ public class AddSolutionPage : BasePage
 
         // Connectivity
         await EditSectionAsync("Connectivity");
-        await Page.GetByLabel("Connection speed").SelectOptionAsync(new[] { "Higher than 30Mbps" });
+        await Page.GetByLabel("Connection speed").SelectOptionAsync("Higher than 30Mbps");
         await ClickSaveAndContinueAsync();
         await AssertHeadingAsync("Desktop application");
 
         // Memory, storage, processing and resolution
         await EditSectionAsync("Memory, storage, processing and resolution");
-        await Page.GetByLabel("Memory size").SelectOptionAsync(new[] { "256MB" });
+        await Page.GetByLabel("Memory size").SelectOptionAsync("256MB");
         await Page.GetByRole(AriaRole.Textbox, new() { Name = "Storage space" }).FillAsync(storageSpace);
         await Page.GetByRole(AriaRole.Textbox, new() { Name = "Processing power" }).FillAsync(processingPower);
-        await Page.GetByLabel("Screen resolution and aspect").SelectOptionAsync(new[] { "16:9 - 3840 x 2160" });
+        await Page.GetByLabel("Screen resolution and aspect").SelectOptionAsync("16:9 - 3840 x 2160");
         await ClickSaveAndContinueAsync();
         await AssertHeadingAsync("Desktop application");
 
