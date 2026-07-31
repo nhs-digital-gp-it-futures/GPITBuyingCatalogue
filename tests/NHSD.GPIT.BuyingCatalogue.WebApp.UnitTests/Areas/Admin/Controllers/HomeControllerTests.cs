@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using AutoFixture.Idioms;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
@@ -9,6 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 {
     public static class HomeControllerTests
     {
+        [Fact]
+        public static void ClassIsCorrectlyDecorated()
+        {
+            typeof(HomeController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Roles == "Authority,Onboarding,ReadOnly");
+            typeof(HomeController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
+        }
+
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {

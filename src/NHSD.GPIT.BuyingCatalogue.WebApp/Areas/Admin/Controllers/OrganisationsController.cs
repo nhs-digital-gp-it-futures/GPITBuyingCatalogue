@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "ManageBuyerOrganisations")]
     [Area("Admin")]
     [Route("admin/organisations")]
     public sealed class OrganisationsController : OrganisationBaseController

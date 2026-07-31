@@ -8,6 +8,7 @@ using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -33,6 +34,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 {
     public static class ManageOrdersControllerTests
     {
+        [Fact]
+        public static void ClassIsCorrectlyDecorated()
+        {
+            typeof(ManageOrdersController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "ManageAllOrders");
+            typeof(ManageOrdersController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
+        }
+
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
@@ -234,6 +242,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             result.Should().NotBeNull();
             result.ContentType.Should().Be("application/octet-stream");
             result.FileDownloadName.Should().Be($"{prefix}{callOffId}_{externalOrgId}_full.csv");
+        }
+
+        [Fact]
+        public static void Get_DeleteOrder_IsCorrectlyDecorated()
+        {
+            var method = typeof(ManageOrdersController).GetMethod(
+                nameof(ManageOrdersController.DeleteOrder),
+                new[] { typeof(CallOffId) });
+
+            method.Should().NotBeNull();
+            method.Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "AdminOnly");
         }
 
         [Theory]
