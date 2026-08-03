@@ -43,6 +43,7 @@
                                          label-text="Do you want to use the same delivery date for all recipients?"
                                          label-hint="Selecting yes will apply the date you’ve entered to all recipients. If you select no, you’ll be able to change the dates for individual recipients."
                                          size="Small">
+                    <legend name="same delivery date"></legend>
                     <nhs-radio-buttons asp-for="ApplyToAll"
                                        values="@Model.ApplyToAllOptions.Cast<object>()"
                                        value-name="Value"

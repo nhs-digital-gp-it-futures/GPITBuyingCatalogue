@@ -14,11 +14,12 @@
             <form method="post">
                 <input type="hidden" asp-for="OrganisationName" />
                 <nhs-fieldset-form-label asp-for="SelectedOrderItemType">
+                    <legend name="order type"></legend>
                     <nhs-radio-buttons asp-for="SelectedOrderItemType"
                                        values="Model.AvailableOrderItemTypes.Cast<object>()"
                                        display-name="Text"
                                        value-name="Value"
-                                       hint-name="Advice" />
+                                       hint-name="Advice"/>
                 </nhs-fieldset-form-label>
                 <br />
                 <nhs-submit-button />

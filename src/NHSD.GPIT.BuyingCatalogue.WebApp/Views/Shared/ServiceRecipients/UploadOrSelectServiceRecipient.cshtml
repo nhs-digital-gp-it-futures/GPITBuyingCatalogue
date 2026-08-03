@@ -15,6 +15,7 @@
 
             <nhs-fieldset-form-label asp-for="@Model"
                                      size="Medium">
+                <legend name="recipient selection type"></legend>
                 <nhs-radio-buttons asp-for="ShouldUploadRecipients"
                                    values="Model.ServiceRecipientOptions.Cast<object>()"
                                    display-name="Text"
