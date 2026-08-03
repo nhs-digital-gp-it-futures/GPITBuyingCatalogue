@@ -104,4 +104,28 @@ public class AdminTests : BaseTest
             address: address,
             contact: contact);
     }
+
+    [Fact]
+    [Trait("Category", Categories.Admin)]
+    public async Task AdminManageCapabilitiesAndEpics()
+    {
+        var data = new AdminTestData();
+
+        await AdminPages.LoginAsAdminAsync();
+        await AdminPages.MapCapabilitiesAndEpicsAsync(data.CapabilitiesFile, data.EpicsFile);
+    }
+
+    [Fact]
+    [Trait("Category", Categories.Admin)]
+    public async Task AdminAddSolution()
+    {
+        var data = new AdminTestData();
+
+        await AdminPages.LoginAsAdminAsync();
+        await AdminPages.CreateSolutionAsync(
+            data: data,
+            supplierValue: "10000",
+            framework: "Tech Innovation Framework",
+            supplierContactName: "Jonas Chan");
+    }
 }
