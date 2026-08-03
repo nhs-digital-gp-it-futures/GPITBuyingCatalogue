@@ -13,7 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "ManageCatalogueSolutions")]
     [Area("Admin")]
     [Route("admin/catalogue-solutions/manage/{solutionId}/list-prices")]
     public class CatalogueSolutionListPriceController : Controller

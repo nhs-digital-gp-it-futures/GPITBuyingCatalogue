@@ -7,6 +7,7 @@ using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
@@ -19,6 +20,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers;
 
 public static class Gen2MappingControllerTests
 {
+    [Fact]
+    public static void ClassIsCorrectlyDecorated()
+    {
+        typeof(Gen2MappingController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "AdminOnly");
+        typeof(Gen2MappingController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
+    }
+
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {

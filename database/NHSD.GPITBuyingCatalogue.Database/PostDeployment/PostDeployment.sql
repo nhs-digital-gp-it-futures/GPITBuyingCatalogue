@@ -1,5 +1,6 @@
 ﻿:r ./InfrastructureUsers.sql
 :r ./InsertRoles.sql
+:r ./InsertRoleClaims.sql
 
 -- Lookup data
 :r ./Seed/InsertSeedIntegrations.sql

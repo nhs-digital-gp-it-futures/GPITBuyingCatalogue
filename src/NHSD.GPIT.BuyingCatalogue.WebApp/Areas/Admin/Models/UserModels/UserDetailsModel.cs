@@ -94,12 +94,14 @@ public class UserDetailsModel : NavBaseModel
 
     public int? SelectedOrganisationId { get; set; }
 
-    public IEnumerable<SelectOption<string>> AccountTypeOptions => new List<SelectOption<string>>
-    {
-        new(OrganisationFunction.Buyer.DisplayName, OrganisationFunction.Buyer.InternalAdvice, $"{OrganisationFunction.Buyer.Name}"),
-        new(OrganisationFunction.AccountManager.DisplayName, OrganisationFunction.AccountManager.InternalAdvice, $"{OrganisationFunction.AccountManager.Name}"),
-        new(OrganisationFunction.Authority.DisplayName, OrganisationFunction.Authority.InternalAdvice, $"{OrganisationFunction.Authority.Name}"),
-    };
+        public IEnumerable<SelectOption<string>> AccountTypeOptions => new List<SelectOption<string>>
+        {
+            new(OrganisationFunction.Buyer.DisplayName, OrganisationFunction.Buyer.InternalAdvice, $"{OrganisationFunction.Buyer.Name}"),
+            new(OrganisationFunction.AccountManager.DisplayName, OrganisationFunction.AccountManager.InternalAdvice, $"{OrganisationFunction.AccountManager.Name}"),
+            new(OrganisationFunction.Authority.DisplayName, OrganisationFunction.Authority.InternalAdvice, $"{OrganisationFunction.Authority.Name}"),
+            new(OrganisationFunction.Onboarding.DisplayName, OrganisationFunction.Onboarding.InternalAdvice, $"{OrganisationFunction.Onboarding.Name}"),
+            new(OrganisationFunction.ReadOnly.DisplayName, OrganisationFunction.ReadOnly.InternalAdvice, $"{OrganisationFunction.ReadOnly.Name}"),
+        };
 
     public bool? IsActive { get; set; }
 

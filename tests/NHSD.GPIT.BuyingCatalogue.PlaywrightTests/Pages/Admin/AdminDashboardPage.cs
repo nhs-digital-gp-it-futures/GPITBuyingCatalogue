@@ -11,7 +11,10 @@ public class AdminDashboardPage : BasePage
     private ILocator ManageSupplierDefinedEpicsLink => Page.GetByRole(AriaRole.Link, new() { Name = "Manage supplier defined Epics" });
     private ILocator ManageInteroperabilityLink => Page.GetByRole(AriaRole.Link, new() { Name = "Manage interoperability" });
     private ILocator ManageSuppliersLink => Page.GetByRole(AriaRole.Link, new() { Name = "Manage supplier organisations" });
+    private ILocator ManageCapabilitiesAndEpicsLink => Page.GetByRole(AriaRole.Link, new() { Name = "Manage Capabilities and Epics" });
+    private ILocator ManageCatalogueSolutionsLink => Page.GetByRole(AriaRole.Link, new() { Name = "Manage catalogue solutions" });
 
+    public async Task GoToManageCatalogueSolutionsAsync() => await ManageCatalogueSolutionsLink.ClickAsync();
     public AdminDashboardPage(IPage page) : base(page) { }
 
     public async Task GoToManageUsersAsync() => await ManageUsersLink.ClickAsync();
@@ -20,4 +23,5 @@ public class AdminDashboardPage : BasePage
     public async Task GoToManageSupplierDefinedEpicsAsync() => await ManageSupplierDefinedEpicsLink.ClickAsync();
     public async Task GoToManageInteroperabilityAsync() => await ManageInteroperabilityLink.ClickAsync();
     public async Task GoToManageSuppliersAsync() => await ManageSuppliersLink.ClickAsync();
+    public async Task GoToManageCapabilitiesAndEpicsAsync() => await ManageCapabilitiesAndEpicsLink.ClickAsync();
 }
