@@ -41,7 +41,7 @@
         }
 
 
-        <h3>Select organisations</h3>
+        <h2>Select organisations</h2>
         <div class="bc-u-max-width-full">
             <nhs-button-group>
                 <vc:nhs-anchor-button url="@Url.Action(null, new { selectionMode = SelectionMode.All })"
@@ -70,26 +70,27 @@
                 </nhs-expander-summary>
                 <nhs-expander-content>
                     <nhs-table id="sr-table">
-                        <nhs-table-column>
-                            <div class="nhsuk-checkboxes__item  nhsuk-content--js-only">
+                        <nhs-table-column cell-heading-text="Organisation">
+                            <div class="nhsuk-checkboxes__item nhsuk-content--js-only">
                                 <input type="checkbox" class="nhsuk-checkboxes__input" name="selectAll" id="selectAll" checked="@Model.AllRecipientsSelected"/>
                                 <label for="selectAll" class="nhsuk-label nhsuk-checkboxes__label bold-label">
+                                    <span class="nhsuk-u-visually-hidden">Select all </span>
                                     Organisation
                                 </label>
                             </div>
                             <div class="nhsuk-label bold-label non-js-only">Organisation</div>
                         </nhs-table-column>
-                        <nhs-table-column>ODS code</nhs-table-column>
+                        <nhs-table-column cell-heading-text="ODS code">ODS code</nhs-table-column>
                         @for (var i = 0; i < Model.RenderedServiceRecipients.Count; i++)
                         {
                             var localI = i;
 
-                            <input type="hidden" asp-for="@Model.RenderedServiceRecipients[localI].Text" />
+                            <input type="hidden" asp-for="@Model.RenderedServiceRecipients[localI].Text"/>
 
                             if (Model.RenderedServiceRecipients[localI].Hidden)
                             {
-                                <input type="hidden" asp-for="@Model.RenderedServiceRecipients[localI].Value" />
-                                <input type="hidden" asp-for="@Model.RenderedServiceRecipients[localI].Selected" />
+                                <input type="hidden" asp-for="@Model.RenderedServiceRecipients[localI].Value"/>
+                                <input type="hidden" asp-for="@Model.RenderedServiceRecipients[localI].Selected"/>
                             }
                             else
                             {

@@ -10,7 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
     {
         public const string TagHelperName = "nhs-table-column";
 
+        private const string CellHeadingTextName = "cell-heading-text";
         private const string NumericName = "numeric";
+
+        [HtmlAttributeName(CellHeadingTextName)]
+        public string CellHeadingText { get; set; }
 
         [HtmlAttributeName(NumericName)]
         public bool Numeric { get; set; }
@@ -21,10 +25,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
             var childContent = await output.GetChildContentAsync();
 
-            if (context.Items[TagHelperConstants.ColumnNameContextName] is not List<(TagHelperContent, bool)> columns)
+            if (context.Items[TagHelperConstants.ColumnNameContextName]
+                is not List<(TagHelperContent HeaderContent, TagHelperContent CellHeadingContent, bool Numeric)> columns)
                 return;
 
-            columns.Add((childContent, Numeric));
+            var cellHeadingContent = string.IsNullOrWhiteSpace(CellHeadingText)
+                ? childContent
+                : new DefaultTagHelperContent().SetContent(CellHeadingText);
+
+            columns.Add((childContent, cellHeadingContent, Numeric));
         }
     }
 }

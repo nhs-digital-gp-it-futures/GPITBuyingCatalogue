@@ -47,7 +47,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
                 context.Items.Add(typeof(ParentChildContext), parentChildContext);
             }
 
-            var columns = new List<(TagHelperContent, bool)>();
+            var columns = new List<(
+                TagHelperContent HeaderContent,
+                TagHelperContent CellHeadingContent,
+                bool Numeric)>();
 
             context.Items.Add(TagHelperConstants.ColumnNameContextName, columns);
         }
@@ -160,7 +163,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
             if (!context.Items.TryGetValue(TagHelperConstants.ColumnNameContextName, out object columns))
                 return null;
 
-            var columnsConverted = (List<(TagHelperContent Content, bool Numeric)>)columns;
+            var columnsConverted =
+                (List<(TagHelperContent HeaderContent, TagHelperContent CellHeadingContent, bool Numeric)>)columns;
 
             if (columnsConverted.Count == 0)
                 return null;
@@ -175,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
             foreach (var columnDetails in columnsConverted)
             {
-                var column = GetHeaderColumnBuilder(columnDetails.Content);
+                var column = GetHeaderColumnBuilder(columnDetails.HeaderContent);
 
                 if (columnDetails.Numeric)
                 {
