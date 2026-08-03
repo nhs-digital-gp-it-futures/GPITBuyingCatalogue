@@ -19,6 +19,8 @@
                 <input type="hidden" asp-for="UserId" />
                 <input type="hidden" asp-for="BackLink" />
                 <input type="hidden" asp-for="Title" />
+                <input type="hidden" asp-for="OriginalDisabledValue" />
+                <input type="hidden" asp-for="OriginalReactivationDate" />
 
                 <nhs-auto-complete asp-for="SelectedOrganisationId"
                                    asp-items="@Model.Organisations"

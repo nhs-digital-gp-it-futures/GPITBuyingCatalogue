@@ -148,14 +148,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             if (user.PrimaryOrganisationId != organisationId)
                 return BadRequest();
 
-            await UserService.UpdateUser(
-                userId,
-                model.FirstName,
-                model.LastName,
-                model.EmailAddress,
-                !model.IsActive!.Value,
-                model.SelectedAccountType,
-                organisationId);
+            await UserService.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = userId,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.EmailAddress,
+                Disabled = model.IsActive != true,
+                OrganisationFunction = model.SelectedAccountType,
+                OrganisationId = organisationId,
+                ReactivationDate = model.ReactivationDate,
+            });
 
             return RedirectToAction(
                 nameof(Users),

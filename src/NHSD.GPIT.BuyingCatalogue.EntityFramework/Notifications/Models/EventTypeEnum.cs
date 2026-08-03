@@ -13,5 +13,6 @@
         InactivityEnteredThirdExpiryThreshold = 8,
         InactivityEnteredForthExpiryThreshold = 9,
         InactivityEnteredExpiredThreshold = 10,
+        UserAccountReactivated = 11,
     }
 }
