@@ -87,15 +87,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
                 return View(viewModel);
             }
 
-            var signinResult = await signInManager.PasswordSignInAsync(user, viewModel.Password, false, true);
+            var signInResult = await signInManager.PasswordSignInAsync(user, viewModel.Password, false, true);
 
-            if (!signinResult.Succeeded)
+            // This must be checked before Succeeded.
+            if (signInResult.RequiresTwoFactor)
+            {
+                return RedirectToPage(
+                    "/Account/LoginWith2fa",
+                    new
+                    {
+                        area = "Identity",
+                        returnUrl = viewModel.ReturnUrl,
+                        rememberMe = false,
+                    });
+            }
+
+            if (!signInResult.Succeeded)
                 return BadLogin();
 
-            user.LoginEvents.Add(new AspNetUserLoginEvent(DateTime.UtcNow));
-            await userManager.UpdateAsync(user);
+            var twoFactorEnabled = await userManager.GetTwoFactorEnabledAsync(user);
+            if (!twoFactorEnabled)
+            {
+                TempData["MfaReturnUrl"] = viewModel.ReturnUrl;
 
-            await odsService.UpdateOrganisationDetails(user.PrimaryOrganisation.ExternalIdentifier);
+                return RedirectToPage(
+                    "/Account/Manage/EnableAuthenticator",
+                    new
+                    {
+                        area = "Identity",
+                    });
+            }
+
+            await CompleteLoginAsync(user);
+
             return Redirect(await GetLogonReturnUrl(viewModel.ReturnUrl, user));
         }
 
@@ -250,6 +274,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
                     nameof(BuyerDashboardController.Index),
                     typeof(BuyerDashboardController).ControllerName(),
                     new { area = typeof(BuyerDashboardController).AreaName(), internalOrgId = User.GetPrimaryOrganisationInternalIdentifier() });
+        }
+
+        private async Task CompleteLoginAsync(AspNetUser user)
+        {
+            user.LoginEvents.Add(
+                new AspNetUserLoginEvent(DateTime.UtcNow));
+
+            await userManager.UpdateAsync(user);
+
+            await odsService.UpdateOrganisationDetails(
+                user.PrimaryOrganisation.ExternalIdentifier);
         }
     }
 }

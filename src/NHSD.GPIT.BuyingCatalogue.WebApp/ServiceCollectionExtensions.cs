@@ -282,7 +282,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                         o.Lockout.MaxFailedAccessAttempts = passwordSettings.MaxAccessFailedAttempts;
                     })
                     .AddEntityFrameworkStores<BuyingCatalogueDbContext>()
-                    .AddTokenProvider<DataProtectorTokenProvider<AspNetUser>>(TokenOptions.DefaultProvider)
+                    .AddDefaultTokenProviders()
+                    .AddDefaultUI()
                     .AddPasswordValidator<PasswordValidator>();
             }
 
