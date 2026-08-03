@@ -108,7 +108,7 @@ public static class InactiveAccountsServiceTests
         user4LastLoginEvent.User = user4;
 
         var user5Id = 5;
-        var user5LastLoginDate = utcNow.AddMonths(-5);
+        var user5LastLoginDate = utcNow.AddMonths(-6).AddDays(31);
         var user5LastLoginEvent = new AspNetUserLoginEvent { UserId = user5Id, Date = user5LastLoginDate };
         var user5 = new AspNetUser
         {
