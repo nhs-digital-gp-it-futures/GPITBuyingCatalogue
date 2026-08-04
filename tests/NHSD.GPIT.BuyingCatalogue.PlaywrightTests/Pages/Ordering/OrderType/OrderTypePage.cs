@@ -38,4 +38,26 @@ public class OrderTypePage : BasePage
         await Page.GetByRole(AriaRole.Radio, new() { Name = name }).CheckAsync();
         await ClickSaveAndContinueAsync();
     }
+
+    public async Task StartOrderAsync()
+    {
+        await StartOrderButton.ClickAsync();
+    }
+
+    public async Task AssertOnPageAsync() =>
+        await AssertHeadingAsync("What do you want to order?");
+    
+    public async Task AssertRadioGroupHasLegendAsync()
+    {
+        var fieldset = Page.Locator("fieldset:has(input[type='radio'])");
+        var fieldsetCount = await fieldset.CountAsync();
+
+        Assert.True(fieldsetCount > 0,
+            "Order type radio group is not wrapped in a fieldset (WAVE: fieldset missing legend, WCAG 1.3.1).");
+        var legend = fieldset.Locator("legend");
+        var legendCount = await legend.CountAsync();
+
+        Assert.True(legendCount > 0,
+            "Order type fieldset has no legend (WAVE: fieldset missing legend, WCAG 1.3.1).");
+    }
 }

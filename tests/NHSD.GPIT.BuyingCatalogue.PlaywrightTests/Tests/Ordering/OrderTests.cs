@@ -177,4 +177,29 @@ public class OrderTests : BaseTest
         await orderPages.StepThreeCompleteAssociatedServiceContractAsync();
         await orderPages.StepFourReviewAndCompleteOrderAsync();
     }
+
+    [Fact]
+    [Trait("Category", Categories.Regression)]
+    public async Task OrderTypePage_RadioGroupHasLegend()
+    {
+        await orderPages.LoginAsync();
+        await orderPages.GoToOrderTypePageAsync();
+        await orderPages.OrderType.AssertRadioGroupHasLegendAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.Regression)]
+    public async Task ServiceRecipientsOptionPage_RadioGroupHasLegend()
+    {
+        await orderPages.GoToServiceRecipientsOptionPageAsync();
+        await orderPages.ServiceRecipients.AssertRadioGroupHasLegendAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.Regression)]
+    public async Task DeclarationPage_FieldsetHasLegend()
+    {
+        await orderPages.GoToDeclarationPageAsync(SolutionName);
+        await orderPages.Declaration.AssertFieldsetHasLegendAsync();
+    }
 }

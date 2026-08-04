@@ -353,4 +353,58 @@ public class OrderingPages
         await DataProcessing.NavigateAndContinueAsync();
         await Declaration.NavigateAndAgreeAsync();
     }
+    
+    public async Task GoToOrderTypePageAsync()
+    {
+        _output.WriteLine("Go to order type page");
+        await Dashboard.GoToOrdersAsync();
+        await Dashboard.CreateNewOrderAsync();
+        await OrderType.StartOrderAsync();
+        await OrderType.AssertOnPageAsync();
+    }
+
+    public async Task GoToDeclarationPageAsync(string solutionName)
+    {
+        _output.WriteLine("Go to declaration page");
+        await LoginAsync();
+        await CreateNewOrderAsync();
+        await StepOnePrepareOrderAsync();
+        await StepTwoAddSolutionsAndServicesAsync(solutionName: solutionName);
+        await StepTwoDeliveryAndFundingAsync();
+        await ImplementationMilestones.NavigateAndContinueAsync();
+        await DataProcessing.NavigateAndContinueAsync();
+        await Declaration.NavigateAsync();
+        await Declaration.AssertOnPageAsync();
+    }
+
+    public async Task GoToUploadServiceRecipientsPageAsync(string solutionName)
+    {
+        _output.WriteLine("Go to upload service recipients page");
+        await LoginAsync();
+        await CreateNewOrderAsync();
+        await StepOnePrepareOrderAsync();
+        await ServiceRecipients.NavigateAsync();
+        await ServiceRecipients.ChooseUploadOptionAsync();
+    }
+
+    public async Task GoToAddServiceRecipientsPageAsync()
+    {
+        _output.WriteLine("Go to add service recipients page");
+        await LoginAsync();
+        await CreateNewOrderAsync();
+        await StepOnePrepareOrderAsync();
+
+        await ServiceRecipients.NavigateAsync();
+        await ServiceRecipients.GoToAddRecipientsPageAsync(_data.Sublocation);
+    }
+
+    public async Task GoToServiceRecipientsOptionPageAsync()
+    {
+        _output.WriteLine("Go to service recipients option page");
+        await LoginAsync();
+        await CreateNewOrderAsync();
+        await StepOnePrepareOrderAsync();
+        await ServiceRecipients.NavigateAsync();
+        await ServiceRecipients.AssertOnPageAsync();
+    }
 }
