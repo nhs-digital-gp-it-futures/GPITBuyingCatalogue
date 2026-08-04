@@ -18,21 +18,21 @@ public static class AccessibilityReporter
         output.WriteLine($"Incomplete: {result.Incomplete.Length}   (needs human review)");
         output.WriteLine("");
 
-        if (result.Violations.Any())
+        if (result.Violations.Length > 0)
         {
             output.WriteLine("VIOLATIONS");
             output.WriteLine(new string('-', 60));
             PrintItems(result.Violations, output);
         }
 
-        if (result.Incomplete.Any())
+        if (result.Incomplete.Length > 0)
         {
             output.WriteLine("INCOMPLETE — axe could not decide, review manually");
             output.WriteLine(new string('-', 60));
             PrintItems(result.Incomplete, output);
         }
 
-        if (!result.Violations.Any() && !result.Incomplete.Any())
+        if (result.Violations.Length == 0 && result.Incomplete.Length == 0)
             output.WriteLine("No violations or incomplete items detected by axe-core.");
     }
 
