@@ -64,6 +64,7 @@ public partial class InactiveAccountsService(
                     u.ReactivationDate != null && DateOnly.FromDateTime(u.ReactivationDate.Value) <= inactivityThresholdDate
                 )
              )
+            .AsSplitQuery()
             .ToListAsync();
     }
 
