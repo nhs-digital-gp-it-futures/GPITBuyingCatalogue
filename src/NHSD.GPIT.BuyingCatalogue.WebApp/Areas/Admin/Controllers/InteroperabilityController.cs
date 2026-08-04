@@ -12,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "ManageInteroperability")]
     [Area("Admin")]
     [Route("admin/catalogue-solutions/manage/{solutionId}/interoperability")]
     public sealed class InteroperabilityController(

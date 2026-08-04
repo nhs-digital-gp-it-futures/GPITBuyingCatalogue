@@ -26,6 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
         public static async Task GenerateClaimsAsync_ClaimsSetBasedOnAuthorityAndFirstLastName(
             string organisationFunction,
             [Frozen] IOrganisationsService orgService,
+            [Frozen] RoleManager<AspNetRole> roleManager,
             [Frozen] IOptions<IdentityOptions> options,
             [Frozen] IUserRoleStore<AspNetUser> store)
         {
@@ -50,6 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
 
             var factory = new CatalogueUserClaimsPrincipalFactory(
                 userManager,
+                roleManager,
                 options,
                 orgService);
 

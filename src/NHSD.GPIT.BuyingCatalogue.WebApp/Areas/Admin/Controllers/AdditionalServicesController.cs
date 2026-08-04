@@ -18,7 +18,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
-[Authorize(Policy = "AdminOnly")]
+[Authorize(Policy = "ManageCatalogueSolutions")]
 [Area("Admin")]
 [Route("admin/catalogue-solutions/manage/{solutionId}/additional-services")]
 public sealed class AdditionalServicesController(

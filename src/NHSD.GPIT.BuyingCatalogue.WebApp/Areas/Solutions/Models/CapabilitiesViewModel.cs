@@ -11,13 +11,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public CapabilitiesViewModel(CatalogueItem solution, CatalogueItemContentStatus contentStatus)
             : base(solution, contentStatus)
         {
-            RowViewModels = solution.CatalogueItemCapabilities.Select(cic => new RowViewModel(cic)).ToList();
+            RowViewModels = solution.CatalogueItemCapabilities
+                .Where(cic => cic.Capability.Status != CapabilityStatus.Expired)
+                .Select(cic => new RowViewModel(cic)).ToList();
         }
 
         public CapabilitiesViewModel(CatalogueItem solution, CatalogueItem additionalService, CatalogueItemContentStatus contentStatus)
             : base(solution, contentStatus)
         {
-            RowViewModels = additionalService.CatalogueItemCapabilities.Select(cic => new RowViewModel(cic)).ToList();
+            RowViewModels = additionalService.CatalogueItemCapabilities
+                .Where(cic => cic.Capability.Status != CapabilityStatus.Expired)
+                .Select(cic => new RowViewModel(cic)).ToList();
         }
 
         public CapabilitiesViewModel()

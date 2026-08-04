@@ -107,6 +107,7 @@ BEGIN
         (N'10035-001', 2, 1, GETUTCDATE(), 2),
         (N'10035-001', 3, 1, GETUTCDATE(), 2),
         (N'10035-001', 4, 1, GETUTCDATE(), 2),
+        (N'10035-001', 40, 1, GETUTCDATE(), 2),
         (N'10035-001', 33, 1, GETUTCDATE(), 2),
         (N'10046-001', 9, 1, GETUTCDATE(), 2),
         (N'10046-001', 17, 1, GETUTCDATE(), 2),

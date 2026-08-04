@@ -9,18 +9,17 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 {
-    public sealed class CatalogueUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<AspNetUser>
+    public sealed class CatalogueUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<AspNetUser, AspNetRole>
     {
         private readonly IOrganisationsService organisationService;
-        private readonly UserManager<AspNetUser> userManager;
 
         public CatalogueUserClaimsPrincipalFactory(
             UserManager<AspNetUser> userManager,
+            RoleManager<AspNetRole> roleManager,
             IOptions<IdentityOptions> optionsAccessor,
             IOrganisationsService organisationService)
-            : base(userManager, optionsAccessor)
+            : base(userManager, roleManager, optionsAccessor)
         {
-            this.userManager = userManager;
             this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
         }
 
@@ -29,15 +28,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
             _ = user ?? throw new ArgumentNullException(nameof(user));
 
             var id = await base.GenerateClaimsAsync(user);
-            var roles = await userManager.GetRolesAsync(user);
 
             id.AddClaim(new Claim(Constants.CatalogueClaims.UserDisplayName, $"{user.FirstName} {user.LastName}"));
             id.AddClaim(new Claim(Constants.CatalogueClaims.UserId, user.Id.ToString(CultureInfo.InvariantCulture)));
-
-            foreach (var role in roles)
-            {
-                id.AddClaim(new Claim(ClaimTypes.Role, role));
-            }
 
             var organisation = await organisationService.GetOrganisation(user.PrimaryOrganisationId);
             id.AddClaim(new Claim(Constants.CatalogueClaims.PrimaryOrganisationInternalIdentifier, organisation.InternalIdentifier));

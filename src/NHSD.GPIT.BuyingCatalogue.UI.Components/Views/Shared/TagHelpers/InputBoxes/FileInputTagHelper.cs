@@ -36,6 +36,12 @@ public class FileInputTagHelper : TagHelper
     {
         var formGroup = TagHelperBuilders.GetFormGroupBuilder();
         var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
+        var label = htmlGenerator.GenerateLabel(
+            ViewContext,
+            For.ModelExplorer,
+            For.Name,
+            "Choose a file",
+            new { @class = TagHelperConstants.NhsVisuallyHidden });
 
         var input = htmlGenerator.GenerateTextBox(
             ViewContext,
@@ -51,6 +57,7 @@ public class FileInputTagHelper : TagHelper
             });
 
         formGroup.InnerHtml
+            .AppendHtml(label)
             .AppendHtml(validation)
             .AppendHtml(input);
 

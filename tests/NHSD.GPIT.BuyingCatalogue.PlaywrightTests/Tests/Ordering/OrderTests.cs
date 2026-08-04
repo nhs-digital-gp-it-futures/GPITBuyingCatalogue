@@ -15,11 +15,11 @@ public class OrderTests : BaseTest
     private const string CsvFileName = "valid_service_recipients.csv";
 
     private static readonly string[] MergerPractices =
-    {
+    [
         "BANKFIELD SURGERY",
         "BEECHWOOD MEDICAL CENTRE",
         "BRIG ROYD SURGERY"
-    };
+    ];
 
     public OrderTests(TestServerFixture fixture, ITestOutputHelper output)
         : base(fixture, output)
