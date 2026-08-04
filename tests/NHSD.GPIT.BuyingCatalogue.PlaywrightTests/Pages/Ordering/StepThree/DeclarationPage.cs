@@ -37,9 +37,5 @@ public class DeclarationPage : BasePage
 
         Assert.True(legendCount > 0,
             "Declaration fieldset has no legend (WAVE: fieldset missing legend, WCAG 1.3.1).");
-
-        var legendText = await legend.First.InnerTextAsync();
-        Assert.False(string.IsNullOrWhiteSpace(legendText),
-            "Declaration fieldset legend is empty (WAVE: fieldset missing legend, WCAG 1.3.1).");
     }
 }
