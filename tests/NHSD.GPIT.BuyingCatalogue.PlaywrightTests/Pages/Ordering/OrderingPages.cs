@@ -353,9 +353,7 @@ public class OrderingPages
         await DataProcessing.NavigateAndContinueAsync();
         await Declaration.NavigateAndAgreeAsync();
     }
-
-    // Navigates to the "What do you want to order?" page and stops there,
-    // without selecting an order type. Used for scanning that page.
+    
     public async Task GoToOrderTypePageAsync()
     {
         _output.WriteLine("Go to order type page");
@@ -365,8 +363,6 @@ public class OrderingPages
         await OrderType.AssertOnPageAsync();
     }
 
-    // Drives the order journey as far as the Declaration page and stops there,
-    // without completing it. Used for scanning that page.
     public async Task GoToDeclarationPageAsync(string solutionName)
     {
         _output.WriteLine("Go to declaration page");
@@ -379,5 +375,36 @@ public class OrderingPages
         await DataProcessing.NavigateAndContinueAsync();
         await Declaration.NavigateAsync();
         await Declaration.AssertOnPageAsync();
+    }
+
+    public async Task GoToUploadServiceRecipientsPageAsync(string solutionName)
+    {
+        _output.WriteLine("Go to upload service recipients page");
+        await LoginAsync();
+        await CreateNewOrderAsync();
+        await StepOnePrepareOrderAsync();
+        await ServiceRecipients.NavigateAsync();
+        await ServiceRecipients.ChooseUploadOptionAsync();
+    }
+
+    public async Task GoToAddServiceRecipientsPageAsync()
+    {
+        _output.WriteLine("Go to add service recipients page");
+        await LoginAsync();
+        await CreateNewOrderAsync();
+        await StepOnePrepareOrderAsync();
+
+        await ServiceRecipients.NavigateAsync();
+        await ServiceRecipients.GoToAddRecipientsPageAsync(_data.Sublocation);
+    }
+
+    public async Task GoToServiceRecipientsOptionPageAsync()
+    {
+        _output.WriteLine("Go to service recipients option page");
+        await LoginAsync();
+        await CreateNewOrderAsync();
+        await StepOnePrepareOrderAsync();
+        await ServiceRecipients.NavigateAsync();
+        await ServiceRecipients.AssertOnPageAsync();
     }
 }

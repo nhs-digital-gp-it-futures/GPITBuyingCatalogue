@@ -86,4 +86,42 @@ public class ServiceRecipientsPage : BasePage
         await AssertHeadingAsync("Confirm service recipients");
         await ClickSaveAndContinueLinkAsync();
     }
+
+    public async Task AssertOnPageAsync() =>
+    await AssertHeadingAsync("Service recipients");
+
+    public async Task ChooseUploadOptionAsync()
+    {
+        await UploadOption.CheckAsync();
+        await ClickSaveAndContinueAsync();
+        await AssertHeadingAsync("Upload service recipients");
+    }
+
+    public async Task GoToAddRecipientsPageAsync(string sublocation)
+    {
+        await ManualOption.CheckAsync();
+        await ClickSaveAndContinueAsync();
+        await AssertHeadingAsync("Select sublocations for this order");
+        await Page.GetByRole(AriaRole.Checkbox, new() { Name = sublocation }).CheckAsync();
+        await ClickSaveAndContinueAsync();
+        await AssertHeadingAsync("Confirm sublocations");
+        await SelectLink.ClickAsync();
+
+        await AssertHeadingAsync("Add service recipients");
+    }
+
+    public async Task AssertRadioGroupHasLegendAsync()
+    {
+        var fieldset = Page.Locator("fieldset:has(input[type='radio'])");
+        var fieldsetCount = await fieldset.CountAsync();
+
+        Assert.True(fieldsetCount > 0,
+            "Recipient option radio group is not wrapped in a fieldset (WAVE: fieldset missing legend, WCAG 1.3.1).");
+
+        var legend = fieldset.Locator("legend");
+        var legendCount = await legend.CountAsync();
+
+        Assert.True(legendCount > 0,
+            "Recipient option fieldset has no legend (WAVE: fieldset missing legend, WCAG 1.3.1).");
+    }
 }

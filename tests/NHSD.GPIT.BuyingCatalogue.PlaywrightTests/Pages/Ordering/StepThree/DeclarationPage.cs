@@ -23,4 +23,23 @@ public class DeclarationPage : BasePage
 
     public async Task AssertOnPageAsync() =>
         await AssertHeadingAsync("Declaration");
+
+    public async Task AssertFieldsetHasLegendAsync()
+    {
+        var fieldset = Page.Locator("fieldset:has(input[type='checkbox'])");
+        var fieldsetCount = await fieldset.CountAsync();
+
+        Assert.True(fieldsetCount > 0,
+            "Declaration checkbox is not wrapped in a fieldset (WAVE: fieldset missing legend, WCAG 1.3.1).");
+
+        var legend = fieldset.Locator("legend");
+        var legendCount = await legend.CountAsync();
+
+        Assert.True(legendCount > 0,
+            "Declaration fieldset has no legend (WAVE: fieldset missing legend, WCAG 1.3.1).");
+
+        var legendText = await legend.First.InnerTextAsync();
+        Assert.False(string.IsNullOrWhiteSpace(legendText),
+            "Declaration fieldset legend is empty (WAVE: fieldset missing legend, WCAG 1.3.1).");
+    }
 }
