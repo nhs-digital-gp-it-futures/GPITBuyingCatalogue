@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         public bool BoldTitle { get; set; }
 
         [HtmlAttributeName(DetailsAndExpanderTagHelperBuilders.AddStyle)]
-        public bool AddStyle { get; set; } = true;
+        public bool AddStyleAttribute { get; set; } = true;
 
         [HtmlAttributeName(TagHelperConstants.Size)]
         public DetailsAndExpanderTagHelperBuilders.DetailsLabelSize Size { get; set; } = DetailsAndExpanderTagHelperBuilders.DetailsLabelSize.Standard;
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
                 output.AddClass(DetailsAndExpanderTagHelperBuilders.DetailsSummaryTextSmallClass, HtmlEncoder.Default);
             }
 
-            if (!AddStyle)
+            if (!AddStyleAttribute)
             {
                 output.AddClass(DetailsAndExpanderTagHelperBuilders.DetailsSummaryTextNoUnderlineClass, HtmlEncoder.Default);
             }
