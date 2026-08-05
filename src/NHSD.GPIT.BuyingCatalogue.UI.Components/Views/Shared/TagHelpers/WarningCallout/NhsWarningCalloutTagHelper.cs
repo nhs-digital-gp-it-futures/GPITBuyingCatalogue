@@ -54,14 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Warnin
             }
         }
 
-        private TagBuilder GetHeaderLabelBuilder()
-        {
-            var builder = FieldSetTagHelperBuilders.GetFieldSetLegendHeadingBuilder(SelectedSize, LabelText);
-            builder.AddCssClass(WarningCalloutLabelClass);
-
-            return builder;
-        }
-
         private static TagBuilder GetRoleSpanBuilder()
         {
             var builder = new TagBuilder(TagHelperConstants.Span);
@@ -73,6 +65,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Warnin
         private static TagBuilder GetContentContainer()
         {
             return new TagBuilder(TagHelperConstants.Paragraph);
+        }
+
+        private TagBuilder GetHeaderLabelBuilder()
+        {
+            var builder = FieldSetTagHelperBuilders.GetFieldSetLegendHeadingBuilder(SelectedSize, LabelText);
+            builder.AddCssClass(WarningCalloutLabelClass);
+
+            return builder;
         }
     }
 }
