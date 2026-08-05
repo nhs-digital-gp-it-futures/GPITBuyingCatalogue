@@ -176,6 +176,13 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Scores)
             .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.CatalogueItem)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.CatalogueItem)
+            .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.CatalogueItem.Solution)
             .ThenInclude(x => x.Integrations)
             .ThenInclude(x => x.IntegrationType)
@@ -366,6 +373,9 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.CatalogueItem.Supplier)
             .Include(x => x.Services)
             .ThenInclude(x => x.CatalogueItem)
+            .Include(x => x.Services)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.CatalogueItem)
             .Where(
                 x => x.CompetitionId == competitionId && x.Competition.Organisation.InternalIdentifier == internalOrgId
                     && !x.IsShortlisted)
@@ -379,6 +389,11 @@ public class CompetitionsService : ICompetitionsService
         var competition = await dbContext.Competitions
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.CatalogueItem)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.Services)
+            .ThenInclude(x => x.CatalogueItem)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         competition.CompetitionSolutions.AddRange(competitionSolutions);
