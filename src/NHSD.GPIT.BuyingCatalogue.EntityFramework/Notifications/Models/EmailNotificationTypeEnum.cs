@@ -4,5 +4,8 @@
     {
         ContractDueToExpire = 1,
         PasswordDueToExpire = 2,
+        InactiveAccount = 3,
+        AccountDeactivation = 4,
+        AccountReactivation = 5,
     }
 }
