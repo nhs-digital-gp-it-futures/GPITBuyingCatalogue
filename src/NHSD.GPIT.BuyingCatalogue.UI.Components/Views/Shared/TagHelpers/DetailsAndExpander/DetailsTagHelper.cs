@@ -19,6 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         [HtmlAttributeName(DetailsAndExpanderTagHelperBuilders.BoldTitle)]
         public bool BoldTitle { get; set; }
 
+        [HtmlAttributeName(DetailsAndExpanderTagHelperBuilders.AddStyle)]
+        public bool AddStyle { get; set; } = true;
+
         [HtmlAttributeName(TagHelperConstants.Size)]
         public DetailsAndExpanderTagHelperBuilders.DetailsLabelSize Size { get; set; } = DetailsAndExpanderTagHelperBuilders.DetailsLabelSize.Standard;
 
@@ -42,6 +45,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             if (Size == DetailsAndExpanderTagHelperBuilders.DetailsLabelSize.Small)
             {
                 output.AddClass(DetailsAndExpanderTagHelperBuilders.DetailsSummaryTextSmallClass, HtmlEncoder.Default);
+            }
+
+            if (!AddStyle)
+            {
+                output.AddClass(DetailsAndExpanderTagHelperBuilders.DetailsSummaryTextNoUnderlineClass, HtmlEncoder.Default);
             }
 
             textItem.InnerHtml.AppendHtml(children);

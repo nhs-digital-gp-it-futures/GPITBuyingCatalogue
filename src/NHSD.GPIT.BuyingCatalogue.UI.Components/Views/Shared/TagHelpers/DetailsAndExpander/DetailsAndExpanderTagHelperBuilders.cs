@@ -9,6 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         public const string CounterClass = "counter-class";
         public const string BoldTitle = "bold-title";
         public const string DetailsSummaryTextSmallClass = "details-size-reducer";
+        public const string DetailsSummaryTextNoUnderlineClass = "details-no-underline";
+        public const string AddStyle = "add-style";
 
         private const string DetailsSummaryClass = "nhsuk-details__summary";
         private const string DetailsSummaryTextClass = "nhsuk-details__summary-text";
