@@ -120,6 +120,8 @@ namespace BuyingCatalogueFunction.Notifications
             {
                 EmailNotificationTypeEnum.ContractDueToExpire => notification.JsonAs<ContractDueToExpireEmailModel>(),
                 EmailNotificationTypeEnum.PasswordDueToExpire => notification.JsonAs<PasswordDueToExpireEmailModel>(),
+                EmailNotificationTypeEnum.InactiveAccount => notification.JsonAs<InactiveAccountEmailModel>(),
+                EmailNotificationTypeEnum.AccountDeactivation => notification.JsonAs<AccountDeactivationEmailModel>(),
                 _ => throw new NoneTransientException(
                     $"Unhandled notification type {notification.EmailNotificationType}")
             };

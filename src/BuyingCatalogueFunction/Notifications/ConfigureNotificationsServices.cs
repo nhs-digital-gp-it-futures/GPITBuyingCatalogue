@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using BuyingCatalogueFunction.Notifications.ContractExpiry.Interfaces;
 using BuyingCatalogueFunction.Notifications.ContractExpiry.Services;
+using BuyingCatalogueFunction.Notifications.InactiveAccount;
 using BuyingCatalogueFunction.Notifications.Interfaces;
 using BuyingCatalogueFunction.Notifications.PasswordExpiry.Interfaces;
 using BuyingCatalogueFunction.Notifications.PasswordExpiry.Services;
@@ -29,6 +30,7 @@ public sealed class ConfigureNotificationsServices : IConfigureServices
 
         services.AddTransient<IContractExpiryService, ContractExpiryService>();
         services.AddTransient<IPasswordExpiryService, PasswordExpiryService>();
+        services.AddTransient<IInactiveAccountsService, InactiveAccountsService>();
         services.AddTransient<IEmailPreferenceService, EmailPreferenceService>();
     }
 

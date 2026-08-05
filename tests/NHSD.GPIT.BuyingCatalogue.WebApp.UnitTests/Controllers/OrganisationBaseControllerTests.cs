@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
@@ -293,7 +294,87 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             mockUsersService.GetUser(user.Id).Returns(user);
 
-            mockUsersService.UpdateUser(user.Id, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId).Returns(Task.CompletedTask);
+            mockUsersService.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = user.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.EmailAddress,
+                Disabled = !model.IsActive!.Value,
+                OrganisationFunction = model.SelectedAccountType,
+                OrganisationId = organisationId,
+                ReactivationDate = model.ReactivationDate,
+            }).Returns(Task.CompletedTask);
+
+            var result = (await controller.EditUser(organisationId, user.Id, model)).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrganisationControllerStub.Users));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_EditUser_Reactivated_ValidModel_ReturnsExpectedResult(
+            int organisationId,
+            AspNetUser user,
+            UserDetailsModel model,
+            [Frozen] IUsersService mockUsersService,
+            OrganisationControllerStub controller)
+        {
+            user.PrimaryOrganisationId = organisationId;
+            model.EmailAddress = "a@b.com";
+            model.OriginalDisabledValue = true;
+            model.OriginalReactivationDate = null;
+            model.IsActive = true;
+
+            mockUsersService.GetUser(user.Id).Returns(user);
+
+            mockUsersService.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = user.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.EmailAddress,
+                Disabled = !model.IsActive!.Value,
+                OrganisationFunction = model.SelectedAccountType,
+                OrganisationId = organisationId,
+                ReactivationDate = model.ReactivationDate,
+            }).Returns(Task.CompletedTask);
+
+            var result = (await controller.EditUser(organisationId, user.Id, model)).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrganisationControllerStub.Users));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_EditUser_PreviouslyReactivated_ValidModel_ReturnsExpectedResult(
+            int organisationId,
+            AspNetUser user,
+            UserDetailsModel model,
+            [Frozen] IUsersService mockUsersService,
+            OrganisationControllerStub controller)
+        {
+            user.PrimaryOrganisationId = organisationId;
+            model.EmailAddress = "a@b.com";
+            model.OriginalDisabledValue = false;
+            model.OriginalReactivationDate = DateTime.UtcNow.AddDays(-20);
+            model.IsActive = true;
+
+            mockUsersService.GetUser(user.Id).Returns(user);
+
+            mockUsersService.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = user.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.EmailAddress,
+                Disabled = !model.IsActive!.Value,
+                OrganisationFunction = model.SelectedAccountType,
+                OrganisationId = organisationId,
+                ReactivationDate = model.ReactivationDate,
+            }).Returns(Task.CompletedTask);
 
             var result = (await controller.EditUser(organisationId, user.Id, model)).As<RedirectToActionResult>();
 

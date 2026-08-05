@@ -37,6 +37,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 
         public DateTime PasswordUpdatedDate { get; set; }
 
+        public AccountDeactivationReason? DeactivationReason { get; set; }
+
+        public DateTime? ReactivationDate { get; set; }
+
+        public DateTime Created { get; set; }
+
         public DateTime LastUpdated { get; set; }
 
         public int? LastUpdatedBy { get; set; }
@@ -59,7 +65,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 
         public ICollection<AspNetUserLoginEvent> LoginEvents { get; set; }
 
-        public ICollection<DateTime> GetLogins() => LoginEvents.Select(le => le.Date).ToList();
+        public ICollection<DateTime> GetLogins() => [.. LoginEvents.Select(le => le.Date)];
+
+        public DateTime LastLoginDate()
+            => LoginEvents.Count > 0 ? LoginEvents.Max(le => le.Date) : Created;
 
         public bool HasAcceptedLatestTermsOfUse(DateTime revisionDate)
             => AcceptedTermsOfUseDate.GetValueOrDefault() >= revisionDate;

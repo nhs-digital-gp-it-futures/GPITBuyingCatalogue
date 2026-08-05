@@ -104,14 +104,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
             var tagColour = status switch
             {
                 AccountStatus.Active => TagColour.Green,
-                AccountStatus.Inactive => TagColour.Grey,
+                AccountStatus.Deactivated => TagColour.Grey,
                 _ => TagColour.Grey,
             };
 
             var text = status switch
             {
                 AccountStatus.Active => "Active",
-                AccountStatus.Inactive => "Inactive",
+                AccountStatus.Deactivated => "Deactivated",
                 _ => string.Empty,
             };
 

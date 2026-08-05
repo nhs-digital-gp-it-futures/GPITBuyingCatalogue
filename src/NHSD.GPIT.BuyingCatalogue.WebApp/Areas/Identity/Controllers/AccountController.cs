@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -29,6 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         private readonly IOdsService odsService;
         private readonly IPasswordService passwordService;
         private readonly IPasswordResetCallback passwordResetCallback;
+        private readonly IUsersService userService;
         private readonly DisabledErrorMessageSettings disabledErrorMessageSettings;
 
         public AccountController(
@@ -37,6 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             IOdsService odsService,
             IPasswordService passwordService,
             IPasswordResetCallback passwordResetCallback,
+            IUsersService userService,
             DisabledErrorMessageSettings disabledErrorMessageSettings)
         {
             this.signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
@@ -44,6 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
             this.passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
+            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.disabledErrorMessageSettings = disabledErrorMessageSettings ?? throw new ArgumentNullException(nameof(disabledErrorMessageSettings));
         }
 
@@ -76,6 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
             if (user.Disabled)
             {
+                await userService.SendDeactivatedUserEmail(user.Email);
+
                 var disabledErrorFormat = string.Format(
                     CultureInfo.CurrentCulture,
                     UserDisabledErrorMessageTemplate,

@@ -58,6 +58,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
 
             builder.Property(u => u.AcceptedTermsOfUseDate);
             builder.Property(u => u.HasOptedInUserResearch);
+            builder.Property(u => u.Created);
+
+            builder.Property(u => u.DeactivationReason)
+                .HasColumnName("DeactivationReasonId")
+                .HasConversion<int?>();
+
+            builder.Property(u => u.ReactivationDate);
 
             builder.HasMany(x => x.Events)
                 .WithOne()

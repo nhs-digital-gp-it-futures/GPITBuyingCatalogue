@@ -13,6 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.YourAccount
         public const string PasswordExpiryLabel = "Password expiring notifications";
         public const string PasswordExpiryHint = "You'll be sent email reminders that your password is about to expire.";
 
+        public const string InactiveAccountLabel = "Account inactivity notifications";
+        public const string InactiveAccountHint = "You'll be sent email reminders that your account is about to be deactivated due to inactivity.";
+
         public override int Index => 1;
 
         public bool Saved { get; set; }
@@ -23,6 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.YourAccount
         {
             EmailPreferenceTypeEnum.ContractExpiry => ContractExpiryLabel,
             EmailPreferenceTypeEnum.PasswordExpiry => PasswordExpiryLabel,
+            EmailPreferenceTypeEnum.InactiveAccount => InactiveAccountLabel,
             _ => throw new InvalidOperationException($"Unhandled email preference type {emailPreferenceType}"),
         };
 
@@ -30,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.YourAccount
         {
             EmailPreferenceTypeEnum.ContractExpiry => ContractExpiryHint,
             EmailPreferenceTypeEnum.PasswordExpiry => PasswordExpiryHint,
+            EmailPreferenceTypeEnum.InactiveAccount => InactiveAccountHint,
             _ => throw new InvalidOperationException($"Unhandled email preference type {emailPreferenceType}"),
         };
     }
