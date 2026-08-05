@@ -17,4 +17,25 @@ public class DeclarationPage : BasePage
         await AgreeCheckbox.CheckAsync();
         await ClickSaveAndContinueAsync();
     }
+
+    public async Task NavigateAsync() =>
+    await NavigationLink.ClickAsync();
+
+    public async Task AssertOnPageAsync() =>
+        await AssertHeadingAsync("Declaration");
+
+    public async Task AssertFieldsetHasLegendAsync()
+    {
+        var fieldset = Page.Locator("fieldset:has(input[type='checkbox'])");
+        var fieldsetCount = await fieldset.CountAsync();
+
+        Assert.True(fieldsetCount > 0,
+            "Declaration checkbox is not wrapped in a fieldset (WAVE: fieldset missing legend, WCAG 1.3.1).");
+
+        var legend = fieldset.Locator("legend");
+        var legendCount = await legend.CountAsync();
+
+        Assert.True(legendCount > 0,
+            "Declaration fieldset has no legend (WAVE: fieldset missing legend, WCAG 1.3.1).");
+    }
 }

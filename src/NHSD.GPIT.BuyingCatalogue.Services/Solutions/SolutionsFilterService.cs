@@ -185,6 +185,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution)
                 .ThenInclude(s => s.FrameworkSolutions)
                 .ThenInclude(s => s.Framework)
+                .Include(i => i.Solution)
+                .ThenInclude(s => s.AdditionalServices
+                    .Where(adit => AllowedPublicationStatuses.Contains(adit.CatalogueItem.PublishedStatus, null)))
+                .ThenInclude(adit => adit.CatalogueItem)
+                .ThenInclude(ci => ci.CatalogueItemCapabilities)
+                .ThenInclude(cic => cic.Capability)
                 .Include(i => i.Supplier)
                 .Include(i => i.CatalogueItemCapabilities)
                 .ThenInclude(cic => cic.Capability)
