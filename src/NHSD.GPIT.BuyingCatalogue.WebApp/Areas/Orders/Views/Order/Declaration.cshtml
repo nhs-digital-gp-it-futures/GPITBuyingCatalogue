@@ -8,13 +8,14 @@
 
         <nhs-page-title model="Model"/>
 
-        <span>
+        <div>
+            <p><a href="@Model.CallOffTermsUrl" target="_blank">Call-off procedure, terms and conditions (opens in a new tab)</a></p>
             <p>I confirm that I have read and understood:</p>
             <ul>
-                <li>the <a href="@Model.CallOffTermsUrl" target="_blank">Call-off terms and conditions (opens in a new tab)</a> before I submit my order</li>
-                <li>the <a href="@Model.CallOffTermsUrl" target="_blank">Call-off procedure (opens in a new tab)</a> if I have completed a competition</li>
+                <li>the Call-off terms and conditions before I submit my order</li>
+                <li>the Call-off procedure if I have completed a competition</li>
             </ul>
-        </span>
+        </div>
 
         <form method="post">
             <input type="hidden" asp-for="CallOffId" />
