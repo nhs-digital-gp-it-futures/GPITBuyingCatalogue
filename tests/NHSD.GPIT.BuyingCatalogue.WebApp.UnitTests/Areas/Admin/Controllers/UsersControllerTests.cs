@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -306,8 +307,92 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockUsersService.GetUser(userId).Returns(user);
 
             model.SelectedOrganisationId = 1;
+            model.OriginalDisabledValue = false;
+            model.OriginalReactivationDate = null;
+            model.IsActive = true;
 
-            mockUsersService.UpdateUser(userId, model.FirstName, model.LastName, model.Email, !model.IsActive!.Value, model.SelectedAccountType, model.SelectedOrganisationId!.Value).Returns(Task.CompletedTask);
+            mockUsersService.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = userId,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                Disabled = !model.IsActive!.Value,
+                OrganisationFunction = model.SelectedAccountType,
+                OrganisationId = model.SelectedOrganisationId!.Value,
+                ReactivationDate = model.ReactivationDate,
+            })
+            .Returns(Task.CompletedTask);
+
+            var result = (await controller.Edit(userId, model)).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(UsersController.Index));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_EditUser_ValidModel_ReactivatedUser_ReturnsExpectedResult(
+            int userId,
+            AspNetUser user,
+            UserDetailsModel model,
+            [Frozen] IUsersService mockUsersService,
+            UsersController controller)
+        {
+            mockUsersService.GetUser(userId).Returns(user);
+
+            model.SelectedOrganisationId = 1;
+            model.OriginalDisabledValue = true;
+            model.OriginalReactivationDate = null;
+            model.IsActive = true;
+
+            mockUsersService.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = userId,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                Disabled = !model.IsActive!.Value,
+                OrganisationFunction = model.SelectedAccountType,
+                OrganisationId = model.SelectedOrganisationId!.Value,
+                ReactivationDate = model.ReactivationDate,
+            })
+            .Returns(Task.CompletedTask);
+
+            var result = (await controller.Edit(userId, model)).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(UsersController.Index));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_EditUser_ValidModel_PreviouslyReactivatedUser_ReturnsExpectedResult(
+            int userId,
+            AspNetUser user,
+            UserDetailsModel model,
+            [Frozen] IUsersService mockUsersService,
+            UsersController controller)
+        {
+            mockUsersService.GetUser(userId).Returns(user);
+
+            model.SelectedOrganisationId = 1;
+            model.OriginalDisabledValue = false;
+            model.OriginalReactivationDate = DateTime.UtcNow.AddDays(-20);
+            model.IsActive = true;
+
+            mockUsersService.UpdateUser(new UpdateUserRequest()
+                {
+                    UserId = user.Id,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    Disabled = !model.IsActive!.Value,
+                    OrganisationFunction = model.SelectedAccountType,
+                    OrganisationId = model.SelectedOrganisationId!.Value,
+                    ReactivationDate = model.ReactivationDate,
+                })
+                .Returns(Task.CompletedTask);
 
             var result = (await controller.Edit(userId, model)).As<RedirectToActionResult>();
 

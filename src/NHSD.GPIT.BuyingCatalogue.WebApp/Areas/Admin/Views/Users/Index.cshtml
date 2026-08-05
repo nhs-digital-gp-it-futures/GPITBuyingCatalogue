@@ -72,7 +72,7 @@
                         <nhs-table-cell>
                             <span data-test-id="user-status">
                                 @{
-                                    var status = user.Disabled ? AccountStatus.Inactive : AccountStatus.Active;
+                                    var status = user.Disabled ? AccountStatus.Deactivated : AccountStatus.Active;
                                 }
                                 <nhs-tag status-enum="@status"/>
                             </span>

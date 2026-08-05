@@ -1,4 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels.UserDetailsModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels
+
+@model UserDetailsModel
 @{
     ViewBag.Title = Model.Title;
 }
@@ -17,6 +19,8 @@
                 <input type="hidden" asp-for="UserId" />
                 <input type="hidden" asp-for="BackLink" />
                 <input type="hidden" asp-for="Title" />
+                <input type="hidden" asp-for="OriginalDisabledValue" />
+                <input type="hidden" asp-for="OriginalReactivationDate" />
 
                 <nhs-auto-complete asp-for="SelectedOrganisationId"
                                    asp-items="@Model.Organisations"
@@ -48,10 +52,15 @@
                                          label-hint="Select one option."
                                          size="Medium">
                     <nhs-radio-buttons asp-for="IsActive"
-                                       values="@Model.StatusOptions.Cast<object>()"
+                                       values="UserDetailsModel.StatusOptions.Cast<object>()"
                                        value-name="Value"
                                        display-name="Text" />
                 </nhs-fieldset-form-label>
+                
+                @if (!Model.IsActive == true && Model.DeactivationReason is not null)
+                {
+                    <p>Deactivation reason: @Model.DeactivationReason</p>
+                }
             </div>
 
             <nhs-submit-button/>

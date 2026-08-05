@@ -4,5 +4,6 @@
     {
         ContractExpiry = 1,
         PasswordExpiry = 2,
+        InactiveAccount = 3,
     }
 }
