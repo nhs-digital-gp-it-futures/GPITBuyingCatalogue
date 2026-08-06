@@ -11,7 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Models
         public static void Constructor_PropertiesCorrectlySet()
         {
             var model = new YourAccountModelStub();
-            model.ShowBackToTop.Should().BeFalse();
             model.ShowBreadcrumb.Should().BeFalse();
             model.ShowPagination.Should().BeFalse();
             model.ShowSideNavigation.Should().BeTrue();

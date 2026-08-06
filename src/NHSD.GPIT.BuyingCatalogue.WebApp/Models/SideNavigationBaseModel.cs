@@ -20,8 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public bool ShowPagination { get; set; }
 
-        public bool ShowBackToTop { get; set; }
-
         public string FirstSection => sections.Any() ? sections[0].Name : null;
 
         public string SelectedSection => Index >= 0 && Index < sections.Count ? sections[Index].Name : null;
