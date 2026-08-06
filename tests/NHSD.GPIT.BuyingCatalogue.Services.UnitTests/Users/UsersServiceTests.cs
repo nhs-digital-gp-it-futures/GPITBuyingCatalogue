@@ -13,9 +13,13 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
+using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
@@ -187,35 +191,134 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task UpdateUser_UpdatesDatabaseCorrectly(
-            string firstName,
-            string lastName,
-            string email,
             string accountType,
-            int organisationId,
             [Frozen] BuyingCatalogueDbContext context,
             [Frozen] UserManager<AspNetUser> userManager,
             AspNetUser user,
             UsersService service)
         {
+            user.Disabled = false;
+
+            context.Roles.Add(new() { Name = accountType, NormalizedName = accountType.ToUpperInvariant() });
+            context.AspNetUsers.Add(user);
+            await context.SaveChangesAsync();
+
+            await service.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Disabled = false,
+                OrganisationFunction = accountType,
+                OrganisationId = user.PrimaryOrganisationId,
+                ReactivationDate = null,
+            });
+
+            var actual = await userManager.Users.Include(u => u.AspNetUserRoles)
+                .ThenInclude(r => r.Role)
+                .FirstAsync(u => u.Id == user.Id);
+
+            actual.FirstName.Should().Be(user.FirstName);
+            actual.LastName.Should().Be(user.LastName);
+            actual.Email.Should().Be(user.Email);
+            actual.UserName.Should().Be(user.Email);
+            actual.Disabled.Should().Be(false);
+            actual.DeactivationReason.Should().BeNull();
+            actual.AspNetUserRoles.Select(u => u.Role).Should().Contain(x => x.Name == accountType);
+            actual.PrimaryOrganisationId.Should().Be(user.PrimaryOrganisationId);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task UpdateUser_DisableAccount_UpdatesDatabaseCorrectly(
+            string accountType,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] UserManager<AspNetUser> userManager,
+            AspNetUser user,
+            UsersService service)
+        {
+            user.Disabled = false;
+
+            context.Roles.Add(new() { Name = accountType, NormalizedName = accountType.ToUpperInvariant() });
+            context.AspNetUsers.Add(user);
+            await context.SaveChangesAsync();
+
+            await service.UpdateUser(new UpdateUserRequest()
+                {
+                    UserId = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Disabled = true,
+                    OrganisationFunction = accountType,
+                    OrganisationId = user.PrimaryOrganisationId,
+                    ReactivationDate = null,
+                });
+
+            var actual = await userManager.Users.Include(u => u.AspNetUserRoles)
+                .ThenInclude(r => r.Role)
+                .FirstAsync(u => u.Id == user.Id);
+
+            actual.FirstName.Should().Be(user.FirstName);
+            actual.LastName.Should().Be(user.LastName);
+            actual.Email.Should().Be(user.Email);
+            actual.UserName.Should().Be(user.Email);
+            actual.Disabled.Should().Be(true);
+            actual.DeactivationReason.Should().Be(AccountDeactivationReason.Manual);
+            actual.AspNetUserRoles.Select(u => u.Role).Should().Contain(x => x.Name == accountType);
+            actual.PrimaryOrganisationId.Should().Be(user.PrimaryOrganisationId);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task UpdateUser_ReactivatingAccount_UpdatesDatabaseCorrectly(
+            string accountType,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] UserManager<AspNetUser> userManager,
+            [Frozen] AccountTemplateSettings accountTemplateSettings,
+            [Frozen] IGovNotifyEmailService govNotifyEmailService,
+            AspNetUser user,
+            UsersService service)
+        {
+            var reactivationDate = DateTime.UtcNow;
+            accountTemplateSettings.AccountReactivationTemplateId = "TestTemplateId";
             user.Disabled = true;
 
             context.Roles.Add(new() { Name = accountType, NormalizedName = accountType.ToUpperInvariant() });
             context.AspNetUsers.Add(user);
             await context.SaveChangesAsync();
 
-            await service.UpdateUser(user.Id, firstName, lastName, email, false, accountType, organisationId);
+            await service.UpdateUser(new UpdateUserRequest()
+            {
+                UserId = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Disabled = false,
+                OrganisationFunction = accountType,
+                OrganisationId = user.PrimaryOrganisationId,
+                ReactivationDate = reactivationDate,
+            });
+
+            await govNotifyEmailService.Received().SendEmailAsync(
+                user.Email,
+                accountTemplateSettings.AccountReactivationTemplateId,
+                null);
 
             var actual = await userManager.Users.Include(u => u.AspNetUserRoles)
                 .ThenInclude(r => r.Role)
                 .FirstAsync(u => u.Id == user.Id);
 
-            actual.FirstName.Should().Be(firstName);
-            actual.LastName.Should().Be(lastName);
-            actual.Email.Should().Be(email);
-            actual.UserName.Should().Be(email);
+            actual.FirstName.Should().Be(user.FirstName);
+            actual.LastName.Should().Be(user.LastName);
+            actual.Email.Should().Be(user.Email);
+            actual.UserName.Should().Be(user.Email);
             actual.Disabled.Should().Be(false);
+            actual.DeactivationReason.Should().Be(null);
             actual.AspNetUserRoles.Select(u => u.Role).Should().Contain(x => x.Name == accountType);
-            actual.PrimaryOrganisationId.Should().Be(organisationId);
+            actual.PrimaryOrganisationId.Should().Be(user.PrimaryOrganisationId);
+            actual.ReactivationDate.Should().Be(reactivationDate);
         }
 
         [Theory]
@@ -366,6 +469,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             var result = await service.IsAccountManagerLimit(testOrgId);
 
             result.Should().BeFalse();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task SendDeactivatedUserEmail_SendsCorrectEmailTemplate(
+            AspNetUser user,
+            [Frozen] AccountTemplateSettings accountTemplateSettings,
+            [Frozen] IGovNotifyEmailService govNotifyEmailService,
+            UsersService service)
+        {
+            accountTemplateSettings.AccountDeactivationTemplateId = "TestTemplateId";
+
+            await service.SendDeactivatedUserEmail(user.Email);
+            await govNotifyEmailService.Received().SendEmailAsync(
+                user.Email,
+                accountTemplateSettings.AccountDeactivationTemplateId,
+                null);
         }
 
         private static async Task AddAccountManagerToOrganisation(

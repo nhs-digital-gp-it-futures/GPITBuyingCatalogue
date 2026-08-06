@@ -27,6 +27,8 @@
      LastUpdatedBy int NULL,
      HasOptedInUserResearch BIT DEFAULT 0 NOT NULL,
      AcceptedTermsOfUseDate DATETIME2(7) NULL,
+     DeactivationReasonId INT NULL,
+     ReactivationDate DATETIME2(7) NULL,
      SysStartTime datetime2(0) NOT NULL,
      SysEndTime datetime2(0) NOT NULL
 );

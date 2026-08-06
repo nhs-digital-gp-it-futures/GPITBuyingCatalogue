@@ -1,7 +1,7 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
-@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.UserDetailsModel
+﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
+
+@model UserDetailsModel
 @{
     ViewBag.Title = Model.Title;
 }
@@ -23,6 +23,8 @@
                 <input type="hidden" asp-for="BackLink" />
                 <input type="hidden" asp-for="IsDefaultAccountType" />
                 <input type="hidden" asp-for="MaxNumberOfAccountManagers" />
+                <input type="hidden" asp-for="OriginalDisabledValue" />
+                <input type="hidden" asp-for="OriginalReactivationDate" />
 
                 <nhs-input
                     asp-for="@Model.FirstName"
@@ -68,10 +70,15 @@
                                          label-hint="Select one option."
                                          size="Medium">
                     <nhs-radio-buttons asp-for="IsActive"
-                                       values="@Model.StatusOptions.Cast<object>()"
+                                       values="UserDetailsModel.StatusOptions.Cast<object>()"
                                        value-name="Value"
                                        display-name="Text" />
                 </nhs-fieldset-form-label>
+
+                @if (!Model.IsActive == true && Model.DeactivationReason is not null)
+                {
+                    <p>Deactivation reason: @Model.DeactivationReason</p>
+                }
 
                 <div data-test-id="add-user-button">
                     <nhs-submit-button />

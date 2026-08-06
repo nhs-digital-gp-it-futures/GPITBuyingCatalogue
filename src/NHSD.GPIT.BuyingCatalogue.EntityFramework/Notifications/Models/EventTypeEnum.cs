@@ -8,5 +8,11 @@
         PasswordEnteredFirstExpiryThreshold = 3,
         PasswordEnteredSecondExpiryThreshold = 4,
         PasswordEnteredThirdExpiryThreshold = 5,
+        InactivityEnteredFirstExpiryThreshold = 6,
+        InactivityEnteredSecondExpiryThreshold = 7,
+        InactivityEnteredThirdExpiryThreshold = 8,
+        InactivityEnteredForthExpiryThreshold = 9,
+        InactivityEnteredExpiredThreshold = 10,
+        UserAccountReactivated = 11,
     }
 }

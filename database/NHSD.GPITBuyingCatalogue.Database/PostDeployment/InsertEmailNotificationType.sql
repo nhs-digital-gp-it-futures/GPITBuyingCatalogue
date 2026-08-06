@@ -2,7 +2,9 @@ MERGE INTO [notifications].[EmailNotificationTypes] AS TARGET
 USING (
 VALUES 
     (1, 'ContractDueToExpire'),
-    (2, 'PasswordDueToExpire')
+    (2, 'PasswordDueToExpire'),
+    (3, 'InactiveAccount'),
+    (4, 'AccountDeactivation')
 )
 
 AS SOURCE ([Id], [Name])
