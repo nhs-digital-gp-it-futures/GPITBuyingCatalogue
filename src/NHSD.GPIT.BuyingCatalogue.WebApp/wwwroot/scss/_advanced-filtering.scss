@@ -7,6 +7,10 @@ details.details-size-reducer {
     margin-bottom: 8px;
 }
 
+.details-no-underline .nhsuk-details__summary-text {
+    text-decoration: none;
+}
+
 .bc-wider-container {
     max-width: 1060px;
 }
