@@ -44,7 +44,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Warnin
                 var roleSpan = GetRoleSpanBuilder();
                 var contentContainer = GetContentContainer();
 
-                roleSpan.InnerHtml.AppendHtml(hiddenSpan);
+                roleSpan.InnerHtml
+                    .AppendHtml(hiddenSpan)
+                    .Append(LabelText);
                 label.InnerHtml.AppendHtml(roleSpan);
 
                 contentContainer.InnerHtml.AppendHtml(children);
@@ -69,7 +71,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Warnin
 
         private TagBuilder GetHeaderLabelBuilder()
         {
-            var builder = FieldSetTagHelperBuilders.GetFieldSetLegendHeadingBuilder(SelectedSize, LabelText);
+            var headingSize = SelectedSize switch
+            {
+                FieldSetTagHelperBuilders.FieldSetSize.ExtraLarge => TagHelperConstants.HeaderOne,
+                FieldSetTagHelperBuilders.FieldSetSize.Large => TagHelperConstants.HeaderTwo,
+                FieldSetTagHelperBuilders.FieldSetSize.Medium => TagHelperConstants.HeaderThree,
+                _ => TagHelperConstants.HeaderFour,
+            };
+            var builder = new TagBuilder(headingSize);
             builder.AddCssClass(WarningCalloutLabelClass);
 
             return builder;
