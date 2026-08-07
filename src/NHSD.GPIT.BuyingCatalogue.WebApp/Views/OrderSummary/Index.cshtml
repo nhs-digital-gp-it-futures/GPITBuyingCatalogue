@@ -329,7 +329,7 @@
 
                 @if (Model.Order.GetAssociatedServices().Any() || Model.PreviousAssociatedServicesGrouping.Any())
                     {
-                        var solutionName = Model.Order.GetSolutions().First().CatalogueItem.Name;
+                        var solutionName = Model.Order.GetSolutions().FirstOrDefault()?.CatalogueItem?.Name;
                         <h2>@(Model.Order.GetAssociatedServices().Count() > 1 ? "Associated services" : "Associated service") details</h2>
                         if (Model.AssociatedServicesForCurrentOrder.Any())
                         {
