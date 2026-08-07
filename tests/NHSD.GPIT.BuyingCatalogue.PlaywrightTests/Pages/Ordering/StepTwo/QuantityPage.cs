@@ -10,7 +10,10 @@ public class QuantityPage : BasePage
 
     public QuantityPage(IPage page) : base(page) { }
 
-    public async Task EnterQuantitiesAsync(Dictionary<string, string> practiceQuantities, bool completeEdit = true)
+    public async Task EnterQuantitiesAsync(
+    Dictionary<string, string> practiceQuantities,
+    bool completeEdit = true,
+    bool stopOnConfirm = false)
     {
         await AssertHeadingAsync("Catalogue solution and services");
         await StartLink.ClickAsync();
@@ -29,6 +32,10 @@ public class QuantityPage : BasePage
         await ClickSaveAndContinueAsync();
 
         await AssertHeadingAsync("Confirm quantities");
+
+        if (stopOnConfirm)
+            return;
+
         await ClickContinueLinkAsync();
 
         if (completeEdit)

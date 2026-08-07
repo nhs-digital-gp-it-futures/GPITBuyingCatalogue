@@ -52,4 +52,17 @@ public abstract class BasePage
 
         return await Page.RunAxe(options);
     }
+
+    // Asserts the page has a meaningful title, not empty and not a generic fallback.
+    public async Task AssertPageHasMeaningfulTitleAsync(string genericFallback = "Buying Catalogue")
+    {
+        var title = await Page.TitleAsync();
+
+        Assert.False(string.IsNullOrWhiteSpace(title),
+            "Page title is empty (WAVE: missing or uninformative page title, WCAG 2.4.2).");
+
+        Assert.False(
+            string.Equals(title.Trim(), genericFallback, System.StringComparison.OrdinalIgnoreCase),
+            $"Page title is uninformative, just '{genericFallback}' (WAVE: uninformative page title, WCAG 2.4.2).");
+    }
 }

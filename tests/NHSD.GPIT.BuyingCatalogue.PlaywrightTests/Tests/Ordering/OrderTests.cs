@@ -202,4 +202,20 @@ public class OrderTests : BaseTest
         await orderPages.GoToDeclarationPageAsync(SolutionName);
         await orderPages.Declaration.AssertFieldsetHasLegendAsync();
     }
+
+    [Fact]
+    [Trait("Category", Categories.Regression)]
+    public async Task CatalogueSolutionsPage_HeadingLevelsNotSkipped()
+    {
+        await orderPages.GoToCatalogueSolutionsPageAsync();
+        await orderPages.CatalogueSolutions.AssertHeadingLevelsNotSkippedAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.Regression)]
+    public async Task CatalogueSolutionsPage_SearchLabelIsAssociated()
+    {
+        await orderPages.GoToCatalogueSolutionsPageAsync();
+        await orderPages.CatalogueSolutions.AssertSearchLabelIsAssociatedAsync();
+    }
 }

@@ -53,17 +53,15 @@ public class AccessibilityTests : BaseTest
     public async Task DeclarationPage_HasMeaningfulPageTitle()
     {
         await orderPages.GoToDeclarationPageAsync(SolutionName);
-        var result = await orderPages.OrderType.RunAccessibilityScanAsync();
+        await orderPages.Declaration.AssertPageHasMeaningfulTitleAsync();
+    }
 
-        AccessibilityReporter.Report(result, Output, "What do you want to order? (order type page)");
-
-        var blocking = result.Violations
-            .Where(v => v.Impact == "critical" || v.Impact == "serious")
-            .ToList();
-
-        Assert.True(
-            blocking.Count == 0,
-            $"Login page has {blocking.Count} critical or serious accessibility violations. See test output for detail.");
+    [Fact]
+    [Trait("Category", Categories.Regression)]
+    public async Task OrderCompletedPage_HasMeaningfulPageTitle()
+    {
+        await orderPages.GoToOrderCompletedPageAsync(SolutionName);
+        await orderPages.ReviewOrder.AssertPageHasMeaningfulTitleAsync();
     }
 
     [Fact]
@@ -101,4 +99,41 @@ public class AccessibilityTests : BaseTest
             blocking.Count == 0,
             $"Login page has {blocking.Count} critical or serious accessibility violations. See test output for detail.");
     }
+
+    [Fact]
+    [Trait("Category", Categories.Accessibility)]
+    public async Task ReviewPlannedDeliveryDatesPage_AccessibilityScan()
+    {
+        await orderPages.GoToReviewPlannedDeliveryDatesPageAsync(SolutionName);
+        var result = await orderPages.PlannedDeliveryDates.RunAccessibilityScanAsync();
+
+        AccessibilityReporter.Report(result, Output, "Review planned delivery dates page");
+
+        var blocking = result.Violations
+            .Where(v => v.Impact == "critical" || v.Impact == "serious")
+            .ToList();
+
+        Assert.True(
+            blocking.Count == 0,
+            $"Login page has {blocking.Count} critical or serious accessibility violations. See test output for detail.");
+    }
+
+    [Fact]
+    [Trait("Category", Categories.Accessibility)]
+    public async Task ConfirmQuantitiesPage_AccessibilityScan()
+    {
+        await orderPages.GoToConfirmQuantitiesPageAsync(SolutionName);
+        var result = await orderPages.Quantity.RunAccessibilityScanAsync();
+
+        AccessibilityReporter.Report(result, Output, "Confirm quantities page");
+
+        var blocking = result.Violations
+            .Where(v => v.Impact == "critical" || v.Impact == "serious")
+            .ToList();
+
+        Assert.True(
+            blocking.Count == 0,
+            $"Confirm quantities page has {blocking.Count} critical or serious accessibility violations. See test output for detail.");
+    }
+
 }
