@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
@@ -13,23 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
         private const string TableRowClass = "nhsuk-table__row";
         private const string TableRowRole = "row";
-
-        public override void Init(TagHelperContext context)
-        {
-            if (!context.Items.TryGetValue(TagHelperConstants.ColumnNameContextName, out object columnNames))
-                return;
-
-            var columnNamesConverted =
-                (List<(TagHelperContent HeaderContent, TagHelperContent CellHeadingContent, bool Numeric)>)columnNames;
-
-            if (columnNamesConverted.Count == 0)
-                return;
-
-            var cellColumnNames =
-                new Queue<TagHelperContent>(columnNamesConverted.Select(c => c.CellHeadingContent).ToList());
-
-            context.Items.Add(TagHelperConstants.CellColumnContextName, cellColumnNames);
-        }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {

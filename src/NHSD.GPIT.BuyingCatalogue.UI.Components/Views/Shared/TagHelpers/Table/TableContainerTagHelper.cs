@@ -102,12 +102,20 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
         private static TagBuilder GetHeaderColumnBuilder(TagHelperContent columnName)
         {
-            var builder = new TagBuilder("th");
-            builder.MergeAttribute(TagHelperConstants.Role, HeaderRowColumnRole);
-            builder.MergeAttribute(TagHelperConstants.Scope, HeaderRowColumnScope);
+            TagBuilder builder;
+
+            if (!string.IsNullOrWhiteSpace(columnName.GetContent()))
+            {
+                builder = new TagBuilder("th");
+                builder.MergeAttribute(TagHelperConstants.Role, HeaderRowColumnRole);
+                builder.MergeAttribute(TagHelperConstants.Scope, HeaderRowColumnScope);
+            }
+            else
+            {
+                builder = new TagBuilder("td");
+            }
 
             builder.InnerHtml.AppendHtml(columnName);
-
             return builder;
         }
 
