@@ -5,9 +5,9 @@
         <div class="nhsuk-grid-column-full">
             <partial name="_solutionSummary" model="Model"/>
             <p>View information about the systems this catalogue solution integrates with to exchange data:</p>
-            <h3>
+            <h2>
                 NHS assured integrations
-            </h3>
+            </h2>
             <p>
                 There are three types of integrations specified and assured by the NHS: IM1, GP Connect and the NHS App.
             </p>
@@ -26,7 +26,7 @@
 
             @if (Model.IM1Integrations.Any())
             {
-                <h3 class="nhsuk-heading-s">IM1 integrations</h3>
+                <h2 class="nhsuk-heading-s">IM1 integrations</h2>
 
                 @foreach (var integrations in Model.IM1Integrations.GroupBy(x => x.IntegrationType.Name))
                 {
@@ -67,7 +67,7 @@
 
             @if (Model.GpConnectIntegrations.Any())
             {
-                <h3 class="nhsuk-heading-s">GP Connect integrations</h3>
+                <h2 class="nhsuk-heading-s">GP Connect integrations</h2>
 
                 @foreach (var integrations in Model.GpConnectIntegrations.GroupBy(x => x.IntegrationType.Name))
                 {
@@ -119,7 +119,7 @@
 
             @if (!string.IsNullOrWhiteSpace(Model.IntegrationsUrl))
             {
-                <h6 class="nhsuk-heading-s">Supplier asserted integrations</h6>
+                <h3 class="nhsuk-heading-s">Supplier asserted integrations</h3>
                 <p>Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</p>
                 <p>
                     <a href="@Model.IntegrationsUrl" target="_blank">
