@@ -89,27 +89,5 @@
 
     <partial name="Partials/_JsAssetIncludes" />
 
-@if (Model.ShowBackToTop)
-{
-        <a href="#">
-            <div class="scroll-to-top-container">
-                <div class="goup-arrow"></div>
-
-                <div class="scroll-to-top-text">Back to top</div>
-            </div>
-        </a>
-        <script>
-            window.onscroll = function () {
-                var scrollToTopContainer = document.querySelector('.scroll-to-top-container');
-                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-                    scrollToTopContainer.classList.add('show');
-                } else {
-                    scrollToTopContainer.classList.remove('show');
-                }
-            };
-
-        </script>
-    }
-
 </body>
 </html>
