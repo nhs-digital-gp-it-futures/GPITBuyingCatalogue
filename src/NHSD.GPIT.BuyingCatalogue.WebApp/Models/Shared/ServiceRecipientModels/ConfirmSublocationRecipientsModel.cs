@@ -97,14 +97,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             string continueLinkUrl)
         {
             Title = "Confirm service recipients";
-
             BackLink = backLinkUrl;
-
-            AddRemoveRecipientsLink = BackLink;
             SaveAndContinueLink = continueLinkUrl;
         }
-
-        public string AddRemoveRecipientsLink { get; init; }
 
         public string SaveAndContinueLink { get; init; }
 

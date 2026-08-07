@@ -12,7 +12,7 @@
             {
                 <nhs-table-column>Planned delivery date</nhs-table-column>
             }
-            <nhs-table-column></nhs-table-column>
+            <nhs-table-column><a class="nhsuk-link nhsuk-link--no-visited-state" style="float: right;" href="@Model.EditDatesUrl">Change</a></nhs-table-column>
             @foreach (var (odsCode, name, deliveryDate) in Model.Recipients)
             {
                 <nhs-table-row-container>
@@ -22,7 +22,7 @@
                     {
                         <nhs-table-cell>@GetFormattedDate(deliveryDate)</nhs-table-cell>
                     }
-                    <nhs-table-cell><a class="nhsuk-link nhsuk-link--no-visited-state" style="float: right;" href="@Model.EditDatesUrl">Change</a></nhs-table-cell>
+                    <nhs-table-cell></nhs-table-cell>
                 </nhs-table-row-container>
             }
         </nhs-table>

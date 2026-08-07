@@ -44,6 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
                 output.AddClass(DetailsAndExpanderTagHelperBuilders.DetailsSummaryTextSmallClass, HtmlEncoder.Default);
             }
 
+            output.AddClass(DetailsAndExpanderTagHelperBuilders.DetailsSummaryTextNoUnderlineClass, HtmlEncoder.Default);
+
             textItem.InnerHtml.AppendHtml(children);
 
             output.Content

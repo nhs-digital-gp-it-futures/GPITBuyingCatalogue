@@ -58,7 +58,7 @@ class suggestionSearchConfig {
 
     Implement() {
         this.defaultInput.parentNode.removeChild(this.defaultInput);
-        this.formInputLabel.removeAttribute("for");
+        this.formInputLabel.setAttribute("for", this.modelId);
         this.form.firstElementChild.removeAttribute("style");
         accessibleAutocomplete({
             element: document.getElementById(this.modelId.concat("-container")),

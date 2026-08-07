@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldSet;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.WarningCallout
 {
@@ -16,6 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Warnin
 
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
+
+        [HtmlAttributeName(TagHelperConstants.Size)]
+        public FieldSetTagHelperBuilders.FieldSetSize SelectedSize { get; set; } = FieldSetTagHelperBuilders.FieldSetSize.Medium;
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
@@ -52,14 +56,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Warnin
             }
         }
 
-        private static TagBuilder GetHeaderLabelBuilder()
-        {
-            var builder = new TagBuilder(TagHelperConstants.HeaderThree);
-            builder.AddCssClass(WarningCalloutLabelClass);
-
-            return builder;
-        }
-
         private static TagBuilder GetRoleSpanBuilder()
         {
             var builder = new TagBuilder(TagHelperConstants.Span);
@@ -71,6 +67,21 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Warnin
         private static TagBuilder GetContentContainer()
         {
             return new TagBuilder(TagHelperConstants.Paragraph);
+        }
+
+        private TagBuilder GetHeaderLabelBuilder()
+        {
+            var headingSize = SelectedSize switch
+            {
+                FieldSetTagHelperBuilders.FieldSetSize.ExtraLarge => TagHelperConstants.HeaderOne,
+                FieldSetTagHelperBuilders.FieldSetSize.Large => TagHelperConstants.HeaderTwo,
+                FieldSetTagHelperBuilders.FieldSetSize.Medium => TagHelperConstants.HeaderThree,
+                _ => TagHelperConstants.HeaderFour,
+            };
+            var builder = new TagBuilder(headingSize);
+            builder.AddCssClass(WarningCalloutLabelClass);
+
+            return builder;
         }
     }
 }

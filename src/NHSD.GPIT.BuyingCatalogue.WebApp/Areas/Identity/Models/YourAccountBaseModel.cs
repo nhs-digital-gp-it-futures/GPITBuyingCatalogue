@@ -12,7 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
         {
             SetSections();
 
-            ShowBackToTop = false;
             ShowSideNavigation = true;
             ShowPagination = false;
         }
