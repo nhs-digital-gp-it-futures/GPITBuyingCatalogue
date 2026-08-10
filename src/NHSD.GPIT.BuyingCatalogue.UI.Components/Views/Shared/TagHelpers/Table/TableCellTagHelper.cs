@@ -14,7 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
         private const string CellRole = "cell";
         private const string CellClass = "nhsuk-table__cell";
         private const string CellClassNumeric = "nhsuk-table__cell--numeric";
-        private const string HeadingClass = "nhsuk-table-responsive__heading";
         private const string NumericName = "numeric";
 
         [HtmlAttributeName(NumericName)]

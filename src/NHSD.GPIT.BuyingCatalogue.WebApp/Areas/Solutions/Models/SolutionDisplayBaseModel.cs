@@ -48,7 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             SetBreadcrumb();
             SetPaginationFooter();
 
-            ShowBackToTop = true;
             ShowSideNavigation = !IsSuspended();
             ShowPagination = !IsSuspended() && !IsSubPage;
         }
@@ -138,14 +137,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Name = "Catalogue solutions",
                     Show = true,
                     RouteData = new Dictionary<string, string> { { "area", typeof(SolutionsController).AreaName() }, },
-                },
-                new()
-                {
-                    Action = nameof(SolutionsController.Description),
-                    Controller = typeof(SolutionsController).ControllerName(),
-                    Name = SolutionName,
-                    Show = NotFirstSection,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
             };
         }
