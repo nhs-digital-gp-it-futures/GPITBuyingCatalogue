@@ -40,6 +40,7 @@ public class OrderingPages
     public DeclarationPage Declaration { get; }
     public ReviewOrderPage ReviewOrder { get; }
     public CatalogueSolutionsPage CatalogueSolutions { get; }
+    public SolutionSummaryPage SolutionSummary { get; }
 
     public OrderingPages(IPage page, ITestOutputHelper output, OrderTestData data)
     {
@@ -66,6 +67,7 @@ public class OrderingPages
         Declaration = new DeclarationPage(page);
         ReviewOrder = new ReviewOrderPage(page);
         CatalogueSolutions = new CatalogueSolutionsPage(page);
+        SolutionSummary = new SolutionSummaryPage(page);
     }
 
     // ------------------------------------------------------------------------
@@ -457,5 +459,14 @@ public class OrderingPages
         _output.WriteLine("Go to catalogue solutions page");
         await LoginAsync();
         await CatalogueSolutions.NavigateAsync();
+    }
+
+    public async Task GoToSolutionSummaryPageAsync(string solutionName)
+    {
+        _output.WriteLine("Go to solution summary page");
+        await LoginAsync();
+        await CatalogueSolutions.NavigateAsync();
+        await CatalogueSolutions.SelectSolutionAsync(solutionName);
+        await SolutionSummary.AssertOnPageAsync(solutionName);
     }
 }

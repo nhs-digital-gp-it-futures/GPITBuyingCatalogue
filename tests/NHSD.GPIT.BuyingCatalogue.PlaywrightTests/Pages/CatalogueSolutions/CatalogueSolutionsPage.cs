@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Base;
-using Xunit;
+using static Microsoft.Playwright.Assertions;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.CatalogueSolutions;
 
@@ -11,7 +11,7 @@ public class CatalogueSolutionsPage : BasePage
     public async Task NavigateAsync()
     {
         await Page.GetByRole(AriaRole.Link, new() { Name = "Catalogue solutions" }).ClickAsync();
-        await AssertHeadingAsync("Catalogue solutions");
+        await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Catalogue solutions", Level = 1 })).ToBeVisibleAsync();
     }
 
     public async Task AssertHeadingLevelsNotSkippedAsync()
@@ -57,5 +57,10 @@ public class CatalogueSolutionsPage : BasePage
         Assert.True(controlCount > 0,
             $"Search label points to 'for=\"{forAttribute}\"' but no element with that id exists on the page " +
             "(WAVE: orphaned form label, WCAG 1.3.1 / 4.1.2).");
+    }
+
+    public async Task SelectSolutionAsync(string solutionName)
+    {
+        await Page.GetByRole(AriaRole.Link, new() { Name = solutionName, Exact = true }).ClickAsync();
     }
 }

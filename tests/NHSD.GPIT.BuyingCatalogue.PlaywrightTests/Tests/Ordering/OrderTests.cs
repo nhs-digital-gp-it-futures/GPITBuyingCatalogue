@@ -218,4 +218,12 @@ public class OrderTests : BaseTest
         await orderPages.GoToCatalogueSolutionsPageAsync();
         await orderPages.CatalogueSolutions.AssertSearchLabelIsAssociatedAsync();
     }
+
+    [Fact]
+    [Trait("Category", Categories.Regression)]
+    public async Task SolutionSummaryPage_BackToTopLinkRemoved()
+    {
+        await orderPages.GoToSolutionSummaryPageAsync("AccuRx");
+        await orderPages.SolutionSummary.AssertBackToTopLinkNotPresentAsync();
+    }
 }
