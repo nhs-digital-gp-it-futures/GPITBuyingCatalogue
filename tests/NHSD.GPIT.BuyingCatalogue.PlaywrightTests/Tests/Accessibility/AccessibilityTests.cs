@@ -13,7 +13,7 @@ public class AccessibilityTests : BaseTest
 
     [Fact]
     [Trait("Category", Categories.Accessibility)]
-    public async Task LoginPage_MeetsWcagStandards()
+    public async Task LoginPage_AccessibilityScan()
     {
         await orderPages.Login.NavigateAsync(Fixture.BaseUrl);
         var result = await orderPages.Login.RunAccessibilityScanAsync();
@@ -49,19 +49,19 @@ public class AccessibilityTests : BaseTest
     }
 
     [Fact]
-    [Trait("Category", Categories.Regression)]
-    public async Task DeclarationPage_HasMeaningfulPageTitle()
+    [Trait("Category", Categories.Accessibility)]
+    public async Task DeclarationPage_HasPageTitle()
     {
         await orderPages.GoToDeclarationPageAsync(SolutionName);
-        await orderPages.Declaration.AssertPageHasMeaningfulTitleAsync();
+        await orderPages.Declaration.AssertPageHasTitleAsync();
     }
 
     [Fact]
-    [Trait("Category", Categories.Regression)]
-    public async Task OrderCompletedPage_HasMeaningfulPageTitle()
+    [Trait("Category", Categories.Accessibility)]
+    public async Task OrderCompletedPage_HasPageTitle()
     {
         await orderPages.GoToOrderCompletedPageAsync(SolutionName);
-        await orderPages.ReviewOrder.AssertPageHasMeaningfulTitleAsync();
+        await orderPages.ReviewOrder.AssertPageHasTitleAsync();
     }
 
     [Fact]
@@ -136,4 +136,60 @@ public class AccessibilityTests : BaseTest
             $"Confirm quantities page has {blocking.Count} critical or serious accessibility violations. See test output for detail.");
     }
 
+    [Fact]
+    [Trait("Category", Categories.Accessibility)]
+    public async Task OrderTypePage_RadioGroupHasLegend()
+    {
+        await orderPages.LoginAsync();
+        await orderPages.GoToOrderTypePageAsync();
+        await orderPages.OrderType.AssertRadioGroupHasLegendAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.Accessibility)]
+    public async Task ServiceRecipientsOptionPage_RadioGroupHasLegend()
+    {
+        await orderPages.GoToServiceRecipientsOptionPageAsync();
+        await orderPages.ServiceRecipients.AssertRadioGroupHasLegendAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.Accessibility)]
+    public async Task DeclarationPage_FieldsetHasLegend()
+    {
+        await orderPages.GoToDeclarationPageAsync(SolutionName);
+        await orderPages.Declaration.AssertFieldsetHasLegendAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.Accessibility)]
+    public async Task CatalogueSolutionsPage_HeadingLevelsNotSkipped()
+    {
+        await orderPages.GoToCatalogueSolutionsPageAsync();
+        await orderPages.CatalogueSolutions.AssertHeadingLevelsNotSkippedAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.Accessibility)]
+    public async Task CatalogueSolutionsPage_SearchLabelIsAssociated()
+    {
+        await orderPages.GoToCatalogueSolutionsPageAsync();
+        await orderPages.CatalogueSolutions.AssertSearchLabelIsAssociatedAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.Accessibility)]
+    public async Task SolutionSummaryPage_BackToTopLinkRemoved()
+    {
+        await orderPages.GoToSolutionSummaryPageAsync("AccuRx");
+        await orderPages.SolutionSummary.AssertBackToTopLinkNotPresentAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.Accessibility)]
+    public async Task QuantityOfCatalogueSolutionPage_HeadingLevelsNotSkipped()
+    {
+        await orderPages.GoToQuantityOfCatalogueSolutionPageAsync(SolutionName);
+        await orderPages.Quantity.AssertHeadingLevelsNotSkippedAsync();
+    }
 }

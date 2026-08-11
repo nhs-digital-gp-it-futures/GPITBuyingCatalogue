@@ -14,29 +14,6 @@ public class CatalogueSolutionsPage : BasePage
         await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Catalogue solutions", Level = 1 })).ToBeVisibleAsync();
     }
 
-    public async Task AssertHeadingLevelsNotSkippedAsync()
-    {
-        var headings = await Page.Locator("h1, h2, h3, h4, h5, h6").AllAsync();
-
-        var previousLevel = 0;
-
-        foreach (var heading in headings)
-        {
-            var tagName = await heading.EvaluateAsync<string>("el => el.tagName");
-            var currentLevel = int.Parse(tagName[1].ToString());
-
-            if (previousLevel > 0)
-            {
-                Assert.True(
-                    currentLevel <= previousLevel + 1,
-                    $"Heading level skipped: h{previousLevel} is followed by h{currentLevel} " +
-                    $"(WAVE: skipped heading level, WCAG 1.3.1).");
-            }
-
-            previousLevel = currentLevel;
-        }
-    }
-
     public async Task AssertSearchLabelIsAssociatedAsync()
     {
         var label = Page.GetByText("Search by supplier or solution name", new() { Exact = true });

@@ -266,8 +266,7 @@ public class OrderingPages
         await DataProcessing.NavigateAndContinueAsync();
         await Declaration.NavigateAndAgreeAsync();
     }
-
-    // TODO: Re-enable order completion once the error has been resolved.
+    
     public async Task StepFourReviewAndCompleteOrderAsync()
     {
         _output.WriteLine("Step 4 — review and complete");
@@ -468,5 +467,22 @@ public class OrderingPages
         await CatalogueSolutions.NavigateAsync();
         await CatalogueSolutions.SelectSolutionAsync(solutionName);
         await SolutionSummary.AssertOnPageAsync(solutionName);
+    }
+
+    public async Task GoToQuantityOfCatalogueSolutionPageAsync(string solutionName)
+    {
+        _output.WriteLine("Go to quantity of catalogue solution page");
+        await LoginAsync();
+        await CreateNewOrderAsync();
+        await StepOnePrepareOrderAsync();
+
+        await ServiceRecipients.NavigateAsync();
+        await ServiceRecipients.SelectRecipientsManuallyAsync(_data.Sublocation, _data.Practices);
+
+        await SolutionsAndServices.NavigateAsync();
+        await SolutionsAndServices.SelectCatalogueSolutionAsync(solutionName);
+        await SolutionsAndServices.SelectPriceAsync();
+
+        await Quantity.EnterQuantitiesAsync(_data.Quantities, stopOnQuantityPage: true);
     }
 }

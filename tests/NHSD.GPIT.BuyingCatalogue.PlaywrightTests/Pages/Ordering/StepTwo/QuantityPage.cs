@@ -13,12 +13,17 @@ public class QuantityPage : BasePage
     public async Task EnterQuantitiesAsync(
     Dictionary<string, string> practiceQuantities,
     bool completeEdit = true,
-    bool stopOnConfirm = false)
+    bool stopOnConfirm = false,
+    bool stopOnQuantityPage = false)
     {
         await AssertHeadingAsync("Catalogue solution and services");
         await StartLink.ClickAsync();
 
         await AssertHeadingAsync("Quantity of catalogue solution");
+
+        if (stopOnQuantityPage)
+            return;
+
         await SelectLink.ClickAsync();
 
         foreach (var (practice, quantity) in practiceQuantities)
@@ -97,4 +102,6 @@ public class QuantityPage : BasePage
         await AssertHeadingAsync("Edit solutions and services");
         await ClickSaveAndContinueLinkAsync();
     }
+
+
 }
