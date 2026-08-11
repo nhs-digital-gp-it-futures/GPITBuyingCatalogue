@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.Playwright;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.CatalogueSolutions;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Login;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.OrderType;
@@ -38,6 +39,8 @@ public class OrderingPages
     public DataProcessingPage DataProcessing { get; }
     public DeclarationPage Declaration { get; }
     public ReviewOrderPage ReviewOrder { get; }
+    public CatalogueSolutionsPage CatalogueSolutions { get; }
+    public SolutionSummaryPage SolutionSummary { get; }
 
     public OrderingPages(IPage page, ITestOutputHelper output, OrderTestData data)
     {
@@ -63,6 +66,8 @@ public class OrderingPages
         DataProcessing = new DataProcessingPage(page);
         Declaration = new DeclarationPage(page);
         ReviewOrder = new ReviewOrderPage(page);
+        CatalogueSolutions = new CatalogueSolutionsPage(page);
+        SolutionSummary = new SolutionSummaryPage(page);
     }
 
     // ------------------------------------------------------------------------
@@ -261,13 +266,12 @@ public class OrderingPages
         await DataProcessing.NavigateAndContinueAsync();
         await Declaration.NavigateAndAgreeAsync();
     }
-
-    // TODO: Re-enable order completion once the error has been resolved.
+    
     public async Task StepFourReviewAndCompleteOrderAsync()
     {
         _output.WriteLine("Step 4 — review and complete");
         await ReviewOrder.NavigateAsync();
-        //await ReviewOrder.CompleteOrderAsync();
+        await ReviewOrder.CompleteOrderAsync();
     }
 
     /// <summary>
@@ -406,5 +410,79 @@ public class OrderingPages
         await StepOnePrepareOrderAsync();
         await ServiceRecipients.NavigateAsync();
         await ServiceRecipients.AssertOnPageAsync();
+    }
+
+    public async Task GoToOrderCompletedPageAsync(string solutionName)
+    {
+        _output.WriteLine("Go to order completed page");
+        await LoginAsync();
+        await CreateNewOrderAsync();
+        await StepOnePrepareOrderAsync();
+        await StepTwoAddSolutionsAndServicesAsync(solutionName: solutionName);
+        await StepTwoDeliveryAndFundingAsync();
+        await StepThreeCompleteContractAsync();
+        await StepFourReviewAndCompleteOrderAsync();
+        await ReviewOrder.AssertOrderCompletedAsync();
+    }
+
+    public async Task GoToReviewPlannedDeliveryDatesPageAsync(string solutionName)
+    {
+        _output.WriteLine("Go to review planned delivery dates page");
+        await LoginAsync();
+        await CreateNewOrderAsync();
+        await StepOnePrepareOrderAsync();
+        await StepTwoAddSolutionsAndServicesAsync(solutionName: solutionName);
+        await PlannedDeliveryDates.NavigateAsync();
+        await PlannedDeliveryDates.EnterDeliveryDateAsync("1", "10", "2026", stopOnReview: true);
+    }
+
+    public async Task GoToConfirmQuantitiesPageAsync(string solutionName)
+    {
+        _output.WriteLine("Go to confirm quantities page");
+        await LoginAsync();
+        await CreateNewOrderAsync();
+        await StepOnePrepareOrderAsync();
+
+        await ServiceRecipients.NavigateAsync();
+        await ServiceRecipients.SelectRecipientsManuallyAsync(_data.Sublocation, _data.Practices);
+
+        await SolutionsAndServices.NavigateAsync();
+        await SolutionsAndServices.SelectCatalogueSolutionAsync(solutionName);
+        await SolutionsAndServices.SelectPriceAsync();
+
+        await Quantity.EnterQuantitiesAsync(_data.Quantities, stopOnConfirm: true);
+    }
+
+    public async Task GoToCatalogueSolutionsPageAsync()
+    {
+        _output.WriteLine("Go to catalogue solutions page");
+        await LoginAsync();
+        await CatalogueSolutions.NavigateAsync();
+    }
+
+    public async Task GoToSolutionSummaryPageAsync(string solutionName)
+    {
+        _output.WriteLine("Go to solution summary page");
+        await LoginAsync();
+        await CatalogueSolutions.NavigateAsync();
+        await CatalogueSolutions.SelectSolutionAsync(solutionName);
+        await SolutionSummary.AssertOnPageAsync(solutionName);
+    }
+
+    public async Task GoToQuantityOfCatalogueSolutionPageAsync(string solutionName)
+    {
+        _output.WriteLine("Go to quantity of catalogue solution page");
+        await LoginAsync();
+        await CreateNewOrderAsync();
+        await StepOnePrepareOrderAsync();
+
+        await ServiceRecipients.NavigateAsync();
+        await ServiceRecipients.SelectRecipientsManuallyAsync(_data.Sublocation, _data.Practices);
+
+        await SolutionsAndServices.NavigateAsync();
+        await SolutionsAndServices.SelectCatalogueSolutionAsync(solutionName);
+        await SolutionsAndServices.SelectPriceAsync();
+
+        await Quantity.EnterQuantitiesAsync(_data.Quantities, stopOnQuantityPage: true);
     }
 }

@@ -23,6 +23,7 @@ public class ImplementationMilestonesPage : BasePage
     {
         await NavigationLink.ClickAsync();
         await AssertHeadingAsync("Implementation milestones and payment triggers");
+        await AssertHeadingLevelsNotSkippedAsync();
 
         await AddBespokeLink.ClickAsync();
         await MilestoneName.FillAsync(milestoneName);
