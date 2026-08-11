@@ -102,6 +102,4 @@ public class QuantityPage : BasePage
         await AssertHeadingAsync("Edit solutions and services");
         await ClickSaveAndContinueLinkAsync();
     }
-
-
 }
