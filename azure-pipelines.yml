@@ -50,7 +50,7 @@ jobs:
           testGroup: webapp
           testProjects: tests/NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests/NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.csproj
 
-        services:
+        e2e:
           testGroup: e2e
           testProjects: |
             tests/NHSD.GPIT.BuyingCatalogue.PlaywrightTests/NHSD.GPIT.BuyingCatalogue.PlaywrightTests.csproj
