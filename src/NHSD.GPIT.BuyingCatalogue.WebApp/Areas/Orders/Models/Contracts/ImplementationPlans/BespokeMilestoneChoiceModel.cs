@@ -20,7 +20,7 @@ public class BespokeMilestoneChoiceModel : NavBaseModel
         new(No, false),
     };
 
-    public CallOffId CallOffId { get; set; }
+    public required CallOffId CallOffId { get; set; }
 
     public string InternalOrgId { get; set; }
 
