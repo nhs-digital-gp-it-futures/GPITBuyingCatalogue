@@ -106,13 +106,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             ImplementationPlanModel model,
             EntityFramework.Ordering.Models.Order order,
             Contract contract,
+            ImplementationPlan implementationPlan,
             [Frozen] IOrderService mockOrderService,
             [Frozen] IContractsService mockContractsService,
             [Frozen] IImplementationPlanService mockImplementationPlanService,
             ImplementationPlanController controller)
         {
             contract.Order = order;
-            contract.ImplementationPlan.Milestones.Clear();
+            implementationPlan.Milestones = [];
+            contract.ImplementationPlan = implementationPlan;
             model.BespokePlan = null;
             mockOrderService.GetOrderThin(model.CallOffId, model.InternalOrgId).Returns(new OrderWrapper(order));
             mockContractsService.GetContractWithImplementationPlan(order.Id).Returns(contract);
