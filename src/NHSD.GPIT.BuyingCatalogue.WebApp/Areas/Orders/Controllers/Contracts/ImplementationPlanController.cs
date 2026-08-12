@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +61,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             if (!ModelState.IsValid)
             {
                 return View(model);
+            }
+
+            var order = (await orderService.GetOrderThin(model.CallOffId, model.InternalOrgId)).Order;
+            var contract = await contractsService.GetContractWithImplementationPlan(order.Id);
+
+            if (!model.HasBespokeMilestones && contract.ImplementationPlan.Milestones.Count == 0)
+            {
+                return RedirectToAction(nameof(BespokeMilestoneChoice), new { internalOrgId, callOffId });
+            }
+
+            await implementationPlanService.AddImplementationPlan(order.Id, contract.Id);
+
+            return RedirectToAction(nameof(Order), typeof(OrderController).ControllerName(), new { internalOrgId, callOffId });
+        }
+
+        [HttpGet("add-milestone-choice")]
+        public IActionResult BespokeMilestoneChoice(string internalOrgId, CallOffId callOffId)
+        {
+            var model = new BespokeMilestoneChoiceModel { CallOffId = callOffId, InternalOrgId = internalOrgId };
+            return View(model);
+        }
+
+        [HttpPost("add-milestone-choice")]
+        public async Task<IActionResult> BespokeMilestoneChoice(
+            string internalOrgId,
+            CallOffId callOffId,
+            BespokeMilestoneChoiceModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (model.ShouldAddMilestone == true)
+            {
+                return RedirectToAction(nameof(AddMilestone), new { internalOrgId, callOffId });
             }
 
             var order = (await orderService.GetOrderThin(model.CallOffId, model.InternalOrgId)).Order;

@@ -1,0 +1,30 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans.BespokeMilestoneChoiceModel
+@{
+    ViewBag.Title = "Bespoke Milestone choice";
+    var advice = "If you select yes you can add a bespoke milestone to your order. Selecting no will complete this section and return you to the task list";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary RadioId="@nameof(Model.ShouldAddMilestone)" />
+        
+        <nhs-page-title title="Do you want to add a bespoke milestone?"
+                        caption="Order @Model.CallOffId"
+                        advice="@advice"/>
+
+        <form method="post">
+            <nhs-fieldset-form-label asp-for="ShouldAddMilestone">
+                <legend name="do you want to add a bespoke milestone?"></legend>
+                <nhs-radio-buttons asp-for="ShouldAddMilestone"
+                                   values="@Model.Options.Cast<object>()"
+                                   value-name="Value"
+                                   display-name="Text"/>
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button/>
+        </form>
+
+    </div>
+</div>
