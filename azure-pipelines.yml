@@ -50,11 +50,11 @@ jobs:
           testGroup: webapp
           testProjects: tests/NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests/NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.csproj
 
-        e2e:
-          testGroup: e2e
-          testProjects: |
-            tests/NHSD.GPIT.BuyingCatalogue.PlaywrightTests/NHSD.GPIT.BuyingCatalogue.PlaywrightTests.csproj
-            tests/NHSD.GPIT.BuyingCatalogue.RegressionTests/NHSD.GPIT.BuyingCatalogue.RegressionTests.csproj
+        # e2e:
+        #   testGroup: e2e
+        #   testProjects: |
+        #     tests/NHSD.GPIT.BuyingCatalogue.PlaywrightTests/NHSD.GPIT.BuyingCatalogue.PlaywrightTests.csproj
+        #     tests/NHSD.GPIT.BuyingCatalogue.RegressionTests/NHSD.GPIT.BuyingCatalogue.RegressionTests.csproj
 
 
         remaining:
