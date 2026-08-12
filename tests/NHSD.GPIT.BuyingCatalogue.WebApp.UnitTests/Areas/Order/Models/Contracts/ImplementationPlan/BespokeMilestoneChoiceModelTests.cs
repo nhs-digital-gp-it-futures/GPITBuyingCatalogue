@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans;
 using Xunit;
@@ -11,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         [Fact]
         public static void Options_ReturnsExpectedOptions()
         {
-            var model = new BespokeMilestoneChoiceModel();
+            var model = new BespokeMilestoneChoiceModel { CallOffId = new CallOffId(1, 1) };
 
             model.Options.Should().BeEquivalentTo(
                 new List<SelectOption<bool>>
