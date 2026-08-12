@@ -92,7 +92,8 @@ jobs:
             --configuration $(buildConfiguration)
             --collect:"XPlat Code Coverage;Format=opencover"
             --results-directory "$(Agent.TempDirectory)/test-results/$(testGroup)"
-            --xUnit.ParallelizeTestCollections=true
+            --
+              xUnit.ParallelizeTestCollections=true
           publishTestResults: true
 
       - publish: $(Agent.TempDirectory)/test-results/$(testGroup)
