@@ -14,15 +14,15 @@ public class BespokeMilestoneChoiceModel : NavBaseModel
     {
     }
 
-    public CallOffId CallOffId { get; set; }
-
-    public string InternalOrgId { get; set; }
-
-    public bool? ShouldAddMilestone { get; set; }
-
-    public IEnumerable<SelectOption<bool>> Options => new List<SelectOption<bool>>
+    public static IEnumerable<SelectOption<bool>> Options => new List<SelectOption<bool>>
     {
         new(Yes, true),
         new(No, false),
     };
+
+    public CallOffId? CallOffId { get; set; }
+
+    public string InternalOrgId { get; set; }
+
+    public bool? ShouldAddMilestone { get; set; }
 }
