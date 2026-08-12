@@ -37,15 +37,6 @@ jobs:
       - script: echo semVer $(setVersionStep.semVer)
         name: echovar
 
-  - job: dockerBuildAndPush
-    displayName: Build and Package
-    variables:
-      semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
-      ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
-        latestTag: latest
-      ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
-        latestTag: latestbuild
-
   - job: runTests
     displayName: Run Tests
 
@@ -76,42 +67,49 @@ jobs:
             tests/NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests/NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.csproj
             tests/NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests/NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.csproj
 
-      steps:
-        - task: UseDotNet@2
-          displayName: 'Use DotNet $(dotnetVersion)'
-          inputs:
-            version: $(dotnetVersion)
-            includePreviewVersions: false
+    steps:
+      - task: UseDotNet@2
+        displayName: 'Use DotNet $(dotnetVersion)'
+        inputs:
+          version: $(dotnetVersion)
+          includePreviewVersions: false
 
-        - task: DotNetCoreCLI@2
-          displayName: Restore $(testGroup) tests
-          inputs:
-            command: restore
-            projects: $(testProjects)
-            feedsToUse: config
-            nugetConfigPath: NuGet.config
+      - task: DotNetCoreCLI@2
+        displayName: Restore $(testGroup) tests
+        inputs:
+          command: restore
+          projects: $(testProjects)
+          feedsToUse: config
+          nugetConfigPath: NuGet.config
 
-        - task: DotNetCoreCLI@2
-          displayName: Run $(testGroup) tests
-          inputs:
-            command: test
-            projects: $(testProjects)
-            arguments: >-
-              --no-restore
-              --configuration $(buildConfiguration)
-              --collect:"XPlat Code Coverage;Format=opencover"
-              --results-directory "$(Agent.TempDirectory)/test-results/$(testGroup)"
-              --
-                xUnit.ParallelizeTestCollections=true
-                xUnit.MaxParallelThreads=4
-            publishTestResults: true
+      - task: DotNetCoreCLI@2
+        displayName: Run $(testGroup) tests
+        inputs:
+          command: test
+          projects: $(testProjects)
+          arguments: >-
+            --no-restore
+            --configuration $(buildConfiguration)
+            --collect:"XPlat Code Coverage;Format=opencover"
+            --results-directory "$(Agent.TempDirectory)/test-results/$(testGroup)"
+            --
+              xUnit.ParallelizeTestCollections=true
+              xUnit.MaxParallelThreads=4
+          publishTestResults: true
 
-        - publish: $(Agent.TempDirectory)/test-results/$(testGroup)
-          displayName: Publish $(testGroup) coverage
-          artifact: coverage-$(testGroup)
-          condition: succeededOrFailed()
+      - publish: $(Agent.TempDirectory)/test-results/$(testGroup)
+        displayName: Publish $(testGroup) coverage
+        artifact: coverage-$(testGroup)
+        condition: succeededOrFailed()
 
-
+  - job: dockerBuildAndPush
+    displayName: Build and Package
+    variables:
+      semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
+      ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
+        latestTag: latest
+      ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
+        latestTag: latestbuild
 
     dependsOn: 
       - version
