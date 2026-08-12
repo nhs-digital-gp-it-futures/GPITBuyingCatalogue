@@ -46,7 +46,76 @@ jobs:
       ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
         latestTag: latestbuild
 
-    dependsOn: version
+  - job: runTests
+    displayName: Run Tests
+
+    pool:
+      vmImage: 'ubuntu-latest'
+    
+    strategy:
+      maxParallel: 3
+      matrix:
+        webApp:
+          testGroup: webapp
+          testProjects: tests/NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests/NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.csproj
+
+        services:
+          testGroup: e2e
+          testProjects: |
+            tests/NHSD.GPIT.BuyingCatalogue.PlaywrightTests/NHSD.GPIT.BuyingCatalogue.PlaywrightTests.csproj
+            tests/NHSD.GPIT.BuyingCatalogue.RegressionTests/NHSD.GPIT.BuyingCatalogue.RegressionTests.csproj
+
+
+        remaining:
+          testGroup: remaining
+          testProjects: |
+            tests/NHSD.GPIT.BuyingCatalogue.Services.UnitTests/NHSD.GPIT.BuyingCatalogue.Services.UnitTests.csproj
+            tests/BuyingCatalogueFunctionUnitTests/BuyingCatalogueFunctionUnitTests.csproj
+            tests/NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests/NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.csproj
+            tests/NHSD.GPIT.BuyingCatalogue.Framework.UnitTests/NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.csproj
+            tests/NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests/NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.csproj
+            tests/NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests/NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.csproj
+
+      steps:
+        - task: UseDotNet@2
+          displayName: 'Use DotNet $(dotnetVersion)'
+          inputs:
+            version: $(dotnetVersion)
+            includePreviewVersions: false
+
+        - task: DotNetCoreCLI@2
+          displayName: Restore $(testGroup) tests
+          inputs:
+            command: restore
+            projects: $(testProjects)
+            feedsToUse: config
+            nugetConfigPath: NuGet.config
+
+        - task: DotNetCoreCLI@2
+          displayName: Run $(testGroup) tests
+          inputs:
+            command: test
+            projects: $(testProjects)
+            arguments: >-
+              --no-restore
+              --configuration $(buildConfiguration)
+              --collect:"XPlat Code Coverage;Format=opencover"
+              --results-directory "$(Agent.TempDirectory)/test-results/$(testGroup)"
+              --
+                xUnit.ParallelizeTestCollections=true
+                xUnit.MaxParallelThreads=4
+            publishTestResults: true
+
+        - publish: $(Agent.TempDirectory)/test-results/$(testGroup)
+          displayName: Publish $(testGroup) coverage
+          artifact: coverage-$(testGroup)
+          condition: succeededOrFailed()
+
+
+
+    dependsOn: 
+      - version
+      - runTests
     pool:
       vmImage: 'ubuntu-latest'
 
@@ -78,6 +147,11 @@ jobs:
           command: 'install'
           workingDir: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
+      - download: current
+        patterns: |
+          coverage-*/**/coverage.opencover.xml
+        displayName: Download unit-test coverage
+
       - task: SonarCloudPrepare@3
         inputs:
           SonarCloud: 'SonarCloud'
@@ -86,7 +160,7 @@ jobs:
           projectKey: '$(SonarKey)'
           projectName: '$(SonarProject)'
           extraProperties: |
-            sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/tests/**/coverage.opencover.xml
+            sonar.cs.opencover.reportsPaths=$(Pipeline.Workspace)/coverage-*/**/coverage.opencover.xml
             sonar.exclusions=src/NHSD.GPIT.BuyingCatalogue.UI.Components/**,src/NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp/**,**/*.cshtml,**/*.ts,tests/**
 
       - task: DotNetCoreCLI@2
@@ -105,13 +179,13 @@ jobs:
           targets: 'min'
           workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Run unit tests'
-        inputs:
-          command: test
-          projects: '**/*UnitTests.csproj'
-          arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
-          publishTestResults: false
+      # - task: DotNetCoreCLI@2
+      #   displayName: 'Run unit tests'
+      #   inputs:
+      #     command: test
+      #     projects: '**/*UnitTests.csproj'
+      #     arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
+      #     publishTestResults: false
 
       - task: SonarCloudAnalyze@3
       - task: SonarCloudPublish@3
