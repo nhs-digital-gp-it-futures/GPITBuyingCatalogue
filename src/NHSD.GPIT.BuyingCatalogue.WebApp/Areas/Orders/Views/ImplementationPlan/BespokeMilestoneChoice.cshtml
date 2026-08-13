@@ -1,3 +1,4 @@
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans.BespokeMilestoneChoiceModel
 @{
     ViewBag.Title = "Bespoke Milestone choice";
@@ -18,7 +19,7 @@
             <nhs-fieldset-form-label asp-for="ShouldAddMilestone">
                 <legend name="do you want to add a bespoke milestone?"></legend>
                 <nhs-radio-buttons asp-for="ShouldAddMilestone"
-                                   values="@Model.Options.Cast<object>()"
+                                   values="@BespokeMilestoneChoiceModel.Options.Cast<object>()"
                                    value-name="Value"
                                    display-name="Text"/>
             </nhs-fieldset-form-label>

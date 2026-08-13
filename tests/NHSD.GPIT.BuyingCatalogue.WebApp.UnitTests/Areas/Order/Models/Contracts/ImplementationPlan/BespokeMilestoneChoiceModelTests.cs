@@ -12,9 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         [Fact]
         public static void Options_ReturnsExpectedOptions()
         {
-            var model = new BespokeMilestoneChoiceModel { CallOffId = new CallOffId(1, 1) };
-
-            model.Options.Should().BeEquivalentTo(
+            BespokeMilestoneChoiceModel.Options.Should().BeEquivalentTo(
                 new List<SelectOption<bool>>
                 {
                     new(BespokeMilestoneChoiceModel.Yes, true),
