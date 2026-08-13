@@ -100,8 +100,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [MockAutoData]
-        public static async Task Post_Index_NoBespokeMilestones_RedirectsToChoice(
+        [MockInlineAutoData(true, false)]
+        [MockInlineAutoData(false, true)]
+        [MockInlineAutoData(false, false)]
+        public static async Task Post_Index_NoImplementationPlanOrMilestones_RedirectsToChoice(
+            bool implementationPlanIsNull,
+            bool milestonesAreNull,
             string internalOrgId,
             ImplementationPlanModel model,
             EntityFramework.Ordering.Models.Order order,
@@ -113,8 +117,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             ImplementationPlanController controller)
         {
             contract.Order = order;
-            implementationPlan.Milestones = [];
-            contract.ImplementationPlan = implementationPlan;
+            implementationPlan.Milestones = milestonesAreNull ? null : [];
+            contract.ImplementationPlan = implementationPlanIsNull ? null : implementationPlan;
             model.BespokePlan = null;
             mockOrderService.GetOrderThin(model.CallOffId, model.InternalOrgId).Returns(new OrderWrapper(order));
             mockContractsService.GetContractWithImplementationPlan(order.Id).Returns(contract);
