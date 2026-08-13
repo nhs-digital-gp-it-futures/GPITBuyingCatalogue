@@ -5,6 +5,8 @@ variables:
     value: '1'
   - name: buildConfiguration
     value: Release
+  - name: dockerImageName
+    value: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp
   - group: dev-acr-secrets
 
 trigger:
@@ -99,17 +101,145 @@ jobs:
         artifact: coverage-$(testGroup)
         condition: succeededOrFailed()
 
-  - job: dockerBuildAndPush
-    displayName: Build and Package
+  - job: buildPackageCandidate
+    displayName: Build and Package Candidate
     variables:
       semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
-      ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
-        latestTag: latest
-      ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
-        latestTag: latestbuild
 
-    dependsOn: 
+    dependsOn:
       - version
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    steps:
+      - task: UseDotNet@2
+        displayName: 'Use DotNet $(dotnetVersion)'
+        inputs:
+          version: $(dotnetVersion)
+          includePreviewVersions: false
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Run dotnet restore'
+        inputs:
+          command: restore
+          projects: |
+            NHSD.GPIT.BuyingCatalogue.sln
+            NHSD.GPIT.BuyingCatalogue.Database.sln
+          feedsToUse: config
+          nugetConfigPath: 'NuGet.config'
+
+      - task: NodeTool@0
+        displayName: 'Install Node.js'
+        inputs:
+          versionSpec: '14.x'
+
+      - task: Npm@1
+        displayName: 'Run npm install'
+        inputs:
+          command: 'install'
+          workingDir: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Run dotnet build'
+        inputs:
+          command: build
+          projects: |
+            NHSD.GPIT.BuyingCatalogue.sln
+            NHSD.GPIT.BuyingCatalogue.Database.sln
+          arguments: '--no-restore --configuration $(buildConfiguration)'
+
+      - task: gulp@0
+        displayName: 'Run gulp min'
+        inputs:
+          gulpFile: 'src/NHSD.GPIT.BuyingCatalogue.WebApp/gulpfile.js'
+          targets: 'min'
+          workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
+
+      # - task: DotNetCoreCLI@2
+      #   displayName: 'Run unit tests'
+      #   inputs:
+      #     command: test
+      #     projects: '**/*UnitTests.csproj'
+      #     arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
+      #     publishTestResults: false
+
+      - task: DotNetCoreCLI@2
+        displayName: Publish BuyingCatalogueFunction
+        inputs:
+          command: "publish"
+          projects: "src/BuyingCatalogueFunction"
+          arguments: "--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
+          publishWebProjects: false
+          modifyOutputPath: false
+          zipAfterPublish: true
+
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: |
+            $release = "$(semVer)"
+            mkdir $(Build.ArtifactStagingDirectory)/code
+            $release | Out-File $(Build.ArtifactStagingDirectory)/code/release.txt
+
+      - task: CopyFiles@2
+        displayName: Copy DACPAC
+        inputs:
+          SourceFolder: 'database/NHSD.GPITBuyingCatalogue.Database'
+          Contents: '**/*.dacpac'
+          TargetFolder: '$(build.artifactStagingDirectory)/dacpacs'
+          CleanTargetFolder: false
+          OverWrite: true
+          flattenFolders: true
+
+      - task: CopyFiles@2
+        displayName: Copy Smoke Test Scripts
+        inputs:
+          SourceFolder: 'tests/SmokeTests'
+          Contents: '**/*.ps1'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/smoke-tests'
+          CleanTargetFolder: false
+          OverWrite: true
+          flattenFolders: false
+
+      - publish: $(Build.ArtifactStagingDirectory)
+        displayName: Publish package candidate
+        artifact: package-candidate
+
+  - job: buildDockerCandidate
+    displayName: Build Docker Candidate
+    variables:
+      semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
+
+    dependsOn:
+      - version
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    steps:
+      - task: Docker@2
+        displayName: 'Docker: Build Candidate'
+        inputs:
+          containerRegistry: 'gpitfuturesdevacr'
+          repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
+          command: 'build'
+          Dockerfile: 'src/**/NHSD.GPIT.BuyingCatalogue.WebApp/Dockerfile'
+          buildContext: './'
+          tags: |
+            $(semVer)
+
+      - script: |
+          docker save \
+            $(dockerImageName):$(semVer) \
+            --output $(Build.ArtifactStagingDirectory)/docker-image.tar
+        displayName: Save Docker candidate
+
+      - publish: $(Build.ArtifactStagingDirectory)/docker-image.tar
+        displayName: Publish Docker candidate
+        artifact: docker-candidate
+
+  - job: sonarAnalysis
+    displayName: Run Sonar Analysis
+    dependsOn:
       - runTests
     pool:
       vmImage: 'ubuntu-latest'
@@ -159,7 +289,7 @@ jobs:
             sonar.exclusions=src/NHSD.GPIT.BuyingCatalogue.UI.Components/**,src/NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp/**,**/*.cshtml,**/*.ts,tests/**
 
       - task: DotNetCoreCLI@2
-        displayName: 'Run dotnet build'
+        displayName: 'Run Sonar-instrumented build'
         inputs:
           command: build
           projects: |
@@ -167,99 +297,52 @@ jobs:
             NHSD.GPIT.BuyingCatalogue.Database.sln
           arguments: '--no-restore --configuration $(buildConfiguration)'
 
-      - task: gulp@0
-        displayName: 'Run gulp min'
-        inputs:
-          gulpFile: 'src/NHSD.GPIT.BuyingCatalogue.WebApp/gulpfile.js'
-          targets: 'min'
-          workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
-
-      # - task: DotNetCoreCLI@2
-      #   displayName: 'Run unit tests'
-      #   inputs:
-      #     command: test
-      #     projects: '**/*UnitTests.csproj'
-      #     arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
-      #     publishTestResults: false
-
       - task: SonarCloudAnalyze@3
       - task: SonarCloudPublish@3
 
-      - task: DotNetCoreCLI@2
-        displayName: Publish BuyingCatalogueFunction
-        inputs:
-          command: "publish"
-          projects: "src/BuyingCatalogueFunction"
-          arguments: "--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
-          publishWebProjects: false
-          modifyOutputPath: false
-          zipAfterPublish: true
+  - job: publishApprovedArtifacts
+    displayName: Publish Approved Artifacts
+    variables:
+      semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
+      ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
+        latestTag: latest
+      ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
+        latestTag: latestbuild
 
-      - publish: $(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction
-        artifact: BuyingCatalogueFunction
-
-      - task: Docker@2
-        displayName: 'Docker: Build and Push'
-        condition: succeeded()
-        inputs:
-          containerRegistry: 'gpitfuturesdevacr'
-          repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
-          command: 'buildAndPush'
-          Dockerfile: 'src/**/NHSD.GPIT.BuyingCatalogue.WebApp/Dockerfile'
-          buildContext: './'
-          tags: |
-            $(semVer)
-            $(latestTag)
-
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: |
-            $release = "$(semVer)"
-            mkdir $(Build.ArtifactStagingDirectory)/code
-            $release | Out-File $(Build.ArtifactStagingDirectory)/code/release.txt
-
-      - task: CopyFiles@2
-        displayName: Copy DACPAC
-        inputs:
-          SourceFolder: 'database/NHSD.GPITBuyingCatalogue.Database'
-          Contents: '**/*.dacpac'
-          TargetFolder: '$(build.artifactStagingDirectory)/dacpacs'
-          CleanTargetFolder: false
-          OverWrite: true
-          flattenFolders: true
-
-      - task: CopyFiles@2
-        displayName: Copy Smoke Test Scripts
-        inputs:
-          SourceFolder: 'tests/SmokeTests'
-          Contents: '**/*.ps1'
-          TargetFolder: '$(Build.ArtifactStagingDirectory)/smoke-tests'
-          CleanTargetFolder: false
-          OverWrite: true
-          flattenFolders: false
-
-      - publish: $(build.artifactStagingDirectory)/code
-        displayName: Publish Code Version
-        artifact: code-version
-
-      - publish: $(build.artifactStagingDirectory)/dacpacs
-        displayName: Publish DACPAC
-        artifact: dacpacs
-
-      - publish: $(Build.ArtifactStagingDirectory)/smoke-tests
-        displayName: Publish Smoke Test Scripts
-        artifact: smoke-tests
-
-  - job: createBuildArtifact
-    displayName: Publish Terraform
+    dependsOn:
+      - version
+      - runTests
+      - buildPackageCandidate
+      - buildDockerCandidate
+      - sonarAnalysis
+    condition: succeeded()
     pool:
       vmImage: 'ubuntu-latest'
 
     steps:
-      - publish: terraform/functionapp
-        displayName: Publish Terraform - Function App
-        artifact: terraform-functionapp
+      - download: current
+        artifact: package-candidate
+        displayName: Download package candidate
+
+      - download: current
+        artifact: docker-candidate
+        displayName: Download Docker candidate
+
+      - publish: $(Pipeline.Workspace)/package-candidate/BuyingCatalogueFunction
+        displayName: Publish BuyingCatalogueFunction
+        artifact: BuyingCatalogueFunction
+
+      - publish: $(Pipeline.Workspace)/package-candidate/code
+        displayName: Publish Code Version
+        artifact: code-version
+
+      - publish: $(Pipeline.Workspace)/package-candidate/dacpacs
+        displayName: Publish DACPAC
+        artifact: dacpacs
+
+      - publish: $(Pipeline.Workspace)/package-candidate/smoke-tests
+        displayName: Publish Smoke Test Scripts
+        artifact: smoke-tests
 
       - publish: terraform/webapp
         displayName: Publish Terraform - WebApp
@@ -268,3 +351,25 @@ jobs:
       - publish: terraform/core
         displayName: Publish Terraform - Core
         artifact: core-terraform
+
+      - publish: terraform/functionapp
+        displayName: Publish Terraform - Function App
+        artifact: terraform-functionapp
+
+      - script: |
+          docker load \
+            --input $(Pipeline.Workspace)/docker-candidate/docker-image.tar
+          docker tag \
+            $(dockerImageName):$(semVer) \
+            $(dockerImageName):$(latestTag)
+        displayName: Load and tag Docker candidate
+
+      - task: Docker@2
+        displayName: 'Docker: Push Approved Image'
+        inputs:
+          containerRegistry: 'gpitfuturesdevacr'
+          repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
+          command: 'push'
+          tags: |
+            $(semVer)
+            $(latestTag)
