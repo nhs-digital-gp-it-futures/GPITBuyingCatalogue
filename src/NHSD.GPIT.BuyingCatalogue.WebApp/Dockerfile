@@ -8,15 +8,20 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+FROM node:14-alpine AS frontend
+WORKDIR /src/src/NHSD.GPIT.BuyingCatalogue.WebApp
+COPY ["src/NHSD.GPIT.BuyingCatalogue.WebApp/package.json", "src/NHSD.GPIT.BuyingCatalogue.WebApp/package-lock.json", "./"]
+RUN npm install --ignore-scripts
+COPY ["src/NHSD.GPIT.BuyingCatalogue.WebApp/", "./"]
+RUN npx gulp min
+
 FROM mcr.microsoft.com/dotnet/sdk:10.0.201-alpine3.23 AS build
 WORKDIR /src
 COPY ["src/NHSD.GPIT.BuyingCatalogue.WebApp/NHSD.GPIT.BuyingCatalogue.WebApp.csproj", "src/NHSD.GPIT.BuyingCatalogue.WebApp/"]
 RUN dotnet restore "src/NHSD.GPIT.BuyingCatalogue.WebApp/NHSD.GPIT.BuyingCatalogue.WebApp.csproj"
 COPY . .
-RUN apk add --update npm
+COPY --from=frontend /src/src/NHSD.GPIT.BuyingCatalogue.WebApp/wwwroot/ /src/src/NHSD.GPIT.BuyingCatalogue.WebApp/wwwroot/
 WORKDIR "/src/src/NHSD.GPIT.BuyingCatalogue.WebApp"
-RUN npm install --ignore-scripts
-RUN npx gulp min
 RUN dotnet build "NHSD.GPIT.BuyingCatalogue.WebApp.csproj" -c Release -o /app/build
 
 FROM build AS publish

@@ -101,110 +101,6 @@ jobs:
         artifact: coverage-$(testGroup)
         condition: succeededOrFailed()
 
-  - job: buildPackageCandidate
-    displayName: Build and Package Candidate
-    variables:
-      semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
-
-    dependsOn:
-      - version
-    pool:
-      vmImage: 'ubuntu-latest'
-
-    steps:
-      - task: UseDotNet@2
-        displayName: 'Use DotNet $(dotnetVersion)'
-        inputs:
-          version: $(dotnetVersion)
-          includePreviewVersions: false
-
-      - task: DotNetCoreCLI@2
-        displayName: 'Run dotnet restore'
-        inputs:
-          command: restore
-          projects: |
-            NHSD.GPIT.BuyingCatalogue.sln
-            NHSD.GPIT.BuyingCatalogue.Database.sln
-          feedsToUse: config
-          nugetConfigPath: 'NuGet.config'
-
-      - task: NodeTool@0
-        displayName: 'Install Node.js'
-        inputs:
-          versionSpec: '14.x'
-
-      - task: Npm@1
-        displayName: 'Run npm install'
-        inputs:
-          command: 'install'
-          workingDir: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
-
-      - task: DotNetCoreCLI@2
-        displayName: 'Run dotnet build'
-        inputs:
-          command: build
-          projects: |
-            NHSD.GPIT.BuyingCatalogue.sln
-            NHSD.GPIT.BuyingCatalogue.Database.sln
-          arguments: '--no-restore --configuration $(buildConfiguration)'
-
-      - task: gulp@0
-        displayName: 'Run gulp min'
-        inputs:
-          gulpFile: 'src/NHSD.GPIT.BuyingCatalogue.WebApp/gulpfile.js'
-          targets: 'min'
-          workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
-
-      # - task: DotNetCoreCLI@2
-      #   displayName: 'Run unit tests'
-      #   inputs:
-      #     command: test
-      #     projects: '**/*UnitTests.csproj'
-      #     arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
-      #     publishTestResults: false
-
-      - task: DotNetCoreCLI@2
-        displayName: Publish BuyingCatalogueFunction
-        inputs:
-          command: "publish"
-          projects: "src/BuyingCatalogueFunction"
-          arguments: "--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
-          publishWebProjects: false
-          modifyOutputPath: false
-          zipAfterPublish: true
-
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: |
-            $release = "$(semVer)"
-            mkdir $(Build.ArtifactStagingDirectory)/code
-            $release | Out-File $(Build.ArtifactStagingDirectory)/code/release.txt
-
-      - task: CopyFiles@2
-        displayName: Copy DACPAC
-        inputs:
-          SourceFolder: 'database/NHSD.GPITBuyingCatalogue.Database'
-          Contents: '**/*.dacpac'
-          TargetFolder: '$(build.artifactStagingDirectory)/dacpacs'
-          CleanTargetFolder: false
-          OverWrite: true
-          flattenFolders: true
-
-      - task: CopyFiles@2
-        displayName: Copy Smoke Test Scripts
-        inputs:
-          SourceFolder: 'tests/SmokeTests'
-          Contents: '**/*.ps1'
-          TargetFolder: '$(Build.ArtifactStagingDirectory)/smoke-tests'
-          CleanTargetFolder: false
-          OverWrite: true
-          flattenFolders: false
-
-      - publish: $(Build.ArtifactStagingDirectory)
-        displayName: Publish package candidate
-        artifact: package-candidate
-
   - job: buildDockerCandidate
     displayName: Build Docker Candidate
     variables:
@@ -238,8 +134,12 @@ jobs:
         artifact: docker-candidate
 
   - job: sonarAnalysis
-    displayName: Run Sonar Analysis
+    displayName: Run Sonar Analysis and Package
+    variables:
+      semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
+
     dependsOn:
+      - version
       - runTests
     pool:
       vmImage: 'ubuntu-latest'
@@ -260,17 +160,6 @@ jobs:
             NHSD.GPIT.BuyingCatalogue.Database.sln
           feedsToUse: config
           nugetConfigPath: 'NuGet.config'
-
-      - task: NodeTool@0
-        displayName: 'Install Node.js'
-        inputs:
-          versionSpec: '14.x'
-
-      - task: Npm@1
-        displayName: 'Run npm install'
-        inputs:
-          command: 'install'
-          workingDir: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
       - download: current
         patterns: |
@@ -297,8 +186,58 @@ jobs:
             NHSD.GPIT.BuyingCatalogue.Database.sln
           arguments: '--no-restore --configuration $(buildConfiguration)'
 
+      # - task: DotNetCoreCLI@2
+      #   displayName: 'Run unit tests'
+      #   inputs:
+      #     command: test
+      #     projects: '**/*UnitTests.csproj'
+      #     arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
+      #     publishTestResults: false
+
       - task: SonarCloudAnalyze@3
       - task: SonarCloudPublish@3
+
+      - task: DotNetCoreCLI@2
+        displayName: Publish BuyingCatalogueFunction
+        inputs:
+          command: "publish"
+          projects: "src/BuyingCatalogueFunction"
+          arguments: "--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
+          publishWebProjects: false
+          modifyOutputPath: false
+          zipAfterPublish: true
+
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: |
+            $release = "$(semVer)"
+            mkdir $(Build.ArtifactStagingDirectory)/code
+            $release | Out-File $(Build.ArtifactStagingDirectory)/code/release.txt
+
+      - task: CopyFiles@2
+        displayName: Copy DACPAC
+        inputs:
+          SourceFolder: 'database/NHSD.GPITBuyingCatalogue.Database'
+          Contents: '**/*.dacpac'
+          TargetFolder: '$(build.ArtifactStagingDirectory)/dacpacs'
+          CleanTargetFolder: false
+          OverWrite: true
+          flattenFolders: true
+
+      - task: CopyFiles@2
+        displayName: Copy Smoke Test Scripts
+        inputs:
+          SourceFolder: 'tests/SmokeTests'
+          Contents: '**/*.ps1'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/smoke-tests'
+          CleanTargetFolder: false
+          OverWrite: true
+          flattenFolders: false
+
+      - publish: $(Build.ArtifactStagingDirectory)
+        displayName: Publish package candidate
+        artifact: package-candidate
 
   - job: publishApprovedArtifacts
     displayName: Publish Approved Artifacts
@@ -312,7 +251,6 @@ jobs:
     dependsOn:
       - version
       - runTests
-      - buildPackageCandidate
       - buildDockerCandidate
       - sonarAnalysis
     condition: succeeded()
