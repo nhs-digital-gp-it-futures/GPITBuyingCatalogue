@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var order = (await orderService.GetOrderThin(model.CallOffId, model.InternalOrgId)).Order;
             var contract = await contractsService.GetContractWithImplementationPlan(order.Id);
 
-            if (!model.HasBespokeMilestones && contract.ImplementationPlan.Milestones.Count == 0)
+            if (!model.HasBespokeMilestones && (contract.ImplementationPlan is null || contract.ImplementationPlan.Milestones is null or { Count: 0 }))
             {
                 return RedirectToAction(nameof(BespokeMilestoneChoice), new { internalOrgId, callOffId });
             }
