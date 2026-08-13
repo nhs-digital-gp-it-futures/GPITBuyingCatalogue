@@ -8,7 +8,6 @@ public enum CompetitionServiceType
 
 public static class CompetitionServiceTypeExtensions
 {
-    // The container div that scopes the price/quantity rows for this service type
     public static string ContainerId(this CompetitionServiceType type) => type switch
     {
         CompetitionServiceType.CatalogueSolution => "#SolutionDetails",
