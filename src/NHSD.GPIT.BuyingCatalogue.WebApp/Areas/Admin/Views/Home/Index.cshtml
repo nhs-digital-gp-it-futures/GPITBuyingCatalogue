@@ -84,5 +84,15 @@
                 </li>
             </ul>
         }
+        
+        <h2>Manage Capabilities and Epics</h2>
+        <ul>
+            <li>
+                <a href="@Url.Action(nameof(ManageOrdersController.Index), typeof(ManageCapabilitiesController).ControllerName())">Manage all capabilities</a>
+            </li>
+            <li>
+                <a href="@Url.Action(nameof(ManageEpicsController.Index), typeof(ManageEpicsController).ControllerName())">Manage all epics</a>
+            </li>
+        </ul>
     </div>
 </div>

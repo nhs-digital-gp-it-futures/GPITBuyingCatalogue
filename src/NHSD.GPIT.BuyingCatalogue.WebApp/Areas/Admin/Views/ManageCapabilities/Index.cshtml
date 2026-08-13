@@ -1,0 +1,88 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageCapabilities.ManageCapabilitiesModel;
+@{
+    ViewBag.Title = "Manage capabilities";
+
+    var capabilityCount = Model.Options?.TotalNumberOfItems ?? Model.Capabilities.Count;
+    var capabilityTitle = capabilityCount == 1
+        ? "1 capability found"
+        : $"{capabilityCount} capabilities found";
+}
+
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a class="nhsuk-breadcrumb__link"
+                       data-test-id="home-crumb"
+                       asp-action="@nameof(HomeController.Index)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
+                       asp-area="@typeof(HomeController).AreaName()">Home</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title" advice="" />
+    </div>
+
+    <div class="nhsuk-grid-column-full">
+        @if ((Model.Capabilities.Count == 0 && Context.Request.Query["search"].Count > 0) || Model.Capabilities.Count > 0)
+        {
+            <vc:nhs-suggestion-search id="capability-suggestion-search"
+                                      ajax-url=""
+                                      title-text="Search by capability reference, name or catagory"
+                                      query-parameter-name="search"/>           
+        }
+        @if (Model.Capabilities is not null && Model.Capabilities.Count > 0)
+        {
+            <nhs-card-v2>
+                <nhs-card-content title="@capabilityTitle">
+                    <nhs-table data-test-id="capability-table">
+                        <nhs-table-column>Reference</nhs-table-column>
+                        <nhs-table-column>Name</nhs-table-column>
+                        <nhs-table-column>Category</nhs-table-column>
+                        <nhs-table-column>Status</nhs-table-column>
+                        <nhs-table-column>Action</nhs-table-column>
+                        @foreach (var capabilities in Model.Capabilities)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>@capabilities.CapabilityRef</nhs-table-cell>
+                                <nhs-table-cell>@capabilities.Name</nhs-table-cell>
+                                <nhs-table-cell>@capabilities.CapabilityCategoryName</nhs-table-cell>
+                                <nhs-table-cell>@capabilities.Status</nhs-table-cell>
+                                <nhs-table-cell>
+                                    <a data-test-id="user-link"
+                                       asp-area="@typeof(ManageCapabilitiesController).AreaName()"
+                                       asp-controller="@typeof(ManageCapabilitiesController).ControllerName()"
+                                       asp-action="@nameof(ManageCapabilitiesController.Edit)"
+                                       asp-route-capabilityId="@capabilities.Id">Edit</a>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+                    <govuk-pagination current-page-number="@Model.Options.PageNumber"
+                                      total-number-of-pages="@Model.Options.NumberOfPages"/>
+                </nhs-card-content>
+            </nhs-card-v2>
+        }
+        else
+        {
+            @if (Context.Request.Query["search"].Count > 0)
+            {
+                <nhs-card-v2 >
+                    <nhs-card-content title="0 capabilities found">
+                        <p>There were no capabilities found. Try changing any search terms you've used.</p>
+                    </nhs-card-content>
+                </nhs-card-v2>
+            } 
+            else
+            {
+                <p id="no-capabilities">There are currently no capabilities available.</p>
+            }
+        }
+    </div>
+</div>

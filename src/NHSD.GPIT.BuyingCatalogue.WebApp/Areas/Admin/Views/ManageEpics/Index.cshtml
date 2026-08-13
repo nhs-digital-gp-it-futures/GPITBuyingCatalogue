@@ -1,0 +1,99 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageEpics.ManageEpicsModel;
+@{
+    ViewBag.Title = "Manage epics";
+
+    var epicCount = Model.Options?.TotalNumberOfItems ?? Model.Epics.Count;
+    var epicTitle = epicCount == 1
+        ? "1 epic found"
+        : $"{epicCount} epics found";
+}
+
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a class="nhsuk-breadcrumb__link"
+                       data-test-id="home-crumb"
+                       asp-action="@nameof(HomeController.Index)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
+                       asp-area="@typeof(HomeController).AreaName()">Home</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title" advice="" />
+    </div>
+
+    <div class="nhsuk-grid-column-full">
+        @if ((Model.Epics.Count == 0 && Context.Request.Query["search"].Count > 0) || Model.Epics.Count > 0)
+        {
+            <vc:nhs-suggestion-search id="epic-suggestion-search"
+                                      ajax-url=""
+                                      title-text="Search by epic name or description"
+                                      query-parameter-name="search"/>           
+        }
+        @if (Model.Epics is not null && Model.Epics.Count > 0)
+        {
+            <nhs-card-v2>
+                <nhs-card-content title="@epicTitle">
+                    <nhs-table data-test-id="epic-table">
+                        <nhs-table-column>Id</nhs-table-column>
+                        <nhs-table-column>Name</nhs-table-column>
+                        <nhs-table-column>Description</nhs-table-column>
+                        <nhs-table-column>Is Active</nhs-table-column>
+                        <nhs-table-column>Capabilities</nhs-table-column>
+                        <nhs-table-column>Action</nhs-table-column>
+                        @foreach (var epics in Model.Epics)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>@epics.Id</nhs-table-cell>
+                                <nhs-table-cell>@epics.Name</nhs-table-cell>
+                                <nhs-table-cell>@epics.Description</nhs-table-cell>
+                                <nhs-table-cell>
+                                    @if (epics.IsActive)
+                                    {
+                                        <text>Yes</text>
+                                    }
+                                    else
+                                    {
+                                        <text>No</text>
+                                    }
+                                </nhs-table-cell>
+                                <nhs-table-cell>@epics.Capabilities</nhs-table-cell>
+                                <nhs-table-cell>
+                                    <a data-test-id="user-link"
+                                       asp-area="@typeof(ManageEpicsController).AreaName()"
+                                       asp-controller="@typeof(ManageEpicsController).ControllerName()"
+                                       asp-action="@nameof(ManageEpicsController.Edit)"
+                                       asp-route-epicId="@epics.Id">Edit</a>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+                    <govuk-pagination current-page-number="@Model.Options.PageNumber"
+                                      total-number-of-pages="@Model.Options.NumberOfPages"/>
+                </nhs-card-content>
+            </nhs-card-v2>
+        }
+        else
+        {
+            @if (Context.Request.Query["search"].Count > 0)
+            {
+                <nhs-card-v2 >
+                    <nhs-card-content title="0 epics found">
+                        <p>There were no epics found. Try changing any search terms you've used.</p>
+                    </nhs-card-content>
+                </nhs-card-v2>
+            } 
+            else
+            {
+                <p id="no-epics">There are currently no epics available.</p>
+            }
+        }
+    </div>
+</div>

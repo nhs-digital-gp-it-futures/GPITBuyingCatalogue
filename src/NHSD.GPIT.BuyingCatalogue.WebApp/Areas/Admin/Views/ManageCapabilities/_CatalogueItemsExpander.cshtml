@@ -1,0 +1,21 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageCapabilities.CapabilityCatalogueItemsExpanderModel
+
+<nhs-expander label-text="Catalogue Items" open="false">
+    <nhs-table data-test-id="epic-table">
+        <nhs-table-column>Id</nhs-table-column>
+        <nhs-table-column>Name</nhs-table-column>
+        <nhs-table-column>Supplier</nhs-table-column>
+        <nhs-table-column>Type</nhs-table-column>
+        <nhs-table-column>Status</nhs-table-column>
+        @foreach (var item in Model.CatalogueItems)
+        {
+            <nhs-table-row-container>
+                <nhs-table-cell>@item.Id</nhs-table-cell>
+                <nhs-table-cell>@item.Name</nhs-table-cell>
+                <nhs-table-cell>@item.SupplierName</nhs-table-cell>
+                <nhs-table-cell>@item.CatalogueItemType</nhs-table-cell>
+                <nhs-table-cell>@item.PublishedStatus</nhs-table-cell>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
+</nhs-expander>

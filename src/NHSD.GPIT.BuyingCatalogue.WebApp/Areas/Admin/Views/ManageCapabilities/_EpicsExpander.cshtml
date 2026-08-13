@@ -1,0 +1,37 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageCapabilities.CapabilityEpicsExpanderModel
+
+<nhs-expander label-text="Epics" open="false">
+    <nhs-table data-test-id="epic-table">
+        <nhs-table-column>Id</nhs-table-column>
+        <nhs-table-column>Name</nhs-table-column>
+        <nhs-table-column>Description</nhs-table-column>
+        <nhs-table-column>Is Active</nhs-table-column>
+        <nhs-table-column>Action</nhs-table-column>
+        @foreach (var epics in Model.Epics)
+        {
+            <nhs-table-row-container>
+                <nhs-table-cell>@epics.Id</nhs-table-cell>
+                <nhs-table-cell>@epics.Name</nhs-table-cell>
+                <nhs-table-cell>@epics.Description</nhs-table-cell>
+                <nhs-table-cell>
+                    @if (epics.IsActive)
+                    {
+                        <text>Yes</text>
+                    }
+                    else
+                    {
+                        <text>No</text>
+                    }
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <a data-test-id="user-link"
+                       asp-area="@typeof(ManageEpicsController).AreaName()"
+                       asp-controller="@typeof(ManageEpicsController).ControllerName()"
+                       asp-action="@nameof(ManageEpicsController.Edit)"
+                       asp-route-epicId="@epics.Id">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
+</nhs-expander>

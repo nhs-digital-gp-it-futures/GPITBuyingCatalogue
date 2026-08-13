@@ -1,0 +1,28 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageEpics.EpicCapabilitiesExpanderModel
+
+<nhs-expander label-text="Capabilities" open="true">
+    <nhs-table data-test-id="capability-table">
+        <nhs-table-column>Reference</nhs-table-column>
+        <nhs-table-column>Name</nhs-table-column>
+        <nhs-table-column>Category</nhs-table-column>
+        <nhs-table-column>Status</nhs-table-column>
+        <nhs-table-column>Action</nhs-table-column>
+        @foreach (var capabilities in Model.Capabilities)
+        {
+            <nhs-table-row-container>
+                <nhs-table-cell>@capabilities.CapabilityRef</nhs-table-cell>
+                <nhs-table-cell>@capabilities.Name</nhs-table-cell>
+                <nhs-table-cell>@capabilities.CapabilityCategoryName</nhs-table-cell>
+                <nhs-table-cell>@capabilities.Status</nhs-table-cell>
+                <nhs-table-cell>
+                    <a data-test-id="user-link"
+                       asp-area="@typeof(ManageCapabilitiesController).AreaName()"
+                       asp-controller="@typeof(ManageCapabilitiesController).ControllerName()"
+                       asp-action="@nameof(ManageCapabilitiesController.Edit)"
+                       asp-route-capabilityId="@capabilities.Id">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
+</nhs-expander>
