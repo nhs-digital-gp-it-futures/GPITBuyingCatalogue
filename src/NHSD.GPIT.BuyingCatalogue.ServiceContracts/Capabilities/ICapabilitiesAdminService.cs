@@ -7,9 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 
 public interface ICapabilitiesAdminService
 {
-    Task<PagedList<AdminManageCapability>> GetPagedCapabilities(PageOptions options, string search);
+    Task<PagedList<AdminManageCapability>> GetPagedCapabilitiesAsync(PageOptions options, string search);
 
-    Task<Capability> GetCapability(int capabilityId);
+    Task<Capability> GetCapabilityAsync(int capabilityId);
 
-    Task UpdateCapability(UpdateAdminCapability request);
+    Task UpdateCapabilityAsync(UpdateAdminCapability request);
 }

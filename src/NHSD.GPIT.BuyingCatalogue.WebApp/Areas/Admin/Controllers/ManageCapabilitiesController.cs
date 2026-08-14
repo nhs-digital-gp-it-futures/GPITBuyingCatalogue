@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             const int pageSize = 10;
             var pageOptions = new PageOptions(page, pageSize);
 
-            var capabilities = await capabilitiesAdminService.GetPagedCapabilities(pageOptions, search);
+            var capabilities = await capabilitiesAdminService.GetPagedCapabilitiesAsync(pageOptions, search);
 
             var model = new ManageCapabilitiesModel(capabilities.Items, capabilities.Options)
             {
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{capabilityId}/edit")]
         public async Task<IActionResult> Edit(int capabilityId)
         {
-            var capability = await capabilitiesAdminService.GetCapability(capabilityId);
+            var capability = await capabilitiesAdminService.GetCapabilityAsync(capabilityId);
 
             if (capability == null)
                 return NotFound();
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (updatedCapability == null)
                 return BadRequest();
 
-            var capability = await capabilitiesAdminService.GetCapability(capabilityId);
+            var capability = await capabilitiesAdminService.GetCapabilityAsync(capabilityId);
             if (capability == null)
                 return NotFound();
 
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 Status = updatedCapability.Status,
             };
 
-            await capabilitiesAdminService.UpdateCapability(request);
+            await capabilitiesAdminService.UpdateCapabilityAsync(request);
 
             return RedirectToAction(nameof(Index));
         }

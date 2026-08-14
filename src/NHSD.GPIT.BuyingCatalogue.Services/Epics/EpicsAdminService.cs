@@ -14,7 +14,7 @@ public sealed class EpicsAdminService(BuyingCatalogueDbContext dbContext) : IEpi
 {
     private readonly BuyingCatalogueDbContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-    public async Task<PagedList<AdminManageEpic>> GetPagedEpics(
+    public async Task<PagedList<AdminManageEpic>> GetPagedEpicsAsync(
         PageOptions options,
         string search = null)
     {
@@ -54,7 +54,7 @@ public sealed class EpicsAdminService(BuyingCatalogueDbContext dbContext) : IEpi
             options);
     }
 
-    public Task<Epic> GetEpic(string epicId) =>
+    public Task<Epic> GetEpicAsync(string epicId) =>
         dbContext.Epics
             .AsNoTracking()
             .Include(x => x.Capabilities)
@@ -62,7 +62,7 @@ public sealed class EpicsAdminService(BuyingCatalogueDbContext dbContext) : IEpi
             .Where(x => x.Id == epicId)
             .FirstOrDefaultAsync();
 
-    public async Task UpdateEpic(UpdateAdminEpic request)
+    public async Task UpdateEpicAsync(UpdateAdminEpic request)
     {
         ArgumentNullException.ThrowIfNull(request);
 

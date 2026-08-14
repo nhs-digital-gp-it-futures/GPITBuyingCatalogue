@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             const int pageSize = 10;
             var pageOptions = new PageOptions(page, pageSize);
 
-            var epics = await epicsAdminService.GetPagedEpics(pageOptions, search);
+            var epics = await epicsAdminService.GetPagedEpicsAsync(pageOptions, search);
 
             var model = new ManageEpicsModel(epics.Items, epics.Options)
             {
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{epicId}/edit")]
         public async Task<IActionResult> Edit(string epicId)
         {
-            var epic = await epicsAdminService.GetEpic(epicId);
+            var epic = await epicsAdminService.GetEpicAsync(epicId);
 
             if (epic == null)
                 return NotFound();
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (updatedEpic == null)
                 return BadRequest();
 
-            var epic = await epicsAdminService.GetEpic(epicId);
+            var epic = await epicsAdminService.GetEpicAsync(epicId);
             if (epic == null)
                 return NotFound();
 
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     : null,
             };
 
-            await epicsAdminService.UpdateEpic(request);
+            await epicsAdminService.UpdateEpicAsync(request);
 
             return RedirectToAction(nameof(Index));
         }

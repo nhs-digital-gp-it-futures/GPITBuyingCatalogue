@@ -14,7 +14,7 @@ public sealed class CapabilitiesAdminService(BuyingCatalogueDbContext dbContext)
 {
     private readonly BuyingCatalogueDbContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-    public async Task<PagedList<AdminManageCapability>> GetPagedCapabilities(
+    public async Task<PagedList<AdminManageCapability>> GetPagedCapabilitiesAsync(
         PageOptions options,
         string search = null)
     {
@@ -55,7 +55,7 @@ public sealed class CapabilitiesAdminService(BuyingCatalogueDbContext dbContext)
             options);
     }
 
-    public Task<Capability> GetCapability(int capabilityId) =>
+    public Task<Capability> GetCapabilityAsync(int capabilityId) =>
         dbContext.Capabilities
             .AsNoTracking()
             .Include(x => x.Category)
@@ -66,7 +66,7 @@ public sealed class CapabilitiesAdminService(BuyingCatalogueDbContext dbContext)
             .Where(x => x.Id == capabilityId)
             .FirstOrDefaultAsync();
 
-    public async Task UpdateCapability(UpdateAdminCapability request)
+    public async Task UpdateCapabilityAsync(UpdateAdminCapability request)
     {
         ArgumentNullException.ThrowIfNull(request);
 

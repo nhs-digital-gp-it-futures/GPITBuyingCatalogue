@@ -7,9 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Epics;
 
 public interface IEpicsAdminService
 {
-    Task<PagedList<AdminManageEpic>> GetPagedEpics(PageOptions options, string search);
+    Task<PagedList<AdminManageEpic>> GetPagedEpicsAsync(PageOptions options, string search);
 
-    Task<Epic> GetEpic(string epicId);
+    Task<Epic> GetEpicAsync(string epicId);
 
-    Task UpdateEpic(UpdateAdminEpic request);
+    Task UpdateEpicAsync(UpdateAdminEpic request);
 }
