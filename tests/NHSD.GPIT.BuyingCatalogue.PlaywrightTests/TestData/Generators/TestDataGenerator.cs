@@ -14,4 +14,5 @@ public static class TestDataGenerator
     public static string SecondaryAddress() => _faker.Address.SecondaryAddress();
     public static string City() => _faker.Address.City();
     public static string County() => _faker.Address.County();
+    public static string Sentence() => _faker.Lorem.Sentence();
 }
