@@ -161,10 +161,24 @@ jobs:
           feedsToUse: config
           nugetConfigPath: 'NuGet.config'
 
-      - download: current
-        patterns: |
-          coverage-*/**/coverage.opencover.xml
+      - task: DownloadPipelineArtifact@2
         displayName: Download unit-test coverage
+        inputs:
+          buildType: current
+          patterns: |
+            coverage-*/**/coverage.opencover.xml
+          targetPath: $(Build.SourcesDirectory)/TestResults
+
+      - bash: |
+          coverage_count=$(find "$(Build.SourcesDirectory)/TestResults" -type f -name 'coverage.opencover.xml' | wc -l)
+
+          if [ "$coverage_count" -eq 0 ]; then
+            echo "##vso[task.logissue type=error]No OpenCover reports were downloaded for Sonar analysis."
+            exit 1
+          fi
+
+          echo "Found $coverage_count OpenCover report(s) for Sonar analysis."
+        displayName: Verify unit-test coverage
 
       - task: SonarCloudPrepare@3
         inputs:
@@ -174,7 +188,7 @@ jobs:
           projectKey: '$(SonarKey)'
           projectName: '$(SonarProject)'
           extraProperties: |
-            sonar.cs.opencover.reportsPaths=$(Pipeline.Workspace)/coverage-*/**/coverage.opencover.xml
+            sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/TestResults/coverage-*/**/coverage.opencover.xml
             sonar.exclusions=src/NHSD.GPIT.BuyingCatalogue.UI.Components/**,src/NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp/**,**/*.cshtml,**/*.ts,tests/**
 
       - task: DotNetCoreCLI@2
