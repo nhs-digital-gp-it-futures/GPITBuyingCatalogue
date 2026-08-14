@@ -1,7 +1,5 @@
-﻿using Microsoft.Playwright;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
+﻿using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Builders;
-using static Microsoft.Playwright.Assertions;
 using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Tests.Login;

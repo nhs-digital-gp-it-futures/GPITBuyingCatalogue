@@ -1,7 +1,6 @@
 ﻿using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Competitions.PriceAndQuantity;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Competitions.Setup;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Competitions.Steps;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Login;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepTwo;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData;
