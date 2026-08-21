@@ -243,8 +243,7 @@ public class OrderingPages
         _output.WriteLine("Step 3 — complete contract");
 
         if (addBespokeEntries && !string.IsNullOrWhiteSpace(implementationMilestoneName))
-            await ImplementationMilestones.NavigateAndAddBespokeMilestoneAsync(
-                implementationMilestoneName, implementationPaymentTrigger);
+            await ImplementationMilestones.NavigateAndContinueAsync(implementationMilestoneName, implementationPaymentTrigger);
         else
             await ImplementationMilestones.NavigateAndContinueAsync();
 

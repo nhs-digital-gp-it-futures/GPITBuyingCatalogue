@@ -15,4 +15,6 @@ public static class TestDataGenerator
     public static string City() => _faker.Address.City();
     public static string County() => _faker.Address.County();
     public static string Sentence() => _faker.Lorem.Sentence();
+    public static string MilestoneName() => $"Milestone {_faker.Random.AlphaNumeric(6)}";
+    public static string PaymentTrigger() => _faker.Lorem.Sentence();
 }
