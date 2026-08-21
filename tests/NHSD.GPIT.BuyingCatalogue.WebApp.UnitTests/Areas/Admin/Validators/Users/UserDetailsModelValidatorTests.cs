@@ -155,14 +155,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [MockAutoData]
+        [MockInlineAutoData("Authority")]
+        [MockInlineAutoData("Onboarding")]
+        [MockInlineAutoData("ReadOnly")]
         public static void Validate_AccountTypeIsAdmin_OrganisationIdNotNhsDigital_SetsModelError(
+            string accountType,
             UserDetailsModelValidator validator)
         {
             var model = new UserDetailsModel
             {
                 SelectedOrganisationId = OrganisationConstants.NhsDigitalOrganisationId + 1,
-                SelectedAccountType = OrganisationFunction.Authority.Name,
+                SelectedAccountType = accountType,
             };
 
             var result = validator.TestValidate(model);
@@ -172,14 +175,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [MockAutoData]
+        [MockInlineAutoData("Authority")]
+        [MockInlineAutoData("Onboarding")]
+        [MockInlineAutoData("ReadOnly")]
         public static void Validate_AccountTypeIsAdmin_OrganisationIdNhsDigital_NoModelError(
+            string accountType,
             UserDetailsModelValidator validator)
         {
             var model = new UserDetailsModel
             {
                 SelectedOrganisationId = OrganisationConstants.NhsDigitalOrganisationId,
-                SelectedAccountType = OrganisationFunction.Authority.Name,
+                SelectedAccountType = accountType,
             };
 
             var result = validator.TestValidate(model);
