@@ -17,4 +17,34 @@ public static class TestDataGenerator
     public static string Sentence() => _faker.Lorem.Sentence();
     public static string MilestoneName() => $"Milestone {_faker.Random.AlphaNumeric(6)}";
     public static string PaymentTrigger() => _faker.Lorem.Sentence();
+    public static string ScoreOneToFive() => _faker.Random.Int(1, 5).ToString();
+
+    // Returns a random multiple of 5 between min and max (inclusive), e.g. 30..90 step 5
+    public static int MultipleOfFive(int min, int max)
+    {
+        var steps = (max - min) / 5;
+        var chosen = _faker.Random.Int(0, steps);
+        return min + (chosen * 5);
+    }
+
+    // Splits 100 into `parts` weightings, each a multiple of 5, each at least 5, summing to 100.
+    public static int[] WeightingsSummingTo100(int parts)
+    {
+        const int totalUnits = 20; // 100 / 5
+
+        // Start each part at 1 unit (=5%), then distribute the remaining units randomly
+        var units = new int[parts];
+        for (var i = 0; i < parts; i++)
+            units[i] = 1;
+
+        var remaining = totalUnits - parts;
+        for (var i = 0; i < remaining; i++)
+            units[_faker.Random.Int(0, parts - 1)]++;
+
+        var weightings = new int[parts];
+        for (var i = 0; i < parts; i++)
+            weightings[i] = units[i] * 5;
+
+        return weightings;
+    }
 }
