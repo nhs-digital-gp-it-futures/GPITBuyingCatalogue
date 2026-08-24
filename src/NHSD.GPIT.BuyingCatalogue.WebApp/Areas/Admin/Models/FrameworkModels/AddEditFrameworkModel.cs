@@ -32,12 +32,19 @@ public class AddEditFrameworkModel : NavBaseModel
         FrameworkId = framework.Id;
         Name = framework.ShortName;
         MaximumTerm = framework.MaximumTerm.ToString();
+        SolutionType = framework.SolutionType;
 
         foreach (FundingType i in framework.FundingTypes)
         {
             FundingTypes.Where(x => x.Value == i).FirstOrDefault().Selected = true;
         }
     }
+
+    public static IEnumerable<SelectOption<SolutionType>> SolutionTypeOptions =>
+    [
+        new(SolutionType.GPIT.DisplayName(), SolutionType.GPIT),
+        new(SolutionType.CommunityPharmacy.DisplayName(), SolutionType.CommunityPharmacy),
+    ];
 
     public string FrameworkId { get; set; }
 
@@ -52,6 +59,8 @@ public class AddEditFrameworkModel : NavBaseModel
         new SelectOption<FundingType>(FundingType.LocalFunding.Description(), FundingType.LocalFunding),
         new SelectOption<FundingType>(FundingType.Pcarp.Description(), FundingType.Pcarp),
     };
+
+    public SolutionType SolutionType { get; set; }
 
     public PageTitleModel GetPageTitle()
     {

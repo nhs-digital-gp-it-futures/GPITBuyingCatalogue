@@ -95,7 +95,7 @@ public static class FrameworksControllerTests
 
         await service
             .Received()
-            .AddFramework(model.Name, Arg.Is<IEnumerable<FundingType>>(f => f.Any() == selected), Arg.Any<int>());
+            .AddFramework(model.Name, Arg.Is<IEnumerable<FundingType>>(f => f.Any() == selected), Arg.Any<int>(), Arg.Any<SolutionType>());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Dashboard));
@@ -169,7 +169,7 @@ public static class FrameworksControllerTests
 
         await service
             .Received()
-            .UpdateFramework(frameworkId, model.Name, Arg.Is<IEnumerable<FundingType>>(f => f.Any() == selected), Arg.Any<int>());
+            .UpdateFramework(frameworkId, model.Name, Arg.Is<IEnumerable<FundingType>>(f => f.Any() == selected), Arg.Any<int>(), Arg.Any<SolutionType>());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Dashboard));

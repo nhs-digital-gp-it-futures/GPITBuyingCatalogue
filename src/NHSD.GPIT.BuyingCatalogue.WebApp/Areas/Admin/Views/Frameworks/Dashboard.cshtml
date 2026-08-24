@@ -41,6 +41,7 @@
             <nhs-table label-text="Contracting vehicles" data-test-id="frameworks-table">
                 <nhs-table-column>Name</nhs-table-column>
                 <nhs-table-column>Funding type</nhs-table-column>
+                <nhs-table-column>Solution type</nhs-table-column>
                 <nhs-table-column>Status</nhs-table-column>
                 <nhs-table-column>Action</nhs-table-column>
 
@@ -52,6 +53,7 @@
                         {
                             <nhs-table-cell>@string.Join(", ", framework.FundingTypes.Select(x => x.Description()))</nhs-table-cell>
                         }
+                        <nhs-table-cell>@framework.SolutionType.DisplayName()</nhs-table-cell>
                         <nhs-table-cell>
                             <nhs-tag text="@GetTagText(framework.IsExpired)" colour="@GetTagColour(framework.IsExpired)" />
                         </nhs-table-cell>
