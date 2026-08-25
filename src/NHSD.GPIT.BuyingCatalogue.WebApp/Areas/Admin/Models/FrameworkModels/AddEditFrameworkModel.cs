@@ -60,7 +60,7 @@ public class AddEditFrameworkModel : NavBaseModel
         new SelectOption<FundingType>(FundingType.Pcarp.Description(), FundingType.Pcarp),
     };
 
-    public SolutionType SolutionType { get; set; }
+    public SolutionType SolutionType { get; set; } = SolutionType.GPIT;
 
     public PageTitleModel GetPageTitle()
     {
