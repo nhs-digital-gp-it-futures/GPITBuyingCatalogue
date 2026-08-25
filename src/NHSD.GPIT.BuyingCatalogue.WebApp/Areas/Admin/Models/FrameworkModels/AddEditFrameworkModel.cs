@@ -42,8 +42,8 @@ public class AddEditFrameworkModel : NavBaseModel
 
     public static IEnumerable<SelectOption<SolutionType>> SolutionTypeOptions =>
     [
-        new(SolutionType.GPIT.DisplayName(), SolutionType.GPIT),
-        new(SolutionType.CommunityPharmacy.DisplayName(), SolutionType.CommunityPharmacy),
+        new(SolutionType.GPIT.Name(), SolutionType.GPIT),
+        new(SolutionType.CommunityPharmacy.Name(), SolutionType.CommunityPharmacy),
     ];
 
     public string FrameworkId { get; set; }
