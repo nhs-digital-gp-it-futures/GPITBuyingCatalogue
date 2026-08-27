@@ -84,5 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
             return View(new ErrorModel(error));
         }
+
+        public IActionResult GPIT()
+            => View();
     }
 }
