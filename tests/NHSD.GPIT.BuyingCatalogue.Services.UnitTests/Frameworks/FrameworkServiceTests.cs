@@ -194,14 +194,14 @@ public static class FrameworkServiceTests
     [Theory]
     [MockInMemoryDbAutoData]
     public static Task AddFramework_NullName_ThrowsException(FrameworkService service) => FluentActions
-        .Invoking(() => service.AddFramework(null, Enumerable.Empty<FundingType>(), 0))
+        .Invoking(() => service.AddFramework(null, Enumerable.Empty<FundingType>(), 0, SolutionType.GPIT))
         .Should()
         .ThrowAsync<ArgumentException>();
 
     [Theory]
     [MockInMemoryDbAutoData]
     public static Task AddFramework_NullFundingType_ThrowsException(string name, FrameworkService service) => FluentActions
-        .Invoking(() => service.AddFramework(name, null, 0))
+        .Invoking(() => service.AddFramework(name, null, 0, SolutionType.GPIT))
         .Should()
         .ThrowAsync<ArgumentException>();
 
@@ -219,7 +219,7 @@ public static class FrameworkServiceTests
 
         dbContext.ChangeTracker.Clear();
 
-        await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>(), 0));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>(), 0, SolutionType.GPIT));
     }
 
     [Theory]
@@ -240,13 +240,14 @@ public static class FrameworkServiceTests
 
         dbContext.ChangeTracker.Clear();
 
-        await service.UpdateFramework(frameworkId, newName, fundingTypes, maximumTerm);
+        await service.UpdateFramework(frameworkId, newName, fundingTypes, maximumTerm, SolutionType.GPIT);
 
         var framework = dbContext.Frameworks.AsNoTracking().FirstOrDefault(x => x.Id == frameworkId);
 
         framework.Name.Should().Be(newName);
         framework.FundingTypes.Should().BeEquivalentTo(fundingTypes);
         framework.MaximumTerm.Should().Be(maximumTerm);
+        framework.SolutionType.Should().Be(SolutionType.GPIT);
     }
 
     [Theory]
@@ -256,7 +257,7 @@ public static class FrameworkServiceTests
         EntityFramework.Catalogue.Models.Framework framework)
     {
        await FluentActions
-            .Awaiting(async () => await service.UpdateFramework(framework.Id, null, null, 0))
+            .Awaiting(async () => await service.UpdateFramework(framework.Id, null, null, 0, SolutionType.GPIT))
             .Should()
             .NotThrowAsync();
     }
