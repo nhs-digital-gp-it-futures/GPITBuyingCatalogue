@@ -29,5 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
         public string LinkText { get; set; }
 
         public string WidthClass { get; set; } = DefaultWidthClass;
+
+        public bool ShowChevronIcon { get; set; } = true;
     }
 }
