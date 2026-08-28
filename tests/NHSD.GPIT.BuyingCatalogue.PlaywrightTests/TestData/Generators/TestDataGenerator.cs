@@ -17,4 +17,23 @@ public static class TestDataGenerator
     public static string Sentence() => _faker.Lorem.Sentence();
     public static string MilestoneName() => $"Milestone {_faker.Random.AlphaNumeric(6)}";
     public static string PaymentTrigger() => _faker.Lorem.Sentence();
+    public static string ScoreOneToFive() => _faker.Random.Int(1, 5).ToString();
+
+    public static int MultipleOfFive(int min, int max)
+    {
+        var stepCount = (max - min) / 5;
+        return min + (_faker.Random.Int(0, stepCount) * 5);
+    }
+
+    public static int[] WeightingsSummingTo100(int parts)
+    {
+        const int totalUnits = 20;
+
+        var units = Enumerable.Repeat(1, parts).ToArray();
+
+        for (var i = 0; i < totalUnits - parts; i++)
+            units[_faker.Random.Int(0, parts - 1)]++;
+
+        return units.Select(u => u * 5).ToArray();
+    }
 }

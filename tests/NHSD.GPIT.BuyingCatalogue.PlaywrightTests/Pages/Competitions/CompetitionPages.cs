@@ -28,6 +28,15 @@ public class CompetitionPages
     public CalculatePricePage CalculatePrice { get; }
     public PriceAndQuantityPage PriceAndQuantity { get; }
     public ViewResultsPage ViewResults { get; }
+    public AwardCriteriaWeightingsPage AwardCriteriaWeightings { get; }
+    public NonPriceElementRequirementsPage NonPriceElements { get; }
+    public FeatureRequirementsPage FeatureRequirements { get; }
+    public ImplementationRequirementsPage ImplementationRequirements { get; }
+    public InteroperabilityRequirementsPage InteroperabilityRequirements { get; }
+    public ServiceLevelRequirementsPage ServiceLevelRequirements { get; }
+    public NonPriceWeightingsPage NonPriceWeightings { get; }
+    public ReviewCompetitionCriteriaPage ReviewCompetitionCriteria { get; }
+    public CompareAndScorePage CompareAndScore { get; }
 
     public CompetitionPages(IPage page, ITestOutputHelper output, CompetitionTestData data)
     {
@@ -49,6 +58,15 @@ public class CompetitionPages
         CalculatePrice = new CalculatePricePage(page);
         PriceAndQuantity = new PriceAndQuantityPage(page);
         ViewResults = new ViewResultsPage(page);
+        AwardCriteriaWeightings = new AwardCriteriaWeightingsPage(page);
+        NonPriceElements = new NonPriceElementRequirementsPage(page);
+        FeatureRequirements = new FeatureRequirementsPage(page);
+        ImplementationRequirements = new ImplementationRequirementsPage(page);
+        InteroperabilityRequirements = new InteroperabilityRequirementsPage(page);
+        ServiceLevelRequirements = new ServiceLevelRequirementsPage(page);
+        NonPriceWeightings = new NonPriceWeightingsPage(page);
+        ReviewCompetitionCriteria = new ReviewCompetitionCriteriaPage(page);
+        CompareAndScore = new CompareAndScorePage(page);
     }
 
     public async Task LoginAsync()
@@ -85,19 +103,71 @@ public class CompetitionPages
         await ServiceRecipients.SelectRecipientsManuallyAsync(
             _data.Sublocation, _data.Practices, serviceCategory: "competition");
         await TaskList.AssertOnPageAsync();
-        
+
         await TaskList.GoToContractLengthAsync();
         await ContractLength.EnterLengthAndContinueAsync(_data.ContractLength);
         await TaskList.AssertOnPageAsync();
     }
 
-    public async Task DefineCompetitionCriteriaAsync()
+    public async Task DefinePriceOnlyCompetitionCriteriaAsync()
     {
         _output.WriteLine($"Step 2: award criteria ({_data.AwardCriteria})");
 
         await TaskList.GoToAwardCriteriaAsync();
         await AwardCriteria.SelectCriteriaAndContinueAsync(_data.AwardCriteria);
         await TaskList.AssertOnPageAsync();
+    }
+
+    public async Task DefinePriceAndNonPriceCriteriaAsync()
+    {
+        _output.WriteLine("Define competition criteria: price and non-price, with weightings");
+
+        await TaskList.GoToAwardCriteriaAsync();
+        await AwardCriteria.SelectCriteriaAndContinueAsync(_data.PriceAndNonPriceCriteria);
+        await TaskList.AssertOnPageAsync();
+
+        await TaskList.GoToAwardCriteriaWeightingsAsync();
+        await AwardCriteriaWeightings.EnterWeightingsAndContinueAsync(_data.PriceWeighting, _data.NonPriceWeighting);
+        await TaskList.AssertOnPageAsync();
+    }
+
+    public async Task AddNonPriceElementsAsync()
+    {
+        _output.WriteLine("Add non-price elements: features, implementation, interoperability, service levels");
+
+        await TaskList.GoToNonPriceElementsAsync();
+
+        await NonPriceElements.GoToAddFeatureRequirementsAsync();
+        await FeatureRequirements.AddAsync(_data.FeatureRequirementType, _data.FeatureRequirement);
+
+        await NonPriceElements.GoToAddImplementationRequirementsAsync();
+        await ImplementationRequirements.AddAsync(_data.ImplementationRequirement);
+
+        await NonPriceElements.GoToAddInteroperabilityRequirementsAsync();
+        await InteroperabilityRequirements.AddAsync(_data.InteroperabilityOptions);
+
+        await NonPriceElements.GoToAddServiceLevelRequirementsAsync();
+        await ServiceLevelRequirements.AddAsync(_data.ServiceLevelFrom, _data.ServiceLevelUntil);
+
+        await NonPriceElements.AssertOnPageAsync();
+        await NonPriceElements.SaveAndContinueAsync();
+        await TaskList.AssertOnPageAsync();
+    }
+
+    public async Task SetNonPriceWeightingsAndReviewAsync()
+    {
+        _output.WriteLine("Non-price weightings and review competition criteria");
+
+        await TaskList.GoToNonPriceWeightingsAsync();
+        await NonPriceWeightings.EnterWeightingsAndContinueAsync(
+            _data.FeaturesWeighting,
+            _data.ImplementationWeighting,
+            _data.InteroperabilityWeighting,
+            _data.ServiceLevelWeighting);
+        await TaskList.AssertOnPageAsync();
+
+        await TaskList.GoToReviewCompetitionCriteriaAsync();
+        await ReviewCompetitionCriteria.ConfirmAsync();
     }
 
     public async Task CompareAndScoreSolutionsAsync()
@@ -138,6 +208,27 @@ public class CompetitionPages
         await PriceAndQuantity.SaveAndContinueLinkAsync();
 
         await CalculatePrice.FinishAsync();
+        await TaskList.AssertOnPageAsync();
+    }
+
+    public async Task CompareAndScoreNonPriceElementsAsync()
+    {
+        _output.WriteLine("Compare and score non-price elements");
+
+        await TaskList.GoToCompareAndScoreNonPriceAsync();
+        await CompareAndScore.AssertOnHubAsync();
+
+        var elements = new[] { "Features", "Implementation", "Interoperability", "Service levels" };
+
+        foreach (var element in elements)
+        {
+            await CompareAndScore.ScoreElementAsync(
+                element,
+                _data.FirstSolutionScore, _data.FirstSolutionJustification,
+                _data.SecondSolutionScore, _data.SecondSolutionJustification);
+        }
+
+        await CompareAndScore.SaveAndContinueAsync();
         await TaskList.AssertOnPageAsync();
     }
 
