@@ -3,9 +3,9 @@ using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Base;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Competitions.Setup;
 
-public class NonPriceElementsPage : BasePage
+public class NonPriceElementRequirementsPage : BasePage
 {
-    public NonPriceElementsPage(IPage page) : base(page) { }
+    public NonPriceElementRequirementsPage(IPage page) : base(page) { }
 
     public async Task AssertOnPageAsync() =>
         await AssertHeadingAsync("Non-price elements");

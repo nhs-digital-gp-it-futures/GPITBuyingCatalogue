@@ -29,7 +29,7 @@ public class CompetitionPages
     public PriceAndQuantityPage PriceAndQuantity { get; }
     public ViewResultsPage ViewResults { get; }
     public AwardCriteriaWeightingsPage AwardCriteriaWeightings { get; }
-    public NonPriceElementsPage NonPriceElements { get; }
+    public NonPriceElementRequirementsPage NonPriceElements { get; }
     public FeatureRequirementsPage FeatureRequirements { get; }
     public ImplementationRequirementsPage ImplementationRequirements { get; }
     public InteroperabilityRequirementsPage InteroperabilityRequirements { get; }
@@ -59,7 +59,7 @@ public class CompetitionPages
         PriceAndQuantity = new PriceAndQuantityPage(page);
         ViewResults = new ViewResultsPage(page);
         AwardCriteriaWeightings = new AwardCriteriaWeightingsPage(page);
-        NonPriceElements = new NonPriceElementsPage(page);
+        NonPriceElements = new NonPriceElementRequirementsPage(page);
         FeatureRequirements = new FeatureRequirementsPage(page);
         ImplementationRequirements = new ImplementationRequirementsPage(page);
         InteroperabilityRequirements = new InteroperabilityRequirementsPage(page);
