@@ -1,7 +1,6 @@
 ﻿using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Competitions.PriceAndQuantity;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Competitions.Setup;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Competitions.Steps;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Login;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepTwo;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData;
@@ -104,7 +103,7 @@ public class CompetitionPages
         await ServiceRecipients.SelectRecipientsManuallyAsync(
             _data.Sublocation, _data.Practices, serviceCategory: "competition");
         await TaskList.AssertOnPageAsync();
-        
+
         await TaskList.GoToContractLengthAsync();
         await ContractLength.EnterLengthAndContinueAsync(_data.ContractLength);
         await TaskList.AssertOnPageAsync();
