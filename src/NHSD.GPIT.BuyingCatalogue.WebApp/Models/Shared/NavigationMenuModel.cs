@@ -32,13 +32,13 @@ public readonly struct NavigationMenuModel
         "General Practice",
         urlHelper.Action(
             nameof(HomeController.GPIT),
-            typeof(SolutionsController).ControllerName()));
+            typeof(HomeController).ControllerName()));
 
     private static readonly Func<IUrlHelper, KeyValuePair<string, string>> CommunityPharmacy = urlHelper => new KeyValuePair<string, string>(
         "Community Pharmacy",
         urlHelper.Action(
             nameof(HomeController.GPIT),
-            typeof(SolutionsController).ControllerName()));
+            typeof(HomeController).ControllerName()));
 
     private static readonly Func<IUrlHelper, KeyValuePair<string, string>> Logout = urlHelper =>
         new KeyValuePair<string, string>(
@@ -52,8 +52,7 @@ public readonly struct NavigationMenuModel
         "Home",
         urlHelper.Action(
             nameof(Areas.Admin.Controllers.HomeController.Index),
-            typeof(Areas.Admin.Controllers.HomeController)
-                .ControllerName(),
+            typeof(Areas.Admin.Controllers.HomeController).ControllerName(),
             new
             {
                 area =

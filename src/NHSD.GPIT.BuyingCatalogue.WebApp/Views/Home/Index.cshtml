@@ -50,29 +50,3 @@
         </div>
     </div>
 </section>
-
-<section class="nhsuk-section">
-    <div class="nhsuk-width-container app-section__content">
-        <div class="nhsuk-grid-row app">
-            <div class="nhsuk-grid-column-full">
-                <h2>Updates</h2>
-                <div class="nhsuk-grid-row nhsuk-card-group">
-                    <partial 
-                        name="_ActionCard" 
-                        model="@(
-                            new ActionCardModel(
-                                "New accessibility standard published", 
-                                "New standard for accessibility published and applicable to all solutions", 
-                                Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName())) { WidthClass = "nhsuk-grid-column-one-half"})"/>
-
-                    <partial name="_ActionCard" 
-                        model="@(
-                            new ActionCardModel(
-                                "New pharmacy solutions onboarded", 
-                                "Four new suppliers been added to our Community Pharmacy listings page", 
-                                Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName())) { WidthClass = "nhsuk-grid-column-one-half"})"/>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
