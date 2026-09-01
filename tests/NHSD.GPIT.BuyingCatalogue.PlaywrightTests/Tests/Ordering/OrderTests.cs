@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Builders;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Generators;
 using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Tests.Ordering;
@@ -176,5 +177,25 @@ public class OrderTests : BaseTest
         await orderPages.StepTwoAddAssociatedServiceAsync(data);
         await orderPages.StepThreeCompleteAssociatedServiceContractAsync();
         await orderPages.StepFourReviewAndCompleteOrderAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.OrderJourney)]
+    public async Task CreateOrderWithBespokeImplementationMilestone()
+    {
+        var milestoneName = TestDataGenerator.MilestoneName();
+        var paymentTrigger = TestDataGenerator.PaymentTrigger();
+
+        await orderPages.LoginAsync();
+        await orderPages.CreateNewOrderAsync();
+        await orderPages.StepOnePrepareOrderAsync();
+        await orderPages.StepTwoAddSolutionsAndServicesAsync(solutionName: SolutionName);
+        await orderPages.StepTwoDeliveryAndFundingAsync();
+        await orderPages.StepThreeCompleteContractAsync(
+            addBespokeEntries: true,
+            implementationMilestoneName: milestoneName,
+            implementationPaymentTrigger: paymentTrigger);
+        await orderPages.StepFourReviewAndCompleteOrderAsync();
+        await orderPages.ReviewOrder.AssertOrderCompletedAsync();
     }
 }
