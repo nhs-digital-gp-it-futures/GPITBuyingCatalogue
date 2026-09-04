@@ -20,7 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
              string selectedFrameworkId = null,
              string selectedApplicationTypeIds = null,
              string selectedHostingTypeIds = null,
-             Dictionary<SupportedIntegrations, int[]> selectedIntegrationsAndTypes = null);
+             Dictionary<SupportedIntegrations, int[]> selectedIntegrationsAndTypes = null,
+             bool? isCommunityPharmacy = null);
 
         Task<IList<CatalogueItem>> GetAllSolutionsFilteredFromFilterIds(
             FilterIdsModel filterIds);

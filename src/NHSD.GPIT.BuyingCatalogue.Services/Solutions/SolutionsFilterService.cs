@@ -47,7 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 string selectedFrameworkId = null,
                 string selectedApplicationTypeIds = null,
                 string selectedHostingTypeIds = null,
-                Dictionary<SupportedIntegrations, int[]> selectedIntegrationsAndTypes = null)
+                Dictionary<SupportedIntegrations, int[]> selectedIntegrationsAndTypes = null,
+                bool? isCommunityPharmacy = null)
         {
             (IQueryable<CatalogueItem> query, List<CapabilitiesAndCountModel> count) = await GetFilteredAndNonFilteredQueryResults(capabilitiesAndEpics);
 
@@ -83,6 +84,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 var integrationsPredicate = IntegrationsPredicate(selectedIntegrationsAndTypes);
 
                 query = query.AsExpandable().Where(x => integrationsPredicate.Invoke(x.Solution));
+            }
+
+            if (isCommunityPharmacy == true)
+            {
+                query = query.Where(i =>
+                    i.Solution.FrameworkSolutions.Count == 1
+                    && i.Solution.FrameworkSolutions.ElementAt(0).Framework.SolutionType
+                    == SolutionType.CommunityPharmacy);
             }
 
             var totalNumberOfItems = await query.CountAsync();
@@ -185,6 +194,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution)
                 .ThenInclude(s => s.FrameworkSolutions)
                 .ThenInclude(s => s.Framework)
+                .Include(i => i.CataloguePrices)
+                .ThenInclude(p => p.CataloguePriceTiers)
+                .Include(i => i.CataloguePrices)
+                .ThenInclude(p => p.PricingUnit)
                 .Include(i => i.Solution)
                 .ThenInclude(s => s.AdditionalServices
                     .Where(adit => AllowedPublicationStatuses.Contains(adit.CatalogueItem.PublishedStatus, null)))
@@ -229,6 +242,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .AsExpandable()
                     .AsSplitQuery()
                     .Include(i => i.Supplier)
+                    .Include(i => i.CataloguePrices)
+                    .ThenInclude(p => p.CataloguePriceTiers)
+                    .Include(i => i.CataloguePrices)
+                    .ThenInclude(p => p.PricingUnit)
                     .Include(i => i.Solution)
                     .ThenInclude(
                         s => s.AdditionalServices

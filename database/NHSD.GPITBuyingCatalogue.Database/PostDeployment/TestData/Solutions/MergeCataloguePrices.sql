@@ -195,7 +195,27 @@ BEGIN
         (1155, N'100021-018A018', 2, 1, 22, NULL, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 3, 1),
         (1156, N'100021-019A019', 2, 1, 22, NULL, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 3, 1),
         (1157, N'100021-020A020', 2, 1, 22, NULL, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 3, 1),
-        (1138, N'100021-S-001', 2, 1, 23, NULL, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 1, 1))
+        (1138, N'100021-S-001', 2, 1, 23, NULL, N'GBP', 3, 0, GETUTCDATE(), 2, NULL, 1, 1),
+        (1158, N'100022-001', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-06-15T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1159, N'100022-002', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-07-20T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1160, N'100022-003', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-25T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1161, N'100022-004', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-04T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1162, N'100022-005', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-05T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1163, N'100022-006', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-06T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1164, N'100022-007', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-07T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1165, N'100022-008', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-08T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1166, N'100022-009', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-09T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1167, N'100022-010', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-10T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1168, N'100022-011', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-11T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1169, N'100022-012', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-12T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1170, N'100022-013', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-13T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1171, N'100022-014', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-14T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1172, N'100022-015', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-15T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1173, N'100022-016', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-16T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1174, N'100022-017', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-17T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1175, N'100022-018', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-18T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1176, N'100022-019', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-19T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL),
+        (1177, N'100022-020', 1, 1, 5, 2, N'GBP', 3, 0, CAST(N'2026-08-20T09:00:00.0000000' AS DateTime2), 2, NULL, 1, NULL))
     AS SOURCE ([CataloguePriceId], [CatalogueItemId], [ProvisioningTypeId], [CataloguePriceTypeId], [PricingUnitId], [TimeUnitId], [CurrencyCode], [PublishedStatusId], [IsLocked], [LastUpdated], [LastUpdatedBy], [Price], [CataloguePriceCalculationTypeId], [CataloguePriceQuantityCalculationTypeId])
     ON TARGET.[CataloguePriceId] = SOURCE.[CataloguePriceId]
     WHEN MATCHED THEN UPDATE SET

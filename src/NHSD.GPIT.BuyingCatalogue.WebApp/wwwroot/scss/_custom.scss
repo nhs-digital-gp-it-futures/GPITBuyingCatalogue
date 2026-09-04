@@ -206,5 +206,9 @@
     .nhsuk-header__navigation-item {
         padding-left: 16px;
         padding-right: 16px;
+
+        &:first-child {
+            padding-left: 0;
+        }
     }
 }
