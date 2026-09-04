@@ -138,7 +138,7 @@ BEGIN
         (154, N'100022-019', N'Core support hours', GETUTCDATE(), GETUTCDATE(), NULL, N'0,1,2,3,4,5,6', 1, NULL, GETUTCDATE(), 2),
         (155, N'100022-019', N'Non-core support hours', GETUTCDATE(), GETUTCDATE(), NULL, N'0,1,2,3,4,5,6', 1, NULL, GETUTCDATE(), 2),
         (156, N'100022-020', N'Core support hours', GETUTCDATE(), GETUTCDATE(), NULL, N'0,1,2,3,4,5,6', 1, NULL, GETUTCDATE(), 2),
-        (157, N'100022-020', N'Non-core support hours', GETUTCDATE(), GETUTCDATE(), NULL, N'0,1,2,3,4,5,6', 1, NULL, GETUTCDATE(), 2)))
+        (157, N'100022-020', N'Non-core support hours', GETUTCDATE(), GETUTCDATE(), NULL, N'0,1,2,3,4,5,6', 1, NULL, GETUTCDATE(), 2))
     AS SOURCE ([Id], [SolutionId], [Category], [TimeFrom], [TimeUntil], [ApplicableDays], [IncludedDays], [IncludesBankHolidays], [AdditionalInformation], [LastUpdated], [LastUpdatedBy])
     ON TARGET.[Id] = SOURCE.[Id]
     WHEN MATCHED THEN UPDATE SET

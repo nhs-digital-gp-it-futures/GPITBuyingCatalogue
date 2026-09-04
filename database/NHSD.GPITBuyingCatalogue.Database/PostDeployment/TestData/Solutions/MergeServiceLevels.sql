@@ -339,7 +339,7 @@ BEGIN
         (332, N'100022-020', N'Catalogue Solution responsiveness', N'99.9% of transactions take less than 2 seconds', N'Measured per transaction within the boundaries of the suppliers datacentre and reported to service management', 1, GETUTCDATE(), 2),
         (333, N'100022-020', N'Clinical safety', N'No Clinical Safety Incidents in a calendar month and not resolved within the resolution time', N'Any Clinical Safety Incidents being reported in accordance with DCB0129', 1, GETUTCDATE(), 2),
         (334, N'100022-020', N'Other failures', N'No High Severity Service Incidents in a calendar month and not resolved with resolution time', N'Any High Severity Service Incidents being reported', 1, GETUTCDATE(), 2),
-        (335, N'100022-020', N'Service desk performance', N'Applicable service failures and their definitions to be agreed with each supplier', N'To be taken from the approved proposal from the supplier', 1, GETUTCDATE(), 2)))
+        (335, N'100022-020', N'Service desk performance', N'Applicable service failures and their definitions to be agreed with each supplier', N'To be taken from the approved proposal from the supplier', 1, GETUTCDATE(), 2))
     AS SOURCE ([Id], [SolutionId], [TypeOfService], [ServiceLevel], [HowMeasured], [ServiceCredits], [LastUpdated], [LastUpdatedBy])
     ON TARGET.[Id] = SOURCE.[Id]
     WHEN MATCHED THEN UPDATE SET
