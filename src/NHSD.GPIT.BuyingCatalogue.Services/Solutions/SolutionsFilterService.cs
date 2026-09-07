@@ -42,8 +42,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel>
                 CapabilitiesAndCount)> GetAllSolutionsFiltered(
                 SolutionsFilters filters,
-                PageOptions options)
+                PageOptions options = null)
         {
+            ArgumentNullException.ThrowIfNull(filters);
+
             (IQueryable<CatalogueItem> query, List<CapabilitiesAndCountModel> count) = await GetFilteredAndNonFilteredQueryResults(filters.CapabilitiesAndEpics);
 
             if (!string.IsNullOrWhiteSpace(filters.Search))

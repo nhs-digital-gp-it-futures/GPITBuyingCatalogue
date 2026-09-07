@@ -25,7 +25,13 @@
             </h3>
             
             <span class="bc-c-price-tag">
-                £@($"{Model.CatalogueItem.CataloguePrices.ElementAt(0).CataloguePriceTiers.FirstOrDefault()?.Price.ToString("N2")} {Model.CatalogueItem.CataloguePrices.FirstOrDefault()?.Description}")
+                @{
+                    var price = Model.CatalogueItem.CataloguePrices.ElementAt(0).CataloguePriceTiers.FirstOrDefault()?.Price;
+                    var priceDescription = price is not null
+                        ? $"£{price:N2} {Model.CatalogueItem.CataloguePrices.FirstOrDefault()?.Description}"
+                        : "Not provided";
+                }
+                @priceDescription
             </span>
         </div>
 
