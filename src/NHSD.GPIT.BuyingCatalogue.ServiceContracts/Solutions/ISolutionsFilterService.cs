@@ -14,14 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
              Dictionary<int, string[]> capabilitiesAndEpics);
 
         Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
-             PageOptions options = null,
-             Dictionary<int, string[]> capabilitiesAndEpics = null,
-             string search = null,
-             string selectedFrameworkId = null,
-             string selectedApplicationTypeIds = null,
-             string selectedHostingTypeIds = null,
-             Dictionary<SupportedIntegrations, int[]> selectedIntegrationsAndTypes = null,
-             bool? isCommunityPharmacy = null);
+            SolutionsFilters filters,
+            PageOptions options = null);
 
         Task<IList<CatalogueItem>> GetAllSolutionsFilteredFromFilterIds(
             FilterIdsModel filterIds);

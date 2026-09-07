@@ -41,52 +41,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async
             Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel>
                 CapabilitiesAndCount)> GetAllSolutionsFiltered(
-                PageOptions options,
-                Dictionary<int, string[]> capabilitiesAndEpics = null,
-                string search = null,
-                string selectedFrameworkId = null,
-                string selectedApplicationTypeIds = null,
-                string selectedHostingTypeIds = null,
-                Dictionary<SupportedIntegrations, int[]> selectedIntegrationsAndTypes = null,
-                bool? isCommunityPharmacy = null)
+                SolutionsFilters filters,
+                PageOptions options)
         {
-            (IQueryable<CatalogueItem> query, List<CapabilitiesAndCountModel> count) = await GetFilteredAndNonFilteredQueryResults(capabilitiesAndEpics);
+            (IQueryable<CatalogueItem> query, List<CapabilitiesAndCountModel> count) = await GetFilteredAndNonFilteredQueryResults(filters.CapabilitiesAndEpics);
 
-            if (!string.IsNullOrWhiteSpace(search))
-                query = query.Where(ci => ci.Supplier.Name.Contains(search) || ci.Name.Contains(search));
+            if (!string.IsNullOrWhiteSpace(filters.Search))
+                query = query.Where(ci => ci.Supplier.Name.Contains(filters.Search) || ci.Name.Contains(filters.Search));
 
-            if (!string.IsNullOrWhiteSpace(selectedFrameworkId))
+            if (!string.IsNullOrWhiteSpace(filters.SelectedFrameworkId))
             {
                 query = query.Where(
-                    ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
+                    ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == filters.SelectedFrameworkId));
             }
 
-            if (!string.IsNullOrWhiteSpace(selectedApplicationTypeIds))
+            if (!string.IsNullOrWhiteSpace(filters.SelectedApplicationTypeIds))
             {
                 query = ApplyAdditionalFilterToQuery<ApplicationType>(
                     query,
-                    selectedApplicationTypeIds,
+                    filters.SelectedApplicationTypeIds,
                     GetSelectedFilterApplication,
                     x => x.ApplicationTypeDetail != null);
             }
 
-            if (!string.IsNullOrWhiteSpace(selectedHostingTypeIds))
+            if (!string.IsNullOrWhiteSpace(filters.SelectedHostingTypeIds))
             {
                 query = ApplyAdditionalFilterToQuery<HostingType>(
                     query,
-                    selectedHostingTypeIds,
+                    filters.SelectedHostingTypeIds,
                     GetSelectedFiltersHosting,
                     x => x.Hosting != null && x.Hosting.IsValid());
             }
 
-            if (selectedIntegrationsAndTypes is { Count: > 0 })
+            if (filters.SelectedIntegrationsAndTypes is { Count: > 0 })
             {
-                var integrationsPredicate = IntegrationsPredicate(selectedIntegrationsAndTypes);
+                var integrationsPredicate = IntegrationsPredicate(filters.SelectedIntegrationsAndTypes);
 
                 query = query.AsExpandable().Where(x => integrationsPredicate.Invoke(x.Solution));
             }
 
-            if (isCommunityPharmacy == true)
+            if (filters.IsCommunityPharmacy == true)
             {
                 query = query.Where(i =>
                     i.Solution.FrameworkSolutions.Count == 1
@@ -125,13 +119,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             Task<IList<CatalogueItem>> GetAllSolutionsFilteredFromFilterIds(
                 FilterIdsModel filterIds)
         {
+            var filters = new SolutionsFilters
+            {
+                CapabilitiesAndEpics = filterIds?.CapabilityAndEpicIds,
+                SelectedFrameworkId = filterIds?.FrameworkId,
+                SelectedApplicationTypeIds = filterIds?.ApplicationTypeIds.ToFilterString(),
+                SelectedHostingTypeIds = filterIds?.HostingTypeIds.ToFilterString(),
+                SelectedIntegrationsAndTypes = filterIds?.IntegrationsIds,
+            };
             var (catalogueItems, _, _) = await GetAllSolutionsFiltered(
-                null,
-                capabilitiesAndEpics: filterIds?.CapabilityAndEpicIds,
-                selectedFrameworkId: filterIds?.FrameworkId,
-                selectedApplicationTypeIds: filterIds.ApplicationTypeIds.ToFilterString(),
-                selectedHostingTypeIds: filterIds.HostingTypeIds.ToFilterString(),
-                selectedIntegrationsAndTypes: filterIds.IntegrationsIds);
+                filters,
+                null);
             return catalogueItems;
         }
 

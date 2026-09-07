@@ -30,12 +30,12 @@ public class CommunityPharmacySolutionsController(ISolutionsFilterService soluti
             PageSize = 10,
         };
 
+        var filters = new SolutionsFilters() { IsCommunityPharmacy = true, Search = search, };
+
         (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
             await solutionsFilterService.GetAllSolutionsFiltered(
-                inputOptions,
-                null,
-                search,
-                isCommunityPharmacy: true);
+                filters,
+                inputOptions);
 
         var model = new CommunityPharmacySolutionsModel
         {

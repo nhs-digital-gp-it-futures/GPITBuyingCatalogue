@@ -1,5 +1,7 @@
 ﻿IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE'
 BEGIN
+    DECLARE @communityPharmacyFrameworkId NVARCHAR(36) = N'CP001';
+
     MERGE INTO [catalogue].[Solutions] AS TARGET
     USING (
     VALUES
@@ -484,26 +486,26 @@ Key activities:
     MERGE INTO [catalogue].[FrameworkSolutions] AS TARGET
     USING (
     VALUES
-        (N'CP001', N'100022-001', 0, CAST(N'2026-06-15T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-002', 0, CAST(N'2026-07-20T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-003', 0, CAST(N'2026-08-25T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-004', 0, CAST(N'2026-08-04T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-005', 0, CAST(N'2026-08-05T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-006', 0, CAST(N'2026-08-06T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-007', 0, CAST(N'2026-08-07T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-008', 0, CAST(N'2026-08-08T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-009', 0, CAST(N'2026-08-09T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-010', 0, CAST(N'2026-08-10T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-011', 0, CAST(N'2026-08-11T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-012', 0, CAST(N'2026-08-12T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-013', 0, CAST(N'2026-08-13T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-014', 0, CAST(N'2026-08-14T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-015', 0, CAST(N'2026-08-15T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-016', 0, CAST(N'2026-08-16T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-017', 0, CAST(N'2026-08-17T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-018', 0, CAST(N'2026-08-18T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-019', 0, CAST(N'2026-08-19T09:00:00.0000000' AS DateTime2), 2),
-        (N'CP001', N'100022-020', 0, CAST(N'2026-08-20T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-001', 0, CAST(N'2026-06-15T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-002', 0, CAST(N'2026-07-20T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-003', 0, CAST(N'2026-08-25T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-004', 0, CAST(N'2026-08-04T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-005', 0, CAST(N'2026-08-05T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-006', 0, CAST(N'2026-08-06T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-007', 0, CAST(N'2026-08-07T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-008', 0, CAST(N'2026-08-08T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-009', 0, CAST(N'2026-08-09T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-010', 0, CAST(N'2026-08-10T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-011', 0, CAST(N'2026-08-11T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-012', 0, CAST(N'2026-08-12T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-013', 0, CAST(N'2026-08-13T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-014', 0, CAST(N'2026-08-14T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-015', 0, CAST(N'2026-08-15T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-016', 0, CAST(N'2026-08-16T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-017', 0, CAST(N'2026-08-17T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-018', 0, CAST(N'2026-08-18T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-019', 0, CAST(N'2026-08-19T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-020', 0, CAST(N'2026-08-20T09:00:00.0000000' AS DateTime2), 2),
         (N'ATP001', N'10046-006', 0, GETUTCDATE(), 2),
         (N'ATP001', N'10047-001', 0, GETUTCDATE(), 2),
         (N'ATP001', N'10052-002', 1, GETUTCDATE(), 2),

@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -199,14 +200,20 @@ public class CompetitionsDashboardController : Controller
         var filter = await filterService.GetFilterIds(organisationId, filterId);
 
         var pageOptions = new PageOptions { PageSize = 100 };
+
+        var solutionsFilters = new SolutionsFilters
+        {
+            CapabilitiesAndEpics = filter.CapabilityAndEpicIds,
+            SelectedFrameworkId = filter.FrameworkId,
+            SelectedApplicationTypeIds = filter.ApplicationTypeIds.ToFilterString(),
+            SelectedHostingTypeIds = filter.HostingTypeIds.ToFilterString(),
+            SelectedIntegrationsAndTypes = filter.IntegrationsIds,
+        };
+
         var (solutionsAndServices, _, _) =
             await solutionsFilterService.GetAllSolutionsFiltered(
-                pageOptions,
-                capabilitiesAndEpics: filter.CapabilityAndEpicIds,
-                selectedFrameworkId: filter.FrameworkId,
-                selectedApplicationTypeIds: filter.ApplicationTypeIds.ToFilterString(),
-                selectedHostingTypeIds: filter.HostingTypeIds.ToFilterString(),
-                selectedIntegrationsAndTypes: filter.IntegrationsIds);
+                solutionsFilters,
+                pageOptions);
 
         var competitionSolutions = solutionsAndServices
             .Where(x => x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId))
