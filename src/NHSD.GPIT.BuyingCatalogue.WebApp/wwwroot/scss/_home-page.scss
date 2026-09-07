@@ -39,45 +39,10 @@
   display: block;
 }
 
-.buyers-guidance {
-    background: #fff;
-    padding: 32px 0;
-}
-
-.buyers-guidance-link {
-    font-size: 24px;
-    font-weight: 700;
-}
-
 .request-account-card {
     clear: left;
 }
 
-.buyers-guidance h2 {
-    margin: 0 0 24px;
-    font-size: 36px;
-    font-weight: 700;
-    color: #1d1d1d;
-}
-.buyers-guidance .nhsuk-body-s {
-    max-width: 36ch;
-}
-.guidance-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 32px;
-}
-
-@media (max-width: 768px) {
-    .guidance-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .buyers-guidance h2 {
-        font-size: 28px;
-    }
-}
 .app-steps-section--offset {
     padding-top: 56px; /* keep gap under overlapping panel */
 }
@@ -91,8 +56,8 @@
 }
 .app-steps-section {
     background-color: #fff;
-    border-top: 2px solid #005eb8;
-    border-bottom: 2px solid #005eb8;
+    border-top: none;
+    border-bottom: none;
 }
 
 .app-steps-list {
