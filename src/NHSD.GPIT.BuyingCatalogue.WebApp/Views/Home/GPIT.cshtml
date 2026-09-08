@@ -1,6 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
 @{
     Layout = "Layouts/_FullWidthLayout";
@@ -10,10 +11,10 @@
     ViewBag.PageName = "GPIT landing page";
     var steps = new[]
         {
-        new StepModel { Number = 1, Title = "Sign in", HelpText = "You will need to be logged in to save any of your preferences" },
-        new StepModel { Number = 2, Title = "Discover solutions", HelpText = "Browse solutions filtered to your needs" },
-        new StepModel { Number = 3, Title = "Evaluate", HelpText = "Review solution details including features and pricing details" },
-        new StepModel { Number = 4, Title = "Place your order", HelpText = "Complete and submit your order" },
+        new StepModel( "Sign in", "You will need to be logged in to save any of your preferences", 1),
+        new StepModel( "Discover solutions", "Browse solutions filtered to your needs", 2),
+        new StepModel( "Evaluate", "Review solution details including features and pricing details", 3),
+        new StepModel( "Place your order", "Complete and submit your order", 4)
     };
 }
 
@@ -60,8 +61,8 @@
             <partial name="_ActionCard" model="@(new ActionCardModel(
                 "Create a competition",
                 "If your budget is under 250,000 you can carry out an on catalogue competition which will determine your winning solution.",
-                Url.Action(nameof(BuyerDashboardController.Index), typeof(BuyerDashboardController).ControllerName(), new { Area = typeof(BuyerDashboardController).AreaName() }))
-                { WidthClass = "nhsuk-grid-column-one-half" })" />
+                 Url.Action(nameof(CompetitionsDashboardController.Start), typeof(CompetitionsDashboardController).ControllerName(), new { Area = typeof(CompetitionsDashboardController).AreaName() }))
+                 { WidthClass = "nhsuk-grid-column-one-half" })" />
 
             <partial name="_ActionCard" model="@(new ActionCardModel(
                 "Create or manage orders",
