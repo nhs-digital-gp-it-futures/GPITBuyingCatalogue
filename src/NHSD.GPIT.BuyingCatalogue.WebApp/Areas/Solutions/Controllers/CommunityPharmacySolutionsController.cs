@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 
@@ -27,7 +30,7 @@ public class CommunityPharmacySolutionsController(ISolutionsFilterService soluti
 
         var inputOptions = new PageOptions(page, selectedSort.ToString())
         {
-            PageSize = 10,
+            PageSize = CommunityPharmacySolutionsModel.SearchResultsPerPage,
         };
 
         var filters = new SolutionsFilters() { IsCommunityPharmacy = true, Search = search, };
@@ -43,5 +46,21 @@ public class CommunityPharmacySolutionsController(ISolutionsFilterService soluti
         };
 
         return View(model);
+    }
+
+    [HttpGet("search-suggestions")]
+    public async Task<IActionResult> FilterSearchSuggestions([FromQuery] string search)
+    {
+        var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
+
+        var results = await solutionsFilterService.GetSolutionsBySearchTerm(search, isCommunityPharmacy: true);
+
+        return Json(
+            results.Select(
+                r =>
+                    new HtmlEncodedSuggestionSearchResult(
+                        r.Title,
+                        r.Category,
+                        currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).Uri.PathAndQuery)));
     }
 }

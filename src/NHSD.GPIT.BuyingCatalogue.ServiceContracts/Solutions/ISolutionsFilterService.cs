@@ -20,6 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<IList<CatalogueItem>> GetAllSolutionsFilteredFromFilterIds(
             FilterIdsModel filterIds);
 
-        Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
+        Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15, bool? isCommunityPharmacy = null);
     }
 }

@@ -8,6 +8,19 @@
     var pageTitle = CommunityPharmacySolutionsModel.PageTitle;
     ViewBag.Title = pageTitle;
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
+
+    var totalNumberOfSolutions = Model.ResultsModel.PageOptions.TotalNumberOfItems;
+    var solutionDisplayPerPage = CommunityPharmacySolutionsModel.SearchResultsPerPage;
+    var currentPageNumber = Model.ResultsModel.PageOptions.PageNumber;
+    var totalNumberOfPages = Model.ResultsModel.PageOptions.NumberOfPages;
+    var textPluralisation = totalNumberOfSolutions > 1 ? "solutions" : "solution";
+    var solutionDisplayTotal = currentPageNumber switch
+    {
+        _ when solutionDisplayPerPage >= totalNumberOfSolutions => $"Showing {totalNumberOfSolutions} {textPluralisation}",
+        _ when currentPageNumber < totalNumberOfPages => $"Showing {solutionDisplayPerPage} of {totalNumberOfSolutions} {textPluralisation}",
+        _ when currentPageNumber == totalNumberOfPages => $"Showing {totalNumberOfSolutions - (currentPageNumber - 1) * solutionDisplayPerPage} of {totalNumberOfSolutions} {textPluralisation}",
+        _ => throw new ArgumentException(),
+    };
 }
 
 @section Scripts {
@@ -44,7 +57,7 @@
         <nhs-hint-text>View assured solutions for community pharmacy services</nhs-hint-text>
         <div id="search-by">
             <vc:nhs-suggestion-search id="marketing-suggestion-search"
-                                      ajax-url="@Url.Action(nameof(SolutionsController.FilterSearchSuggestions), typeof(SolutionsController).ControllerName())"
+                                      ajax-url="@Url.Action(nameof(CommunityPharmacySolutionsController.FilterSearchSuggestions), typeof(CommunityPharmacySolutionsController).ControllerName())"
                                       title-text="Search"
                                       hide-label="true"
                                       placeholder-text="Search by service, solution or supplier"
@@ -55,7 +68,7 @@
     
     <div class="nhsuk-grid-column-full nhsuk-u-margin-top-5" id="solutions-list">
         <div class="nhsuk-u-clear">
-            <p class="bc-u-block-float-left">Showing @(Model.ResultsModel.PageOptions.TotalNumberOfItems) solutions</p>
+            <p class="bc-u-block-float-left">@solutionDisplayTotal</p>
             @if (Model.ResultsModel.CatalogueItems.Count != 0)
             {
                 <div style="float: right"
@@ -71,11 +84,6 @@
         }
         
         <govuk-pagination
-            base-url="@(Url.Action(
-                          nameof(CommunityPharmacySolutionsController.Index),
-                          typeof(CommunityPharmacySolutionsController).ControllerName(),
-                          new {},
-                          Url.ActionContext.HttpContext.Request.Scheme ))"
             current-page-number="@Model.ResultsModel.PageOptions.PageNumber" 
             total-number-of-pages="@Model.ResultsModel.PageOptions.NumberOfPages" />
     </div>
