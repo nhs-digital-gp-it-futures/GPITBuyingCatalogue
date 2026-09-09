@@ -135,7 +135,6 @@ public class CompetitionsDashboardController : Controller
         return RedirectToAction(nameof(BeforeYouStart), new { internalOrgId });
     }
 
-
     [HttpPost("select-filter/{filterId:int}/review")]
     public IActionResult ReviewFilter(string internalOrgId, int filterId, ReviewFilterModel model)
     {
