@@ -142,16 +142,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     ci.Name.Contains(searchTerm)
                     && ci.CatalogueItemType == CatalogueItemType.Solution
                     && AllowedPublicationStatuses.Contains(ci.PublishedStatus, null)
-                    && ci.Supplier.IsActive)
-                .Where(ci => isCommunityPharmacy != true
-                    || (ci.Solution.FrameworkSolutions.Count == 1
+                    && ci.Supplier.IsActive
+                    && (isCommunityPharmacy != true || (ci.Solution.FrameworkSolutions.Count == 1
                         && ci.Solution.FrameworkSolutions.First().Framework.SolutionType
-                        == SolutionType.CommunityPharmacy))
+                        == SolutionType.CommunityPharmacy)))
                 .Select(ci => new SearchFilterModel { Title = ci.Name, Category = "Solution", });
 
             var searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
-                .Where(s => s.Name.Contains(searchTerm) && s.IsActive)
-                .Where(s => isCommunityPharmacy != true || s.CatalogueItems.Any(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.Framework.SolutionType == SolutionType.CommunityPharmacy)))
+                .Where(s => s.Name.Contains(searchTerm) && s.IsActive && (isCommunityPharmacy != true
+                    || s.CatalogueItems.Any(ci =>
+                        ci.Solution.FrameworkSolutions.Any(fs =>
+                            fs.Framework.SolutionType == SolutionType.CommunityPharmacy))))
                 .Select(s => new SearchFilterModel { Title = s.Name, Category = "Supplier", });
 
             return await searchBySolutionNameQuery
