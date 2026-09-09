@@ -35,10 +35,23 @@ public class LoginPage : BasePage
     private async Task CompleteRecaptchaAsync()
     {
         await RecaptchaCheckbox.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-        await RecaptchaCheckbox.ClickAsync();
 
-        await Page.FrameLocator("iframe[title='reCAPTCHA']")
-            .Locator("#recaptcha-anchor[aria-checked='true']")
-            .WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 10000 });
+        var checkedState = Page.FrameLocator("iframe[title='reCAPTCHA']")
+            .Locator("#recaptcha-anchor[aria-checked='true']");
+
+        for (var attempt = 1; attempt <= 2; attempt++)
+        {
+            await RecaptchaCheckbox.ClickAsync();
+
+            try
+            {
+                await checkedState.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 10000 });
+                return;
+            }
+            catch (TimeoutException)
+            {
+                if (attempt == 2) throw;
+            }
+        }
     }
 }

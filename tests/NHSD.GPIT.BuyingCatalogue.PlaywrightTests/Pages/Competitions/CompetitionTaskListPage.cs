@@ -28,4 +28,19 @@ public class CompetitionTaskListPage : BasePage
 
     public async Task GoToViewResultsAsync() =>
         await Page.GetByRole(AriaRole.Link, new() { Name = "View results" }).ClickAsync();
+
+    public async Task GoToAwardCriteriaWeightingsAsync() =>
+    await Page.GetByRole(AriaRole.Link, new() { Name = "Award criteria weightings" }).ClickAsync();
+
+    public async Task GoToNonPriceElementsAsync() =>
+    await Page.GetByRole(AriaRole.Link, new() { Name = "Non-price elements" }).ClickAsync();
+
+    public async Task GoToNonPriceWeightingsAsync() =>
+    await Page.GetByRole(AriaRole.Link, new() { Name = "Non-price weightings" }).ClickAsync();
+
+    public async Task GoToReviewCompetitionCriteriaAsync() =>
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Review competition criteria" }).ClickAsync();
+
+    public async Task GoToCompareAndScoreNonPriceAsync() =>
+    await Page.GetByRole(AriaRole.Link, new() { Name = "Compare and score non-price" }).ClickAsync();
 }

@@ -15,7 +15,22 @@ public class CompetitionTests : BaseTest
         await CompetitionPages.LoginAsync();
         await CompetitionPages.PrepareCompetitionAsync();
         await CompetitionPages.CompleteStepOneAsync();
-        await CompetitionPages.DefineCompetitionCriteriaAsync();
+        await CompetitionPages.DefinePriceOnlyCompetitionCriteriaAsync();
+        await CompetitionPages.CompareAndScoreSolutionsAsync();
+        await CompetitionPages.FinishAndViewResultsAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.CompetitionJourney)]
+    public async Task CompetitionPriceAndNonPriceJourney()
+    {
+        await CompetitionPages.LoginAsync();
+        await CompetitionPages.PrepareCompetitionAsync();
+        await CompetitionPages.CompleteStepOneAsync();
+        await CompetitionPages.DefinePriceAndNonPriceCriteriaAsync();
+        await CompetitionPages.AddNonPriceElementsAsync();
+        await CompetitionPages.SetNonPriceWeightingsAndReviewAsync();
+        await CompetitionPages.CompareAndScoreNonPriceElementsAsync();
         await CompetitionPages.CompareAndScoreSolutionsAsync();
         await CompetitionPages.FinishAndViewResultsAsync();
     }
