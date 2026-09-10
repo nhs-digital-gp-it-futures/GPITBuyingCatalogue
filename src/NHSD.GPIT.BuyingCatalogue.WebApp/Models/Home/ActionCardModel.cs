@@ -5,6 +5,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
     [ExcludeFromCodeCoverage]
     public class ActionCardModel
     {
+        private const string DefaultWidthClass = "nhsuk-grid-column-one-third";
+
         public ActionCardModel(string title, string text, string url)
         {
             Title = title;
@@ -25,5 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
         public string Url { get; set; }
 
         public string LinkText { get; set; }
+
+        public string WidthClass { get; set; } = DefaultWidthClass;
+
+        public bool ShowChevronIcon { get; set; } = true;
     }
 }

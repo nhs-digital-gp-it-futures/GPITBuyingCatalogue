@@ -1,6 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
 @{
     Layout = "Layouts/_FullWidthLayout";
@@ -18,10 +16,8 @@
                     <div class="nhsuk-hero-content">
                         <h1 class="nhsuk-u-margin-bottom-3">
                             <span class="app-main-heading">@ViewBag.Title</span>
-
                         </h1>
-                        <p class="nhsuk-body-l nhsuk-u-margin-bottom-0">Find clinical information solutions that meet digital needs.</p>
-                        <span class="nhsuk-hero__arrow" aria-hidden="true"></span>
+                        <p class="nhsuk-body-l nhsuk-u-margin-bottom-0">Find assured digital solutions for general practice and community pharmacy services.</p>                        
                     </div>
                 </div>
             </div>
@@ -33,54 +29,24 @@
     <div class="nhsuk-width-container app-section__content">
         <div class="nhsuk-grid-row nhsuk-u-padding-top-7">
             <div class="nhsuk-grid-column-full">
-                <div class="nhsuk-grid-row">
-                    <partial name="_ActionCard" model="@(new ActionCardModel("Browse catalogue solutions", "All solutions have been assessed against a set of Capabilities and Standards defined by the NHS", Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })))"/>
-                    <partial name="_ActionCard" model="@(new ActionCardModel("Create or manage orders", "Place a new order or complete an order you've already started (log in required).", Url.Action(nameof(DashboardController.Index), typeof(DashboardController).ControllerName(), new { Area = typeof(DashboardController).AreaName() })))"/>
-                    @if (!User.Identity.IsAuthenticated)
-                    {
-                        <partial name="_ActionCard" model="@(new ActionCardModel("Request an account", "Get log in credentials so you can create orders on the Buying Catalogue.", Url.Action(nameof(RegistrationController.Index), typeof(RegistrationController).ControllerName(), new { Area = typeof(RegistrationController).AreaName() })))"/>
-                    }
+                <h2>Choose your healthcare setting</h2>
+                <p class="nhsuk-body">Choose your healthcare setting to see solutions, guidance and your procurement next steps</p>
+                <div class="nhsuk-grid-row nhsuk-card-group">
+                    <partial 
+                        name="_ActionCard" 
+                        model="@(
+                            new ActionCardModel(
+                                "ICBs and GP practices", 
+                                "Discover solutions and services, run a direct award or on catalogue competition and order digital solutions for your healthcare practices and organisations", 
+                                Url.Action(nameof(HomeController.GPIT), typeof(HomeController).ControllerName())) { WidthClass = "nhsuk-grid-column-one-half"})"/>
+
+                    <partial name="_ActionCard" 
+                        model="@(
+                            new ActionCardModel(
+                                "Community Pharmacy", 
+                                "Discover assured solutions for Community Pharmacy", 
+                                Url.Action(nameof(CommunityPharmacySolutionsController.Index), typeof(CommunityPharmacySolutionsController).ControllerName(), new { area = typeof(CommunityPharmacySolutionsController).AreaName() })) { WidthClass = "nhsuk-grid-column-one-half"})"/>
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="nhsuk-section">
-    <div class="nhsuk-width-container app-section__content">
-        <div class="nhsuk-grid-row app">
-            <div class="nhsuk-grid-column-two-thirds">
-                <h2>About the Buying Catalogue</h2>
-                <p class="nhsuk-body">The NHS Buying Catalogue is an online marketplace where you can purchase clinical information systems that meet digital needs in healthcare.</p>
-                <p class="nhsuk-body">All the listed products – known as catalogue solutions – have been assessed against a set of Capabilities and Standards defined by the NHS.</p>
-                <p class="nhsuk-body">The functionality of the Buying Catalogue will be enhanced and the number of catalogue solutions available will increase over time.</p>
-                <p class="nhsuk-body">
-                    <nhs-card-v2>
-                        <nhs-card-content>
-                            <h3 class="nhsuk-card__heading nhsuk-heading-s">
-                                <a href="https://digital.nhs.uk/services/digital-services-for-integrated-care/nhs-digital-buying-catalogue/buyers-guide/" class="nhsuk-link" target="_blank">Buyers guide (opens in a new window)</a>
-                            </h3>
-                            <p class="nhsuk-card__description">
-                                Our buyers guide explains what procurement route to use and how to find, compare, and buy solutions through the Buying Catalogue.
-                            </p>
-                        </nhs-card-content>
-                    </nhs-card-v2>
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="nhsuk-section">
-    <div class="nhsuk-width-container app-section__content">
-        <div class="nhsuk-grid-row">
-            <div class="nhsuk-grid-column-full">
-                <h2>Contracting vehicles</h2>
-                <p class="nhs-body">Find out more information about contracting vehicles.</p>
-                <ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-5">
-                    <partial name="_ProcurementFramework" model="@(new ActionCardModel("Tech Innovation framework", "Supports the delivery of cloud-based, innovative solutions into the GP marketplace.", "https://digital.nhs.uk/services/digital-care-services-catalogue/tech-innovation-framework", "Find out more about the Tech Innovation framework"))"/>
-                    <partial name="_ProcurementFramework" model="@(new ActionCardModel("Advanced Telephony Better Purchasing framework", "Supports the commissioning of advanced, cloud-hosted GP telephony systems.", "https://digital.nhs.uk/services/digital-services-for-integrated-care/advanced-telephony-better-purchasing-framework", "Find out more about the Advance Telephony Better Purchasing framework"))"/>
-                </ul>
             </div>
         </div>
     </div>
