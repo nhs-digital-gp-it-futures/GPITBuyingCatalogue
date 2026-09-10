@@ -17,6 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -342,7 +343,7 @@ public static class CompetitionsDashboardControllerTests
 
         filtersService.GetFilterIds(organisation.Id, filterId).Returns(filterIdsModel);
 
-        solutionsFilterService.GetAllSolutionsFiltered(Arg.Any<PageOptions>(), Arg.Any<Dictionary<int, string[]>>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Dictionary<SupportedIntegrations, int[]>>()).Returns((catalogueItems, null, null));
+        solutionsFilterService.GetAllSolutionsFiltered(Arg.Any<SolutionsFilters>(), Arg.Any<PageOptions>()).Returns((catalogueItems, null, null));
 
         var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId, model))
             .As<RedirectToActionResult>();

@@ -40,8 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.GDSPag
 
             GdsPaginationBuilders.UpdatePaginationOutput(output);
 
-            var previousLink = GetPreviousLinkBuilder();
-            var nextLink = GetNextLinkBuilder();
+            var previousLink = TotalNumberOfPages > 2 ? GetPreviousLinkBuilder() : null;
+            var nextLink = TotalNumberOfPages > 2 ? GetNextLinkBuilder() : null;
             var numberList = GetNumberListBuilder();
 
             output.Content

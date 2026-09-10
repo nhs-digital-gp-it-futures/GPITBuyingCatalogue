@@ -90,3 +90,29 @@
     width: 100%;
     min-height: 0;
 }
+
+.nhs-card--border-radius {
+    border-radius: 8px;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.bc-c-solution-card-footer {
+    align-items: flex-end;
+    display: flex;
+    gap: nhsuk-spacing(3);
+    justify-content: space-between;
+}
+
+.bc-c-solution-card-services__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: nhsuk-spacing(2);
+}
+
+.bc-c-solution-card-last-updated {
+    color: $color_nhsuk-grey-1;
+    flex-shrink: 0;
+    font-size: 14px;
+    margin: 0 0 nhsuk-spacing(1) auto;
+    white-space: nowrap;
+}
