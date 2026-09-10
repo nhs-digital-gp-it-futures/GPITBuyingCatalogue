@@ -39,6 +39,59 @@
   display: block;
 }
 
+.request-account-card {
+    clear: left;
+}
+
+.app-steps-section--offset {
+    padding-top: 56px; /* keep gap under overlapping panel */
+}
+.app-section__content .nhsuk-card {
+    min-height: auto;
+    height: auto;
+}
+
+.app-section__content .nhsuk-card__content {
+    padding: 16px;
+}
+.app-steps-section {
+    background-color: #fff;
+    border-top: none;
+    border-bottom: none;
+}
+
+.app-steps-list {
+    margin: 0;
+    padding: 0;
+}
+
+.app-step {
+    list-style: none;
+    margin-bottom: 24px;
+}
+
+.app-step__number {
+    align-items: center;
+    background-color: #005eb8;
+    border-radius: 50%;
+    color: #fff;
+    display: inline-flex;
+    font-weight: 600;
+    height: 32px;
+    justify-content: center;
+    margin-bottom: 12px;
+    width: 32px;
+}
+
+
+
+
+@media (min-width: 48.0625em) {
+    .app-step {
+        margin-bottom: 0;
+    }
+}
+
 @media (min-width: 40.0625em) {
   .nhsuk-header__content {
     float: right;
@@ -71,4 +124,59 @@
       min-height: 60px;
     }
   }
+}
+
+.help-strip {
+    width: 100%;
+    background: #005eb8; /* NHS blue */
+    padding: 20px 0;
+}
+
+.help-strip__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    box-sizing: border-box;
+}
+
+.help-strip__title {
+    margin: 0 0 4px;
+    color: #fff;
+    font-size: 36px;
+    line-height: 1.1;
+    font-weight: 700;
+}
+
+.help-strip__text {
+    margin: 0;
+    color: #fff;
+    font-size: 18px;
+    line-height: 1.4;
+}
+
+.help-strip__button {
+    display: inline-block;
+    color: #fff;
+    border: 1px solid #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+    .help-strip__button:hover,
+    .help-strip__button:focus {
+        background: #fff;
+        color: #005eb8;
+    }
+
+@media (max-width: 768px) {
+    .help-strip__container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

@@ -128,6 +128,13 @@ public class CompetitionsDashboardController : Controller
         return View("Shortlists/FilterDetails", model);
     }
 
+    [HttpGet("/competition")]
+    public IActionResult Start()
+    {
+        var internalOrgId = User.GetPrimaryOrganisationInternalIdentifier();
+        return RedirectToAction(nameof(BeforeYouStart), new { internalOrgId });
+    }
+
     [HttpPost("select-filter/{filterId:int}/review")]
     public IActionResult ReviewFilter(string internalOrgId, int filterId, ReviewFilterModel model)
     {
