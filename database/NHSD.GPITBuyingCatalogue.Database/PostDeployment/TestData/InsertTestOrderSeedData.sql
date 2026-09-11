@@ -28,6 +28,14 @@ BEGIN
         @LastBuyerContactId INT,
         @LastSupplierContactId INT;
 
+    -- Recipient and sublocation ODS codes
+    DECLARE
+        @SublocationOdsCode NVARCHAR(10) = '02T',
+        @RecipientB84007 NVARCHAR(10) = 'B84007',
+        @RecipientB84016 NVARCHAR(10) = 'B84016',
+        @RecipientB84613 NVARCHAR(10) = 'B84613',
+        @RecipientY02572 NVARCHAR(10) = 'Y02572';
+
     DECLARE @CatalogueSolutionPriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @CatalogueSolutionId AND PublishedStatusId = 3); --NotEmis Web GP Price
     DECLARE @AdditionalServicePriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @AdditionalServiceId AND PublishedStatusId = 3); --NotEmis Web GP additional service Price
     DECLARE @SelectedFrameworkId NVARCHAR(10) = (SELECT Id FROM catalogue.Frameworks WHERE Id = 'TIF001'); --Technology Innovation Framework
@@ -228,7 +236,7 @@ BEGIN
     (7, 1, 'Expired order', @OrderingParty, @LastBuyerContactId, @SupplierId, @LastSupplierContactId, DATEADD(day, -120, SYSDATETIME()), SYSDATETIME(), SYSDATETIME(), @sueId, 0, 1, 3, @AssociatedServicesOnly, 1);
 
     -------------------------------------------------------
-    -- catalogue solution only order completed 
+    -- catalogue solution only order
     -------------------------------------------------------
 
     DECLARE @OrderIdCatSolAdditional TABLE(
@@ -259,7 +267,7 @@ BEGIN
     (
     5,
     1,
-    'catalogue solution only order completed',
+    'catalogue solution only order',
     @OrderingParty,
     @LastBuyerContactId,
     @SupplierId,
@@ -277,7 +285,7 @@ BEGIN
     DECLARE @OrderId INT;
     SELECT @OrderId = Id FROM @OrderIdCatSolAdditional
 
-    --insert catalogue solution and all the steps to complete the order
+    --insert catalogue solution
 
     UPDATE ordering.Orders
     SET SolutionId = @CatalogueSolutionId,
@@ -333,19 +341,19 @@ BEGIN
 
     INSERT INTO ordering.OrderSublocations (OrderId, SublocationOdsCode, OwnerOdsCode)
     VALUES
-    (@OrderId, '02T', @OrderingPartyOdsCode)
+    (@OrderId, @SublocationOdsCode, @OrderingPartyOdsCode)
 
     INSERT INTO ordering.OrderSublocationRecipients (OrderId, ParentSublocationOdsCode, RecipientOdsCode)
     VALUES    
-    (@OrderId, '02T', 'B84016'),
-    (@OrderId, '02T', 'B84613');
+    (@OrderId, @SublocationOdsCode, @RecipientB84016),
+    (@OrderId, @SublocationOdsCode, @RecipientB84613);
 
     INSERT INTO ordering.OrderItemSublocationRecipientsV2 (OrderItemId, OrderId, ParentSublocationOdsCode, RecipientOdsCode, Quantity, DeliveryDate, LastUpdated, LastUpdatedBy)
     VALUES
-    (@OrderItemId, @OrderId, '02T', 'B84016', 200, DATEADD(day, 20, SYSDATETIME()), SYSDATETIME(), @sueId),
-    (@OrderItemId, @OrderId, '02T', 'B84613', 200, DATEADD(day, 20, SYSDATETIME()), SYSDATETIME(), @sueId);
+    (@OrderItemId, @OrderId, @SublocationOdsCode, @RecipientB84016, 200, DATEADD(day, 20, SYSDATETIME()), SYSDATETIME(), @sueId),
+    (@OrderItemId, @OrderId, @SublocationOdsCode, @RecipientB84613, 200, DATEADD(day, 20, SYSDATETIME()), SYSDATETIME(), @sueId);
 
-    -- Funding source step
+    -- Funding source step: framework selection on the order, funding type on the item
 
     UPDATE ordering.Orders
     SET SelectedFrameworkId = @SelectedFrameworkId
@@ -394,15 +402,15 @@ BEGIN
     SET Completed = SYSDATETIME()
     WHERE Id = @OrderId;
 
-    --insert add ser (left on the old tables for now - additional service data needs fixing separately)
+    --insert add ser
 
     INSERT INTO ordering.OrderItems (OrderId, CatalogueItemId, Created, LastUpdated)
-    VALUES(@orderId, @AdditionalServiceId, SYSDATETIME(), SYSDATETIME());
+    VALUES(@OrderId, @AdditionalServiceId, SYSDATETIME(), SYSDATETIME());
 
     INSERT INTO ordering.OrderItemPrices (OrderId, CatalogueItemId, CataloguePriceId, BillingPeriodId, ProvisioningTypeId,
         CataloguePriceTypeId, CataloguePriceCalculationTypeId, CurrencyCode, Description, RangeDescription)
     SELECT
-        @orderId,
+        @OrderId,
         @AdditionalServiceId,
         CP.CataloguePriceId,
         CP.TimeUnitId,
@@ -430,10 +438,10 @@ BEGIN
 
     INSERT INTO ordering.OrderItemSublocationRecipients (OrderId, CatalogueItemId, ParentSublocationOdsCode, RecipientOdsCode, Quantity)
     VALUES
-    (@OrderId, @AdditionalServiceId, '02T', 'B84007', 123),
-    (@OrderId, @AdditionalServiceId, '02T', 'B84016', 234),
-    (@OrderId, @AdditionalServiceId, '02T', 'B84613', 345),
-    (@OrderId, @AdditionalServiceId, '02T', 'Y02572', 456);
+    (@OrderId, @AdditionalServiceId, @SublocationOdsCode, @RecipientB84007, 123),
+    (@OrderId, @AdditionalServiceId, @SublocationOdsCode, @RecipientB84016, 234),
+    (@OrderId, @AdditionalServiceId, @SublocationOdsCode, @RecipientB84613, 345),
+    (@OrderId, @AdditionalServiceId, @SublocationOdsCode, @RecipientY02572, 456);
 
     UPDATE ordering.Orders SET OrderNumber = Id
 END
