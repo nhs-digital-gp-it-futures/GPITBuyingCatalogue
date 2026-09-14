@@ -718,6 +718,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
                 .BeEquivalentTo(new Dictionary<int, decimal> { [1] = 120M, [2] = 180M });
         }
 
+        [Theory]
+        [MockAutoData]
+        public static void OrderWrapper_TotalCostPerTier_ReturnsEmptyDictionary(OrderItem orderItem, IFixture fixture)
+        {
+            const int maximumTerm = 12;
+            var commencementDate = new DateTime(2000, 1, 1);
+            orderItem.ParentId = null;
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            var initialOrder = BuildOrder(
+                fixture,
+                maximumTerm,
+                [orderItem],
+                commencementDate,
+                []);
+
+            var amendment = initialOrder.BuildAmendment(2);
+
+            var wrapper = new OrderWrapper(amendment, [initialOrder]);
+
+            wrapper.TotalCostPerTier(orderItem.Id + 1).Should().BeEquivalentTo(new Dictionary<int, decimal>());
+        }
+
         private static Order BuildOrder(
             IFixture fixture,
             int maximumTerm,

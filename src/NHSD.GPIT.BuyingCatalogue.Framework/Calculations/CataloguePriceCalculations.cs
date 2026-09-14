@@ -97,12 +97,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
             for (var i = firstRevisionIndex; i <= lastRevisionIndex; i++)
             {
-                var order = allRevisions.ElementAt(i);
-                var previous = i > 0 ? allRevisions.ElementAt(i - 1) : null;
-                var orderItem = order.Equals(selectedOrder)
-                    ? selectedOrderItem
-                    : order.OrderItems.FirstOrDefault(
-                        item => item.CatalogueItemId == selectedOrderItem.CatalogueItemId);
+                var order = allRevisions[i];
+                var previous = i > 0 ? allRevisions[i - 1] : null;
+                var orderItem = order.OrderItems.FirstOrDefault(FilterItemByItemType(selectedOrderItem));
 
                 if (orderItem?.OrderItemPrice is not IPrice price)
                 {
@@ -115,17 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                     price.BillingPeriod.HasValue ? quantityOffset : 0);
                 var term = order.GetTerm();
 
-                foreach (var tierCost in tierCosts)
-                {
-                    var cost = price.BillingPeriod switch
-                    {
-                        TimeUnit.PerMonth => tierCost.Cost * term,
-                        TimeUnit.PerYear => tierCost.Cost * term / 12,
-                        _ => tierCost.Cost,
-                    };
-
-                    totalCosts[tierCost.Id] = totalCosts.GetValueOrDefault(tierCost.Id) + cost;
-                }
+                AddTierToTotal(tierCosts, price, term, totalCosts);
 
                 quantityOffset += quantity;
             }
@@ -165,6 +152,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 TimeUnit.PerYear => price.CalculateCostPerYear(quantity),
                 _ => price.CalculateOneOffCost(quantity),
             };
+        }
+
+        private static void AddTierToTotal(IList<PriceCalculationModel> tierCosts, IPrice price, int term, Dictionary<int, decimal> totalCosts)
+        {
+            foreach (var tierCost in tierCosts)
+            {
+                var cost = price.BillingPeriod switch
+                {
+                    TimeUnit.PerMonth => tierCost.Cost * term,
+                    TimeUnit.PerYear => tierCost.Cost * term / 12,
+                    _ => tierCost.Cost,
+                };
+
+                totalCosts[tierCost.Id] = totalCosts.GetValueOrDefault(tierCost.Id) + cost;
+            }
+        }
+
+        private static Func<OrderItem, bool> FilterItemByItemType(OrderItem selectedOrderItem)
+        {
+            return item => item.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService
+                ? item.CatalogueItemId == selectedOrderItem.CatalogueItemId
+                : item.Id == selectedOrderItem.Id;
         }
 
         private static decimal TotalCost(IReadOnlyList<Order> orders, bool roundResult = false)
