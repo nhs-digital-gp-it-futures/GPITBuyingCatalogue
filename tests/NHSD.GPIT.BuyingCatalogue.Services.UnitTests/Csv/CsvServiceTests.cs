@@ -266,7 +266,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             record.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
             record.ServiceRecipientId.Should().Be(recipient.RecipientOdsCode);
             record.ServiceRecipientName.Should().Be(recipient.RecipientOdsOrganisation.Name);
-            record.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{orderItem.CatalogueItemId}");
+            record.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{orderItem.CatalogueItemId}-{orderItem.Id}");
         }
 
         [Theory]
@@ -434,7 +434,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             record.ServiceRecipientToRetain.Should()
                 .Be(
                     $"{order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Name} ({order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Id})");
-            record.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{orderItem.CatalogueItemId}");
+            record.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{orderItem.CatalogueItemId}-{orderItem.Id}");
         }
 
         [Theory]
@@ -481,7 +481,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             record.ServiceRecipientToSplit.Should()
                 .Be(
                     $"{order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Name} ({order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Id})");
-            record.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{orderItem.CatalogueItemId}");
+            record.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{orderItem.CatalogueItemId}-{orderItem.Id}");
         }
 
         [Theory]
@@ -527,14 +527,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             record1.Should().NotBeNull();
             record1!.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
             record1.ServiceRecipientName.Should().Be(recipient1.RecipientOdsOrganisation.Name);
-            record1.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient1.RecipientOdsCode}-{orderItem.CatalogueItemId}");
+            record1.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient1.RecipientOdsCode}-{orderItem.CatalogueItemId}-{orderItem.Id}");
 
             FullOrderCsvModel record2 = records
                 .FirstOrDefault(r => r.ServiceRecipientId == recipient2.RecipientOdsCode);
             record2.Should().NotBeNull();
             record2!.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
             record2.ServiceRecipientName.Should().Be(recipient2.RecipientOdsOrganisation.Name);
-            record2.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient2.RecipientOdsCode}-{orderItem.CatalogueItemId}");
+            record2.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient2.RecipientOdsCode}-{orderItem.CatalogueItemId}-{orderItem.Id}");
         }
 
         [Theory]
