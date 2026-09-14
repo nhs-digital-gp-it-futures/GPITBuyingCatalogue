@@ -361,7 +361,7 @@ public sealed class CatalogueSolutionsController(
         if (!ModelState.IsValid)
         {
             var capabilities = await capabilitiesService.GetCapabilitiesByCategory();
-            RepopulateEditCapabilitiesModelWithCapabilities(model, capabilities);
+            RepopulateEditCapabilitiesModelCapabilityCategories(model, capabilities);
             return View(model);
         }
 
@@ -422,7 +422,7 @@ public sealed class CatalogueSolutionsController(
             new { solutionId });
     }
 
-    private static void RepopulateEditCapabilitiesModelWithCapabilities(EditCapabilitiesModel model, List<CapabilityCategory> capabilityCategories)
+    private static void RepopulateEditCapabilitiesModelCapabilityCategories(EditCapabilitiesModel model, List<CapabilityCategory> capabilityCategories)
     {
         foreach (var capabilityCategory in model.CapabilityCategories)
         {
@@ -430,24 +430,32 @@ public sealed class CatalogueSolutionsController(
             if (matchingCategory is not null)
             {
                 capabilityCategory.Name = matchingCategory.Name;
+                RepopulateEditCapabilitiesModelCapabilities(matchingCategory, capabilityCategory);
+            }
+        }
+    }
 
-                foreach (var capability in capabilityCategory.Capabilities)
-                {
-                    var matchingCapability = matchingCategory.Capabilities.FirstOrDefault(c => c.Id == capability.Id);
-                    if (matchingCapability is not null)
-                    {
-                        capability.Name = matchingCapability.Name;
+    private static void RepopulateEditCapabilitiesModelCapabilities(CapabilityCategory matchingCategory, CapabilityCategoryModel capabilityCategory)
+    {
+        foreach (var capability in capabilityCategory.Capabilities)
+        {
+            var matchingCapability = matchingCategory.Capabilities.FirstOrDefault(c => c.Id == capability.Id);
+            if (matchingCapability is not null)
+            {
+                capability.Name = matchingCapability.Name;
+                RepopulateEditCapabilitiesModelEpics(matchingCapability, capability);
+            }
+        }
+    }
 
-                        foreach (var epic in capability.Epics)
-                        {
-                            var matchingEpic = matchingCapability.Epics.FirstOrDefault(e => e.Id == epic.Id);
-                            if (matchingEpic is not null)
-                            {
-                                epic.Name = matchingEpic.Name;
-                            }
-                        }
-                    }
-                }
+    private static void RepopulateEditCapabilitiesModelEpics(Capability matchingCapability, CapabilityModel capabilityModel)
+    {
+        foreach (var epic in capabilityModel.Epics)
+        {
+            var matchingEpic = matchingCapability.Epics.FirstOrDefault(e => e.Id == epic.Id);
+            if (matchingEpic is not null)
+            {
+                epic.Name = matchingEpic.Name;
             }
         }
     }
