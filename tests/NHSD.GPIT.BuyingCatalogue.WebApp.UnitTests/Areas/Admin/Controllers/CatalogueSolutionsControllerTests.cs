@@ -1169,6 +1169,51 @@ public static class CatalogueSolutionsControllerTests
 
     [Theory]
     [MockAutoData]
+    public static async Task Post_EditCapabilities_InvalidModel_RepopulatesModel(
+    CatalogueItem catalogueItem,
+    CapabilityCategory capabilityCategory,
+    Capability capability,
+    CapabilityEpic capabilityEpic,
+    [Frozen] ICapabilitiesService capabilitiesService,
+    CatalogueSolutionsController controller)
+    {
+        capability.Status = CapabilityStatus.Effective;
+        capabilityEpic.Epic.IsActive = true;
+        capability.Epics = [capabilityEpic.Epic];
+        capability.CapabilityEpics = [capabilityEpic];
+        capabilityCategory.Capabilities = [capability];
+        var capabilityCategories = new[] { capabilityCategory };
+
+        var expectedModel = new EditCapabilitiesModel(
+            catalogueItem,
+            capabilityCategories);
+
+        var postedModel = GetPostableEditCapabilitiesModel(expectedModel);
+
+        capabilitiesService
+            .GetCapabilitiesByCategory()
+            .Returns([.. capabilityCategories]);
+
+        controller.ModelState.AddModelError(
+            "some-key",
+            "some-error");
+
+        var result = await controller.EditCapabilities(
+            catalogueItem.Id,
+            postedModel);
+
+        var viewResult = result.Should()
+            .BeOfType<ViewResult>()
+            .Subject;
+
+        viewResult.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
     public static async Task Post_EditCapabilities_InvalidId_ReturnsBadRequestObjectResult(
         Solution solution,
         EditCapabilitiesModel model,
@@ -1237,15 +1282,18 @@ public static class CatalogueSolutionsControllerTests
                 {
                     Id = c.Id,
                     CapabilityRef = c.CapabilityRef,
+                    Status = c.Status,
                     MustEpics = [.. c.MustEpics.Select(e => new CapabilityEpicModel
                     {
                         Id = e.Id,
                         Selected = e.Selected,
+                        IsActive = e.IsActive,
                     })],
                     MayEpics = [.. c.MayEpics.Select(e => new CapabilityEpicModel
                     {
                         Id = e.Id,
                         Selected = e.Selected,
+                        IsActive = e.IsActive,
                     })],
                 })],
             })],
