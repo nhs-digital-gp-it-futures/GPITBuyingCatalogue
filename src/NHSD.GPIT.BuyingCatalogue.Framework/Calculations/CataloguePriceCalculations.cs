@@ -65,6 +65,74 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             return TotalCost(orderedRevisions, roundResult);
         }
 
+        public static Dictionary<int, decimal> TotalCostPerTier(
+            this OrderWrapper orderWrapper,
+            int orderItemId,
+            bool includeCurrentRevision = true)
+        {
+            if (orderWrapper == null)
+            {
+                return new Dictionary<int, decimal>();
+            }
+
+            var allRevisions = orderWrapper.PreviousOrders.Append(orderWrapper.Order)
+                .OrderBy(o => o.Created)
+                .ToList();
+            var selectedOrder = allRevisions.FirstOrDefault(order => order.OrderItem(orderItemId) != null);
+            var selectedOrderItem = selectedOrder?.OrderItem(orderItemId);
+
+            if (selectedOrderItem == null)
+            {
+                return new Dictionary<int, decimal>();
+            }
+
+            var selectedOrderIndex = allRevisions.IndexOf(selectedOrder);
+            var firstRevisionIndex = selectedOrderItem.CatalogueItem.CatalogueItemType
+                == CatalogueItemType.AssociatedService
+                    ? selectedOrderIndex
+                    : 0;
+            var lastRevisionIndex = includeCurrentRevision ? selectedOrderIndex : selectedOrderIndex - 1;
+            var totalCosts = new Dictionary<int, decimal>();
+            var quantityOffset = 0;
+
+            for (var i = firstRevisionIndex; i <= lastRevisionIndex; i++)
+            {
+                var order = allRevisions.ElementAt(i);
+                var previous = i > 0 ? allRevisions.ElementAt(i - 1) : null;
+                var orderItem = order.Equals(selectedOrder)
+                    ? selectedOrderItem
+                    : order.OrderItems.FirstOrDefault(
+                        item => item.CatalogueItemId == selectedOrderItem.CatalogueItemId);
+
+                if (orderItem?.OrderItemPrice is not IPrice price)
+                {
+                    continue;
+                }
+
+                var quantity = orderItem.TotalQuantity(order.DetermineOrderRecipients(previous, orderItem.Id));
+                var tierCosts = price.CalculateCostPerTier(
+                    quantity,
+                    price.BillingPeriod.HasValue ? quantityOffset : 0);
+                var term = order.GetTerm();
+
+                foreach (var tierCost in tierCosts)
+                {
+                    var cost = price.BillingPeriod switch
+                    {
+                        TimeUnit.PerMonth => tierCost.Cost * term,
+                        TimeUnit.PerYear => tierCost.Cost * term / 12,
+                        _ => tierCost.Cost,
+                    };
+
+                    totalCosts[tierCost.Id] = totalCosts.GetValueOrDefault(tierCost.Id) + cost;
+                }
+
+                quantityOffset += quantity;
+            }
+
+            return totalCosts;
+        }
+
         public static decimal TotalCostForOrderItem(this OrderWrapper orderWrapper, int orderItemId)
         {
             if (orderWrapper == null)
@@ -84,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
         public static decimal TotalCost(this OrderItem orderItem, ICollection<OrderSublocationRecipient> recipients)
         {
-            if (orderItem?.OrderItemPrice is null)
+            if (orderItem?.OrderItemPrice is not IPrice price)
             {
                 return decimal.Zero;
             }
@@ -93,9 +161,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
             return orderItem.OrderItemPrice.BillingPeriod switch
             {
-                TimeUnit.PerMonth => ((IPrice)orderItem.OrderItemPrice).CalculateCostPerMonth(quantity),
-                TimeUnit.PerYear => ((IPrice)orderItem.OrderItemPrice).CalculateCostPerYear(quantity),
-                _ => ((IPrice)orderItem.OrderItemPrice).CalculateOneOffCost(quantity),
+                TimeUnit.PerMonth => price.CalculateCostPerMonth(quantity),
+                TimeUnit.PerYear => price.CalculateCostPerYear(quantity),
+                _ => price.CalculateOneOffCost(quantity),
             };
         }
 
