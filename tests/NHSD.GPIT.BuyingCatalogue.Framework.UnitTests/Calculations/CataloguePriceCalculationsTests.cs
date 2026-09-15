@@ -656,6 +656,91 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
                 .Be(expectedOriginalTotal + expectedRevision2Total + expectedRevision3Total);
         }
 
+        [Theory]
+        [MockAutoData]
+        public static void OrderWrapper_TotalCostPerTier_Uses_Remaining_Contract_Term_For_Amendment(IFixture fixture)
+        {
+            const int maximumTerm = 12;
+            var commencementDate = new DateTime(2000, 1, 1);
+            var amendmentDeliveryDate = commencementDate.AddMonths(3);
+            (decimal Price, int LowerRange, int? UpperRange)[] tiers =
+            [
+                (10M, 1, 1),
+                (20M, 2, null),
+            ];
+
+            var orderItem = BuildOrderItem(fixture, tiers, CataloguePriceCalculationType.Cumulative);
+            orderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
+            orderItem.ParentId = null;
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            orderItem.CatalogueItemId = orderItem.CatalogueItem.Id;
+
+            var initialRecipient = fixture.Build<OrderSublocationRecipient>()
+                .Without(x => x.OrderItemSublocationRecipients)
+                .Create();
+            initialRecipient.SetQuantityForItem(orderItem, 1);
+
+            var initialSublocation = fixture.Build<OrderSublocation>()
+                .With(x => x.SublocationRecipients, new List<OrderSublocationRecipient> { initialRecipient })
+                .Create();
+            initialRecipient.ParentSublocationOdsCode = initialSublocation.SublocationOdsCode;
+
+            var initialOrder = BuildOrder(
+                fixture,
+                maximumTerm,
+                [orderItem],
+                commencementDate,
+                [initialSublocation]);
+
+            var amendment = initialOrder.BuildAmendment(2);
+            var amendmentOrderItem = amendment.OrderItems.Single(
+                item => item.CatalogueItemId == orderItem.CatalogueItemId);
+            amendmentOrderItem.CatalogueItem = orderItem.CatalogueItem;
+
+            var amendmentRecipient = fixture.Build<OrderSublocationRecipient>()
+                .Without(x => x.OrderItemSublocationRecipients)
+                .Create();
+            amendmentRecipient.SetQuantityForItem(amendmentOrderItem, 1);
+            amendmentRecipient.SetDeliveryDateForItem(amendmentOrderItem, amendmentDeliveryDate);
+
+            amendment.DeliveryDate = amendmentDeliveryDate;
+            amendment.Created = initialOrder.Created.AddDays(1);
+            amendment.OrderSublocations.First().SublocationRecipients = [amendmentRecipient];
+            amendmentRecipient.ParentSublocationOdsCode = amendment.OrderSublocations.First().SublocationOdsCode;
+
+            var wrapper = new OrderWrapper(amendment, [initialOrder]);
+
+            wrapper.TotalCostPerTier(amendmentOrderItem.Id, false)
+                .Should()
+                .BeEquivalentTo(new Dictionary<int, decimal> { [1] = 120M, [2] = 0M });
+            wrapper.TotalCostPerTier(amendmentOrderItem.Id)
+                .Should()
+                .BeEquivalentTo(new Dictionary<int, decimal> { [1] = 120M, [2] = 180M });
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void OrderWrapper_TotalCostPerTier_ReturnsEmptyDictionary(OrderItem orderItem, IFixture fixture)
+        {
+            const int maximumTerm = 12;
+            var commencementDate = new DateTime(2000, 1, 1);
+            orderItem.ParentId = null;
+            orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            var initialOrder = BuildOrder(
+                fixture,
+                maximumTerm,
+                [orderItem],
+                commencementDate,
+                []);
+
+            var amendment = initialOrder.BuildAmendment(2);
+
+            var wrapper = new OrderWrapper(amendment, [initialOrder]);
+
+            wrapper.TotalCostPerTier(orderItem.Id + 1).Should().BeEquivalentTo(new Dictionary<int, decimal>());
+        }
+
         private static Order BuildOrder(
             IFixture fixture,
             int maximumTerm,
