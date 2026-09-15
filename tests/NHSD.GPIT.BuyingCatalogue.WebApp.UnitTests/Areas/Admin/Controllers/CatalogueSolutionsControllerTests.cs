@@ -24,6 +24,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
+using NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.CapabilityModels;
 using Xunit;
 using PublicationStatus = NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.PublicationStatus;
 
@@ -1161,7 +1162,8 @@ public static class CatalogueSolutionsControllerTests
 
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        var result = await controller.EditCapabilities(catalogueItem.Id, GetPostableEditCapabilitiesModel(model));
+        var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
+        var result = await controller.EditCapabilities(catalogueItem.Id, postedModel);
 
         result.As<ViewResult>().Should().NotBeNull();
         result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -1170,12 +1172,12 @@ public static class CatalogueSolutionsControllerTests
     [Theory]
     [MockAutoData]
     public static async Task Post_EditCapabilities_InvalidModel_RepopulatesModel(
-    CatalogueItem catalogueItem,
-    CapabilityCategory capabilityCategory,
-    Capability capability,
-    CapabilityEpic capabilityEpic,
-    [Frozen] ICapabilitiesService capabilitiesService,
-    CatalogueSolutionsController controller)
+        CatalogueItem catalogueItem,
+        CapabilityCategory capabilityCategory,
+        Capability capability,
+        CapabilityEpic capabilityEpic,
+        [Frozen] ICapabilitiesService capabilitiesService,
+        CatalogueSolutionsController controller)
     {
         capability.Status = CapabilityStatus.Effective;
         capabilityEpic.Epic.IsActive = true;
@@ -1188,7 +1190,7 @@ public static class CatalogueSolutionsControllerTests
             catalogueItem,
             capabilityCategories);
 
-        var postedModel = GetPostableEditCapabilitiesModel(expectedModel);
+        var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(expectedModel);
 
         capabilitiesService
             .GetCapabilitiesByCategory()
@@ -1223,7 +1225,8 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionThin(solution.CatalogueItemId)
             .Returns(default(CatalogueItem));
 
-        var result = await controller.EditCapabilities(solution.CatalogueItemId, GetPostableEditCapabilitiesModel(model));
+        var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
+        var result = await controller.EditCapabilities(solution.CatalogueItemId, postedModel);
 
         result.As<BadRequestObjectResult>().Should().NotBeNull();
         result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solution.CatalogueItemId}");
@@ -1241,7 +1244,8 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionThin(solution.CatalogueItemId)
             .Returns(solution.CatalogueItem);
 
-        _ = await controller.EditCapabilities(solution.CatalogueItemId, GetPostableEditCapabilitiesModel(model));
+        var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
+        _ = await controller.EditCapabilities(solution.CatalogueItemId, postedModel);
 
         await capabilitiesService
             .Received()
@@ -1259,44 +1263,12 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionThin(solution.CatalogueItemId)
             .Returns(solution.CatalogueItem);
 
-        var result = await controller.EditCapabilities(solution.CatalogueItemId, GetPostableEditCapabilitiesModel(model));
+        var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
+        var result = await controller.EditCapabilities(solution.CatalogueItemId, postedModel);
 
         result.As<RedirectToActionResult>().Should().NotBeNull();
         result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
         result.As<RedirectToActionResult>().RouteValues.Should().Contain(
             new KeyValuePair<string, object>("solutionId", solution.CatalogueItemId));
-    }
-
-    private static EditCapabilitiesModel GetPostableEditCapabilitiesModel(EditCapabilitiesModel model)
-    {
-        return new()
-        {
-            BackLink = model.BackLink,
-            BackLinkText = model.BackLinkText,
-            SolutionName = model.SolutionName,
-            Title = model.Title,
-            CapabilityCategories = [.. model.CapabilityCategories.Select(cc => new CapabilityCategoryModel
-            {
-                Id = cc.Id,
-                Capabilities = [.. cc.Capabilities.Select(c => new CapabilityModel
-                {
-                    Id = c.Id,
-                    CapabilityRef = c.CapabilityRef,
-                    Status = c.Status,
-                    MustEpics = [.. c.MustEpics.Select(e => new CapabilityEpicModel
-                    {
-                        Id = e.Id,
-                        Selected = e.Selected,
-                        IsActive = e.IsActive,
-                    })],
-                    MayEpics = [.. c.MayEpics.Select(e => new CapabilityEpicModel
-                    {
-                        Id = e.Id,
-                        Selected = e.Selected,
-                        IsActive = e.IsActive,
-                    })],
-                })],
-            })],
-        };
     }
 }
