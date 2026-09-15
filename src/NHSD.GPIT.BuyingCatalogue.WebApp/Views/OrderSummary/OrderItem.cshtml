@@ -2,6 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.AmendOrderItemModel;
@@ -112,28 +113,53 @@
                         @{
                             var rolledUpCosts = ((IPrice)Model.OrderItemPrice).CalculateCostPerTier(Model.RolledUpTotalQuantity);
                             var previousCosts = ((IPrice)Model.OrderItemPrice).CalculateCostPerTier(Model.PreviousTotalQuantity);
+                            var rolledUpContractCosts = hasTieredPricing
+                                ? Model.OrderWrapper.TotalCostPerTier(Model.OrderItem.Id)
+                                : null;
+                            var previousContractCosts = hasTieredPricing
+                                ? Model.OrderWrapper.TotalCostPerTier(Model.OrderItem.Id, false)
+                                : null;
+                            var rolledUpTotalCost = rolledUpCosts.Sum(cost =>
+                                rolledUpContractCosts?.GetValueOrDefault(cost.Id) ?? cost.Cost);
+                            var previousTotalCost = previousCosts.Sum(cost =>
+                                previousContractCosts?.GetValueOrDefault(cost.Id) ?? cost.Cost);
                             @for (var i = 0; i < rolledUpCosts.Count; i++)
                             {
-                            <tr>
+                                var rolledUpCost = rolledUpContractCosts?.GetValueOrDefault(rolledUpCosts[i].Id)
+                                    ?? rolledUpCosts[i].Cost;
+                                var previousCost = previousContractCosts?.GetValueOrDefault(previousCosts[i].Id)
+                                    ?? previousCosts[i].Cost;
+                                <tr>
                                     @if (hasTieredPricing)
                                     {
-                                    <td>Tier @rolledUpCosts[i].Id</td>
+                                        <td>Tier @rolledUpCosts[i].Id</td>
                                     }
-                                <td>£@rolledUpCosts[i].Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</td>
-
-                                    @if (Model.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService && Model.IsAmendment)
-                                    {
-                                    <td>@($"{previousCosts[i].Quantity:N0}")</td>
-                                    <td>@($"{rolledUpCosts[i].Quantity:N0}")</td>
-                                    <td>£@previousCosts[i].Cost.ToString("N2")</td>
-                                    <td>£@rolledUpCosts[i].Cost.ToString("N2")</td>
-                                    }
-                                    else
-                                    {
-                                    <td>@($"{rolledUpCosts[i].Quantity:N0}")</td>
-                                    <td>£@rolledUpCosts[i].Cost.ToString("N2")</td>
-                                    }
-                            </tr>
+                                    <td>£@rolledUpCosts[i].Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</td>
+    
+                                        @if (Model.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService && Model.IsAmendment)
+                                        {
+                                            <td>@($"{previousCosts[i].Quantity:N0}")</td>
+                                            <td>@($"{rolledUpCosts[i].Quantity:N0}")</td>
+                                            <td>£@previousCost.ToString("N2")</td>
+                                            <td>£@rolledUpCost.ToString("N2")</td>
+                                        }
+                                        else
+                                        {
+                                            <td>@($"{rolledUpCosts[i].Quantity:N0}")</td>
+                                            <td>£@rolledUpCost.ToString("N2")</td>
+                                        }
+                                </tr>
+                            }
+                            @if (Model.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService && Model.IsAmendment && hasTieredPricing)
+                            {
+                                <tr>
+                                    <td>Total</td>
+                                    <td></td>
+                                    <td>@($"{previousCosts.Sum(cost => cost.Quantity):N0}")</td>
+                                    <td>@($"{rolledUpCosts.Sum(cost => cost.Quantity):N0}")</td>
+                                    <td>£@previousTotalCost.ToString("N2")</td>
+                                    <td>£@rolledUpTotalCost.ToString("N2")</td>
+                                </tr>
                             }
                         }
             </table>
