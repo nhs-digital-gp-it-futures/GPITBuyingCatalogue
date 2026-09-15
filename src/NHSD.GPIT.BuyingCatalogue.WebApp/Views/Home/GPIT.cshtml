@@ -87,8 +87,8 @@
             <div class="nhsuk-grid-column-full">
                 <h2>Buyers guidance</h2>
                 <ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-5">
-                    <partial name="_ActionCard" model="@(new ActionCardModel("How we assure products", "An overview of how our listed solutions get assured by the NHS.", "https://digital.nhs.uk/services/digital-services-for-integrated-care/nhs-digital-buying-catalogue/buyers-guide/") { ShowChevronIcon = false, WidthClass = "nhsuk-grid-column-one-half" })" />
-                    <partial name="_ActionCard" model="@(new ActionCardModel("Guide for buyers", "This guide explains what procurement route to use and how to find, compare, and buy solutions.", "https://digital.nhs.uk/services/digital-services-for-integrated-care/nhs-digital-buying-catalogue/buyers-guide/") { ShowChevronIcon = false, WidthClass = "nhsuk-grid-column-one-half" })" />
+                    <partial name="_TransparentActionCard" model="@(new ActionCardModel("How we assure products", "An overview of how our listed solutions get assured by the NHS.", Url.Action(nameof(HomeController.GPIT), typeof(HomeController).ControllerName())) { ShowChevronIcon = false, WidthClass = "nhsuk-grid-column-one-half" })" />
+                    <partial name="_TransparentActionCard" model="@(new ActionCardModel("Guide for buyers", "This guide explains what procurement route to use and how to find, compare, and buy solutions.", "https://digital.nhs.uk/services/digital-services-for-integrated-care/nhs-digital-buying-catalogue/buyers-guide/") { ShowChevronIcon = false, WidthClass = "nhsuk-grid-column-one-half", OpenInNewTab = true })" />
                 </ul>
             </div>
         </div>
@@ -102,23 +102,25 @@
                 <h2>Our Contracting vehicles</h2>
                 <p class="nhs-body">Solutions are available through the following NHS procurement frameworks.</p>
                 <ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-5">
-                    <partial name="_ActionCard" model="@(new ActionCardModel("Tech Innovation framework", "Get log in credentials so you can create orders on the buying catalogue.", "https://digital.nhs.uk/services/digital-care-services-catalogue/tech-innovation-framework") { ShowChevronIcon = false, WidthClass = "nhsuk-grid-column-one-half" })" />
-                    <partial name="_ActionCard" model="@(new ActionCardModel("Advanced Telephony Better Purchasing framework", "Supports the commissioning of advanced, cloud-hosted GP telephony systems.", "https://digital.nhs.uk/services/digital-services-for-integrated-care/advanced-telephony-better-purchasing-framework") { ShowChevronIcon = false, WidthClass = "nhsuk-grid-column-one-half" })" />
+                    <partial name="_TransparentActionCard" model="@(new ActionCardModel("Tech Innovation framework", "Get log in credentials so you can create orders on the buying catalogue.", "https://digital.nhs.uk/services/digital-care-services-catalogue/tech-innovation-framework") { ShowChevronIcon = false, WidthClass = "nhsuk-grid-column-one-half", OpenInNewTab = true })" />
+                    <partial name="_TransparentActionCard" model="@(new ActionCardModel("Advanced Telephony Better Purchasing framework", "Supports the commissioning of advanced, cloud-hosted GP telephony systems.", "https://digital.nhs.uk/services/digital-services-for-integrated-care/advanced-telephony-better-purchasing-framework") { ShowChevronIcon = false, WidthClass = "nhsuk-grid-column-one-half", OpenInNewTab = true })" />
                 </ul>
             </div>
         </div>
     </div>
 </section>
+
 <section class="help-strip">
-    <div class="help-strip__container">
+    <div class="nhsuk-width-container app-section__content help-strip__container">
         <div class="help-strip__content">
             <h2 class="help-strip__title">Get help</h2>
             <p class="help-strip__text">
                 For help using the Buying Catalogue, contact the National Commercial and Procurement Hub
             </p>
         </div>
-        <a class="help-strip__button" href="#">
+        <a class="help-strip__button" href="#" style="color: #fff;">
             Contact the Procurement Hub
         </a>
     </div>
 </section>
+

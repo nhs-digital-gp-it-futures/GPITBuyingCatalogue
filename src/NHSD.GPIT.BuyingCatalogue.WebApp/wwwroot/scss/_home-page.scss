@@ -54,6 +54,14 @@
 .app-section__content .nhsuk-card__content {
     padding: 16px;
 }
+
+.app-transparent-action-card .nhsuk-card {
+    background-color: transparent;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+}
+
 .app-steps-section {
     background-color: #fff;
     border-top: none;
@@ -133,9 +141,6 @@
 }
 
 .help-strip__container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -170,8 +175,9 @@
 
     .help-strip__button:hover,
     .help-strip__button:focus {
-        background: #fff;
-        color: #005eb8;
+        background: transparent;
+        color: #fff;
+        text-decoration: underline;
     }
 
 @media (max-width: 768px) {
