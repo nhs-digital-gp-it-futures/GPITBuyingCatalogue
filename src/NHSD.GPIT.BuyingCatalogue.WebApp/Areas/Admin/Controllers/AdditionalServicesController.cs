@@ -192,7 +192,11 @@ public sealed class AdditionalServicesController(
     public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditCapabilitiesModel model)
     {
         if (!ModelState.IsValid)
+        {
+            var capabilities = await capabilitiesService.GetCapabilitiesByCategory();
+            EditCapabilitiesModel.RepopulateCapabilityCategories(model, capabilities);
             return View(model);
+        }
 
         var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
         if (additionalService is null)

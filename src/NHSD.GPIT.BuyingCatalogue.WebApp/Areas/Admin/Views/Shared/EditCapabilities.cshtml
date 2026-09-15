@@ -20,12 +20,11 @@
             @for (int i = 0; i < Model.CapabilityCategories.Count; i++)
             {
                 <nhs-fieldset-form-container asp-for="@Model">
-                    <input type="hidden" asp-for="@Model.CapabilityCategories[i].Name" />
                     <nhs-fieldset-form-label asp-for="@Model.CapabilityCategories[i]" label-text="@Model.CapabilityCategories[i].Name">
                         <nhs-checkbox-container>
                             @for (var j = 0; j < Model.CapabilityCategories[i].Capabilities.Count; j++)
                             {
-                                <input type="hidden" asp-for="@Model.CapabilityCategories[i].Capabilities[j].Name" />
+                                <input type="hidden" asp-for="@Model.CapabilityCategories[i].Id" />
                                 <input type="hidden" asp-for="@Model.CapabilityCategories[i].Capabilities[j].CapabilityRef" />
                                 <nhs-checkbox asp-for="@Model.CapabilityCategories[i].Capabilities[j].Selected"
                                               label-text="(@Model.CapabilityCategories[i].Capabilities[j].CapabilityRef) @Model.CapabilityCategories[i].Capabilities[j].Name"
@@ -36,7 +35,6 @@
                                             <nhs-checkbox-container>
                                                 @for (var k = 0; k < Model.CapabilityCategories[i].Capabilities[j].MustEpics.Count; k++)
                                                 {
-                                                    <input type="hidden" asp-for="@Model.CapabilityCategories[i].Capabilities[j].MustEpics[k].Name" />
                                                     <nhs-checkbox asp-for="@Model.CapabilityCategories[i].Capabilities[j].MustEpics[k].Selected"
                                                                   label-text="(@Model.CapabilityCategories[i].Capabilities[j].MustEpics[k].Id) @Model.CapabilityCategories[i].Capabilities[j].MustEpics[k].Name"
                                                                   hidden-input="@Model.CapabilityCategories[i].Capabilities[j].MustEpics[k].Id" />
@@ -50,7 +48,6 @@
                                             <nhs-checkbox-container>
                                                 @for (var k = 0; k < Model.CapabilityCategories[i].Capabilities[j].MayEpics.Count; k++)
                                                 {
-                                                    <input type="hidden" asp-for="@Model.CapabilityCategories[i].Capabilities[j].MayEpics[k].Name" />
                                                     <nhs-checkbox asp-for="@Model.CapabilityCategories[i].Capabilities[j].MayEpics[k].Selected"
                                                                   label-text="(@Model.CapabilityCategories[i].Capabilities[j].MayEpics[k].Id) @Model.CapabilityCategories[i].Capabilities[j].MayEpics[k].Name"
                                                                   hidden-input="@Model.CapabilityCategories[i].Capabilities[j].MayEpics[k].Id" />
