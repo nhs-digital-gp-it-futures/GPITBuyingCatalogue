@@ -149,7 +149,6 @@ public static class CompetitionsDashboardControllerTests
         result.ActionName.Should().Be(nameof(controller.ReviewFilter));
     }
 
-
     [Theory]
     [MockAutoData]
     public static void Start_RedirectsToBeforeYouStartUsingUserInternalOrgId(
@@ -176,7 +175,6 @@ public static class CompetitionsDashboardControllerTests
         result.ActionName.Should().Be(nameof(CompetitionsDashboardController.BeforeYouStart));
         result.RouteValues["internalOrgId"].Should().Be(internalOrgId);
     }
-
 
     [Theory]
     [MockAutoData]
