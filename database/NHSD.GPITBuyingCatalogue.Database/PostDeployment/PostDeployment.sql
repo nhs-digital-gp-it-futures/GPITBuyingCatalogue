@@ -1,4 +1,6 @@
-﻿:r ./InfrastructureUsers.sql
+﻿:r ./CreateReportsApplicationAccount.sql
+
+:r ./InfrastructureUsers.sql
 :r ./InsertRoles.sql
 :r ./InsertRoleClaims.sql
 
