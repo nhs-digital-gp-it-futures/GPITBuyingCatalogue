@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using LinqKit;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
@@ -145,6 +148,35 @@ public static class CompetitionsDashboardControllerTests
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.ReviewFilter));
     }
+
+
+    [Theory]
+    [MockAutoData]
+    public static void Start_RedirectsToBeforeYouStartUsingUserInternalOrgId(
+    string internalOrgId,
+    CompetitionsDashboardController controller)
+    {
+        var user = new ClaimsPrincipal(
+            new ClaimsIdentity(
+                new Claim[]
+                {
+                    new(ClaimTypes.Role, "Buyer"),
+                    new(CatalogueClaims.PrimaryOrganisationInternalIdentifier, internalOrgId),
+                },
+                "mock"));
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = user },
+        };
+
+        var result = controller.Start().As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(CompetitionsDashboardController.BeforeYouStart));
+        result.RouteValues["internalOrgId"].Should().Be(internalOrgId);
+    }
+
 
     [Theory]
     [MockAutoData]
