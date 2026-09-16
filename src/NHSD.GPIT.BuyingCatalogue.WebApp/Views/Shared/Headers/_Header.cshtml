@@ -4,6 +4,8 @@
 
 @{
     var navMenuModel = new NavigationMenuModel(User, Url, Context.Request.RouteValues);
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
     var area = ViewContext.RouteData.Values["area"]?.ToString();
 }
 <header class="nhsuk-header" role="banner">
@@ -18,7 +20,7 @@
                         <vc:nhs-login-icon/>
                     </a>
                 }
-                else if (area != typeof(CommunityPharmacyController).AreaName())
+                else if (area != typeof(CommunityPharmacyController).AreaName() && !(controller == typeof(HomeController).ControllerName() && action == nameof(HomeController.Index)))
                 {
                     <a class="nhsuk-account__login--link" href="@Url.Action(nameof(AccountController.Login), typeof(AccountController).ControllerName(), new { area = typeof(AccountController).AreaName() })">
                         Log in
