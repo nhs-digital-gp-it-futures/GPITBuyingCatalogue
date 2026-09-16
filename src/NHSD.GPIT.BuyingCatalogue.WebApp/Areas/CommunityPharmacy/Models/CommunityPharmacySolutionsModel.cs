@@ -1,6 +1,6 @@
-﻿using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models;
 
 public class CommunityPharmacySolutionsModel : SolutionsModel
 {

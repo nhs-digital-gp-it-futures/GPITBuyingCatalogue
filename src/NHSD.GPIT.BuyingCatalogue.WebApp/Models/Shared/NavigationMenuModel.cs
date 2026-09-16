@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
@@ -37,9 +38,9 @@ public readonly struct NavigationMenuModel
     private static readonly Func<IUrlHelper, KeyValuePair<string, string>> CommunityPharmacy = urlHelper => new KeyValuePair<string, string>(
         "Community Pharmacy",
         urlHelper.Action(
-            nameof(CommunityPharmacySolutionsController.Index),
-            typeof(CommunityPharmacySolutionsController).ControllerName(),
-            new { area = typeof(CommunityPharmacySolutionsController).AreaName() }));
+            nameof(CommunityPharmacyController.Solutions),
+            typeof(CommunityPharmacyController).ControllerName(),
+            new { area = typeof(CommunityPharmacyController).AreaName() }));
 
     private static readonly Func<IUrlHelper, KeyValuePair<string, string>> Logout = urlHelper =>
         new KeyValuePair<string, string>(

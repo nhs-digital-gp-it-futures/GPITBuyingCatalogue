@@ -11,6 +11,8 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
@@ -18,25 +20,25 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 {
-    public static class CommunityPharmacySolutionsControllerTests
+    public static class CommunityPharmacyControllerTests
     {
         [Fact]
         public static void ClassIsCorrectlyDecorated()
         {
-            typeof(CommunityPharmacySolutionsController)
-                .Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Solutions");
-            typeof(CommunityPharmacySolutionsController)
-                .Should().BeDecoratedWith<RouteAttribute>(x => x.Template == "community-pharmacy/solutions");
+            typeof(CommunityPharmacyController)
+                .Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "CommunityPharmacy");
+            typeof(CommunityPharmacyController)
+                .Should().BeDecoratedWith<RouteAttribute>(x => x.Template == "community-pharmacy");
         }
 
         [Theory]
         [MockAutoData]
-        public static async Task GetIndex_ReturnsExpectedModelAndView(
+        public static async Task GetSolutions_ReturnsExpectedModelAndView(
             string search,
             IList<CatalogueItem> catalogueItems,
             PageOptions returnedOptions,
             [Frozen] ISolutionsFilterService solutionsFilterService,
-            CommunityPharmacySolutionsController controller)
+            CommunityPharmacyController controller)
         {
             const string page = "2";
 
@@ -45,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     Arg.Any<PageOptions>())
                 .Returns((catalogueItems, returnedOptions, null));
 
-            var result = await controller.Index(page, null, search);
+            var result = await controller.Solutions(page, null, search);
 
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = viewResult.Model.Should().BeOfType<CommunityPharmacySolutionsModel>().Subject;
@@ -65,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             Uri uri,
             List<SearchFilterModel> searchResults,
             [Frozen] ISolutionsFilterService solutionsFilterService,
-            CommunityPharmacySolutionsController controller)
+            CommunityPharmacyController controller)
         {
             solutionsFilterService.GetSolutionsBySearchTerm(search, Arg.Any<int>(), true).Returns(searchResults);
 
