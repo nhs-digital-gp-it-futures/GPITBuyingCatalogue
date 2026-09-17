@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         public const string UrlName = "url";
         public const string HorizontalAlignName = "horizontal-align";
         public const string ShowChevronIconName = "show-chevron-icon";
+        public const string OpenInNewTabName = "open-in-new-tab";
 
         private const string SizeName = "size";
 
@@ -35,6 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 
         [HtmlAttributeName(ShowChevronIconName)]
         public bool ShowChevronIcon { get; set; }
+
+        [HtmlAttributeName(OpenInNewTabName)]
+        public bool OpenInNewTab { get; set; }
 
         [HtmlAttributeName(SizeName)]
         public HeadingSize HeadingSize { get; set; } = HeadingSize.Small;
@@ -117,6 +121,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 
             link.AddCssClass(CardStyles.CardLinkClass);
             link.Attributes.Add("href", Url);
+
+            if (OpenInNewTab)
+            {
+                link.Attributes.Add("target", "_blank");
+                link.Attributes.Add("rel", "noopener noreferrer");
+            }
+
             link.InnerHtml.Append(Title);
 
             return link;
