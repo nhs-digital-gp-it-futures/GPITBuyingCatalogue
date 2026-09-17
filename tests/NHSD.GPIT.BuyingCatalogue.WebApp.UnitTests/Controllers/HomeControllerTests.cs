@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -16,6 +18,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 {
     public static class HomeControllerTests
     {
+        [Fact]
+        public static void Get_ContactUs_HasAllowAnonymous_AndNotAuthorize()
+        {
+            var method = typeof(HomeController).GetMethod(nameof(HomeController.ContactUs), Type.EmptyTypes);
+
+            method.Should().NotBeNull();
+            method!.GetCustomAttributes(typeof(AllowAnonymousAttribute), true).Should().NotBeEmpty();
+            method.GetCustomAttributes(typeof(AuthorizeAttribute), true).Should().BeEmpty();
+        }
+
+        [Fact]
+        public static void Post_ContactUs_HasAllowAnonymous_AndNotAuthorize()
+        {
+            var method = typeof(HomeController).GetMethod(
+                nameof(HomeController.ContactUs),
+                new[] { typeof(ContactUsModel) });
+
+            method.Should().NotBeNull();
+            method!.GetCustomAttributes(typeof(AllowAnonymousAttribute), true).Should().NotBeEmpty();
+            method.GetCustomAttributes(typeof(AuthorizeAttribute), true).Should().BeEmpty();
+        }
+
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
