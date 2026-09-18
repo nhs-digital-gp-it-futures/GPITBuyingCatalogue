@@ -53,14 +53,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             SolutionsController controller)
         {
             var itemsToReturn = new List<CatalogueItem>() { solution.CatalogueItem };
-            var capabilitiesAndEpics = new Dictionary<int, string[]>();
 
             mockFrameworkService.GetFrameworksWithPublishedCatalogueItems()
                 .Returns(frameworks);
 
             mockService.GetAllSolutionsFiltered(
-                    Arg.Any<PageOptions>(),
-                    capabilitiesAndEpics)
+                    Arg.Any<SolutionsFilters>(),
+                    Arg.Any<PageOptions>())
                 .Returns((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
 
             var result = await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null);
@@ -68,13 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await mockService.Received()
                 .GetAllSolutionsFiltered(
-                    Arg.Any<PageOptions>(),
-                    Arg.Any<Dictionary<int, string[]>>(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    Arg.Any<Dictionary<SupportedIntegrations, int[]>>());
+                    Arg.Any<SolutionsFilters>(),
+                    Arg.Any<PageOptions>());
         }
 
         [Theory]
@@ -212,28 +206,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var itemsToReturn = new List<CatalogueItem>() { solution.CatalogueItem };
             filters = filters with { Selected = string.Empty };
 
+            SolutionsFilters actualFilters = null;
+
             mockService.GetAllSolutionsFiltered(
-                    Arg.Any<PageOptions>(),
-                    filters.GetCapabilityAndEpicIds(),
-                    filters.Search,
-                    filters.SelectedFrameworkId,
-                    filters.SelectedApplicationTypeIds,
-                    filters.SelectedHostingTypeIds,
-                    filters.GetIntegrationsAndTypes())
+                    Arg.Do<SolutionsFilters>(args => actualFilters = args),
+                    Arg.Any<PageOptions>())
                 .Returns((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
 
             var result = await controller.SearchResults(filters);
 
             result.Should().BeOfType<PartialViewResult>();
 
+            actualFilters.Should()
+                .BeEquivalentTo(
+                    new SolutionsFilters
+                    {
+                        CapabilitiesAndEpics = filters.GetCapabilityAndEpicIds(),
+                        Search = filters.Search,
+                        SelectedFrameworkId = filters.SelectedFrameworkId,
+                        SelectedApplicationTypeIds = filters.SelectedApplicationTypeIds,
+                        SelectedHostingTypeIds = filters.SelectedHostingTypeIds,
+                        SelectedIntegrationsAndTypes = filters.GetIntegrationsAndTypes(),
+                    });
+
             await mockService.Received().GetAllSolutionsFiltered(
-                Arg.Any<PageOptions>(),
-                Arg.Any<Dictionary<int, string[]>>(),
-                filters.Search,
-                filters.SelectedFrameworkId,
-                filters.SelectedApplicationTypeIds,
-                filters.SelectedHostingTypeIds,
-                Arg.Any<Dictionary<SupportedIntegrations, int[]>>());
+                Arg.Any<SolutionsFilters>(),
+                Arg.Any<PageOptions>());
         }
 
         [Theory]

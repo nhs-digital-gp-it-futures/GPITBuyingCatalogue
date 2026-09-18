@@ -31,7 +31,7 @@ public static class NavigationMenuModelTests
 
         var model = new NavigationMenuModel(claimsPrincipal, urlHelper, routeValues);
 
-        model.Links.Should().HaveCount(2);
+        model.Links.Should().HaveCount(3);
 
         urlHelper.Received()
             .Action(
@@ -43,9 +43,16 @@ public static class NavigationMenuModelTests
         urlHelper.Received()
             .Action(
                 Arg.Is<UrlActionContext>(
-                    x => string.Equals(x.Action, nameof(SolutionsController.Index)) && string.Equals(
+                    x => string.Equals(x.Action, nameof(HomeController.GPIT)) && string.Equals(
                         x.Controller,
-                        typeof(SolutionsController).ControllerName())));
+                        typeof(HomeController).ControllerName())));
+
+        urlHelper.Received()
+            .Action(
+                Arg.Is<UrlActionContext>(
+                    x => string.Equals(x.Action, nameof(HomeController.GPIT)) && string.Equals(
+                        x.Controller,
+                        typeof(HomeController).ControllerName())));
     }
 
     [Theory]
