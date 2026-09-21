@@ -17,6 +17,7 @@ public class AdminPages
 {
     private readonly ITestOutputHelper _output;
     private readonly AdminTestData _data;
+    private readonly string _baseUrl;
 
     public LoginPage Login { get; }
     public AdminDashboardPage Dashboard { get; }
@@ -44,10 +45,11 @@ public class AdminPages
     public ManageSolutionsPage ManageSolutions { get; }
     public AddSolutionPage AddSolution { get; }
 
-    public AdminPages(IPage page, ITestOutputHelper output, AdminTestData data)
+    public AdminPages(IPage page, ITestOutputHelper output, string baseUrl, AdminTestData data)
     {
         _output = output;
         _data = data;
+        _baseUrl = baseUrl;
 
         Login = new LoginPage(page);
         Dashboard = new AdminDashboardPage(page);
@@ -79,7 +81,7 @@ public class AdminPages
     public async Task LoginAsAdminAsync()
     {
         _output.WriteLine("Admin login");
-        await Login.NavigateAsync(_data.BaseUrl);
+        await Login.NavigateAsync(_baseUrl);
         await Login.LoginAsync(_data.Email, _data.Password);
         await Login.AssertLoginSuccessfulAsync("Buying Catalogue admin");
     }

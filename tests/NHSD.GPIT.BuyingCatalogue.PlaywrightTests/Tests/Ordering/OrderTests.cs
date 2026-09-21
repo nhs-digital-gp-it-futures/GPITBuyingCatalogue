@@ -143,7 +143,6 @@ public class OrderTests : BaseTest
     public async Task AssociatedServiceOnly_SomethingElse()
     {
         var data = new AssociatedServiceTestDataBuilder()
-            .WithBaseUrl(Fixture.BaseUrl)
             .WithServiceCategory("Something else")
             .WithSupplier("EMIS Health")
             .WithCatalogueSolutionAndAssociatedService("Emis Web GP", "Engineering")
@@ -163,7 +162,6 @@ public class OrderTests : BaseTest
     public async Task AssociatedServiceOnly_Merger()
     {
         var data = new AssociatedServiceTestDataBuilder()
-            .WithBaseUrl(Fixture.BaseUrl)
             .WithServiceCategory("Merger")
             .WithSupplier("EMIS Health", isMerger: true)
             .WithCatalogueSolutionForMerger("Video Consult")
