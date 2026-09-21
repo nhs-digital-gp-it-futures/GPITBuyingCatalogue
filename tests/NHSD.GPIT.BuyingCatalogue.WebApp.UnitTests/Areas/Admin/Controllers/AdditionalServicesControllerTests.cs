@@ -19,6 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.CapabilityModels;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
@@ -556,17 +557,48 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_EditCapabilities_InvalidModel_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItem catalogueItem,
             AdditionalService additionalService,
-            EditCapabilitiesModel model,
+            CapabilityCategory capabilityCategory,
+            Capability capability,
+            CapabilityEpic capabilityEpic,
+            [Frozen] ICapabilitiesService capabilitiesService,
             AdditionalServicesController controller)
         {
-            controller.ModelState.AddModelError("some-key", "some-error");
+            capability.Status = CapabilityStatus.Effective;
+            capabilityEpic.Epic.IsActive = true;
+            capability.Epics = [capabilityEpic.Epic];
+            capability.CapabilityEpics = [capabilityEpic];
+            capabilityCategory.Capabilities = [capability];
+            var capabilityCategories = new[] { capabilityCategory };
 
-            var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, model);
+            var expectedModel = new EditCapabilitiesModel(
+                catalogueItem,
+                capabilityCategories);
 
-            result.As<ViewResult>().Should().NotBeNull();
-            result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+            var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(expectedModel);
+
+            capabilitiesService
+                .GetCapabilitiesByCategory()
+                .Returns([.. capabilityCategories]);
+
+            controller.ModelState.AddModelError(
+                "some-key",
+                "some-error");
+
+            var result = await controller.EditCapabilities(
+                catalogueItem.Id,
+                additionalService.CatalogueItemId,
+                postedModel);
+
+            var viewResult = result.Should()
+                .BeOfType<ViewResult>()
+                .Subject;
+
+            viewResult.Model.Should()
+                .BeEquivalentTo(
+                    expectedModel,
+                    opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -580,7 +612,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, model);
+            var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
+            var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, postedModel);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No additional service with Id {additionalService.CatalogueItemId} found for Solution {solution.CatalogueItemId}");
@@ -598,7 +631,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
 
-            _ = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, model);
+            var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
+            _ = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, postedModel);
 
             await capabilitiesService.Received().AddCapabilitiesToCatalogueItem(additionalService.CatalogueItemId, Arg.Any<SaveCatalogueItemCapabilitiesModel>());
         }
@@ -614,7 +648,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
 
-            var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, model);
+            var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
+            var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, postedModel);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServicesController.EditAdditionalService));
