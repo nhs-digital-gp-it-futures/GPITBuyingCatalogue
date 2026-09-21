@@ -20,10 +20,12 @@ BEGIN
     WHERE
         Id = @OrderingParty
 
+    -- Emis Health / Emis Web GP
     DECLARE
-        @SupplierId INT = 99999, --notEmis Health,
-        @CatalogueSolutionId NVARCHAR(14) = '99999-89', --NotEmis Web GP
-        @AdditionalServiceId NVARCHAR(14) = '99999-89-A01', --NotEmis Web GP additional service. Not seeded yet - reserved for the upcoming additional/associated service work.
+        @SupplierId INT = 10000, --Emis Health
+        @CatalogueSolutionId NVARCHAR(14) = '10000-001', --Emis Web GP
+        @AdditionalServiceId NVARCHAR(14) = '10000-001A003', --Automated Arrivals. Not seeded yet.
+        @AssociatedServiceId NVARCHAR(14) = '10000-S-002', --Installation. Not seeded yet.
         @AssociatedServicesOnly INT = 0,
         @LastBuyerContactId INT,
         @LastSupplierContactId INT;
@@ -34,8 +36,8 @@ BEGIN
         @RecipientB84016 NVARCHAR(10) = 'B84016',
         @RecipientB84613 NVARCHAR(10) = 'B84613';
 
-    DECLARE @CatalogueSolutionPriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @CatalogueSolutionId AND PublishedStatusId = 3); --NotEmis Web GP Price
-    DECLARE @AdditionalServicePriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @AdditionalServiceId AND PublishedStatusId = 3); --NotEmis Web GP additional service Price. Not seeded yet - reserved for the upcoming additional/associated service work.
+    DECLARE @CatalogueSolutionPriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @CatalogueSolutionId AND PublishedStatusId = 3); --Emis Web GP Price
+    DECLARE @AdditionalServicePriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @AdditionalServiceId AND PublishedStatusId = 3); --Automated Arrivals Price. Not seeded yet.
     DECLARE @SelectedFrameworkId NVARCHAR(10) = (SELECT Id FROM catalogue.Frameworks WHERE Id = 'TIF001'); --Technology Innovation Framework
 
     DECLARE @TestOrdersContacts TABLE(
@@ -66,9 +68,9 @@ BEGIN
     ),
     (
         2, -- Supplier Contact
-        'notEmis',
+        'Emis',
         'Health',
-        'notEmisHealth@email.com',
+        'emisHealth@email.com',
         '1234567',
         SYSDATETIME(),
         @sueId,
