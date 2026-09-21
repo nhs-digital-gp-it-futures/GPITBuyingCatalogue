@@ -23,7 +23,7 @@ BEGIN
     DECLARE
         @SupplierId INT = 99999, --notEmis Health,
         @CatalogueSolutionId NVARCHAR(14) = '99999-89', --NotEmis Web GP
-        @AdditionalServiceId NVARCHAR(14) = '99999-89-A01', --NotEmis Web GP additional service
+        @AdditionalServiceId NVARCHAR(14) = '99999-89-A01', --NotEmis Web GP additional service. Not seeded yet - reserved for the upcoming additional/associated service work.
         @AssociatedServicesOnly INT = 0,
         @LastBuyerContactId INT,
         @LastSupplierContactId INT;
@@ -31,13 +31,11 @@ BEGIN
     -- Recipient and sublocation ODS codes
     DECLARE
         @SublocationOdsCode NVARCHAR(10) = '02T',
-        @RecipientB84007 NVARCHAR(10) = 'B84007',
         @RecipientB84016 NVARCHAR(10) = 'B84016',
-        @RecipientB84613 NVARCHAR(10) = 'B84613',
-        @RecipientY02572 NVARCHAR(10) = 'Y02572';
+        @RecipientB84613 NVARCHAR(10) = 'B84613';
 
     DECLARE @CatalogueSolutionPriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @CatalogueSolutionId AND PublishedStatusId = 3); --NotEmis Web GP Price
-    DECLARE @AdditionalServicePriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @AdditionalServiceId AND PublishedStatusId = 3); --NotEmis Web GP additional service Price
+    DECLARE @AdditionalServicePriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @AdditionalServiceId AND PublishedStatusId = 3); --NotEmis Web GP additional service Price. Not seeded yet - reserved for the upcoming additional/associated service work.
     DECLARE @SelectedFrameworkId NVARCHAR(10) = (SELECT Id FROM catalogue.Frameworks WHERE Id = 'TIF001'); --Technology Innovation Framework
 
     DECLARE @TestOrdersContacts TABLE(
@@ -401,47 +399,6 @@ BEGIN
     UPDATE ordering.Orders
     SET Completed = SYSDATETIME()
     WHERE Id = @OrderId;
-
-    --insert add ser
-
-    INSERT INTO ordering.OrderItems (OrderId, CatalogueItemId, Created, LastUpdated)
-    VALUES(@OrderId, @AdditionalServiceId, SYSDATETIME(), SYSDATETIME());
-
-    INSERT INTO ordering.OrderItemPrices (OrderId, CatalogueItemId, CataloguePriceId, BillingPeriodId, ProvisioningTypeId,
-        CataloguePriceTypeId, CataloguePriceCalculationTypeId, CurrencyCode, Description, RangeDescription)
-    SELECT
-        @OrderId,
-        @AdditionalServiceId,
-        CP.CataloguePriceId,
-        CP.TimeUnitId,
-        CP.ProvisioningTypeId,
-        CP.CataloguePriceTypeId,
-        CP.CataloguePriceCalculationTypeId,
-        CP.CurrencyCode,
-        PU.Description,
-        PU.RangeDescription
-    FROM catalogue.CataloguePrices CP
-    INNER JOIN catalogue.PricingUnits PU
-	    ON CP.PricingUnitId = PU.Id
-    WHERE CataloguePriceId = @AdditionalServicePriceId
-
-    INSERT INTO ordering.OrderItemPriceTiers (OrderId, CatalogueItemId, Price, ListPrice, LowerRange, UpperRange)
-    SELECT
-        @OrderId,
-        @AdditionalServiceId,
-        Price,
-        Price,
-        LowerRange,
-        UpperRange
-    FROM catalogue.CataloguePriceTiers
-    WHERE CataloguePriceId = @AdditionalServicePriceId
-
-    INSERT INTO ordering.OrderItemSublocationRecipients (OrderId, CatalogueItemId, ParentSublocationOdsCode, RecipientOdsCode, Quantity)
-    VALUES
-    (@OrderId, @AdditionalServiceId, @SublocationOdsCode, @RecipientB84007, 123),
-    (@OrderId, @AdditionalServiceId, @SublocationOdsCode, @RecipientB84016, 234),
-    (@OrderId, @AdditionalServiceId, @SublocationOdsCode, @RecipientB84613, 345),
-    (@OrderId, @AdditionalServiceId, @SublocationOdsCode, @RecipientY02572, 456);
 
     UPDATE ordering.Orders SET OrderNumber = Id
 END
