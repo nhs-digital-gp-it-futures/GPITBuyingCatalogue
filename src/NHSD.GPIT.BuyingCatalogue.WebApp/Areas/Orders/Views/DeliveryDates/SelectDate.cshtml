@@ -17,7 +17,7 @@
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
-                        advice="Enter the date the solutions and services you’re ordering will start being used." />
+                        advice="Enter the date organisations will start using these solutions and services" />
 
         @if (Model.IsAmend)
         {
@@ -34,21 +34,19 @@
             <div class="nhsuk-u-margin-bottom-9">
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-text="What is the planned delivery date?"
-                                         label-hint="If you have more than one planned delivery date, enter the date the majority of recipients will begin using the items you’re ordering."
+                                         label-hint="If you have more than one, enter the date most organisations start using these solutions and services"
                                          size="Small">
-                    <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
+                    <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" show-example-text="true" />
                 </nhs-fieldset-form-label>
 
                 <nhs-fieldset-form-label asp-for="ApplyToAll"
-                                         label-text="Do you want to use the same delivery date for all recipients?"
-                                         label-hint="Selecting yes will apply the date you’ve entered to all recipients. If you select no, you’ll be able to change the dates for individual recipients."
+                                         label-text="Do you want to use the same delivery date for all organisations?"
                                          size="Small">
                     <legend name="same delivery date"></legend>
                     <nhs-radio-buttons asp-for="ApplyToAll"
                                        values="@Model.ApplyToAllOptions.Cast<object>()"
                                        value-name="Value"
-                                       display-name="Text"
-                                       inline="true"/>
+                                       display-name="Text"/>
                 </nhs-fieldset-form-label>
             </div>
 
