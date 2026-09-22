@@ -25,12 +25,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public IActionResult PrivacyPolicy()
             => View();
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("contact-us")]
         public IActionResult ContactUs()
             => View(new ContactUsModel());
 
-        [Authorize]
+        [AllowAnonymous]
         [ValidateRecaptcha]
         [HttpPost("contact-us")]
         public async Task<IActionResult> ContactUs(ContactUsModel model)
