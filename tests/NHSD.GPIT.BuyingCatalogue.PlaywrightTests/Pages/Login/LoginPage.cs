@@ -5,7 +5,6 @@ namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Login;
 
 public class LoginPage : BasePage
 {
-    private ILocator LoginLink => Page.GetByRole(AriaRole.Link, new() { Name = "Log in" });
     private ILocator EmailInput => Page.GetByLabel("Email");
     private ILocator PasswordInput => Page.GetByLabel("Password");
     private ILocator LoginButton => Page.GetByRole(AriaRole.Button, new() { Name = "Log in" });
@@ -17,24 +16,12 @@ public class LoginPage : BasePage
 
     public async Task NavigateAsync(string baseUrl)
     {
-        var response = await Page.GotoAsync(
-            baseUrl,
+        var loginUrl = new Uri(new Uri(baseUrl), "/Identity/Account/Login").ToString();
+        await Page.GotoAsync(
+            loginUrl,
             new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded });
 
-        Console.WriteLine($"Requested URL: {baseUrl}");
-        Console.WriteLine($"Final URL: {Page.Url}");
-        Console.WriteLine($"HTTP status: {response?.Status}");
-        Console.WriteLine($"Page title: {await Page.TitleAsync()}");
-
-        try
-        {
-            await LoginLink.ClickAsync();
-        }
-        catch (TimeoutException)
-        {
-            await CaptureLandingPageAsync();
-            throw;
-        }
+        await EmailInput.WaitForAsync(new() { State = WaitForSelectorState.Visible });
     }
 
     public async Task LoginAsync(string email, string password)
@@ -47,33 +34,6 @@ public class LoginPage : BasePage
 
     public async Task AssertLoginSuccessfulAsync(string expectedHeading = "Your organisation's dashboard") =>
         await AssertHeadingAsync(expectedHeading);
-
-    private async Task CaptureLandingPageAsync()
-    {
-        var artifactDirectory =
-            Environment.GetEnvironmentVariable("PLAYWRIGHT_ARTIFACTS_DIR")
-            ?? Path.Combine(Directory.GetCurrentDirectory(), "playwright-artifacts");
-
-        Directory.CreateDirectory(artifactDirectory);
-
-        var fileName = $"landing-page-{DateTime.UtcNow:yyyyMMdd-HHmmssfff}-{Guid.NewGuid():N}.png";
-        var screenshotPath = Path.Combine(artifactDirectory, fileName);
-
-        try
-        {
-            await Page.ScreenshotAsync(new PageScreenshotOptions
-            {
-                Path = screenshotPath,
-                FullPage = true,
-            });
-
-            Console.WriteLine($"Landing-page screenshot saved to: {screenshotPath}");
-        }
-        catch (Exception screenshotException)
-        {
-            Console.WriteLine($"Failed to capture landing-page screenshot: {screenshotException.Message}");
-        }
-    }
 
     private async Task CompleteRecaptchaAsync()
     {
