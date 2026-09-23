@@ -5,6 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Login;
 
 public class LoginPage : BasePage
 {
+    private ILocator LoginLink => Page.GetByRole(AriaRole.Link, new() { Name = "Log in" });
     private ILocator EmailInput => Page.GetByLabel("Email");
     private ILocator PasswordInput => Page.GetByLabel("Password");
     private ILocator LoginButton => Page.GetByRole(AriaRole.Button, new() { Name = "Log in" });
@@ -16,12 +17,8 @@ public class LoginPage : BasePage
 
     public async Task NavigateAsync(string baseUrl)
     {
-        var loginUrl = new Uri(new Uri(baseUrl), "/Identity/Account/Login").ToString();
-        await Page.GotoAsync(
-            loginUrl,
-            new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded });
-
-        await EmailInput.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+        await Page.GotoAsync(baseUrl);
+        await LoginLink.ClickAsync();
     }
 
     public async Task LoginAsync(string email, string password)
