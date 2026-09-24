@@ -26,3 +26,19 @@
     float: left;
     margin: nhsuk-spacing(2) nhsuk-spacing(3) 0;
 }
+
+.bc-c-price-tag {
+    align-self: flex-start;
+    background-color: $color_nhsuk-grey-5;
+    border: 1px solid $color_nhsuk-grey-4;
+    border-radius: 4px;
+    color: $color_nhsuk-grey-1;
+    display: inline-block;
+    flex-shrink: 0;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-left: nhsuk-spacing(3);
+    padding: nhsuk-spacing(1) nhsuk-spacing(2);
+    white-space: nowrap;
+}

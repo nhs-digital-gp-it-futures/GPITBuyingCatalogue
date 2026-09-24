@@ -140,11 +140,10 @@ var filters = (function (): CapabilitiesAndEpics {
 
         solutionSortContainer.innerHTML = innerHtml;
 
-        const sortOptions = document.getElementById('SelectedSortOption') as HTMLOptionElement;
+        const sortOptions = document.getElementById('SelectedSortOption') as HTMLSelectElement;
+        const defaultSortByValue = solutionSortContainer.dataset.defaultSortBy;
 
-        if (sortByValue !== null) {
-            sortOptions.value = sortByValue;
-        }
+        sortOptions.value = sortByValue ?? defaultSortByValue ?? sortOptions.value;
 
         sortOptions.addEventListener('change', event => handleSortChange(event), true);
     }
@@ -167,6 +166,19 @@ var filters = (function (): CapabilitiesAndEpics {
     }
 
     function handleSortChange(event: Event) {
+        const solutionSortContainer = document.getElementById('solution-sort-container');
+        const resultsUrl = solutionSortContainer?.dataset.resultsUrl;
+
+        if (resultsUrl) {
+            const currentUrl = new URL(window.location.href);
+            const communityPharmacyResultsUrl = new URL(resultsUrl, currentUrl);
+            communityPharmacyResultsUrl.search = currentUrl.search;
+            communityPharmacyResultsUrl.searchParams.set(SORT_BY_PARAM_NAME, getSortBy());
+            communityPharmacyResultsUrl.searchParams.delete('page');
+            window.location.href = communityPharmacyResultsUrl.toString();
+            return;
+        }
+
         invalidateResults();
     }
 

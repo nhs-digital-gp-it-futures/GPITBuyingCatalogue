@@ -28,6 +28,19 @@ public readonly struct NavigationMenuModel
             typeof(SolutionsController).ControllerName(),
             new { area = typeof(SolutionsController).AreaName() }));
 
+    private static readonly Func<IUrlHelper, KeyValuePair<string, string>> GeneralPractice = urlHelper => new KeyValuePair<string, string>(
+        "General Practice",
+        urlHelper.Action(
+            nameof(HomeController.GPIT),
+            typeof(HomeController).ControllerName()));
+
+    private static readonly Func<IUrlHelper, KeyValuePair<string, string>> CommunityPharmacy = urlHelper => new KeyValuePair<string, string>(
+        "Community Pharmacy",
+        urlHelper.Action(
+            nameof(CommunityPharmacySolutionsController.Index),
+            typeof(CommunityPharmacySolutionsController).ControllerName(),
+            new { area = typeof(CommunityPharmacySolutionsController).AreaName() }));
+
     private static readonly Func<IUrlHelper, KeyValuePair<string, string>> Logout = urlHelper =>
         new KeyValuePair<string, string>(
             "Log out",
@@ -40,8 +53,7 @@ public readonly struct NavigationMenuModel
         "Home",
         urlHelper.Action(
             nameof(Areas.Admin.Controllers.HomeController.Index),
-            typeof(Areas.Admin.Controllers.HomeController)
-                .ControllerName(),
+            typeof(Areas.Admin.Controllers.HomeController).ControllerName(),
             new
             {
                 area =
@@ -82,7 +94,8 @@ public readonly struct NavigationMenuModel
                     (_, urlHelper, _) =>
                     [
                         Home(urlHelper),
-                        CatalogueSolutions(urlHelper),
+                        GeneralPractice(urlHelper),
+                        CommunityPharmacy(urlHelper),
                     ]),
                 (
                     user => user.IsBuyer() || user.IsAccountManager(), (user, urlHelper, routeValues) =>
