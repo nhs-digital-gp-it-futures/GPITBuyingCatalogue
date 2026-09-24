@@ -9,7 +9,9 @@ using FluentAssertions;
 using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
@@ -26,6 +28,167 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var constructors = typeof(SolutionsFilterService).GetConstructors();
 
             assertion.Verify(constructors);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetAllSolutionsFiltered_IsCommunityPharmacyFalse_ReturnsOnlyGpitSolutions(
+            Solution gpitSolution,
+            Solution communityPharmacySolution,
+            EntityFramework.Catalogue.Models.Framework gpitFramework,
+            EntityFramework.Catalogue.Models.Framework communityPharmacyFramework,
+            FrameworkSolution gpitFrameworkSolution,
+            FrameworkSolution communityPharmacyFrameworkSolution,
+            Supplier gpitSupplier,
+            Supplier communityPharmacySupplier,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsFilterService service)
+        {
+            gpitFramework.SolutionType = SolutionType.GPIT;
+            gpitFramework.IsExpired = false;
+            communityPharmacyFramework.SolutionType = SolutionType.CommunityPharmacy;
+            communityPharmacyFramework.IsExpired = false;
+
+            gpitSolution.CatalogueItem.Supplier.Name = "GPIT Supplier";
+            gpitSolution.CatalogueItem.Supplier.IsActive = true;
+            communityPharmacySolution.CatalogueItem.Supplier.Name = "Community Pharmacy Supplier";
+            communityPharmacySolution.CatalogueItem.Supplier.IsActive = true;
+
+            gpitSolution.CatalogueItem.Name = "GPIT Solution";
+            gpitSolution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            gpitSolution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            communityPharmacySolution.CatalogueItem.Name = "Community Pharmacy Solution";
+            communityPharmacySolution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            communityPharmacySolution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            gpitSolution.FrameworkSolutions.Clear();
+            communityPharmacySolution.FrameworkSolutions.Clear();
+
+            gpitFrameworkSolution.Solution = gpitSolution;
+            gpitFrameworkSolution.Framework = gpitFramework;
+            communityPharmacyFrameworkSolution.Solution = communityPharmacySolution;
+            communityPharmacyFrameworkSolution.Framework = communityPharmacyFramework;
+
+            context.FrameworkSolutions.AddRange(gpitFrameworkSolution, communityPharmacyFrameworkSolution);
+            context.Frameworks.AddRange(gpitFramework, communityPharmacyFramework);
+            context.Solutions.AddRange(gpitSolution, communityPharmacySolution);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var filters = new SolutionsFilters { IsCommunityPharmacy = false, };
+
+            var result = await service.GetAllSolutionsFiltered(filters);
+
+            result.CatalogueItems.Should().ContainSingle();
+            result.CatalogueItems.Select(ci => ci.Name).Should().Contain("GPIT Solution");
+            result.CatalogueItems.Select(ci => ci.Name).Should().NotContain("Community Pharmacy Solution");
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetAllSolutionsFiltered_IsCommunityPharmacyTrue_ReturnsCommunityPharmacyOnlySolutions(
+    Solution gpitSolution,
+    Solution communityPharmacySolution,
+    EntityFramework.Catalogue.Models.Framework gpitFramework,
+    EntityFramework.Catalogue.Models.Framework communityPharmacyFramework,
+    FrameworkSolution gpitFrameworkSolution,
+    FrameworkSolution communityPharmacyFrameworkSolution,
+    Supplier gpitSupplier,
+    Supplier communityPharmacySupplier,
+    [Frozen] BuyingCatalogueDbContext context,
+    SolutionsFilterService service)
+        {
+            gpitFramework.SolutionType = SolutionType.GPIT;
+            gpitFramework.IsExpired = false;
+            communityPharmacyFramework.SolutionType = SolutionType.CommunityPharmacy;
+            communityPharmacyFramework.IsExpired = false;
+
+            gpitSolution.CatalogueItem.Supplier.Name = "GPIT Supplier";
+            gpitSolution.CatalogueItem.Supplier.IsActive = true;
+            communityPharmacySolution.CatalogueItem.Supplier.Name = "Community Pharmacy Supplier";
+            communityPharmacySolution.CatalogueItem.Supplier.IsActive = true;
+
+            gpitSolution.CatalogueItem.Name = "GPIT Solution";
+            gpitSolution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            gpitSolution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            communityPharmacySolution.CatalogueItem.Name = "Community Pharmacy Solution";
+            communityPharmacySolution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            communityPharmacySolution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            gpitSolution.FrameworkSolutions.Clear();
+            communityPharmacySolution.FrameworkSolutions.Clear();
+
+            gpitFrameworkSolution.Solution = gpitSolution;
+            gpitFrameworkSolution.Framework = gpitFramework;
+
+            communityPharmacyFrameworkSolution.Solution = communityPharmacySolution;
+            communityPharmacyFrameworkSolution.Framework = communityPharmacyFramework;
+
+            context.FrameworkSolutions.AddRange(gpitFrameworkSolution, communityPharmacyFrameworkSolution);
+            context.Frameworks.AddRange(gpitFramework, communityPharmacyFramework);
+            context.Solutions.AddRange(gpitSolution, communityPharmacySolution);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+            (await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.CountAsync(context.CatalogueItems))
+                .Should().BeGreaterThan(0);
+
+            var result = await service.GetAllSolutionsFiltered(new SolutionsFilters { IsCommunityPharmacy = true });
+
+            result.CatalogueItems.Should().ContainSingle();
+            result.CatalogueItems.Select(ci => ci.Name).Should().Contain("Community Pharmacy Solution");
+            result.CatalogueItems.Select(ci => ci.Name).Should().NotContain("GPIT Solution");
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetAllSolutionsFiltered_IsCommunityPharmacyTrue_ExcludesInactiveCommunityPharmacySupplier(
+            Solution gpitSolution,
+            Solution communityPharmacySolution,
+            EntityFramework.Catalogue.Models.Framework gpitFramework,
+            EntityFramework.Catalogue.Models.Framework communityPharmacyFramework,
+            FrameworkSolution gpitFrameworkSolution,
+            FrameworkSolution communityPharmacyFrameworkSolution,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsFilterService service)
+        {
+            gpitFramework.SolutionType = SolutionType.GPIT;
+            gpitFramework.IsExpired = false;
+            communityPharmacyFramework.SolutionType = SolutionType.CommunityPharmacy;
+            communityPharmacyFramework.IsExpired = false;
+
+            gpitSolution.CatalogueItem.Name = "GPIT Solution";
+            gpitSolution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            gpitSolution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            gpitSolution.CatalogueItem.Supplier.IsActive = true;
+
+            communityPharmacySolution.CatalogueItem.Name = "Community Pharmacy Solution";
+            communityPharmacySolution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            communityPharmacySolution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            communityPharmacySolution.CatalogueItem.Supplier.IsActive = false;
+
+            gpitSolution.FrameworkSolutions.Clear();
+            communityPharmacySolution.FrameworkSolutions.Clear();
+
+            gpitFrameworkSolution.Solution = gpitSolution;
+            gpitFrameworkSolution.Framework = gpitFramework;
+
+            communityPharmacyFrameworkSolution.Solution = communityPharmacySolution;
+            communityPharmacyFrameworkSolution.Framework = communityPharmacyFramework;
+
+            context.FrameworkSolutions.AddRange(gpitFrameworkSolution, communityPharmacyFrameworkSolution);
+            context.Frameworks.AddRange(gpitFramework, communityPharmacyFramework);
+            context.Solutions.AddRange(gpitSolution, communityPharmacySolution);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var result = await service.GetAllSolutionsFiltered(new SolutionsFilters { IsCommunityPharmacy = true });
+
+            result.CatalogueItems.Should().BeEmpty();
         }
 
         [Theory]
