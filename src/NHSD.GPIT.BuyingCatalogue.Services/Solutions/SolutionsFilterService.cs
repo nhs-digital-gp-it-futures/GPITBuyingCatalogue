@@ -82,12 +82,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 query = query.AsExpandable().Where(x => integrationsPredicate.Invoke(x.Solution));
             }
 
-            if (filters.IsCommunityPharmacy == true)
+            if (filters.IsCommunityPharmacy is not null)
             {
-                query = query.Where(i =>
-                    i.Solution.FrameworkSolutions.Count == 1
-                    && i.Solution.FrameworkSolutions.ElementAt(0).Framework.SolutionType
-                    == SolutionType.CommunityPharmacy);
+                query = filters.IsCommunityPharmacy == true
+                    ? query.Where(i =>
+                        i.Solution.FrameworkSolutions.Any(fs => fs.Framework.SolutionType == SolutionType.CommunityPharmacy))
+                    : query.Where(i =>
+                        i.Solution.FrameworkSolutions.Any(fs => fs.Framework.SolutionType == SolutionType.GPIT));
             }
 
             var totalNumberOfItems = await query.CountAsync();
@@ -137,23 +138,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15, bool? isCommunityPharmacy = null)
         {
-            var searchBySolutionNameQuery = dbContext.CatalogueItems.AsNoTracking()
-                .Where(ci =>
-                    ci.Name.Contains(searchTerm)
-                    && ci.CatalogueItemType == CatalogueItemType.Solution
-                    && AllowedPublicationStatuses.Contains(ci.PublishedStatus, null)
-                    && ci.Supplier.IsActive
-                    && (isCommunityPharmacy != true || (ci.Solution.FrameworkSolutions.Count == 1
-                        && ci.Solution.FrameworkSolutions.First().Framework.SolutionType
-                        == SolutionType.CommunityPharmacy)))
-                .Select(ci => new SearchFilterModel { Title = ci.Name, Category = "Solution", });
+            IQueryable<SearchFilterModel> searchBySolutionNameQuery;
+            IQueryable<SearchFilterModel> searchBySupplierNameQuery;
+            if (isCommunityPharmacy == true)
+            {
+                 searchBySolutionNameQuery = dbContext.CatalogueItems.AsNoTracking()
+                    .Where(ci =>
+                        ci.Name.Contains(searchTerm)
+                        && ci.CatalogueItemType == CatalogueItemType.Solution
+                        && AllowedPublicationStatuses.Contains(ci.PublishedStatus, null)
+                        && ci.Supplier.IsActive
+                        && (ci.Solution.FrameworkSolutions.Count == 1
+                            && ci.Solution.FrameworkSolutions.First().Framework.SolutionType
+                            == SolutionType.CommunityPharmacy))
+                    .Select(ci => new SearchFilterModel { Title = ci.Name, Category = "Solution", });
 
-            var searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
-                .Where(s => s.Name.Contains(searchTerm) && s.IsActive && (isCommunityPharmacy != true
-                    || s.CatalogueItems.Any(ci =>
-                        ci.Solution.FrameworkSolutions.Any(fs =>
-                            fs.Framework.SolutionType == SolutionType.CommunityPharmacy))))
-                .Select(s => new SearchFilterModel { Title = s.Name, Category = "Supplier", });
+                searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
+                    .Where(s => s.Name.Contains(searchTerm) && s.IsActive && ( s.CatalogueItems.Any(ci =>
+                            ci.Solution.FrameworkSolutions.Any(fs =>
+                                fs.Framework.SolutionType == SolutionType.CommunityPharmacy))))
+                    .Select(s => new SearchFilterModel { Title = s.Name, Category = "Supplier", });
+            }
+            else
+            {
+                searchBySolutionNameQuery = dbContext.CatalogueItems.AsNoTracking()
+                   .Where(ci =>
+                       ci.Name.Contains(searchTerm)
+                       && ci.CatalogueItemType == CatalogueItemType.Solution
+                       && AllowedPublicationStatuses.Contains(ci.PublishedStatus, null)
+                       && ci.Supplier.IsActive
+                       && (ci.Solution.FrameworkSolutions.Count == 1
+                           && ci.Solution.FrameworkSolutions.First().Framework.SolutionType
+                           == SolutionType.GPIT))
+                   .Select(ci => new SearchFilterModel { Title = ci.Name, Category = "Solution", });
+
+                searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
+                    .Where(s => s.Name.Contains(searchTerm) && s.IsActive && (s.CatalogueItems.Any(ci =>
+                            ci.Solution.FrameworkSolutions.Any(fs =>
+                                fs.Framework.SolutionType == SolutionType.GPIT))))
+                    .Select(s => new SearchFilterModel { Title = s.Name, Category = "Supplier", });
+            }
 
             return await searchBySolutionNameQuery
                 .Union(searchBySupplierNameQuery)
