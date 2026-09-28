@@ -13,8 +13,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
 
