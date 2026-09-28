@@ -5,8 +5,6 @@ namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData;
 
 public class AdminTestData
 {
-    public string BaseUrl { get; set; } = "https://localhost:5001";
-
     public string Email { get; set; } = "bobsmith@email.com";
     public string Password { get; set; } = "Pass123$";
 
@@ -52,10 +50,6 @@ public class AdminTestData
     public string SupplierContactDepartment = "NHS";
     public string SupplierContactPhone = TestDataGenerator.PhoneNumber();
     public string SupplierContactEmail = TestDataGenerator.Email();
-
-    // Capabilities and Epics upload
-    public string CapabilitiesFile = "CapabilitiesAndSolutions.csv";
-    public string EpicsFile = "EpicsAndSolutions.csv";
 
     // Catalogue solution
     public string SolutionName = $"Test Solution {DateTime.UtcNow:HHmmssfff}";
