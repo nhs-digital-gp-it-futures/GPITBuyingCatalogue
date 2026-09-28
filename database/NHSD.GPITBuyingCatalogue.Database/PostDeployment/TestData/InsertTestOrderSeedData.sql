@@ -24,8 +24,8 @@ BEGIN
     DECLARE
         @SupplierId INT = 10000, --Emis Health
         @CatalogueSolutionId NVARCHAR(14) = '10000-001', --Emis Web GP
-        @AdditionalServiceId NVARCHAR(14) = '10000-001A003', --Automated Arrivals. Not seeded yet.
-        @AssociatedServiceId NVARCHAR(14) = '10000-S-002', --Installation. Not seeded yet.
+        @AdditionalServiceId NVARCHAR(14) = '10000-001A003', --Automated Arrivals
+        @AssociatedServiceId NVARCHAR(14) = '10000-S-002', --Installation
         @AssociatedServicesOnly INT = 0,
         @LastBuyerContactId INT,
         @LastSupplierContactId INT;
@@ -37,7 +37,8 @@ BEGIN
         @RecipientB84613 NVARCHAR(10) = 'B84613';
 
     DECLARE @CatalogueSolutionPriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @CatalogueSolutionId AND PublishedStatusId = 3); --Emis Web GP Price
-    DECLARE @AdditionalServicePriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @AdditionalServiceId AND PublishedStatusId = 3); --Automated Arrivals Price. Not seeded yet.
+    DECLARE @AdditionalServicePriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @AdditionalServiceId AND PublishedStatusId = 3); --Automated Arrivals Price
+    DECLARE @AssociatedServicePriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @AssociatedServiceId AND PublishedStatusId = 3); --Installation Price
     DECLARE @SelectedFrameworkId NVARCHAR(10) = (SELECT Id FROM catalogue.Frameworks WHERE Id = 'TIF001'); --Technology Innovation Framework
 
     DECLARE @TestOrdersContacts TABLE(
@@ -381,6 +382,280 @@ BEGIN
 
     INSERT INTO ordering.ImplementationPlans (ContractId, IsDefault, LastUpdated, LastUpdatedBy)
     VALUES (@ContractId, 0, SYSDATETIME(), @sueId);
+
+    -- Data processing information step
+
+    IF NOT EXISTS (SELECT 1 FROM ordering.ContractFlags WHERE OrderId = @OrderId)
+    BEGIN
+        INSERT INTO ordering.ContractFlags (OrderId, UseDefaultDataProcessing, LastUpdated, LastUpdatedBy)
+        VALUES (@OrderId, 1, SYSDATETIME(), @sueId);
+    END
+
+    -- Declaration step
+
+    UPDATE ordering.Orders
+    SET AcceptedTermsAndConditions = 1
+    WHERE Id = @OrderId;
+
+    -- Review and complete order step
+
+    UPDATE ordering.Orders
+    SET Completed = SYSDATETIME()
+    WHERE Id = @OrderId;
+
+    -------------------------------------------------------
+    -- order with add on services (additional + associated)
+    -------------------------------------------------------
+
+    DECLARE @OrderIdAddOnServices TABLE(
+        Id INT
+    );
+
+    INSERT INTO ordering.Contacts (FirstName, LastName, Email, Phone, LastUpdated, LastUpdatedBy)
+    SELECT
+    FirstName, LastName, Email, Phone, SYSDATETIME(), @sueId
+    FROM @TestOrdersContacts
+    WHERE Id = 1 -- buyer contact id
+
+    SELECT @LastBuyerContactId = IDENT_CURRENT('ordering.Contacts');
+
+    INSERT INTO ordering.Contacts (FirstName, LastName, Email, Phone, LastUpdated, LastUpdatedBy)
+    SELECT
+    FirstName, LastName, Email, Phone, SYSDATETIME(), @sueId
+    FROM @TestOrdersContacts
+    WHERE Id = 2 -- supplier contact id
+
+    SELECT @LastSupplierContactId = IDENT_CURRENT('ordering.Contacts');
+
+    INSERT INTO ordering.Orders
+    (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate,
+        Created, LastUpdated, LastUpdatedBy, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly, OrderTypeId)
+        OUTPUT INSERTED.Id INTO @OrderIdAddOnServices (Id)
+    VALUES
+    (
+    6,
+    1,
+    'Order with add on services',
+    @OrderingParty,
+    @LastBuyerContactId,
+    @SupplierId,
+    @LastSupplierContactId,
+    DATEADD(day, 1, SYSDATETIME()),
+    SYSDATETIME(),
+    SYSDATETIME(),
+    @sueId,
+    0,
+    6,
+    36,
+    @AssociatedServicesOnly, 
+    1);
+
+    SELECT @OrderId = Id FROM @OrderIdAddOnServices
+
+    --insert catalogue solution
+
+    UPDATE ordering.Orders
+    SET SolutionId = @CatalogueSolutionId,
+        DeliveryDate = DATEADD(day, 20, SYSDATETIME())
+    WHERE Id = @OrderId;
+
+    INSERT INTO ordering.OrderItemsV2 (OrderId, CatalogueItemId, ParentId, EstimationPeriodId, Created, LastUpdated, LastUpdatedBy)
+    OUTPUT INSERTED.Id INTO @OrderItemIdTable (Id)
+    VALUES (@OrderId, @CatalogueSolutionId, NULL, 1, SYSDATETIME(), SYSDATETIME(), @sueId);
+
+    SELECT @OrderItemId = Id FROM @OrderItemIdTable;
+
+    -- keep the solution's item id - the additional and associated items below are its children
+    DECLARE @CatalogueSolutionOrderItemId INT = @OrderItemId;
+
+    INSERT INTO ordering.OrderItemPricesV2
+        (OrderItemId, CataloguePriceId, BillingPeriodId, ProvisioningTypeId,
+         CataloguePriceTypeId, CataloguePriceCalculationTypeId, CataloguePriceQuantityCalculationTypeId,
+         CurrencyCode, Description, RangeDescription, LastUpdated, LastUpdatedBy)
+    OUTPUT INSERTED.Id INTO @OrderItemPriceIdTable (Id)
+    SELECT
+        @OrderItemId,
+        CP.CataloguePriceId,
+        CP.TimeUnitId,
+        CP.ProvisioningTypeId,
+        CP.CataloguePriceTypeId,
+        CP.CataloguePriceCalculationTypeId,
+        NULL,
+        CP.CurrencyCode,
+        PU.Description,
+        PU.RangeDescription,
+        SYSDATETIME(),
+        @sueId
+    FROM catalogue.CataloguePrices CP
+    INNER JOIN catalogue.PricingUnits PU
+        ON CP.PricingUnitId = PU.Id
+    WHERE CataloguePriceId = @CatalogueSolutionPriceId
+
+    SELECT @OrderItemPriceId = Id FROM @OrderItemPriceIdTable;
+
+    INSERT INTO ordering.OrderItemPriceTiers (OrderItemPriceId, Price, ListPrice, LowerRange, UpperRange, LastUpdated, LastUpdatedBy)
+    SELECT
+        @OrderItemPriceId,
+        Price,
+        Price,
+        LowerRange,
+        UpperRange,
+        SYSDATETIME(),
+        @sueId
+    FROM catalogue.CataloguePriceTiers
+    WHERE CataloguePriceId = @CatalogueSolutionPriceId
+
+    INSERT INTO ordering.OrderSublocations (OrderId, SublocationOdsCode, OwnerOdsCode)
+    VALUES
+    (@OrderId, @SublocationOdsCode, @OrderingPartyOdsCode)
+
+    INSERT INTO ordering.OrderSublocationRecipients (OrderId, ParentSublocationOdsCode, RecipientOdsCode)
+    VALUES    
+    (@OrderId, @SublocationOdsCode, @RecipientB84016),
+    (@OrderId, @SublocationOdsCode, @RecipientB84613);
+
+    INSERT INTO ordering.OrderItemSublocationRecipientsV2 (OrderItemId, OrderId, ParentSublocationOdsCode, RecipientOdsCode, Quantity, DeliveryDate, LastUpdated, LastUpdatedBy)
+    VALUES
+    (@OrderItemId, @OrderId, @SublocationOdsCode, @RecipientB84016, 200, DATEADD(day, 20, SYSDATETIME()), SYSDATETIME(), @sueId),
+    (@OrderItemId, @OrderId, @SublocationOdsCode, @RecipientB84613, 200, DATEADD(day, 20, SYSDATETIME()), SYSDATETIME(), @sueId);
+
+    --insert additional service (Automated Arrivals)
+
+    INSERT INTO ordering.OrderItemsV2 (OrderId, CatalogueItemId, ParentId, EstimationPeriodId, Created, LastUpdated, LastUpdatedBy)
+    OUTPUT INSERTED.Id INTO @OrderItemIdTable (Id)
+    VALUES (@OrderId, @AdditionalServiceId, @CatalogueSolutionOrderItemId, 2, SYSDATETIME(), SYSDATETIME(), @sueId);
+
+    SELECT @OrderItemId = Id FROM @OrderItemIdTable;
+
+    DECLARE @AdditionalServiceOrderItemId INT = @OrderItemId;
+
+    INSERT INTO ordering.OrderItemPricesV2
+        (OrderItemId, CataloguePriceId, BillingPeriodId, ProvisioningTypeId,
+         CataloguePriceTypeId, CataloguePriceCalculationTypeId, CataloguePriceQuantityCalculationTypeId,
+         CurrencyCode, Description, RangeDescription, LastUpdated, LastUpdatedBy)
+    OUTPUT INSERTED.Id INTO @OrderItemPriceIdTable (Id)
+    SELECT
+        @OrderItemId,
+        CP.CataloguePriceId,
+        CP.TimeUnitId,
+        CP.ProvisioningTypeId,
+        CP.CataloguePriceTypeId,
+        CP.CataloguePriceCalculationTypeId,
+        NULL,
+        CP.CurrencyCode,
+        PU.Description,
+        PU.RangeDescription,
+        SYSDATETIME(),
+        @sueId
+    FROM catalogue.CataloguePrices CP
+    INNER JOIN catalogue.PricingUnits PU
+        ON CP.PricingUnitId = PU.Id
+    WHERE CataloguePriceId = @AdditionalServicePriceId
+
+    SELECT @OrderItemPriceId = Id FROM @OrderItemPriceIdTable;
+
+    INSERT INTO ordering.OrderItemPriceTiers (OrderItemPriceId, Price, ListPrice, LowerRange, UpperRange, LastUpdated, LastUpdatedBy)
+    SELECT
+        @OrderItemPriceId,
+        Price,
+        Price,
+        LowerRange,
+        UpperRange,
+        SYSDATETIME(),
+        @sueId
+    FROM catalogue.CataloguePriceTiers
+    WHERE CataloguePriceId = @AdditionalServicePriceId
+
+    INSERT INTO ordering.OrderItemSublocationRecipientsV2 (OrderItemId, OrderId, ParentSublocationOdsCode, RecipientOdsCode, Quantity, DeliveryDate, LastUpdated, LastUpdatedBy)
+    VALUES
+    (@OrderItemId, @OrderId, @SublocationOdsCode, @RecipientB84016, 20, DATEADD(day, 20, SYSDATETIME()), SYSDATETIME(), @sueId),
+    (@OrderItemId, @OrderId, @SublocationOdsCode, @RecipientB84613, 200, DATEADD(day, 20, SYSDATETIME()), SYSDATETIME(), @sueId);
+
+    --insert associated service (Installation)
+
+    INSERT INTO ordering.OrderItemsV2 (OrderId, CatalogueItemId, ParentId, EstimationPeriodId, Created, LastUpdated, LastUpdatedBy)
+    OUTPUT INSERTED.Id INTO @OrderItemIdTable (Id)
+    VALUES (@OrderId, @AssociatedServiceId, @CatalogueSolutionOrderItemId, 2, SYSDATETIME(), SYSDATETIME(), @sueId);
+
+    SELECT @OrderItemId = Id FROM @OrderItemIdTable;
+
+    DECLARE @AssociatedServiceOrderItemId INT = @OrderItemId;
+
+    INSERT INTO ordering.OrderItemPricesV2
+        (OrderItemId, CataloguePriceId, BillingPeriodId, ProvisioningTypeId,
+         CataloguePriceTypeId, CataloguePriceCalculationTypeId, CataloguePriceQuantityCalculationTypeId,
+         CurrencyCode, Description, RangeDescription, LastUpdated, LastUpdatedBy)
+    OUTPUT INSERTED.Id INTO @OrderItemPriceIdTable (Id)
+    SELECT
+        @OrderItemId,
+        CP.CataloguePriceId,
+        CP.TimeUnitId,
+        CP.ProvisioningTypeId,
+        CP.CataloguePriceTypeId,
+        CP.CataloguePriceCalculationTypeId,
+        NULL,
+        CP.CurrencyCode,
+        PU.Description,
+        PU.RangeDescription,
+        SYSDATETIME(),
+        @sueId
+    FROM catalogue.CataloguePrices CP
+    INNER JOIN catalogue.PricingUnits PU
+        ON CP.PricingUnitId = PU.Id
+    WHERE CataloguePriceId = @AssociatedServicePriceId
+
+    SELECT @OrderItemPriceId = Id FROM @OrderItemPriceIdTable;
+
+    INSERT INTO ordering.OrderItemPriceTiers (OrderItemPriceId, Price, ListPrice, LowerRange, UpperRange, LastUpdated, LastUpdatedBy)
+    SELECT
+        @OrderItemPriceId,
+        Price,
+        Price,
+        LowerRange,
+        UpperRange,
+        SYSDATETIME(),
+        @sueId
+    FROM catalogue.CataloguePriceTiers
+    WHERE CataloguePriceId = @AssociatedServicePriceId
+
+    INSERT INTO ordering.OrderItemSublocationRecipientsV2 (OrderItemId, OrderId, ParentSublocationOdsCode, RecipientOdsCode, Quantity, DeliveryDate, LastUpdated, LastUpdatedBy)
+    VALUES
+    (@OrderItemId, @OrderId, @SublocationOdsCode, @RecipientB84016, 20, DATEADD(day, 20, SYSDATETIME()), SYSDATETIME(), @sueId),
+    (@OrderItemId, @OrderId, @SublocationOdsCode, @RecipientB84613, 200, DATEADD(day, 20, SYSDATETIME()), SYSDATETIME(), @sueId);
+
+    -- Funding source step
+
+    UPDATE ordering.Orders
+    SET SelectedFrameworkId = @SelectedFrameworkId
+    WHERE Id = @OrderId;
+
+    INSERT INTO ordering.OrderItemFundingV2 (OrderItemId, OrderItemFundingType, LastUpdated, LastUpdatedBy)
+    VALUES
+    (@CatalogueSolutionOrderItemId, 2, SYSDATETIME(), @sueId),
+    (@AdditionalServiceOrderItemId, 2, SYSDATETIME(), @sueId),
+    (@AssociatedServiceOrderItemId, 2, SYSDATETIME(), @sueId);
+
+    -- Implementation milestone step
+
+    IF EXISTS (SELECT 1 FROM ordering.Contracts WHERE OrderId = @OrderId)
+    BEGIN
+        SELECT @ContractId = Id FROM ordering.Contracts WHERE OrderId = @OrderId;
+    END
+    ELSE
+    BEGIN
+        INSERT INTO ordering.Contracts (OrderId)
+        OUTPUT INSERTED.Id INTO @ContractIdTable (Id)
+        VALUES (@OrderId);
+        SELECT @ContractId = Id FROM @ContractIdTable;
+    END
+
+    INSERT INTO ordering.ImplementationPlans (ContractId, IsDefault, LastUpdated, LastUpdatedBy)
+    VALUES (@ContractId, 0, SYSDATETIME(), @sueId);
+
+    -- Associated service requirements step 
+
+    INSERT INTO ordering.ContractBilling (ContractId, HasConfirmedRequirements)
+    VALUES (@ContractId, 1);
 
     -- Data processing information step
 
