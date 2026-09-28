@@ -31,5 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
         public string WidthClass { get; set; } = DefaultWidthClass;
 
         public bool ShowChevronIcon { get; set; } = true;
+
+        public bool OpenInNewTab { get; set; }
     }
 }

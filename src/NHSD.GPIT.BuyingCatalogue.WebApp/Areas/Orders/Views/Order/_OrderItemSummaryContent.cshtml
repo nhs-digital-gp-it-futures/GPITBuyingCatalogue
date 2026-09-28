@@ -57,6 +57,7 @@
 @if (Model.ShouldShowPrice)
 {
     var billingPeriod = Model.OrderItemPrice.BillingPeriod?.Description() ?? "one-off";
+    var totalCostPeriod = hasTieredPricing ? "contract" : billingPeriod;
 
     <br />
     <nhs-table label-text="Pricing and quantities" catches-errors="false">
@@ -75,13 +76,29 @@
         else
         {
             <nhs-table-column>Quantity</nhs-table-column>
-            <nhs-table-column>Total cost (@billingPeriod)</nhs-table-column>
+            <nhs-table-column>Total cost (@totalCostPeriod)</nhs-table-column>
         }
         @{
             var rolledUpCosts = ((IPrice)Model.OrderItemPrice).CalculateCostPerTier(Model.RolledUpTotalQuantity);
             var previousCosts = ((IPrice)Model.OrderItemPrice).CalculateCostPerTier(Model.PreviousTotalQuantity);
+            var rolledUpContractCosts = hasTieredPricing
+                ? Model.OrderWrapper.TotalCostPerTier(Model.OrderItem.Id)
+                : null;
+            var previousContractCosts = hasTieredPricing
+                ? Model.OrderWrapper.TotalCostPerTier(Model.OrderItem.Id, false)
+                : null;
+            var rolledUpTotalCost = rolledUpCosts.Sum(cost =>
+                rolledUpContractCosts?.GetValueOrDefault(cost.Id) ?? cost.Cost);
+            var previousTotalCost = previousCosts.Sum(cost =>
+                previousContractCosts?.GetValueOrDefault(cost.Id) ?? cost.Cost);
+
             @for (var i = 0; i < rolledUpCosts.Count; i++)
             {
+                var rolledUpCost = rolledUpContractCosts?.GetValueOrDefault(rolledUpCosts[i].Id)
+                    ?? rolledUpCosts[i].Cost;
+                var previousCost = previousContractCosts?.GetValueOrDefault(previousCosts[i].Id)
+                    ?? previousCosts[i].Cost;
+
                 <nhs-table-row-container>
                     @if (hasTieredPricing)
                     {
@@ -93,14 +110,26 @@
                     {
                         <nhs-table-cell>@($"{previousCosts[i].Quantity:N0}")</nhs-table-cell>
                         <nhs-table-cell>@($"{rolledUpCosts[i].Quantity:N0}")</nhs-table-cell>
-                        <nhs-table-cell>£@previousCosts[i].Cost.ToString("N2")</nhs-table-cell>
-                        <nhs-table-cell>£@rolledUpCosts[i].Cost.ToString("N2")</nhs-table-cell>
+                        <nhs-table-cell>£@previousCost.ToString("N2")</nhs-table-cell>
+                        <nhs-table-cell>£@rolledUpCost.ToString("N2")</nhs-table-cell>
                     }
                     else
                     {
                         <nhs-table-cell>@($"{rolledUpCosts[i].Quantity:N0}")</nhs-table-cell>
-                        <nhs-table-cell>£@rolledUpCosts[i].Cost.ToString("N2")</nhs-table-cell>
+                        <nhs-table-cell>£@rolledUpCost.ToString("N2")</nhs-table-cell>
                     }
+                </nhs-table-row-container>
+            }
+
+            @if (Model.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService && Model.IsAmendment && hasTieredPricing)
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>Total</nhs-table-cell>
+                    <nhs-table-cell></nhs-table-cell>
+                    <nhs-table-cell>@($"{previousCosts.Sum(cost => cost.Quantity):N0}")</nhs-table-cell>
+                    <nhs-table-cell>@($"{rolledUpCosts.Sum(cost => cost.Quantity):N0}")</nhs-table-cell>
+                    <nhs-table-cell>£@previousTotalCost.ToString("N2")</nhs-table-cell>
+                    <nhs-table-cell>£@rolledUpTotalCost.ToString("N2")</nhs-table-cell>
                 </nhs-table-row-container>
             }
         }

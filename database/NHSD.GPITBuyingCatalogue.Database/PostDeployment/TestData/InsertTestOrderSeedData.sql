@@ -28,6 +28,15 @@ BEGIN
         @LastBuyerContactId INT,
         @LastSupplierContactId INT;
 
+    -- Recipient and sublocation ODS codes (named to avoid repeated string literals)
+    DECLARE
+        @Sublocation02T NVARCHAR(10) = '02T',
+        @Sublocation03R NVARCHAR(10) = '03R',
+        @RecipientB84007 NVARCHAR(10) = 'B84007',
+        @RecipientB84016 NVARCHAR(10) = 'B84016',
+        @RecipientB84613 NVARCHAR(10) = 'B84613',
+        @RecipientY02572 NVARCHAR(10) = 'Y02572';
+
     DECLARE @CatalogueSolutionPriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @CatalogueSolutionId AND PublishedStatusId = 3); --NotEmis Web GP Price
     DECLARE @AdditionalServicePriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @AdditionalServiceId AND PublishedStatusId = 3); --NotEmis Web GP additional service Price
 
@@ -312,22 +321,22 @@ BEGIN
 
     INSERT INTO ordering.OrderSublocations (OrderId, SublocationOdsCode, OwnerOdsCode)
     VALUES
-    (@OrderId, '02T', @OrderingPartyOdsCode),
-    (@OrderId, '03R', @OrderingPartyOdsCode)
+    (@OrderId, @Sublocation02T, @OrderingPartyOdsCode),
+    (@OrderId, @Sublocation03R, @OrderingPartyOdsCode)
 
     INSERT INTO ordering.OrderSublocationRecipients (OrderId, ParentSublocationOdsCode, RecipientOdsCode)
     VALUES
-    (@OrderId, '02T', 'B84007'),
-    (@OrderId, '02T', 'B84016'),
-    (@OrderId, '02T', 'B84613'),
-    (@OrderId, '02T', 'Y02572');
+    (@OrderId, @Sublocation02T, @RecipientB84007),
+    (@OrderId, @Sublocation02T, @RecipientB84016),
+    (@OrderId, @Sublocation02T, @RecipientB84613),
+    (@OrderId, @Sublocation02T, @RecipientY02572);
 
     INSERT INTO ordering.OrderItemSublocationRecipients (OrderId, CatalogueItemId, ParentSublocationOdsCode, RecipientOdsCode, Quantity)
     VALUES
-    (@OrderId, @CatalogueSolutionId,'02T', 'B84007', 123),
-    (@OrderId, @CatalogueSolutionId,'02T', 'B84016', 234),
-    (@OrderId, @CatalogueSolutionId,'02T', 'B84613', 345),
-    (@OrderId, @CatalogueSolutionId,'02T', 'Y02572', 456);
+    (@OrderId, @CatalogueSolutionId, @Sublocation02T, @RecipientB84007, 123),
+    (@OrderId, @CatalogueSolutionId, @Sublocation02T, @RecipientB84016, 234),
+    (@OrderId, @CatalogueSolutionId, @Sublocation02T, @RecipientB84613, 345),
+    (@OrderId, @CatalogueSolutionId, @Sublocation02T, @RecipientY02572, 456);
 
     --insert add ser
 
@@ -365,10 +374,10 @@ BEGIN
 
     INSERT INTO ordering.OrderItemSublocationRecipients (OrderId, CatalogueItemId, ParentSublocationOdsCode, RecipientOdsCode, Quantity)
     VALUES
-    (@OrderId, @AdditionalServiceId, '02T', 'B84007', 123),
-    (@OrderId, @AdditionalServiceId, '02T', 'B84016', 234),
-    (@OrderId, @AdditionalServiceId, '02T', 'B84613', 345),
-    (@OrderId, @AdditionalServiceId, '02T', 'Y02572', 456);
+    (@OrderId, @AdditionalServiceId, @Sublocation02T, @RecipientB84007, 123),
+    (@OrderId, @AdditionalServiceId, @Sublocation02T, @RecipientB84016, 234),
+    (@OrderId, @AdditionalServiceId, @Sublocation02T, @RecipientB84613, 345),
+    (@OrderId, @AdditionalServiceId, @Sublocation02T, @RecipientY02572, 456);
 
     UPDATE ordering.Orders SET OrderNumber = Id
 END
