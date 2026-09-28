@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                             == SolutionType.CommunityPharmacy))
                     .Select(ci => new SearchFilterModel { Title = ci.Name, Category = "Solution", });
 
-                searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
+                 searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
                     .Where(s => s.Name.Contains(searchTerm) && s.IsActive && s.CatalogueItems.Any(ci =>
                             ci.Solution.FrameworkSolutions.Any(fs => fs.Framework.SolutionType == SolutionType.CommunityPharmacy)))
                     .Select(s => new SearchFilterModel { Title = s.Name, Category = "Supplier", });
