@@ -17,7 +17,7 @@ public abstract class BaseTest : IAsyncLifetime
     protected readonly TestServerFixture Fixture;
     protected readonly ITestOutputHelper Output;
     protected IPage Page = null!;
-    protected OrderingPages orderPages = null!;
+    protected OrderingPages OrderPages = null!;
     protected AdminPages AdminPages = null!;
     protected CompetitionPages CompetitionPages = null!;
 
@@ -43,7 +43,7 @@ public abstract class BaseTest : IAsyncLifetime
 
         Page = await _context.NewPageAsync();
 
-        orderPages = new OrderingPages(Page, Output, Fixture.BaseUrl, new OrderTestData());
+        OrderPages = new OrderingPages(Page, Output, Fixture.BaseUrl, new OrderTestData());
         AdminPages = new AdminPages(Page, Output, Fixture.BaseUrl, new AdminTestData());
         CompetitionPages = new CompetitionPages(Page, Output, Fixture.BaseUrl, new CompetitionTestData());
 

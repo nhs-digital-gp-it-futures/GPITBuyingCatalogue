@@ -18,6 +18,6 @@ public class LoginTests : BaseTest
         var data = new OrderTestDataBuilder()
             .Build();
 
-        await orderPages.LoginAsync();
+        await OrderPages.LoginAsync();
     }
 }
