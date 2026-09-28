@@ -154,9 +154,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .Select(ci => new SearchFilterModel { Title = ci.Name, Category = "Solution", });
 
                 searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
-                    .Where(s => s.Name.Contains(searchTerm) && s.IsActive && ( s.CatalogueItems.Any(ci =>
-                            ci.Solution.FrameworkSolutions.Any(fs =>
-                                fs.Framework.SolutionType == SolutionType.CommunityPharmacy))))
+                    .Where(s => s.Name.Contains(searchTerm) && s.IsActive && s.CatalogueItems.Any(ci =>
+                            ci.Solution.FrameworkSolutions.Any(fs => fs.Framework.SolutionType == SolutionType.CommunityPharmacy)))
                     .Select(s => new SearchFilterModel { Title = s.Name, Category = "Supplier", });
             }
             else
@@ -173,9 +172,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                    .Select(ci => new SearchFilterModel { Title = ci.Name, Category = "Solution", });
 
                 searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
-                    .Where(s => s.Name.Contains(searchTerm) && s.IsActive && (s.CatalogueItems.Any(ci =>
-                            ci.Solution.FrameworkSolutions.Any(fs =>
-                                fs.Framework.SolutionType == SolutionType.GPIT))))
+                    .Where(s => s.Name.Contains(searchTerm) && s.IsActive && s.CatalogueItems.Any(ci =>
+                            ci.Solution.FrameworkSolutions.Any(fs => fs.Framework.SolutionType == SolutionType.GPIT)))
                     .Select(s => new SearchFilterModel { Title = s.Name, Category = "Supplier", });
             }
 

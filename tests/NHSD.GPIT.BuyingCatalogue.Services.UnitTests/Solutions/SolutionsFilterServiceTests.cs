@@ -39,8 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             EntityFramework.Catalogue.Models.Framework communityPharmacyFramework,
             FrameworkSolution gpitFrameworkSolution,
             FrameworkSolution communityPharmacyFrameworkSolution,
-            Supplier gpitSupplier,
-            Supplier communityPharmacySupplier,
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsFilterService service)
         {
@@ -95,8 +93,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
     EntityFramework.Catalogue.Models.Framework communityPharmacyFramework,
     FrameworkSolution gpitFrameworkSolution,
     FrameworkSolution communityPharmacyFrameworkSolution,
-    Supplier gpitSupplier,
-    Supplier communityPharmacySupplier,
     [Frozen] BuyingCatalogueDbContext context,
     SolutionsFilterService service)
         {
