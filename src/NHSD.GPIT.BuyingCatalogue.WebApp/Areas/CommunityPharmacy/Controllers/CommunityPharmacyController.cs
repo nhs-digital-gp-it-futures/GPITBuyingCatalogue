@@ -7,19 +7,20 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers;
 
-[Area("Solutions")]
-[Route("community-pharmacy/solutions")]
-public class CommunityPharmacySolutionsController(ISolutionsFilterService solutionsFilterService) : Controller
+[Area("CommunityPharmacy")]
+[Route("community-pharmacy")]
+public class CommunityPharmacyController(ISolutionsFilterService solutionsFilterService) : Controller
 {
     private readonly ISolutionsFilterService solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
 
-    [HttpGet]
-    public async Task<IActionResult> Index(
+    [HttpGet("solutions")]
+    public async Task<IActionResult> Solutions(
         [FromQuery] string page,
         [FromQuery] string sortBy,
         [FromQuery] string search)
