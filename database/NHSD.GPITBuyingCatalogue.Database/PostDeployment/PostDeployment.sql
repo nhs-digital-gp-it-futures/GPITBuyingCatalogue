@@ -11,6 +11,7 @@
 :r ./InsertSolutionCapabilityStatuses.sql
 :r ./InsertSolutionEpicStatuses.sql
 :r ./InsertCatalogueItemTypes.sql
+:r ./InsertSolutionTypes.sql
 :r ./InsertCataloguePriceTypes.sql
 :r ./InsertCataloguePriceCalculationTypes.sql
 :r ./InsertCataloguePriceQuantityCalculationTypes.sql

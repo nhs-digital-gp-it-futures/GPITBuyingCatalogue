@@ -41,48 +41,53 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async
             Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel>
                 CapabilitiesAndCount)> GetAllSolutionsFiltered(
-                PageOptions options,
-                Dictionary<int, string[]> capabilitiesAndEpics = null,
-                string search = null,
-                string selectedFrameworkId = null,
-                string selectedApplicationTypeIds = null,
-                string selectedHostingTypeIds = null,
-                Dictionary<SupportedIntegrations, int[]> selectedIntegrationsAndTypes = null)
+                SolutionsFilters filters,
+                PageOptions options = null)
         {
-            (IQueryable<CatalogueItem> query, List<CapabilitiesAndCountModel> count) = await GetFilteredAndNonFilteredQueryResults(capabilitiesAndEpics);
+            ArgumentNullException.ThrowIfNull(filters);
 
-            if (!string.IsNullOrWhiteSpace(search))
-                query = query.Where(ci => ci.Supplier.Name.Contains(search) || ci.Name.Contains(search));
+            (IQueryable<CatalogueItem> query, List<CapabilitiesAndCountModel> count) = await GetFilteredAndNonFilteredQueryResults(filters.CapabilitiesAndEpics);
 
-            if (!string.IsNullOrWhiteSpace(selectedFrameworkId))
+            if (!string.IsNullOrWhiteSpace(filters.Search))
+                query = query.Where(ci => ci.Supplier.Name.Contains(filters.Search) || ci.Name.Contains(filters.Search));
+
+            if (!string.IsNullOrWhiteSpace(filters.SelectedFrameworkId))
             {
                 query = query.Where(
-                    ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
+                    ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == filters.SelectedFrameworkId));
             }
 
-            if (!string.IsNullOrWhiteSpace(selectedApplicationTypeIds))
+            if (!string.IsNullOrWhiteSpace(filters.SelectedApplicationTypeIds))
             {
                 query = ApplyAdditionalFilterToQuery<ApplicationType>(
                     query,
-                    selectedApplicationTypeIds,
+                    filters.SelectedApplicationTypeIds,
                     GetSelectedFilterApplication,
                     x => x.ApplicationTypeDetail != null);
             }
 
-            if (!string.IsNullOrWhiteSpace(selectedHostingTypeIds))
+            if (!string.IsNullOrWhiteSpace(filters.SelectedHostingTypeIds))
             {
                 query = ApplyAdditionalFilterToQuery<HostingType>(
                     query,
-                    selectedHostingTypeIds,
+                    filters.SelectedHostingTypeIds,
                     GetSelectedFiltersHosting,
                     x => x.Hosting != null && x.Hosting.IsValid());
             }
 
-            if (selectedIntegrationsAndTypes is { Count: > 0 })
+            if (filters.SelectedIntegrationsAndTypes is { Count: > 0 })
             {
-                var integrationsPredicate = IntegrationsPredicate(selectedIntegrationsAndTypes);
+                var integrationsPredicate = IntegrationsPredicate(filters.SelectedIntegrationsAndTypes);
 
                 query = query.AsExpandable().Where(x => integrationsPredicate.Invoke(x.Solution));
+            }
+
+            if (filters.IsCommunityPharmacy == true)
+            {
+                query = query.Where(i =>
+                    i.Solution.FrameworkSolutions.Count == 1
+                    && i.Solution.FrameworkSolutions.ElementAt(0).Framework.SolutionType
+                    == SolutionType.CommunityPharmacy);
             }
 
             var totalNumberOfItems = await query.CountAsync();
@@ -116,29 +121,38 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             Task<IList<CatalogueItem>> GetAllSolutionsFilteredFromFilterIds(
                 FilterIdsModel filterIds)
         {
+            var filters = new SolutionsFilters
+            {
+                CapabilitiesAndEpics = filterIds?.CapabilityAndEpicIds,
+                SelectedFrameworkId = filterIds?.FrameworkId,
+                SelectedApplicationTypeIds = filterIds?.ApplicationTypeIds.ToFilterString(),
+                SelectedHostingTypeIds = filterIds?.HostingTypeIds.ToFilterString(),
+                SelectedIntegrationsAndTypes = filterIds?.IntegrationsIds,
+            };
             var (catalogueItems, _, _) = await GetAllSolutionsFiltered(
-                null,
-                capabilitiesAndEpics: filterIds?.CapabilityAndEpicIds,
-                selectedFrameworkId: filterIds?.FrameworkId,
-                selectedApplicationTypeIds: filterIds.ApplicationTypeIds.ToFilterString(),
-                selectedHostingTypeIds: filterIds.HostingTypeIds.ToFilterString(),
-                selectedIntegrationsAndTypes: filterIds.IntegrationsIds);
+                filters,
+                null);
             return catalogueItems;
         }
 
-        public async Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15)
+        public async Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15, bool? isCommunityPharmacy = null)
         {
             var searchBySolutionNameQuery = dbContext.CatalogueItems.AsNoTracking()
-                .Where(
-                    ci =>
-                        ci.Name.Contains(searchTerm)
-                        && ci.CatalogueItemType == CatalogueItemType.Solution
-                        && AllowedPublicationStatuses.Contains(ci.PublishedStatus, null)
-                        && ci.Supplier.IsActive)
+                .Where(ci =>
+                    ci.Name.Contains(searchTerm)
+                    && ci.CatalogueItemType == CatalogueItemType.Solution
+                    && AllowedPublicationStatuses.Contains(ci.PublishedStatus, null)
+                    && ci.Supplier.IsActive
+                    && (isCommunityPharmacy != true || (ci.Solution.FrameworkSolutions.Count == 1
+                        && ci.Solution.FrameworkSolutions.First().Framework.SolutionType
+                        == SolutionType.CommunityPharmacy)))
                 .Select(ci => new SearchFilterModel { Title = ci.Name, Category = "Solution", });
 
             var searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
-                .Where(s => s.Name.Contains(searchTerm) && s.IsActive)
+                .Where(s => s.Name.Contains(searchTerm) && s.IsActive && (isCommunityPharmacy != true
+                    || s.CatalogueItems.Any(ci =>
+                        ci.Solution.FrameworkSolutions.Any(fs =>
+                            fs.Framework.SolutionType == SolutionType.CommunityPharmacy))))
                 .Select(s => new SearchFilterModel { Title = s.Name, Category = "Supplier", });
 
             return await searchBySolutionNameQuery
@@ -185,6 +199,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution)
                 .ThenInclude(s => s.FrameworkSolutions)
                 .ThenInclude(s => s.Framework)
+                .Include(i => i.CataloguePrices)
+                .ThenInclude(p => p.CataloguePriceTiers)
+                .Include(i => i.CataloguePrices)
+                .ThenInclude(p => p.PricingUnit)
                 .Include(i => i.Solution)
                 .ThenInclude(s => s.AdditionalServices
                     .Where(adit => AllowedPublicationStatuses.Contains(adit.CatalogueItem.PublishedStatus, null)))
@@ -229,6 +247,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .AsExpandable()
                     .AsSplitQuery()
                     .Include(i => i.Supplier)
+                    .Include(i => i.CataloguePrices)
+                    .ThenInclude(p => p.CataloguePriceTiers)
+                    .Include(i => i.CataloguePrices)
+                    .ThenInclude(p => p.PricingUnit)
                     .Include(i => i.Solution)
                     .ThenInclude(
                         s => s.AdditionalServices

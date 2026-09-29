@@ -67,15 +67,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 PageSize = 10,
             };
 
+            var solutionsFilters = new SolutionsFilters
+            {
+                CapabilitiesAndEpics = filters.GetCapabilityAndEpicIds(),
+                Search = search,
+                SelectedFrameworkId = selectedFrameworkId,
+                SelectedApplicationTypeIds = selectedApplicationTypeIds,
+                SelectedHostingTypeIds = selectedHostingTypeIds,
+                SelectedIntegrationsAndTypes = filters.GetIntegrationsAndTypes(),
+            };
+
             (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
-                    inputOptions,
-                    filters.GetCapabilityAndEpicIds(),
-                    search,
-                    selectedFrameworkId,
-                    selectedApplicationTypeIds,
-                    selectedHostingTypeIds,
-                    filters.GetIntegrationsAndTypes());
+                    solutionsFilters,
+                    inputOptions);
 
             var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
             var integrations = await integrationsService.GetIntegrationsWithTypes();
@@ -149,15 +154,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 PageSize = 10,
             };
 
+            var solutionsFilters = new SolutionsFilters
+            {
+                CapabilitiesAndEpics = filters.GetCapabilityAndEpicIds(),
+                Search = filters.Search,
+                SelectedFrameworkId = filters.SelectedFrameworkId,
+                SelectedApplicationTypeIds = filters.SelectedApplicationTypeIds,
+                SelectedHostingTypeIds = filters.SelectedHostingTypeIds,
+                SelectedIntegrationsAndTypes = filters.GetIntegrationsAndTypes(),
+            };
+
             (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
-                    inputOptions,
-                    filters.GetCapabilityAndEpicIds(),
-                    filters.Search,
-                    filters.SelectedFrameworkId,
-                    filters.SelectedApplicationTypeIds,
-                    filters.SelectedHostingTypeIds,
-                    filters.GetIntegrationsAndTypes());
+                    solutionsFilters,
+                    inputOptions);
 
             var model = new SolutionsResultsModel()
             {
