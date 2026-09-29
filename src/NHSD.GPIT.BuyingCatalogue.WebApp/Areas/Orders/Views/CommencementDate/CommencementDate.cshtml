@@ -40,9 +40,9 @@
             <vc:nhs-anchor-button text="Save and continue"
                                   type="Primary"
                                   url="@Url.Action(
-                                                          nameof(OrderController.Order),
-                                                          typeof(OrderController).ControllerName(),
-                                                          new { Model.InternalOrgId, Model.CallOffId })"/>
+                                        nameof(OrderController.Order),
+                                        typeof(OrderController).ControllerName(),
+                                        new { Model.InternalOrgId, Model.CallOffId })"/>
         }
         else
         {
@@ -54,7 +54,7 @@
                 <div class="nhsuk-u-margin-bottom-9">
                     <nhs-fieldset-form-label asp-for="@Model"
                                              label-text="Call-off agreement commencement date"
-                                             label-hint="This is the start date for the call-off agreement that you've agreed with the supplier."
+                                             label-hint="This is the start date for the call-off agreement that you've agreed with the supplier"
                                              size="ExtraSmall">
                         <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
                     </nhs-fieldset-form-label>
@@ -63,14 +63,14 @@
                 <div class="nhsuk-u-margin-bottom-9">
                     <nhs-bookended-input asp-for="@Model.InitialPeriod"
                                          label-text="Call-off agreement initial period (in months)"
-                                         label-hint="After this period the call-off agreement can be terminated without incurring charges by giving 30 days' notice."
+                                         label-hint="After this the call-off agreement can be terminated without incurring charges by giving 30 days' notice"
                                          Suffix="months" />
                 </div>
 
                 <div class="nhsuk-u-margin-bottom-9">
                     <nhs-bookended-input asp-for="@Model.MaximumTerm"
                                          label-text="Call-off agreement duration (in months)"
-                                         label-hint="This is the maximum length of time the call-off agreement can run for. It begins on the date recipients start using the first of the ordered items. It includes the initial period and cannot exceed @Model.MaximumTermUpperLimit months."
+                                         label-hint="This is the maximum length of time the call-off agreement can run for. It begins on the date the recipients start using the first of the ordered items and includes the initial period. It cannot exceed @Model.MaximumTermUpperLimit months"
                                          Suffix="months" />
                 </div>
 
