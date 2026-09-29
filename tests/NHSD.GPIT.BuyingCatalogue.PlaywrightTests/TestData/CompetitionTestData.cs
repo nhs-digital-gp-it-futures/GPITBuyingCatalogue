@@ -5,8 +5,6 @@ namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData;
 
 public class CompetitionTestData
 {
-    public string BaseUrl { get; set; } = "https://localhost:5001";
-
     public string Email { get; set; } = "suesmith@email.com";
     public string Password { get; set; } = "Pass123$";
 
