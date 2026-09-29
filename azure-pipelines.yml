@@ -52,13 +52,6 @@ jobs:
           testGroup: webapp
           testProjects: tests/NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests/NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.csproj
 
-        # e2e:
-        #   testGroup: e2e
-        #   testProjects: |
-        #     tests/NHSD.GPIT.BuyingCatalogue.PlaywrightTests/NHSD.GPIT.BuyingCatalogue.PlaywrightTests.csproj
-        #     tests/NHSD.GPIT.BuyingCatalogue.RegressionTests/NHSD.GPIT.BuyingCatalogue.RegressionTests.csproj
-
-
         remaining:
           testGroup: remaining
           testProjects: |
@@ -99,7 +92,7 @@ jobs:
       - publish: $(Agent.TempDirectory)/test-results/$(testGroup)
         displayName: Publish $(testGroup) coverage
         artifact: coverage-$(testGroup)
-        condition: succeededOrFailed()
+        condition: succeeded()
 
   - job: buildDockerCandidate
     displayName: Build Docker Candidate
@@ -199,14 +192,6 @@ jobs:
             NHSD.GPIT.BuyingCatalogue.sln
             NHSD.GPIT.BuyingCatalogue.Database.sln
           arguments: '--no-restore --configuration $(buildConfiguration)'
-
-      # - task: DotNetCoreCLI@2
-      #   displayName: 'Run unit tests'
-      #   inputs:
-      #     command: test
-      #     projects: '**/*UnitTests.csproj'
-      #     arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
-      #     publishTestResults: false
 
       - task: SonarCloudAnalyze@3
       - task: SonarCloudPublish@3
