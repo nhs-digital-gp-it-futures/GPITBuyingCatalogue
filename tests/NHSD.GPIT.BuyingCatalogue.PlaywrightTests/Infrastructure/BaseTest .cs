@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Competitions;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData;
 using Xunit.Abstractions;
@@ -16,8 +17,9 @@ public abstract class BaseTest : IAsyncLifetime
     protected readonly TestServerFixture Fixture;
     protected readonly ITestOutputHelper Output;
     protected IPage Page = null!;
-    protected OrderingPages orderPages = null!;
+    protected OrderingPages OrderPages = null!;
     protected AdminPages AdminPages = null!;
+    protected CompetitionPages CompetitionPages = null!;
 
     private readonly TestSettings _settings;
     private IPlaywright _playwright = null!;
@@ -41,11 +43,9 @@ public abstract class BaseTest : IAsyncLifetime
 
         Page = await _context.NewPageAsync();
 
-        var orderData = new OrderTestData { BaseUrl = Fixture.BaseUrl };
-        var adminData = new AdminTestData { BaseUrl = Fixture.BaseUrl };
-
-        orderPages = new OrderingPages(Page, Output, new OrderTestData());
-        AdminPages = new AdminPages(Page, Output, adminData);
+        OrderPages = new OrderingPages(Page, Output, Fixture.BaseUrl, new OrderTestData());
+        AdminPages = new AdminPages(Page, Output, Fixture.BaseUrl, new AdminTestData());
+        CompetitionPages = new CompetitionPages(Page, Output, Fixture.BaseUrl, new CompetitionTestData());
 
         Output.WriteLine($"Test started: {_testName}");
     }

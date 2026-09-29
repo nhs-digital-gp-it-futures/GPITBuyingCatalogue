@@ -16,11 +16,11 @@ public class ServiceRecipientsPage : BasePage
     public async Task NavigateAsync() =>
         await NavigationLink.ClickAsync();
 
-    public async Task SelectRecipientsManuallyAsync(string sublocation, string[] practices)
+    public async Task SelectRecipientsManuallyAsync(string sublocation, string[] practices, string serviceCategory = "order")
     {
         await ManualOption.CheckAsync();
         await ClickSaveAndContinueAsync();
-        await SelectSublocationAsync(sublocation, "order");
+        await SelectSublocationAsync(sublocation, serviceCategory);
         await SelectPracticesAsync(practices);
         await ConfirmRecipientsAsync();
     }

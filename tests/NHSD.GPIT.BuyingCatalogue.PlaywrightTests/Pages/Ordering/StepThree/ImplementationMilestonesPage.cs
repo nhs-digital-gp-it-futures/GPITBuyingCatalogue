@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Base;
+using static Microsoft.Playwright.Assertions;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepThree;
 
@@ -12,10 +13,31 @@ public class ImplementationMilestonesPage : BasePage
 
     public ImplementationMilestonesPage(IPage page) : base(page) { }
 
-    public async Task NavigateAndContinueAsync()
+    public async Task NavigateAndContinueAsync(string bespokeMilestoneName = "", string bespokePaymentTrigger = "")
     {
         await NavigationLink.ClickAsync();
         await AssertHeadingAsync("Implementation milestones and payment triggers");
+        await ClickSaveAndContinueAsync();
+
+        await AssertHeadingAsync("Do you want to add a bespoke milestone?");
+
+        if (string.IsNullOrWhiteSpace(bespokeMilestoneName))
+        {
+            await Page.GetByRole(AriaRole.Radio, new() { Name = "No" }).CheckAsync();
+            await ClickSaveAndContinueAsync();
+            return;
+        }
+
+        await Page.GetByRole(AriaRole.Radio, new() { Name = "Yes" }).CheckAsync();
+        await ClickSaveAndContinueAsync();
+
+        await AssertHeadingAsync("Bespoke implementation milestone");
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Milestone name" }).FillAsync(bespokeMilestoneName);
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Milestone payment trigger" }).FillAsync(bespokePaymentTrigger);
+        await ClickSaveAndContinueAsync();
+
+        await AssertHeadingAsync("Implementation milestones and payment triggers");
+        await Expect(Page.GetByText(bespokeMilestoneName)).ToBeVisibleAsync();
         await ClickSaveAndContinueAsync();
     }
 

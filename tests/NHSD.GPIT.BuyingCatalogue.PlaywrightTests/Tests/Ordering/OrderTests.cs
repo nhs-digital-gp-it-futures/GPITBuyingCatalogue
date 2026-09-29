@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Builders;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Generators;
 using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Tests.Ordering;
@@ -30,111 +31,111 @@ public class OrderTests : BaseTest
     [Trait("Category", Categories.OrderJourney)]
     public async Task CatalogueSolutionOnly()
     {
-        await orderPages.LoginAsync();
-        await orderPages.CreateNewOrderAsync();
-        await orderPages.StepOnePrepareOrderAsync();
-        await orderPages.StepTwoAddSolutionsAndServicesAsync(solutionName: SolutionName);
-        await orderPages.StepTwoDeliveryAndFundingAsync();
-        await orderPages.StepThreeCompleteContractAsync();
-        await orderPages.StepFourReviewAndCompleteOrderAsync();
+        await OrderPages.LoginAsync();
+        await OrderPages.CreateNewOrderAsync();
+        await OrderPages.StepOnePrepareOrderAsync();
+        await OrderPages.StepTwoAddSolutionsAndServicesAsync(solutionName: SolutionName);
+        await OrderPages.StepTwoDeliveryAndFundingAsync();
+        await OrderPages.StepThreeCompleteContractAsync();
+        await OrderPages.StepFourReviewAndCompleteOrderAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.OrderJourney)]
     public async Task CatalogueSolutionWithAssociatedService()
     {
-        await orderPages.LoginAsync();
-        await orderPages.CreateNewOrderAsync();
-        await orderPages.StepOnePrepareOrderAsync();
-        await orderPages.StepTwoAddSolutionsAndServicesAsync(solutionName: SolutionName, associatedService: AssociatedService);
-        await orderPages.StepTwoDeliveryAndFundingAsync(associatedService: AssociatedService);
-        await orderPages.StepThreeCompleteContractAsync(associatedService: AssociatedService);
-        await orderPages.StepFourReviewAndCompleteOrderAsync();
+        await OrderPages.LoginAsync();
+        await OrderPages.CreateNewOrderAsync();
+        await OrderPages.StepOnePrepareOrderAsync();
+        await OrderPages.StepTwoAddSolutionsAndServicesAsync(solutionName: SolutionName, associatedService: AssociatedService);
+        await OrderPages.StepTwoDeliveryAndFundingAsync(associatedService: AssociatedService);
+        await OrderPages.StepThreeCompleteContractAsync(associatedService: AssociatedService);
+        await OrderPages.StepFourReviewAndCompleteOrderAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.OrderJourney)]
     public async Task CatalogueSolutionWithAdditionalService()
     {
-        await orderPages.LoginAsync();
-        await orderPages.CreateNewOrderAsync();
-        await orderPages.StepOnePrepareOrderAsync();
-        await orderPages.StepTwoAddSolutionsAndServicesAsync(solutionName: SolutionName, additionalService: AdditionalService);
-        await orderPages.StepTwoDeliveryAndFundingAsync(additionalService: AdditionalService);
-        await orderPages.StepThreeCompleteContractAsync();
-        await orderPages.StepFourReviewAndCompleteOrderAsync();
+        await OrderPages.LoginAsync();
+        await OrderPages.CreateNewOrderAsync();
+        await OrderPages.StepOnePrepareOrderAsync();
+        await OrderPages.StepTwoAddSolutionsAndServicesAsync(solutionName: SolutionName, additionalService: AdditionalService);
+        await OrderPages.StepTwoDeliveryAndFundingAsync(additionalService: AdditionalService);
+        await OrderPages.StepThreeCompleteContractAsync();
+        await OrderPages.StepFourReviewAndCompleteOrderAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.OrderJourney)]
     public async Task CatalogueSolutionWithAssociatedAndAdditionalService()
     {
-        await orderPages.LoginAsync();
-        await orderPages.CreateNewOrderAsync();
-        await orderPages.StepOnePrepareOrderAsync();
-        await orderPages.StepTwoAddSolutionsAndServicesAsync(
+        await OrderPages.LoginAsync();
+        await OrderPages.CreateNewOrderAsync();
+        await OrderPages.StepOnePrepareOrderAsync();
+        await OrderPages.StepTwoAddSolutionsAndServicesAsync(
             solutionName: SolutionName,
             associatedService: AssociatedService,
             additionalService: AdditionalService);
-        await orderPages.StepTwoDeliveryAndFundingAsync(
+        await OrderPages.StepTwoDeliveryAndFundingAsync(
             associatedService: AssociatedService,
             additionalService: AdditionalService);
-        await orderPages.StepThreeCompleteContractAsync(associatedService: AssociatedService);
-        await orderPages.StepFourReviewAndCompleteOrderAsync();
+        await OrderPages.StepThreeCompleteContractAsync(associatedService: AssociatedService);
+        await OrderPages.StepFourReviewAndCompleteOrderAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.OrderJourney)]
     public async Task CatalogueSolutionUploadServiceRecipientsUsingCsv()
     {
-        await orderPages.LoginAsync();
-        await orderPages.CreateNewOrderAsync();
-        await orderPages.StepOnePrepareOrderAsync();
-        await orderPages.StepTwoAddSolutionsAndServicesAsync(
+        await OrderPages.LoginAsync();
+        await OrderPages.CreateNewOrderAsync();
+        await OrderPages.StepOnePrepareOrderAsync();
+        await OrderPages.StepTwoAddSolutionsAndServicesAsync(
             solutionName: SolutionName,
             serviceRecipientsCsv: CsvFileName);
-        await orderPages.StepTwoDeliveryAndFundingAsync();
-        await orderPages.StepThreeCompleteContractAsync();
-        await orderPages.StepFourReviewAndCompleteOrderAsync();
+        await OrderPages.StepTwoDeliveryAndFundingAsync();
+        await OrderPages.StepThreeCompleteContractAsync();
+        await OrderPages.StepFourReviewAndCompleteOrderAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.OrderJourney)]
     public async Task CatalogueSolutionChangeMidOrder()
     {
-        await orderPages.LoginAsync();
-        await orderPages.CreateNewOrderAsync();
-        await orderPages.StepOnePrepareOrderAsync();
-        await orderPages.StepTwoAddSolutionsAndServicesAsync(solutionName: AlternativeSolution);
-        await orderPages.StepTwoChangeCatalogueSolutionAsync(SolutionName);
-        await orderPages.StepTwoDeliveryAndFundingAsync();
-        await orderPages.StepThreeCompleteContractAsync();
-        await orderPages.StepFourReviewAndCompleteOrderAsync();
+        await OrderPages.LoginAsync();
+        await OrderPages.CreateNewOrderAsync();
+        await OrderPages.StepOnePrepareOrderAsync();
+        await OrderPages.StepTwoAddSolutionsAndServicesAsync(solutionName: AlternativeSolution);
+        await OrderPages.StepTwoChangeCatalogueSolutionAsync(SolutionName);
+        await OrderPages.StepTwoDeliveryAndFundingAsync();
+        await OrderPages.StepThreeCompleteContractAsync();
+        await OrderPages.StepFourReviewAndCompleteOrderAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.OrderJourney)]
     public async Task EditOrderWithCatalogueSolutionAdditionalAndAssociatedService()
     {
-        await orderPages.LoginAsync();
-        await orderPages.CreateNewOrderAsync();
-        await orderPages.StepOnePrepareOrderAsync();
+        await OrderPages.LoginAsync();
+        await OrderPages.CreateNewOrderAsync();
+        await OrderPages.StepOnePrepareOrderAsync();
 
-        await orderPages.StepTwoAddSolutionsAndServicesAsync(
+        await OrderPages.StepTwoAddSolutionsAndServicesAsync(
             solutionName: SolutionName,
             associatedService: AssociatedService,
             additionalService: AdditionalService);
 
-        await orderPages.StepTwoEditSolutionsAndServicesAsync(
+        await OrderPages.StepTwoEditSolutionsAndServicesAsync(
             oldAdditionalService: AdditionalService, newAdditionalService: NewAdditionalService,
             oldAssociatedService: AssociatedService, newAssociatedService: NewAssociatedService);
 
-        await orderPages.StepTwoDeliveryAndFundingAsync(
+        await OrderPages.StepTwoDeliveryAndFundingAsync(
             associatedService: NewAssociatedService,
             additionalService: NewAdditionalService);
 
-        await orderPages.StepThreeCompleteContractAsync(associatedService: NewAssociatedService);
-        await orderPages.StepFourReviewAndCompleteOrderAsync();
+        await OrderPages.StepThreeCompleteContractAsync(associatedService: NewAssociatedService);
+        await OrderPages.StepFourReviewAndCompleteOrderAsync();
     }
 
     [Fact]
@@ -142,19 +143,18 @@ public class OrderTests : BaseTest
     public async Task AssociatedServiceOnly_SomethingElse()
     {
         var data = new AssociatedServiceTestDataBuilder()
-            .WithBaseUrl(Fixture.BaseUrl)
             .WithServiceCategory("Something else")
             .WithSupplier("EMIS Health")
             .WithCatalogueSolutionAndAssociatedService("Emis Web GP", "Engineering")
             .WithFundingFilter("Engineering")
             .Build();
 
-        await orderPages.LoginAsync();
-        await orderPages.CreateNewAssociatedServiceOrderAsync(data);
-        await orderPages.StepOnePrepareAssociatedServiceOrderAsync(data);
-        await orderPages.StepTwoAddAssociatedServiceAsync(data);
-        await orderPages.StepThreeCompleteAssociatedServiceContractAsync();
-        await orderPages.StepFourReviewAndCompleteOrderAsync();
+        await OrderPages.LoginAsync();
+        await OrderPages.CreateNewAssociatedServiceOrderAsync(data);
+        await OrderPages.StepOnePrepareAssociatedServiceOrderAsync(data);
+        await OrderPages.StepTwoAddAssociatedServiceAsync(data);
+        await OrderPages.StepThreeCompleteAssociatedServiceContractAsync();
+        await OrderPages.StepFourReviewAndCompleteOrderAsync();
     }
 
     [Fact]
@@ -162,7 +162,6 @@ public class OrderTests : BaseTest
     public async Task AssociatedServiceOnly_Merger()
     {
         var data = new AssociatedServiceTestDataBuilder()
-            .WithBaseUrl(Fixture.BaseUrl)
             .WithServiceCategory("Merger")
             .WithSupplier("EMIS Health", isMerger: true)
             .WithCatalogueSolutionForMerger("Video Consult")
@@ -170,11 +169,31 @@ public class OrderTests : BaseTest
             .WithFundingFilter("Merger")
             .Build();
 
-        await orderPages.LoginAsync();
-        await orderPages.CreateNewAssociatedServiceOrderAsync(data);
-        await orderPages.StepOnePrepareAssociatedServiceOrderAsync(data);
-        await orderPages.StepTwoAddAssociatedServiceAsync(data);
-        await orderPages.StepThreeCompleteAssociatedServiceContractAsync();
-        await orderPages.StepFourReviewAndCompleteOrderAsync();
+        await OrderPages.LoginAsync();
+        await OrderPages.CreateNewAssociatedServiceOrderAsync(data);
+        await OrderPages.StepOnePrepareAssociatedServiceOrderAsync(data);
+        await OrderPages.StepTwoAddAssociatedServiceAsync(data);
+        await OrderPages.StepThreeCompleteAssociatedServiceContractAsync();
+        await OrderPages.StepFourReviewAndCompleteOrderAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.OrderJourney)]
+    public async Task CreateOrderWithBespokeImplementationMilestone()
+    {
+        var milestoneName = TestDataGenerator.MilestoneName();
+        var paymentTrigger = TestDataGenerator.PaymentTrigger();
+
+        await OrderPages.LoginAsync();
+        await OrderPages.CreateNewOrderAsync();
+        await OrderPages.StepOnePrepareOrderAsync();
+        await OrderPages.StepTwoAddSolutionsAndServicesAsync(solutionName: SolutionName);
+        await OrderPages.StepTwoDeliveryAndFundingAsync();
+        await OrderPages.StepThreeCompleteContractAsync(
+            addBespokeEntries: true,
+            implementationMilestoneName: milestoneName,
+            implementationPaymentTrigger: paymentTrigger);
+        await OrderPages.StepFourReviewAndCompleteOrderAsync();
+        await OrderPages.ReviewOrder.AssertOrderCompletedAsync();
     }
 }
