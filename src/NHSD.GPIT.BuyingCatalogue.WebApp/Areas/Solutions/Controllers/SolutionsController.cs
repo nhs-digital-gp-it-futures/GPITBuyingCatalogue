@@ -75,6 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 SelectedApplicationTypeIds = selectedApplicationTypeIds,
                 SelectedHostingTypeIds = selectedHostingTypeIds,
                 SelectedIntegrationsAndTypes = filters.GetIntegrationsAndTypes(),
+                IsCommunityPharmacy = false,
             };
 
             (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
@@ -134,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
 
-            var results = await solutionsFilterService.GetSolutionsBySearchTerm(search);
+            var results = await solutionsFilterService.GetSolutionsBySearchTerm(search, isCommunityPharmacy: false);
 
             return Json(
                 results.Select(
@@ -162,6 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 SelectedApplicationTypeIds = filters.SelectedApplicationTypeIds,
                 SelectedHostingTypeIds = filters.SelectedHostingTypeIds,
                 SelectedIntegrationsAndTypes = filters.GetIntegrationsAndTypes(),
+                IsCommunityPharmacy = false,
             };
 
             (IList<CatalogueItem> catalogueItems, PageOptions options, _) =

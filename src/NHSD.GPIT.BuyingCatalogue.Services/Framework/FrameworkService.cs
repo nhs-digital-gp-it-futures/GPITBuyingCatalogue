@@ -16,10 +16,11 @@ public class FrameworkService(BuyingCatalogueDbContext dbContext) : IFrameworkSe
 
     public async Task<List<EntityFramework.Catalogue.Models.Framework>> GetFrameworksWithPublishedCatalogueItems() =>
         await dbContext.FrameworkSolutions.AsNoTracking()
-            .Where(x => x.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
-            .Select(x => x.Framework)
-            .Distinct()
-            .ToListAsync();
+        .Where(x => x.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+        .Where(x => x.Framework.SolutionType == SolutionType.GPIT)
+        .Select(x => x.Framework)
+        .Distinct()
+        .ToListAsync();
 
     public async Task<EntityFramework.Catalogue.Models.Framework> GetFramework(string frameworkId) =>
         await dbContext.Frameworks.FirstOrDefaultAsync(f => f.Id == frameworkId);
