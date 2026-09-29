@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
                 null,
                 fundingTypeDescription);
 
-            model.IsOrderItemAdded.Should().BeFalse();
+            model.IsOrderItemAdded.Should().BeTrue();
         }
 
         [Theory]
