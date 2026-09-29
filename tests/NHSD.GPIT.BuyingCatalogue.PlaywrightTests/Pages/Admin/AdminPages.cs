@@ -1,5 +1,4 @@
 ﻿using Microsoft.Playwright;
-using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin.ContractingVehicles;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin.EmailDomains;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Admin.Interoperability;
@@ -17,6 +16,7 @@ public class AdminPages
 {
     private readonly ITestOutputHelper _output;
     private readonly AdminTestData _data;
+    private readonly string _baseUrl;
 
     public LoginPage Login { get; }
     public AdminDashboardPage Dashboard { get; }
@@ -40,14 +40,14 @@ public class AdminPages
     public SupplierContactsPage SupplierContacts { get; }
     public AddSupplierContactPage AddSupplierContact { get; }
     public SupplierStatusPage SupplierStatus { get; }
-    public MapCapabilitiesPage MapCapabilities { get; }
     public ManageSolutionsPage ManageSolutions { get; }
     public AddSolutionPage AddSolution { get; }
 
-    public AdminPages(IPage page, ITestOutputHelper output, AdminTestData data)
+    public AdminPages(IPage page, ITestOutputHelper output, string baseUrl, AdminTestData data)
     {
         _output = output;
         _data = data;
+        _baseUrl = baseUrl;
 
         Login = new LoginPage(page);
         Dashboard = new AdminDashboardPage(page);
@@ -71,7 +71,6 @@ public class AdminPages
         SupplierContacts = new SupplierContactsPage(page);
         AddSupplierContact = new AddSupplierContactPage(page);
         SupplierStatus = new SupplierStatusPage(page);
-        MapCapabilities = new MapCapabilitiesPage(page);
         ManageSolutions = new ManageSolutionsPage(page);
         AddSolution = new AddSolutionPage(page);
     }
@@ -79,7 +78,7 @@ public class AdminPages
     public async Task LoginAsAdminAsync()
     {
         _output.WriteLine("Admin login");
-        await Login.NavigateAsync(_data.BaseUrl);
+        await Login.NavigateAsync(_baseUrl);
         await Login.LoginAsync(_data.Email, _data.Password);
         await Login.AssertLoginSuccessfulAsync("Buying Catalogue admin");
     }
@@ -189,20 +188,6 @@ public class AdminPages
         await SupplierStatus.SetStatusAndSaveAsync("Active");
         await ManageSuppliers.AssertOnPageAsync();
         await ManageSuppliers.AssertSupplierExistsAsync(name);
-    }
-
-    public async Task MapCapabilitiesAndEpicsAsync(string capabilitiesFile, string epicsFile)
-    {
-        _output.WriteLine("Map capabilities and epics via CSV upload");
-        await Dashboard.GoToManageCapabilitiesAndEpicsAsync();
-
-        await MapCapabilities.AssertOnCapabilitiesPageAsync();
-        await MapCapabilities.UploadCapabilitiesAsync(capabilitiesFile);
-
-        await MapCapabilities.AssertOnEpicsPageAsync();
-        await MapCapabilities.UploadEpicsAsync(epicsFile);
-
-        await MapCapabilities.ReturnToAdminHomeAsync();
     }
 
     public async Task CreateSolutionAsync(AdminTestData data, string supplierValue, string framework, string supplierContactName)
