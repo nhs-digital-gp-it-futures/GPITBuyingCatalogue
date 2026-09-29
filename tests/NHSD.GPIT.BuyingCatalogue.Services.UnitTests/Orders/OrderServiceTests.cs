@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             result.OrderItems.Count.Should().Be(1);
             var actual = result.OrderItems.First();
             actual.CatalogueItem.Id.Should().Be(orderItem.CatalogueItem.Id);
-            actual.CatalogueItem.CataloguePrices.Count.Should().Be(0);
+            actual.CatalogueItem.CataloguePrices.Count.Should().Be(1);
         }
 
         [Theory]
