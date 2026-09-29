@@ -56,7 +56,7 @@
         <hr class="nhsuk-section-break--s"/>
         @foreach (var item in Model.CatalogueItems)
         {
-            <partial name="_SolutionSearchDisplay" model="@(new SolutionSearchResultModel(item, false))"/>
+            <partial name="_SolutionSearchDisplay" model="@(new SolutionSearchResultModel(item, false) { Filters = Model.Filters })"/>
         }
     }
     
