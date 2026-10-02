@@ -1,4 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
 @{
     Layout = "Layouts/_FullWidthLayout";
@@ -45,7 +46,7 @@
                             new ActionCardModel(
                                 "Community Pharmacy", 
                                 "Discover assured solutions for Community Pharmacy", 
-                                Url.Action(nameof(CommunityPharmacySolutionsController.Index), typeof(CommunityPharmacySolutionsController).ControllerName(), new { area = typeof(CommunityPharmacySolutionsController).AreaName() })) { WidthClass = "nhsuk-grid-column-one-half"})"/>
+                                Url.Action(nameof(CommunityPharmacyController.Solutions), typeof(CommunityPharmacyController).ControllerName(), new { area = typeof(CommunityPharmacyController).AreaName() })) { WidthClass = "nhsuk-grid-column-one-half"})"/>
                 </div>
             </div>
         </div>

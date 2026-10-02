@@ -1,9 +1,10 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.CommunityPharmacySolutionsModel;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models.CommunityPharmacySolutionsModel;
 @{
     var pageTitle = CommunityPharmacySolutionsModel.PageTitle;
     ViewBag.Title = pageTitle;
@@ -37,8 +38,8 @@
                        class="nhsuk-breadcrumb__link">Home</a>
                 </li>
                 <li class="nhsuk-breadcrumb__item">
-                    <a asp-action="@nameof(CommunityPharmacySolutionsController.Index)"
-                       asp-controller="@typeof(CommunityPharmacySolutionsController).ControllerName()"
+                    <a asp-action="@nameof(CommunityPharmacyController.Solutions)"
+                       asp-controller="@typeof(CommunityPharmacyController).ControllerName()"
                        class="nhsuk-breadcrumb__link">Community Pharmacy</a>
                 </li>
                 <li class="nhsuk-breadcrumb__item">
@@ -57,7 +58,7 @@
         <nhs-hint-text>View assured solutions for community pharmacy services</nhs-hint-text>
         <div id="search-by">
             <vc:nhs-suggestion-search id="marketing-suggestion-search"
-                                      ajax-url="@Url.Action(nameof(CommunityPharmacySolutionsController.FilterSearchSuggestions), typeof(CommunityPharmacySolutionsController).ControllerName())"
+                                      ajax-url="@Url.Action(nameof(CommunityPharmacyController.FilterSearchSuggestions), typeof(CommunityPharmacyController).ControllerName())"
                                       title-text="Search"
                                       hide-label="true"
                                       placeholder-text="Search by service, solution or supplier"
@@ -74,7 +75,7 @@
                 <div style="float: right"
                      id="solution-sort-container"
                      data-default-sort-by="@PageOptions.SortOptions.LastPublished"
-                     data-results-url="@Url.Action(nameof(CommunityPharmacySolutionsController.Index), typeof(CommunityPharmacySolutionsController).ControllerName())"></div>
+                     data-results-url="@Url.Action(nameof(CommunityPharmacyController.Solutions), typeof(CommunityPharmacyController).ControllerName())"></div>
             }
         </div>
         

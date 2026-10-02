@@ -162,6 +162,56 @@ public static class FrameworkServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
+    public static async Task GetFrameworksByCatalogueItems_NonGpitFramework_ReturnsOnlyGpitFrameworks(
+        EntityFramework.Catalogue.Models.Framework gpitFramework,
+        EntityFramework.Catalogue.Models.Framework communityPharmacyFramework,
+        FrameworkSolution gpitFrameworkSolution,
+        FrameworkSolution communityPharmacyFrameworkSolution,
+        CatalogueItem gpitCatalogueItem,
+        CatalogueItem communityPharmacyCatalogueItem,
+        Solution gpitSolution,
+        Solution communityPharmacySolution,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        FrameworkService service)
+    {
+        dbContext.FrameworkSolutions.RemoveRange(dbContext.FrameworkSolutions);
+
+        gpitFramework.SolutionType = SolutionType.GPIT;
+        communityPharmacyFramework.SolutionType = SolutionType.CommunityPharmacy;
+
+        gpitCatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+        gpitCatalogueItem.PublishedStatus = PublicationStatus.Published;
+        communityPharmacyCatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+        communityPharmacyCatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+        gpitSolution.FrameworkSolutions.Clear();
+        communityPharmacySolution.FrameworkSolutions.Clear();
+
+        gpitSolution.CatalogueItem = gpitCatalogueItem;
+        communityPharmacySolution.CatalogueItem = communityPharmacyCatalogueItem;
+
+        gpitFrameworkSolution.Solution = gpitSolution;
+        gpitFrameworkSolution.Framework = gpitFramework;
+        communityPharmacyFrameworkSolution.Solution = communityPharmacySolution;
+        communityPharmacyFrameworkSolution.Framework = communityPharmacyFramework;
+
+        dbContext.FrameworkSolutions.AddRange(gpitFrameworkSolution, communityPharmacyFrameworkSolution);
+        dbContext.Frameworks.AddRange(gpitFramework, communityPharmacyFramework);
+        dbContext.CatalogueItems.AddRange(gpitCatalogueItem, communityPharmacyCatalogueItem);
+        dbContext.Solutions.AddRange(gpitSolution, communityPharmacySolution);
+
+        await dbContext.SaveChangesAsync();
+
+        var result = await service.GetFrameworksWithPublishedCatalogueItems();
+
+        result.Should().HaveCount(1);
+        result.Should().ContainSingle();
+        result.Single().Id.Should().Be(gpitFramework.Id);
+        result.Single().SolutionType.Should().Be(SolutionType.GPIT);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
     public static async Task GetFramework_ReturnsExpected(
         EntityFramework.Catalogue.Models.Framework framework,
         [Frozen] BuyingCatalogueDbContext dbContext,
