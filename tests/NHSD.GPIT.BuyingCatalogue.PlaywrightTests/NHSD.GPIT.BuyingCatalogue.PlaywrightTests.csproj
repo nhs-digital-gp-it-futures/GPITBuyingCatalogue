@@ -11,6 +11,7 @@
     <PackageReference Include="Bogus" Version="35.6.5" />
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
     <PackageReference Include="Deque.AxeCore.Playwright" Version="4.12.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="Microsoft.Playwright" Version="1.59.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
@@ -27,6 +28,9 @@
 
   <ItemGroup>
     <None Update="TestData\Files\*.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\Files\*.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
