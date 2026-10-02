@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSug
 {
     public sealed class NhsSuggestionSearchViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(string id, string ajaxUrl, string queryParameterName, string titleText)
+        public async Task<IViewComponentResult> InvokeAsync(string id, string ajaxUrl, string queryParameterName, string titleText, bool? hideLabel = null, string placeholderText = null)
         {
             var model = new NhsSuggestionSearchModel
             {
@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSug
                 TitleText = titleText,
                 CurrentPageUrl = UriHelper.GetEncodedPathAndQuery(HttpContext.Request),
                 SearchText = HttpContext.Request.Query[queryParameterName],
+                HideLabel = hideLabel,
+                PlaceholderText = placeholderText,
             };
 
             return await Task.FromResult(View("NhsSuggestionSearch", model));

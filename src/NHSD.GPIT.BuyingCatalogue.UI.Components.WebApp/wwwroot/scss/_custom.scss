@@ -30,8 +30,8 @@
     font-size: 1rem;
 }
 
-.nhsuk-section:nth-of-type(2n) {
-  background: #fff;
+.nhsuk-section:nth-child(even of .nhsuk-section) {
+    background: #fff;
 }
 
 .app-width-container--full {
