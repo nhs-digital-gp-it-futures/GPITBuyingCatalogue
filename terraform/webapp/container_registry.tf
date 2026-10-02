@@ -18,7 +18,7 @@ resource "azurerm_container_registry_task" "registry_purge" {
             --filter '.*:.*'
             --ago 30d
             --keep 10
-            --dry-run
+            --untagged
     YAML
     )
   }
