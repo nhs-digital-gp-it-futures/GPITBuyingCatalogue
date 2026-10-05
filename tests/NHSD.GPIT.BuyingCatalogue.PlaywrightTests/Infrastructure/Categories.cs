@@ -8,4 +8,5 @@ public static class Categories
     public const string Slow = "Slow";
     public const string Admin = "Admin";
     public const string Accessibility = "Accessibility";
+    public const string CompetitionJourney = "CompetitionJourney";
 }

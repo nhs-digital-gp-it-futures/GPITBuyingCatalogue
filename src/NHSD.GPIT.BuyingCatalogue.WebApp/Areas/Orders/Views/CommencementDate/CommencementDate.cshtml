@@ -1,7 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.CommencementDate.CommencementDateModel;
 @{
-    ViewBag.Title = "Timescales for call-off agreement";
+    ViewBag.Title = "Add timescales to call-off agreement";
 
     var advice = Model.IsAmendment
         ? "This is the commencement date, initial period and duration for the original order. They cannot be changed."
@@ -38,11 +38,11 @@
             </div>
 
             <vc:nhs-anchor-button text="Save and continue"
-                                     type="Primary"
-                                     url="@Url.Action(
-                                              nameof(OrderController.Order),
-                                              typeof(OrderController).ControllerName(),
-                                              new { Model.InternalOrgId, Model.CallOffId })"/>
+                                  type="Primary"
+                                  url="@Url.Action(
+                                        nameof(OrderController.Order),
+                                        typeof(OrderController).ControllerName(),
+                                        new { Model.InternalOrgId, Model.CallOffId })"/>
         }
         else
         {
@@ -53,8 +53,8 @@
 
                 <div class="nhsuk-u-margin-bottom-9">
                     <nhs-fieldset-form-label asp-for="@Model"
-                                             label-text="What is the call-off agreement commencement date?"
-                                             label-hint="This is the date you've agreed with the supplier that the call-off agreement will begin."
+                                             label-text="Call-off agreement commencement date"
+                                             label-hint="This is the start date for the call-off agreement that you've agreed with the supplier"
                                              size="ExtraSmall">
                         <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
                     </nhs-fieldset-form-label>
@@ -62,15 +62,15 @@
 
                 <div class="nhsuk-u-margin-bottom-9">
                     <nhs-bookended-input asp-for="@Model.InitialPeriod"
-                                         label-text="What is the call-off agreement initial period (in months)?"
-                                         label-hint="This is the period after which the call-off agreement can be terminated without incurring charges by giving 30 days' notice."
+                                         label-text="Call-off agreement initial period (in months)"
+                                         label-hint="After this the call-off agreement can be terminated without incurring charges by giving 30 days' notice"
                                          Suffix="months" />
                 </div>
 
                 <div class="nhsuk-u-margin-bottom-9">
                     <nhs-bookended-input asp-for="@Model.MaximumTerm"
-                                         label-text="What is the call-off agreement duration (in months)?"
-                                         label-hint="This is the maximum length of time the call-off agreement can run for and begins on the date the first of your ordered items starts being used. It includes the initial period and cannot exceed @Model.MaximumTermUpperLimit months."
+                                         label-text="Call-off agreement duration (in months)"
+                                         label-hint="This is the maximum length of time the call-off agreement can run for. It begins on the date the recipients start using the first of the ordered items and includes the initial period. It cannot exceed @Model.MaximumTermUpperLimit months"
                                          Suffix="months" />
                 </div>
 

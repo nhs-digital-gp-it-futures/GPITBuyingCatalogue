@@ -53,11 +53,14 @@ public class OrderTypePage : BasePage
         var fieldsetCount = await fieldset.CountAsync();
 
         Assert.True(fieldsetCount > 0,
-            "Order type radio group is not wrapped in a fieldset (WAVE: fieldset missing legend, WCAG 1.3.1).");
+            "Accessibility: The Order type radio group is not contained within a fieldset " +
+            "(WAVE missing fieldset/legend; related to WCAG 1.3.1).");
+
         var legend = fieldset.Locator("legend");
         var legendCount = await legend.CountAsync();
 
         Assert.True(legendCount > 0,
-            "Order type fieldset has no legend (WAVE: fieldset missing legend, WCAG 1.3.1).");
+            "Accessibility: The Order type radio group fieldset does not contain a legend " +
+            "(WAVE missing fieldset legend; related to WCAG 1.3.1).");
     }
 }

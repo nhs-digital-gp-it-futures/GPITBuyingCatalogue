@@ -52,4 +52,39 @@ public abstract class BasePage
 
         return await Page.RunAxe(options);
     }
+
+    public async Task AssertPageHasTitleAsync(string genericFallback = "Buying Catalogue")
+    {
+        var title = await Page.TitleAsync();
+
+        Assert.False(string.IsNullOrWhiteSpace(title),
+            "Accessibility: Page title is missing. " +
+            "Pages must have a title that describes their topic or purpose (WCAG 2.4.2).");
+    }
+
+    public async Task AssertHeadingLevelsNotSkippedAsync()
+    {
+        var headings = await Page.Locator("h1, h2, h3, h4, h5, h6").AllAsync();
+
+        var previousLevel = 0;
+
+        foreach (var heading in headings)
+        {
+            var tagName = await heading.EvaluateAsync<string>("el => el.tagName");
+            var currentLevel = int.Parse(tagName[1].ToString());
+
+            if (previousLevel > 0)
+            {
+                Assert.True(
+                    currentLevel <= previousLevel + 1,
+                    $"Accessibility: Heading hierarchy skips from " +
+                    $"h{previousLevel} to h{currentLevel}. " +
+                    "Review the heading structure to ensure relationships are " +
+                    "programmatically represented correctly " +
+                    "(WAVE skipped heading alert; related to WCAG 1.3.1).");
+            }
+
+            previousLevel = currentLevel;
+        }
+    }
 }

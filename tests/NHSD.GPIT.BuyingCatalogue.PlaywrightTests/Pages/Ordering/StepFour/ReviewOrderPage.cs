@@ -21,4 +21,7 @@ public class ReviewOrderPage : BasePage
         await CompleteOrderButton.ClickAsync();
         await AssertHeadingAsync("Order completed");
     }
+
+    public async Task AssertOrderCompletedAsync() =>
+    await AssertHeadingAsync("Order completed");
 }

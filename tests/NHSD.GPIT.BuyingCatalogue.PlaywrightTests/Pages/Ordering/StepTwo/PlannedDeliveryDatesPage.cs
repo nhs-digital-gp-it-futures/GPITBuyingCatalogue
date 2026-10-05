@@ -27,4 +27,20 @@ public class PlannedDeliveryDatesPage : BasePage
         await AssertHeadingAsync("Review planned delivery dates");
         await ClickSaveAndContinueLinkAsync();
     }
+
+    public async Task EnterDeliveryDateAsync(string day, string month, string year, bool stopOnReview = false)
+    {
+        await AssertHeadingAsync("Planned delivery date");
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Day" }).FillAsync(day);
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Month" }).FillAsync(month);
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Year" }).FillAsync(year);
+        await Page.GetByRole(AriaRole.Radio, new() { Name = "Yes" }).CheckAsync();
+        await ClickSaveAndContinueAsync();
+        await AssertHeadingAsync("Review planned delivery dates");
+
+        if (stopOnReview)
+            return;
+
+        await ClickSaveAndContinueLinkAsync();
+    }
 }
