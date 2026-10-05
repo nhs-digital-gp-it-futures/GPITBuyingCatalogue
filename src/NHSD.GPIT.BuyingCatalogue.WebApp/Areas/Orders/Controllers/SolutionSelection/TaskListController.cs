@@ -24,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         private readonly IAdditionalServicesService additionalServicesService;
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly IOrderService orderService;
+        private readonly IOrderItemRecipientDisplayNumberService itemRecipientDisplayNumberService;
         private readonly IRoutingService routingService;
 
         public TaskListController(
@@ -31,12 +32,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             IAdditionalServicesService additionalServicesService,
             IAssociatedServicesService associatedServicesService,
             IOrderService orderService,
+            IOrderItemRecipientDisplayNumberService itemRecipientDisplayNumberService,
             IRoutingService routingService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.itemRecipientDisplayNumberService = itemRecipientDisplayNumberService ?? throw new ArgumentNullException(nameof(itemRecipientDisplayNumberService));
             this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
         }
 
@@ -89,6 +92,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             };
 
             return View(model);
+        }
+
+        [HttpGet("save")]
+        public async Task<IActionResult> SaveTaskList(
+            string internalOrgId,
+            CallOffId callOffId,
+            string onwardLink,
+            RoutingSource? source = null)
+        {
+            if (!await itemRecipientDisplayNumberService.HasItemRecipientCountDiscrepancy(callOffId, internalOrgId))
+            {
+                return Redirect(onwardLink);
+            }
+
+            await itemRecipientDisplayNumberService.SetOrderItemRecipientDisplayNumbers(callOffId, internalOrgId);
+
+            return Redirect(onwardLink);
         }
     }
 }

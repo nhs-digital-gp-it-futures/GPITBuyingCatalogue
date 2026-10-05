@@ -20,7 +20,7 @@
 
 <partial name="Partials/_BackLink" model="Model" />
 
-<div class="nhsuk-grid-row">
+<div class="nhsuk-grid-row"> 
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
         <nhs-page-title model="Model" />
@@ -174,7 +174,8 @@
             }
 
         <vc:nhs-anchor-button text="Save and continue"
-                                 url="@Model.OnwardLink"
+                                 url="@Url.Action(nameof(TaskListController.SaveTaskList), typeof(TaskListController).ControllerName(),
+                                                    new { Model.InternalOrgId, Model.CallOffId, Model.OnwardLink })"
                                  type="Primary" /> 
     </div>
 </div>

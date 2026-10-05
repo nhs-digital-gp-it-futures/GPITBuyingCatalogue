@@ -20,7 +20,7 @@
 
 <nhs-table-row-container>
     <nhs-table-cell>@Model.ServiceRecipient.RecipientOdsOrganisation?.Name (@Model.ServiceRecipient.RecipientOdsCode)</nhs-table-cell>
-    <nhs-table-cell>@($"{Model.CallOffId}-{Model.ServiceRecipient.RecipientOdsCode}-{Model.CatalogueItemId}-{Model.OrderItemId}")</nhs-table-cell>
+    <nhs-table-cell>@($"{Model.CallOffId}-{Model.ServiceRecipient.RecipientOdsCode}-{Model.DisplayNumber}")</nhs-table-cell>
     <nhs-table-cell>@deliveryDateText</nhs-table-cell>
     <nhs-table-cell>
         @(quantity.HasValue ? $"{quantity:N0}" : "N/A")
