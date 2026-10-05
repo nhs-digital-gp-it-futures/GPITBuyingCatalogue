@@ -15,8 +15,8 @@ public class AccessibilityTests : BaseTest
     [Trait("Category", Categories.Accessibility)]
     public async Task LoginPage_AccessibilityScan()
     {
-        await orderPages.Login.NavigateAsync(Fixture.BaseUrl);
-        var result = await orderPages.Login.RunAccessibilityScanAsync();
+        await OrderPages.Login.NavigateAsync(Fixture.BaseUrl);
+        var result = await OrderPages.Login.RunAccessibilityScanAsync();
 
         AccessibilityReporter.Report(result, Output, "Login page");
 
@@ -33,9 +33,9 @@ public class AccessibilityTests : BaseTest
     [Trait("Category", Categories.Accessibility)]
     public async Task OrderTypePage_AccessibilityScan()
     {
-        await orderPages.LoginAsync();
-        await orderPages.GoToOrderTypePageAsync();
-        var result = await orderPages.OrderType.RunAccessibilityScanAsync();
+        await OrderPages.LoginAsync();
+        await OrderPages.GoToOrderTypePageAsync();
+        var result = await OrderPages.OrderType.RunAccessibilityScanAsync();
 
         AccessibilityReporter.Report(result, Output, "What do you want to order? (order type page)");
 
@@ -52,24 +52,24 @@ public class AccessibilityTests : BaseTest
     [Trait("Category", Categories.Accessibility)]
     public async Task DeclarationPage_HasPageTitle()
     {
-        await orderPages.GoToDeclarationPageAsync(SolutionName);
-        await orderPages.Declaration.AssertPageHasTitleAsync();
+        await OrderPages.GoToDeclarationPageAsync(SolutionName);
+        await OrderPages.Declaration.AssertPageHasTitleAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.Accessibility)]
     public async Task OrderCompletedPage_HasPageTitle()
     {
-        await orderPages.GoToOrderCompletedPageAsync(SolutionName);
-        await orderPages.ReviewOrder.AssertPageHasTitleAsync();
+        await OrderPages.GoToOrderCompletedPageAsync(SolutionName);
+        await OrderPages.ReviewOrder.AssertPageHasTitleAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.Accessibility)]
     public async Task UploadServiceRecipientsPage_AccessibilityScan()
     {
-        await orderPages.GoToUploadServiceRecipientsPageAsync(SolutionName);
-        var result = await orderPages.ServiceRecipients.RunAccessibilityScanAsync();
+        await OrderPages.GoToUploadServiceRecipientsPageAsync(SolutionName);
+        var result = await OrderPages.ServiceRecipients.RunAccessibilityScanAsync();
 
         AccessibilityReporter.Report(result, Output, "Upload service recipients page");
 
@@ -86,8 +86,8 @@ public class AccessibilityTests : BaseTest
     [Trait("Category", Categories.Accessibility)]
     public async Task AddServiceRecipientsPage_AccessibilityScan()
     {
-        await orderPages.GoToAddServiceRecipientsPageAsync();
-        var result = await orderPages.ServiceRecipients.RunAccessibilityScanAsync();
+        await OrderPages.GoToAddServiceRecipientsPageAsync();
+        var result = await OrderPages.ServiceRecipients.RunAccessibilityScanAsync();
 
         AccessibilityReporter.Report(result, Output, "Add service recipients page");
 
@@ -104,8 +104,8 @@ public class AccessibilityTests : BaseTest
     [Trait("Category", Categories.Accessibility)]
     public async Task ReviewPlannedDeliveryDatesPage_AccessibilityScan()
     {
-        await orderPages.GoToReviewPlannedDeliveryDatesPageAsync(SolutionName);
-        var result = await orderPages.PlannedDeliveryDates.RunAccessibilityScanAsync();
+        await OrderPages.GoToReviewPlannedDeliveryDatesPageAsync(SolutionName);
+        var result = await OrderPages.PlannedDeliveryDates.RunAccessibilityScanAsync();
 
         AccessibilityReporter.Report(result, Output, "Review planned delivery dates page");
 
@@ -122,8 +122,8 @@ public class AccessibilityTests : BaseTest
     [Trait("Category", Categories.Accessibility)]
     public async Task ConfirmQuantitiesPage_AccessibilityScan()
     {
-        await orderPages.GoToConfirmQuantitiesPageAsync(SolutionName);
-        var result = await orderPages.Quantity.RunAccessibilityScanAsync();
+        await OrderPages.GoToConfirmQuantitiesPageAsync(SolutionName);
+        var result = await OrderPages.Quantity.RunAccessibilityScanAsync();
 
         AccessibilityReporter.Report(result, Output, "Confirm quantities page");
 
@@ -140,56 +140,56 @@ public class AccessibilityTests : BaseTest
     [Trait("Category", Categories.Accessibility)]
     public async Task OrderTypePage_RadioGroupHasLegend()
     {
-        await orderPages.LoginAsync();
-        await orderPages.GoToOrderTypePageAsync();
-        await orderPages.OrderType.AssertRadioGroupHasLegendAsync();
+        await OrderPages.LoginAsync();
+        await OrderPages.GoToOrderTypePageAsync();
+        await OrderPages.OrderType.AssertRadioGroupHasLegendAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.Accessibility)]
     public async Task ServiceRecipientsOptionPage_RadioGroupHasLegend()
     {
-        await orderPages.GoToServiceRecipientsOptionPageAsync();
-        await orderPages.ServiceRecipients.AssertRadioGroupHasLegendAsync();
+        await OrderPages.GoToServiceRecipientsOptionPageAsync();
+        await OrderPages.ServiceRecipients.AssertRadioGroupHasLegendAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.Accessibility)]
     public async Task DeclarationPage_FieldsetHasLegend()
     {
-        await orderPages.GoToDeclarationPageAsync(SolutionName);
-        await orderPages.Declaration.AssertFieldsetHasLegendAsync();
+        await OrderPages.GoToDeclarationPageAsync(SolutionName);
+        await OrderPages.Declaration.AssertFieldsetHasLegendAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.Accessibility)]
     public async Task CatalogueSolutionsPage_HeadingLevelsNotSkipped()
     {
-        await orderPages.GoToCatalogueSolutionsPageAsync();
-        await orderPages.CatalogueSolutions.AssertHeadingLevelsNotSkippedAsync();
+        await OrderPages.GoToCatalogueSolutionsPageAsync();
+        await OrderPages.CatalogueSolutions.AssertHeadingLevelsNotSkippedAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.Accessibility)]
     public async Task CatalogueSolutionsPage_SearchLabelIsAssociated()
     {
-        await orderPages.GoToCatalogueSolutionsPageAsync();
-        await orderPages.CatalogueSolutions.AssertSearchLabelIsAssociatedAsync();
+        await OrderPages.GoToCatalogueSolutionsPageAsync();
+        await OrderPages.CatalogueSolutions.AssertSearchLabelIsAssociatedAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.Accessibility)]
     public async Task SolutionSummaryPage_BackToTopLinkRemoved()
     {
-        await orderPages.GoToSolutionSummaryPageAsync("AccuRx");
-        await orderPages.SolutionSummary.AssertBackToTopLinkNotPresentAsync();
+        await OrderPages.GoToSolutionSummaryPageAsync("AccuRx");
+        await OrderPages.SolutionSummary.AssertBackToTopLinkNotPresentAsync();
     }
 
     [Fact]
     [Trait("Category", Categories.Accessibility)]
     public async Task QuantityOfCatalogueSolutionPage_HeadingLevelsNotSkipped()
     {
-        await orderPages.GoToQuantityOfCatalogueSolutionPageAsync(SolutionName);
-        await orderPages.Quantity.AssertHeadingLevelsNotSkippedAsync();
+        await OrderPages.GoToQuantityOfCatalogueSolutionPageAsync(SolutionName);
+        await OrderPages.Quantity.AssertHeadingLevelsNotSkippedAsync();
     }
 }

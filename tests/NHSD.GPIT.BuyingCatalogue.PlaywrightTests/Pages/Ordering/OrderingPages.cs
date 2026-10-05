@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+﻿using System.Runtime.CompilerServices;
 using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.CatalogueSolutions;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Login;
@@ -19,6 +17,7 @@ public class OrderingPages
 {
     private readonly ITestOutputHelper _output;
     private readonly OrderTestData _data;
+    private readonly string _baseUrl;
 
     public LoginPage Login { get; }
     public OrderingDashboardPage Dashboard { get; }
@@ -42,10 +41,11 @@ public class OrderingPages
     public CatalogueSolutionsPage CatalogueSolutions { get; }
     public SolutionSummaryPage SolutionSummary { get; }
 
-    public OrderingPages(IPage page, ITestOutputHelper output, OrderTestData data)
+    public OrderingPages(IPage page, ITestOutputHelper output, string baseUrl, OrderTestData data)
     {
         _output = output;
         _data = data;
+        _baseUrl = baseUrl;
 
         Login = new LoginPage(page);
         Dashboard = new OrderingDashboardPage(page);
@@ -77,7 +77,7 @@ public class OrderingPages
     public async Task LoginAsync()
     {
         _output.WriteLine("Login");
-        await Login.NavigateAsync(_data.BaseUrl);
+        await Login.NavigateAsync(_baseUrl);
         await Login.LoginAsync(_data.Email, _data.Password);
         await Login.AssertLoginSuccessfulAsync();
     }
@@ -265,7 +265,7 @@ public class OrderingPages
         await DataProcessing.NavigateAndContinueAsync();
         await Declaration.NavigateAndAgreeAsync();
     }
-    
+
     public async Task StepFourReviewAndCompleteOrderAsync()
     {
         _output.WriteLine("Step 4 — review and complete");
@@ -356,7 +356,7 @@ public class OrderingPages
         await DataProcessing.NavigateAndContinueAsync();
         await Declaration.NavigateAndAgreeAsync();
     }
-    
+
     public async Task GoToOrderTypePageAsync()
     {
         _output.WriteLine("Go to order type page");
@@ -432,7 +432,7 @@ public class OrderingPages
         await StepOnePrepareOrderAsync();
         await StepTwoAddSolutionsAndServicesAsync(solutionName: solutionName);
         await PlannedDeliveryDates.NavigateAsync();
-        await PlannedDeliveryDates.EnterDeliveryDateAsync("1", "10", "2026", stopOnReview: true);
+        await PlannedDeliveryDates.EnterDeliveryDateAsync(_data.DeliveryDay, _data.DeliveryMonth, _data.DeliveryYear, stopOnReview: true);
     }
 
     public async Task GoToConfirmQuantitiesPageAsync(string solutionName)

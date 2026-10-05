@@ -25,7 +25,7 @@
         <p>
             @Model.CatalogueItem.Solution.Summary
         </p>
-        @if (Model.CatalogueItem.Solution.AdditionalServices.Any())
+        @if (Model.CatalogueItem.Solution.AdditionalServices.Any() && Model.Filters.GetCapabilityAndEpicIds().Count > 0)
         {
             <h4 class="nhsuk-heading-xs">Additional services required</h4>
             <p>These additional services are needed along with the solution to meet all the Capabilities and Epics you’ve selected:</p>

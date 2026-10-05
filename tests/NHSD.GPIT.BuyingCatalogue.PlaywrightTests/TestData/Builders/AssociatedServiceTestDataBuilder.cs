@@ -4,12 +4,6 @@ public class AssociatedServiceTestDataBuilder
 {
     private readonly AssociatedServiceTestData _data = new();
 
-    public AssociatedServiceTestDataBuilder WithBaseUrl(string url)
-    {
-        _data.BaseUrl = url;
-        return this;
-    }
-
     public AssociatedServiceTestDataBuilder WithServiceCategory(string category)
     {
         _data.AssociatedServiceCategory = category;

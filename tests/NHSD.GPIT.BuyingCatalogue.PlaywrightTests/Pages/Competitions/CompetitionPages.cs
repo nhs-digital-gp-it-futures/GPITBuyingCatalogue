@@ -12,6 +12,7 @@ public class CompetitionPages
 {
     private readonly ITestOutputHelper _output;
     private readonly CompetitionTestData _data;
+    private readonly string _baseUrl;
 
     public LoginPage Login { get; }
     public CompetitionsDashboardPage Dashboard { get; }
@@ -38,10 +39,11 @@ public class CompetitionPages
     public ReviewCompetitionCriteriaPage ReviewCompetitionCriteria { get; }
     public CompareAndScorePage CompareAndScore { get; }
 
-    public CompetitionPages(IPage page, ITestOutputHelper output, CompetitionTestData data)
+    public CompetitionPages(IPage page, ITestOutputHelper output, string baseUrl, CompetitionTestData data)
     {
         _output = output;
         _data = data;
+        _baseUrl = baseUrl;
 
         Login = new LoginPage(page);
         Dashboard = new CompetitionsDashboardPage(page);
@@ -72,7 +74,7 @@ public class CompetitionPages
     public async Task LoginAsync()
     {
         _output.WriteLine("Login");
-        await Login.NavigateAsync(_data.BaseUrl);
+        await Login.NavigateAsync(_baseUrl);
         await Login.LoginAsync(_data.Email, _data.Password);
     }
 

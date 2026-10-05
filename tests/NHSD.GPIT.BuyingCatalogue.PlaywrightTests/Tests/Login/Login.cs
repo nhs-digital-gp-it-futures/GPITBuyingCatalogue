@@ -16,9 +16,8 @@ public class LoginTests : BaseTest
     public async Task UserCanLoginSuccessfully()
     {
         var data = new OrderTestDataBuilder()
-            .WithBaseUrl(Fixture.BaseUrl)
             .Build();
 
-        await orderPages.LoginAsync();
+        await OrderPages.LoginAsync();
     }
 }
