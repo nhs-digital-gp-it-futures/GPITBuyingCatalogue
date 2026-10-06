@@ -1,0 +1,54 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.SetOrganisationDeliveryDatesModel
+@{
+    ViewBag.Title = $"Order {Model.CallOffId}";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary />
+
+        <nhs-page-title title="@Model.GetPageTitle()"
+                        caption="@ViewBag.Title"
+                        advice="Enter the correct planned delivery dates for each solution or service." />
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink" />
+
+            <nhs-expander label-text="@Model.RecipientOrganisationName"
+                            open="true">
+                <nhs-table>
+                    <nhs-table-column>Solution or service</nhs-table-column>
+                    <nhs-table-column>Planned delivery date</nhs-table-column>
+                    @* @for (var j = 0; j < Model.Recipients[i].Value.Length; j++)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                <input type="hidden" asp-for="@Model.Recipients[i].Value[j].Description" />
+                                <div>
+                                    @Model.Recipients[i].Value[j].Description
+                                </div>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <input type="hidden" asp-for="@Model.Recipients[i].Value[j].OdsCode" />
+                                @Model.Recipients[i].Value[j].OdsCode
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <input type="hidden" asp-for="@Model.Recipients[i].Value[j].CommencementDate" />
+                                <nhs-fieldset-form-label asp-for="@Model">
+                                    <nhs-date-input asp-for="@Model.Recipients[i].Value[j]"
+                                                    day="@Model.Recipients[i].Value[j].Day"
+                                                    month="@Model.Recipients[i].Value[j].Month"
+                                                    year="@Model.Recipients[i].Value[j].Year" />
+                                </nhs-fieldset-form-label>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    } *@
+                </nhs-table>
+            </nhs-expander>
+
+            <nhs-submit-button />
+        </form>
+    </div>
+</div>

@@ -96,5 +96,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<OrderSublocationRecipient>> GetSelectedRecipientsAsync(int orderId, IEnumerable<string> selectedRecipients)
+        {
+            return await dbContext.OrderSublocationRecipients
+                .Include(x => x.RecipientOdsOrganisation)
+                .Include(x => x.ParentSublocation)
+                .ThenInclude(x => x.SublocationOrganisation)
+                .Where(x => x.OrderId == orderId && selectedRecipients.Contains(x.RecipientOdsOrganisation.Id))
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<OrderItemSublocationRecipient>> GetRecipientOrderItemsDeliveryDatesAsync(int orderId, string recipientId)
+        {
+            var orderItems = await dbContext.OrderItemSublocationRecipients
+                .Include(x => x.Recipient)
+                .ThenInclude(x => x.RecipientOdsOrganisation)
+                .Include(x => x.Recipient)
+                .ThenInclude(x => x.ParentSublocation)
+                .ThenInclude(x => x.SublocationOrganisation)
+                .Where(x => x.OrderId == orderId && x.RecipientOdsCode == recipientId)
+                .AsNoTracking()
+                .ToListAsync();
+
+            return orderItems;
+        }
     }
 }

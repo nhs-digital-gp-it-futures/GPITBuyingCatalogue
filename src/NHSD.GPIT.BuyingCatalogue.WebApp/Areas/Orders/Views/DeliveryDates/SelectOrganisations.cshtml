@@ -1,0 +1,59 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.SelectOrganisationsModel
+@{
+    ViewBag.Title = $"Order {Model.CallOffId}";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary />
+
+        <nhs-page-title title="Which organisations do you want to change dates for?"
+                        caption="@ViewBag.Title"
+                        advice="Select all relevant organisations." />
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.CallOffId" />
+            <input type="hidden" asp-for="@Model.OrderItemId" />
+
+            @foreach (var locationGroup in Model.GetRecipientsByLocation())
+            {
+                var secondaryText = locationGroup.Value.Length == 1 ? " organisation selected" : " organisations selected";
+                <nhs-expander label-text="@locationGroup.Key"
+                    open="true"
+                    secondary-text-title="@locationGroup.Value.Length"
+                    secondary-text="@secondaryText">
+
+                    <nhs-table>
+                        <nhs-table-column>Organisation</nhs-table-column>
+                        <nhs-table-column>ODS Code</nhs-table-column>
+                        @foreach (var recipient in locationGroup.Value)
+                        {
+                            var index = Model.Recipients.IndexOf(recipient);
+                            <input type="hidden" asp-for="@Model.Recipients[index].ParentSublocationName" />
+                            <input type="hidden" asp-for="@Model.Recipients[index].ParentSublocationOdsCode" />
+                            <input type="hidden" asp-for="@Model.Recipients[index].RecipientName" />
+                            <input type="hidden" asp-for="@Model.Recipients[index].RecipientOdsCode" />
+
+                            <nhs-table-row-container>
+                                <nhs-table-cell>
+                                    <nhs-checkbox-container>
+                                        <nhs-checkbox asp-for="@Model.Recipients[index].Selected"
+                                                      label-text="@Model.Recipients[index].RecipientName"
+                                                      hidden-input="@Model.Recipients[index].RecipientOrganisationId" />
+                                    </nhs-checkbox-container>
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    @Model.Recipients[index].RecipientOdsCode
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+                </nhs-expander>
+            }
+            <nhs-submit-button text="Continue" />
+        </form>
+    </div>
+</div>

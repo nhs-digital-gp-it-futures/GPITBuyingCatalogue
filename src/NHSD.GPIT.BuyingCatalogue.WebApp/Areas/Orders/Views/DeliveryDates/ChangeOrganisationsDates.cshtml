@@ -1,0 +1,63 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.SelectOrganisationsModel
+@{
+    ViewBag.Title = $"Order {Model.CallOffId}";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="Change delivery dates"
+                        caption="@ViewBag.Title"
+                        advice="Select the organisation to change the delivery date for the solution or service" />
+
+        <input type="hidden" asp-for="@Model.BackLink" />
+        <input type="hidden" asp-for="@Model.CallOffId" />
+        <input type="hidden" asp-for="@Model.OrderItemId" />
+
+        @foreach (var locationGroup in Model.GetRecipientsByLocation())
+        {
+            <nhs-expander label-text="@locationGroup.Key" open="true">
+                <nhs-table>
+                    <nhs-table-column>Organisation</nhs-table-column>
+                    <nhs-table-column>ODS Code</nhs-table-column>
+                    <nhs-table-column></nhs-table-column>
+                    @foreach (var recipient in locationGroup.Value)
+                    {
+                        var index = Model.Recipients.IndexOf(recipient);
+                        <input type="hidden" asp-for="@Model.Recipients[index].ParentSublocationName" />
+                        <input type="hidden" asp-for="@Model.Recipients[index].ParentSublocationOdsCode" />
+                        <input type="hidden" asp-for="@Model.Recipients[index].RecipientName" />
+                        <input type="hidden" asp-for="@Model.Recipients[index].RecipientOdsCode" />
+                        <input type="hidden" asp-for="@Model.Recipients[index].RecipientOrganisationId" />
+
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                @Model.Recipients[index].RecipientName
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                @Model.Recipients[index].RecipientOdsCode
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <span>
+                                    <a asp-action="@nameof(DeliveryDatesController.SetOrganisationDeliveryDates)"
+                                       asp-controller="@typeof(DeliveryDatesController).ControllerName()"
+                                       asp-route-internalOrgId="@Model.InternalOrgId"
+                                       asp-route-callOffId="@Model.CallOffId"
+                                       asp-route-orderItemId="@Model.OrderItemId"
+                                       asp-route-recipientOrganisationId="@Model.Recipients[index].RecipientOrganisationId"
+                                       asp-route-selectedRecipients="@Model.GetQueryStringRecipientIds()"
+                                       asp-route-area="@typeof(DeliveryDatesController).AreaName()"
+                                       style="white-space: nowrap;">Change</a>
+                                </span>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </nhs-expander>
+        }
+    </div>
+</div>
