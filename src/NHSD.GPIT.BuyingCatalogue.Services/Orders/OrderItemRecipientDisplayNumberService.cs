@@ -20,8 +20,7 @@ public class OrderItemRecipientDisplayNumberService(BuyingCatalogueDbContext dbC
         var offset = await GetDisplayNumberOffset(callOffId, internalOrgId);
 
         var orderItemRecipients = await dbContext.OrderItemSublocationRecipients
-            .Include(oisr => oisr.OrderItem)
-            .ThenInclude(oi => oi.CatalogueItem)
+            .Include(oisr => oisr.OrderItem.CatalogueItem)
             .Where(oisr => oisr.OrderId == orderId)
             .ToListAsync();
 
