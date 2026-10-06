@@ -156,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static async Task SaveTaskList_NoRecipientCountDiscrepancy_RedirectsWithoutSettingDisplayNumbers(
+        public static async Task Post_TaskList_NoRecipientCountDiscrepancy_RedirectsWithoutSettingDisplayNumbers(
             string internalOrgId,
             CallOffId callOffId,
             string onwardLink,
@@ -165,16 +165,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             displayNumberService.HasItemRecipientCountDiscrepancy(callOffId, internalOrgId).Returns(false);
 
-            var result = await controller.SaveTaskList(internalOrgId, callOffId, onwardLink);
+            var result = await controller.TaskList(internalOrgId, callOffId, onwardLink);
 
-            result.Should().BeOfType<RedirectResult>();
+            result.Should().BeOfType<LocalRedirectResult>();
             await displayNumberService.DidNotReceive()
                 .SetOrderItemRecipientDisplayNumbers(Arg.Any<CallOffId>(), Arg.Any<string>());
         }
 
         [Theory]
         [MockAutoData]
-        public static async Task SaveTaskList_RecipientCountDiscrepancy_SetsDisplayNumbersAndRedirects(
+        public static async Task PostTaskList_RecipientCountDiscrepancy_SetsDisplayNumbersAndRedirects(
             string internalOrgId,
             CallOffId callOffId,
             string onwardLink,
@@ -183,9 +183,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             displayNumberService.HasItemRecipientCountDiscrepancy(callOffId, internalOrgId).Returns(true);
 
-            var result = await controller.SaveTaskList(internalOrgId, callOffId, onwardLink);
+            var result = await controller.TaskList(internalOrgId, callOffId, onwardLink);
 
-            result.Should().BeOfType<RedirectResult>();
+            result.Should().BeOfType<LocalRedirectResult>();
             await displayNumberService.Received(1)
                 .SetOrderItemRecipientDisplayNumbers(callOffId, internalOrgId);
         }

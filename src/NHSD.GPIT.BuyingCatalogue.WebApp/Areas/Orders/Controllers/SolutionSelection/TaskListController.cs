@@ -94,21 +94,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             return View(model);
         }
 
-        [HttpGet("save")]
-        public async Task<IActionResult> SaveTaskList(
+        [HttpPost]
+        public async Task<IActionResult> TaskList(
             string internalOrgId,
             CallOffId callOffId,
-            string onwardLink,
-            RoutingSource? source = null)
+            string onwardLink)
         {
-            if (!await itemRecipientDisplayNumberService.HasItemRecipientCountDiscrepancy(callOffId, internalOrgId))
+            if (await itemRecipientDisplayNumberService.HasItemRecipientCountDiscrepancy(callOffId, internalOrgId))
             {
-                return Redirect(onwardLink);
+                await itemRecipientDisplayNumberService.SetOrderItemRecipientDisplayNumbers(callOffId, internalOrgId);
             }
 
-            await itemRecipientDisplayNumberService.SetOrderItemRecipientDisplayNumbers(callOffId, internalOrgId);
-
-            return Redirect(onwardLink);
+            return LocalRedirect(onwardLink);
         }
     }
 }

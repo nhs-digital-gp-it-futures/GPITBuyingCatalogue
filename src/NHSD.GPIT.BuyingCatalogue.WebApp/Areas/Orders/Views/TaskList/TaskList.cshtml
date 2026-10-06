@@ -173,9 +173,10 @@
                 }
             }
 
-        <vc:nhs-anchor-button text="Save and continue"
-                                 url="@Url.Action(nameof(TaskListController.SaveTaskList), typeof(TaskListController).ControllerName(),
-                                                    new { Model.InternalOrgId, Model.CallOffId, Model.OnwardLink })"
-                                 type="Primary" /> 
+        <form method="post">
+            <input type="hidden" asp-for="@Model.OnwardLink" />
+            <nhs-submit-button text="Save and continue" />
+        </form>
+
     </div>
 </div>
