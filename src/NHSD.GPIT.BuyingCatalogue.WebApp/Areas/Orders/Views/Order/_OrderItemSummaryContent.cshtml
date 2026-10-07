@@ -38,7 +38,6 @@
             {
                 var callOffId = Model.OrderWrapper.GetCallOffIdForPreviousRecipient(serviceRecipient, orderIdWithCatalogueItem);
                 var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId);
-
                 <nhs-table-row-container>
                     <partial name="_OrderItemRecipientRow" model="@itemRecipientRowModel" />
                 </nhs-table-row-container>
