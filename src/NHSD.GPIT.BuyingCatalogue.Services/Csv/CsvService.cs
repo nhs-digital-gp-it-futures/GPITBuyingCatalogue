@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.FundingTypes;
@@ -208,6 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         SupplierId = $"{supplierId}",
                         SupplierName = supplierName,
                         ProductId = oir.OrderItem.CatalogueItemId.ToString(),
+                        OrderItemId = oir.OrderItemId,
                         DisplayNumber = oir.DisplayNumber,
                         ProductName = oir.OrderItem.CatalogueItem.Name,
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
@@ -294,6 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         SupplierId = $"{supplierId}",
                         SupplierName = supplierName,
                         ProductId = oir.OrderItem.CatalogueItemId.ToString(),
+                        OrderItemId = oir.OrderItemId,
                         DisplayNumber = oir.DisplayNumber,
                         ProductName = oir.OrderItem.CatalogueItem.Name,
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
@@ -374,6 +375,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         SupplierId = $"{supplierId}",
                         SupplierName = supplierName,
                         ProductId = oir.OrderItem.CatalogueItemId.ToString(),
+                        OrderItemId = oir.OrderItemId,
                         DisplayNumber = oir.DisplayNumber,
                         ProductName = oir.OrderItem.CatalogueItem.Name,
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
