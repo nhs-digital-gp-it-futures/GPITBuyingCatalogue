@@ -12,7 +12,6 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using FluentAssertions;
-using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
@@ -268,6 +267,37 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             record.ServiceRecipientName.Should().Be(recipient.RecipientOdsOrganisation.Name);
             record.ServiceRecipientItemId.Should()
                 .Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{DisplayNumberFor(recipient, orderItem)}");
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task Null_DisplayNumber_Returns_Expected_ServiceRecipientItemId(
+            Order order,
+            OrderItem orderItem,
+            CsvService service,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            IFixture fixture)
+        {
+            OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, [orderItem]);
+            recipient.OrderItemSublocationRecipients.FirstOrDefault(oir => oir.OrderItemId == orderItem.Id)
+                ?.DisplayNumber = null;
+
+            await SaveOrderWithRecipients(
+                order,
+                [orderItem],
+                [recipient],
+                dbContext);
+
+            await using var fullOrderStream = new MemoryStream();
+            await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
+            fullOrderStream.Position = 0;
+
+            List<FullOrderCsvModel> records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap());
+
+            records.Count.Should().Be(1);
+            FullOrderCsvModel record = records.First();
+            record.ServiceRecipientItemId.Should()
+                .Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{orderItem.CatalogueItemId}-{orderItem.Id}");
         }
 
         [Theory]
@@ -909,7 +939,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
                 var displayNumber = fixture.Create<int>();
                 if (displayNumber == orderItem.Id)
                 {
-                    displayNumber = displayNumber == int.MaxValue ? int.MinValue : displayNumber + 1;
+                    displayNumber++;
                 }
 
                 recipient.OrderItemSublocationRecipients.Add(

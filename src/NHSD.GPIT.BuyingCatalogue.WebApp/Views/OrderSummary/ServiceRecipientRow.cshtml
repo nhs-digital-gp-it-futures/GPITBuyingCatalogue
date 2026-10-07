@@ -5,6 +5,9 @@
     var deliveryDateText = deliveryDate.HasValue
         ? $"{deliveryDate.Value:d MMMM yyyy}"
         : "No date entered";
+    var itemRecipientId = Model.DisplayNumber is null 
+        ? $"{Model.CallOffId}-{Model.ServiceRecipient.RecipientOdsCode}-{Model.CatalogueItemId}-{Model.OrderItemId}" 
+        : $"{Model.CallOffId}-{Model.ServiceRecipient.RecipientOdsCode}-{Model.DisplayNumber}";
 }
 
 <tr class="alternating">
@@ -12,7 +15,7 @@
         @($"{Model.ServiceRecipient.RecipientOdsOrganisation?.Name} ({Model.ServiceRecipient.RecipientOdsCode})")
     </td>
     <td>
-        @($"{Model.CallOffId}-{Model.ServiceRecipient.RecipientOdsCode}-{Model.DisplayNumber}")
+        @itemRecipientId
     </td>
     <td>
         @deliveryDateText
