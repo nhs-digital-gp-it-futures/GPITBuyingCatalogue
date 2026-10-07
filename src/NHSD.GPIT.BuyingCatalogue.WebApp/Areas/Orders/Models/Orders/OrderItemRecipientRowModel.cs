@@ -31,6 +31,7 @@ public class OrderItemRecipientRowModel
             .OrderByDescending(x => x.OrderItemId)
             .FirstOrDefault()
             ?.OrderItemId ?? amendOrderItemModel.OrderItem.Id;
+        DisplayNumber = recipient.OrderItemSublocationRecipients.FirstOrDefault(oisr => oisr.OrderItemId == OrderItemId && oisr.RecipientOdsCode == recipient.RecipientOdsCode)?.DisplayNumber;
         return;
 
         bool OrderItemFilterPredicate(OrderItemSublocationRecipient oisr) =>
@@ -54,4 +55,6 @@ public class OrderItemRecipientRowModel
     public OrderType OrderType { get; init; }
 
     public bool FromPreviousRevision { get; init; }
+
+    public int? DisplayNumber { get; init; }
 }
