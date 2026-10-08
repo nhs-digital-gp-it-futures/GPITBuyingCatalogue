@@ -115,6 +115,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
                 or CataloguePermissions.ManageAllowedEmailDomains);
         }
 
+        public static bool CanManageReferenceData(this ClaimsPrincipal user)
+        {
+            ArgumentNullException.ThrowIfNull(user);
+
+            return user.IsInRole(OrganisationFunction.Authority.Name) || user.HasClaim(c =>
+                c.Value is CataloguePermissions.ManageCapabilities
+                    or CataloguePermissions.ManageEpics);
+        }
+
         public static bool CanManageOrders(this ClaimsPrincipal user)
         {
             ArgumentNullException.ThrowIfNull(user);
