@@ -91,6 +91,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     .AddPolicy("ManageSupplierOrganisations", policy => policy.RequireClaim(
                         CataloguePermissions.ClaimType,
                         CataloguePermissions.ManageSupplierOrganisations))
+                    .AddPolicy("ManageCapabilities", policy => policy.RequireClaim(
+                        CataloguePermissions.ClaimType,
+                        CataloguePermissions.ManageCapabilities))
+                    .AddPolicy("ManageEpics", policy => policy.RequireClaim(
+                        CataloguePermissions.ClaimType,
+                        CataloguePermissions.ManageEpics))
                     .AddPolicy("ManageUsers", policy => policy.RequireClaim(
                         CataloguePermissions.ClaimType,
                         CataloguePermissions.ManageUsers))
