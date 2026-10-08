@@ -288,6 +288,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             user.CanManageUsers().Should().Be(true);
             user.CanManageOrganisations().Should().Be(true);
             user.CanManageSolutions().Should().Be(true);
+            user.CanManageReferenceData().Should().Be(true);
         }
 
         private static ClaimsPrincipal CreatePrincipal(string claim, string value)
