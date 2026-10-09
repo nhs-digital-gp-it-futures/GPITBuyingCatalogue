@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Database;
 using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Tests.Login;
@@ -273,6 +274,277 @@ public class LoginTests : BaseTest
         //Implementation and payment
         await Page.GetByRole(AriaRole.Link, new() { Name = "Implementation milestones and payment triggers" }).ClickAsync();
         await Page.GetByRole(AriaRole.Heading, new() { Name = "Implementation milestones and payment triggers" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+
+        //Data processing information
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Data processing information" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Data processing information" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+
+        //Declaration
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Declaration" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Declaration" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Checkbox, new() { Name = "I understand and agree to the" }).CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+
+        //Step 4
+        //Review and complete order
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Review and complete order" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Review and complete order" }).IsVisibleAsync();
+    }
+
+    [Fact]
+    public async Task AmendJourneyForCatalogueSolutionOrder()
+    {
+        var orderId = await TestOrderSeeder.CreateCompletedOrderAsync(
+            Fixture.DbConnectionString, "Order for amend journey testing", hasAddOnServices: false);
+
+        await OrderPages.LoginAsync();
+        await OrderPages.Dashboard.GoToOrdersAsync();
+        await Page.Locator($"[data-test-id=\"link-C0{orderId}-01\"]").ClickAsync();
+
+        Assert.True(await Page.GetByRole(AriaRole.Heading, new() { Name = "Order confirmed" }).IsVisibleAsync());
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Amend contract" }).ClickAsync();
+        Assert.True(await Page.GetByRole(AriaRole.Heading, new() { Name = "Amending an order" }).IsVisibleAsync());
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Amend order" }).ClickAsync();
+
+        //Amend service recipients
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Service recipients" }).ClickAsync();
+        Assert.True(await Page.GetByRole(AriaRole.Heading, new() { Name = "Service recipients" }).IsVisibleAsync());
+        await Page.GetByLabel("Add service recipients manually").CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Select" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Confirm sublocations" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Checkbox, new() { Name = "BRIG ROYD SURGERY" }).CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Confirm sublocations" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Confirm service recipients" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Save and continue" }).ClickAsync();
+
+        //Solution and services
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Solutions and services" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Start" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Quantity of catalogue solution" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Select" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Row, new() { Name = "BRIG ROYD SURGERY" }).GetByLabel("Patient total").FillAsync("2");
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Quantity of catalogue solution" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Confirm quantities" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Save and continue" }).ClickAsync();
+
+        //Planned delivery date
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Planned delivery dates" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Planned delivery date" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Day" }).FillAsync("20");
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Month" }).FillAsync("10");
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Year" }).FillAsync("2026");
+        await Page.GetByRole(AriaRole.Radio, new() { Name = "Yes" }).CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Review planned delivery dates" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Save and continue" }).ClickAsync();
+
+
+        //Select funding sources
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Select funding sources" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Funding sources" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+
+        //Step 3
+        //Implementation and payment
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Implementation milestones and payment triggers" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Implementation milestones and payment triggers" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Do you want to add a bespoke milestone?" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Radio, new() { Name = "No" }).CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+
+        //Data processing information
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Data processing information" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Data processing information" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+
+        //Declaration
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Declaration" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Declaration" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Checkbox, new() { Name = "I understand and agree to the" }).CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+
+        //Step 4
+        //Review and complete order
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Review and complete order" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Review and complete order" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Complete order" }).ClickAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.OrderJourney)]
+    public async Task AmendJourneyForCatalogueSolutionAndAddOnServicesOrder()
+    {
+        var orderId = await TestOrderSeeder.CreateCompletedOrderAsync(
+            Fixture.DbConnectionString, "Order for amend journey for Add on services testing", hasAddOnServices: true);
+
+        await OrderPages.LoginAsync();
+        await OrderPages.Dashboard.GoToOrdersAsync();
+        await Page.Locator($"[data-test-id=\"link-C0{orderId}-01\"]").ClickAsync();
+
+        Assert.True(await Page.GetByRole(AriaRole.Heading, new() { Name = "Order confirmed" }).IsVisibleAsync());
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Amend contract" }).ClickAsync();
+        Assert.True(await Page.GetByRole(AriaRole.Heading, new() { Name = "Amending an order" }).IsVisibleAsync());
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Amend order" }).ClickAsync();
+
+        //Step 2
+        //Service Recipients
+        await Page.GetByRole(AriaRole.Link, new() { Name = "service recipients" }).ClickAsync();
+        await Page.GetByLabel("Add service recipients manually").CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Select sublocations for this order" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Select" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Confirm sublocations" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Select" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Checkbox, new() { Name = "BRIG ROYD SURGERY" }).CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Confirm sublocations" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Confirm service recipients" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Save and continue" }).ClickAsync();
+
+        //Solution and services
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Solutions and services" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
+        await Page.Locator(".nhsuk-card", new()
+        {
+            Has = Page.GetByRole(AriaRole.Heading, new() { Name = "Emis Web GP", Exact = true })
+        })
+        .GetByRole(AriaRole.Row, new() { Name = "Quantity" })
+        .GetByRole(AriaRole.Link, new() { Name = "Start", Exact = true })
+        .ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Quantity of catalogue solution" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Select" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Review patient list sizes" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Row, new() { Name = "BRIG ROYD SURGERY B84007" }).GetByLabel("Patient total").FillAsync("2");
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Quantity of catalogue solution" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Confirm quantities" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Continue" }).ClickAsync();
+
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
+        await Page.Locator(".nhsuk-card", new()
+        {
+            Has = Page.GetByRole(AriaRole.Heading, new() { Name = "Automated Arrivals", Exact = true })
+        })
+        .GetByRole(AriaRole.Row, new() { Name = "Quantity" })
+        .GetByRole(AriaRole.Link, new() { Name = "Start", Exact = true })
+        .ClickAsync();
+         await Page.GetByRole(AriaRole.Heading, new() { Name = "Quantity of catalogue solution" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Select" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Quantity of additional service" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Row, new() { Name = "BRIG ROYD SURGERY" }).Locator("[data-test-id='input_quantity'] input").FillAsync("2");
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Quantity of additional service" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Confirm quantities" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
+
+
+        //Add Additional service
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Add Additional services" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Add additional services" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Checkbox, new() { Name = "Document Management" }).CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Start" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Price of Additional service" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Start" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Quantity of additional service" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Select" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Review patient list sizes" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Row).Filter(new() { HasText = "BANKFIELD SURGERY" }).GetByRole(AriaRole.Textbox).FillAsync("2");
+        await Page.GetByRole(AriaRole.Row).Filter(new() { HasText = "BEECHWOOD MEDICAL CENTRE" }).GetByRole(AriaRole.Textbox).FillAsync("20");
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Quantity of additional service" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Confirm quantities" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
+
+
+        //Add Additional service
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Add Associated services" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Add associated services" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Checkbox, new() { Name = "Engineering" }).CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Start" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Price of Associated service" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Start" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Quantity of associated service" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Select" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Review patient list sizes" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Row, new() { Name = "BRIG ROYD SURGERY" }).Locator("[data-test-id='input_quantity'] input").FillAsync("2");
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Quantity of associated service" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Confirm quantities" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Save and continue" }).ClickAsync();
+
+
+        //Planned delivery date
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Planned delivery dates" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Planned delivery date" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Day" }).FillAsync("01");
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Month" }).FillAsync("11");
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Year" }).FillAsync("2026");
+        await Page.GetByRole(AriaRole.Radio, new() { Name = "Yes" }).CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Review planned delivery dates" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Save and continue" }).ClickAsync();
+
+
+        //Select funding sources
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Select funding sources" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Funding sources" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Row).Filter(new() { HasText = "Document Management" }).GetByRole(AriaRole.Link, new() { Name = "Start" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Funding sources" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Radio, new() { Name = "Local funding" }).CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Row).Filter(new() { HasText = "Engineering" }).GetByRole(AriaRole.Link, new() { Name = "Start" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Funding sources" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Radio, new() { Name = "Local funding" }).CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Funding sources" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+
+        //Step 3
+        //Implementation and payment
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Implementation milestones and payment triggers" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Implementation milestones and payment triggers" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Do you want to add a bespoke milestone?" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Radio, new() { Name = "No" }).CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+
+        //Associated service milestone
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Associated service milestones" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Associated service milestones and payment triggers" }).IsVisibleAsync();        
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
+
+        //Associated service requirement
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Associated service requirements" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Associated service requirements" }).IsVisibleAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
 
         //Data processing information

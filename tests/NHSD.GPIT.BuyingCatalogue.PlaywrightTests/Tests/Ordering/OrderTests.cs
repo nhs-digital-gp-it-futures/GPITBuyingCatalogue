@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Builders;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Database;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Generators;
 using Xunit.Abstractions;
 
@@ -195,5 +196,33 @@ public class OrderTests : BaseTest
             implementationPaymentTrigger: paymentTrigger);
         await OrderPages.StepFourReviewAndCompleteOrderAsync();
         await OrderPages.ReviewOrder.AssertOrderCompletedAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.OrderJourney)]
+    public async Task AmendJourneyForCatalogueSolutionOrder()
+    {
+        var orderId = await TestOrderSeeder.CreateCompletedOrderAsync(
+            Fixture.DbConnectionString, "Order for amend journey testing", hasAddOnServices: false);
+
+        await OrderPages.LoginAsync();
+        await OrderPages.Dashboard.GoToOrdersAsync();
+        await Page.Locator($"[data-test-id=\"link-C0{orderId}-01\"]").ClickAsync();
+
+        // ...continue exactly as your existing amend journey does from here
+    }
+
+    [Fact]
+    [Trait("Category", Categories.OrderJourney)]
+    public async Task AmendJourneyForCatalogueSolutionAndAddOnServicesOrder()
+    {
+        var orderId = await TestOrderSeeder.CreateCompletedOrderAsync(
+            Fixture.DbConnectionString, "Order for amend journey for Add on services testing", hasAddOnServices: true);
+
+        await OrderPages.LoginAsync();
+        await OrderPages.Dashboard.GoToOrdersAsync();
+        await Page.Locator($"[data-test-id=\"link-C0{orderId}-01\"]").ClickAsync();
+
+        // ...continue exactly as your existing amend journey does from here
     }
 }
