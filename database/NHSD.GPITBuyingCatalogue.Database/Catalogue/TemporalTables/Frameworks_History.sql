@@ -16,4 +16,5 @@
     IsExpired BIT NOT NULL DEFAULT(0),
     SupportsFoundationSolution BIT NULL DEFAULT(0),
     MaximumTerm INT NULL,
+    SolutionTypeId INT NOT NULL DEFAULT(0),
 );
