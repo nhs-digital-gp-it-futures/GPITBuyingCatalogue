@@ -1,4 +1,5 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageCapabilities.ManageCapabilitiesModel;
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @{
     ViewBag.Title = "Manage capabilities";
 
@@ -41,10 +42,12 @@
                         <nhs-table-column>Status</nhs-table-column>
                         @foreach (var capabilities in Model.Capabilities)
                         {
+                            var statusText = capabilities.Status.ToString();
+                            var statusColour = statusText == "Effective" ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;
                             <nhs-table-row-container>
                                 <nhs-table-cell>@capabilities.Name</nhs-table-cell>
                                 <nhs-table-cell>@capabilities.CapabilityRef</nhs-table-cell>
-                                <nhs-table-cell>@capabilities.Status</nhs-table-cell>                              
+                                <nhs-table-cell><nhs-tag text="@statusText" colour="@statusColour" /></nhs-table-cell>
                             </nhs-table-row-container>
                         }
                     </nhs-table>
