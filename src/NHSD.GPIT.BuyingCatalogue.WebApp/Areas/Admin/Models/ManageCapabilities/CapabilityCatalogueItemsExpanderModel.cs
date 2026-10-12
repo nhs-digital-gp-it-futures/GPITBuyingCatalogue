@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdminManageCapability;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdminManageCapabilities;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageCapabilities;
 

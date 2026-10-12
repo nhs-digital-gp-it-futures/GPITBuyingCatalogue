@@ -1,7 +1,7 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdminManageCapability;
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdminManageCapabilities;
 
 public class AdminManageCapabilityCatalogueItem
 {
