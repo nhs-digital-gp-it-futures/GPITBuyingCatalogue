@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
         public FundingSource(string internalOrgId, CallOffId callOffId, OrderWrapper orderWrapper, OrderItem orderItem)
         {
-            Title = "Funding source";
+            Title = "Confirm Funding source";
             Caption = orderItem.CatalogueItem.Name;
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
@@ -47,17 +47,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
                     return new SelectOption<OrderItemFundingType>(
                         fundingType.Description(),
-                        GetFundingTypeHintText(fundingType),
+                        string.Empty,
                         fundingType);
                 })
             .ToList();
-
-        private static string GetFundingTypeHintText(OrderItemFundingType fundingType) => fundingType switch
-        {
-            OrderItemFundingType.Gpit => "Use central funding from your GPIT allocation.",
-            OrderItemFundingType.Pcarp => "Use central funding from your PCARP allocation.",
-            OrderItemFundingType.LocalFunding => "Use local funding to pay for this item.",
-            _ => throw new ArgumentOutOfRangeException(nameof(fundingType)),
-        };
     }
 }
