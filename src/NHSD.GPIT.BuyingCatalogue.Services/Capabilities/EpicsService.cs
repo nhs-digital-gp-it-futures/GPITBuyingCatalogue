@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
             pageOptions.TotalNumberOfItems = totalNumberOfItems;
 
-            var epics = await query.ToListAsync();
+            var epics = await query.OrderBy(epic => epic.Id).ToListAsync();
 
             return new PagedList<Epic>(epics, pageOptions);
         }
