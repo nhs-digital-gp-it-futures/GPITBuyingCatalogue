@@ -97,30 +97,41 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<OrderSublocationRecipient>> GetSelectedRecipientsAsync(int orderId, IEnumerable<string> selectedRecipients)
+        public async Task<IEnumerable<OrderSublocationRecipient>> GetSelectedRecipientsAsync(int orderNumber, IEnumerable<string> selectedRecipients)
         {
             return await dbContext.OrderSublocationRecipients
                 .Include(x => x.RecipientOdsOrganisation)
                 .Include(x => x.ParentSublocation)
                 .ThenInclude(x => x.SublocationOrganisation)
-                .Where(x => x.OrderId == orderId && selectedRecipients.Contains(x.RecipientOdsOrganisation.Id))
+                .Where(x => x.Order.OrderNumber == orderNumber && selectedRecipients.Contains(x.RecipientOdsOrganisation.Id))
                 .AsNoTracking()
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<OrderItemSublocationRecipient>> GetRecipientOrderItemsDeliveryDatesAsync(int orderId, string recipientId)
+        public async Task<IEnumerable<OrderItemSublocationRecipient>> GetRecipientOrderItemsDeliveryDatesAsync(int orderNumber, string recipientId)
         {
             var orderItems = await dbContext.OrderItemSublocationRecipients
                 .Include(x => x.Recipient)
                 .ThenInclude(x => x.RecipientOdsOrganisation)
-                .Include(x => x.Recipient)
-                .ThenInclude(x => x.ParentSublocation)
-                .ThenInclude(x => x.SublocationOrganisation)
-                .Where(x => x.OrderId == orderId && x.RecipientOdsCode == recipientId)
+                .Include(x => x.OrderItem)
+                .ThenInclude(x => x.CatalogueItem)
+                .Where(x => x.OrderItem.Order.OrderNumber == orderNumber && x.RecipientOdsCode == recipientId)
                 .AsNoTracking()
                 .ToListAsync();
 
             return orderItems;
+        }
+
+        public async Task SetRecipientOrderItemDeliveryDatesAsync(IEnumerable<RecipientOrderItemDeliveryDateDto> deliveryDates)
+        {
+            ArgumentNullException.ThrowIfNull(deliveryDates);
+
+            foreach (var deliveryDate in deliveryDates)
+            {
+                await dbContext.Set<OrderItemSublocationRecipient>()
+                    .Where(r => r.Id == deliveryDate.OrderSublocationRecipientId)
+                    .ExecuteUpdateAsync(s => s.SetProperty(r => r.DeliveryDate, _ => deliveryDate.DeliveryDate));
+            }
         }
     }
 }

@@ -22,7 +22,8 @@ public class SetOrganisationDeliveryDatesModel : NavBaseModel
         CallOffId = callOffId;
         OrderItemId = orderItemId;
         RecipientOrganisationId = recipientOrganisationId;
-        RecipientOrganisationName = recipientOrderItems.First().Recipient.RecipientOdsOrganisation?.Name;
+        RecipientOrganisationName = recipientOrderItems.First()?.Recipient?.RecipientOdsOrganisation?.Name ?? string.Empty;
+        OrderItemsDeliveryDates = [.. recipientOrderItems.Select(x => new OrderItemDeliveryDate(x.Id, x.OrderItem.CatalogueItem.Name, x.DeliveryDate))];
     }
 
     public string InternalOrgId { get; set; }
@@ -36,6 +37,8 @@ public class SetOrganisationDeliveryDatesModel : NavBaseModel
     public string RecipientOrganisationName { get; set; }
 
     public List<string> SelectedRecipients { get; set; }
+
+    public List<OrderItemDeliveryDate> OrderItemsDeliveryDates { get; set; }
 
     public string GetPageTitle()
     {

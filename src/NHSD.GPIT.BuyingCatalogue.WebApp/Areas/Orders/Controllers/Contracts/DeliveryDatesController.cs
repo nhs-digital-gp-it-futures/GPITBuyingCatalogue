@@ -246,6 +246,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             return View(model);
         }
 
+        [HttpPost("{orderItemId}/set-organisation-delivery-dates/{recipientOrganisationId}")]
+        public async Task<IActionResult> SetOrganisationDeliveryDates(string internalOrgId, CallOffId callOffId, int orderItemId, SetOrganisationDeliveryDatesModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var recipientOrderItemDeliveryDates = model.OrderItemsDeliveryDates.Select(x => new RecipientOrderItemDeliveryDateDto
+            {
+                OrderSublocationRecipientId = x.OrderSublocationRecipientId,
+                DeliveryDate = x.Date,
+            }).ToList();
+
+            await deliveryDateService.SetRecipientOrderItemDeliveryDatesAsync(recipientOrderItemDeliveryDates);
+
+            return RedirectToAction(
+                nameof(ChangeOrganisationsDates),
+                typeof(DeliveryDatesController).ControllerName(),
+                new { internalOrgId, callOffId, orderItemId, model.SelectedRecipients });
+        }
+
         [HttpGet("{orderItemId}/edit")]
         public async Task<IActionResult> EditDates(string internalOrgId, CallOffId callOffId, int orderItemId, RoutingSource? source = null)
         {

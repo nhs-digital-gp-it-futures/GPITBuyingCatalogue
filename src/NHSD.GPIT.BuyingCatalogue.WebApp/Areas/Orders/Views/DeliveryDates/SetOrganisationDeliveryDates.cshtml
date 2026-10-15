@@ -21,30 +21,25 @@
                 <nhs-table>
                     <nhs-table-column>Solution or service</nhs-table-column>
                     <nhs-table-column>Planned delivery date</nhs-table-column>
-                    @* @for (var j = 0; j < Model.Recipients[i].Value.Length; j++)
+                    @for (var i = 0; i < Model.OrderItemsDeliveryDates.Count; i++)
                     {
                         <nhs-table-row-container>
                             <nhs-table-cell>
-                                <input type="hidden" asp-for="@Model.Recipients[i].Value[j].Description" />
+                                <input type="hidden" asp-for="@Model.OrderItemsDeliveryDates[i].OrderSublocationRecipientId" />
                                 <div>
-                                    @Model.Recipients[i].Value[j].Description
+                                    @Model.OrderItemsDeliveryDates[i].CatalogueItemName
                                 </div>
                             </nhs-table-cell>
                             <nhs-table-cell>
-                                <input type="hidden" asp-for="@Model.Recipients[i].Value[j].OdsCode" />
-                                @Model.Recipients[i].Value[j].OdsCode
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                <input type="hidden" asp-for="@Model.Recipients[i].Value[j].CommencementDate" />
                                 <nhs-fieldset-form-label asp-for="@Model">
-                                    <nhs-date-input asp-for="@Model.Recipients[i].Value[j]"
-                                                    day="@Model.Recipients[i].Value[j].Day"
-                                                    month="@Model.Recipients[i].Value[j].Month"
-                                                    year="@Model.Recipients[i].Value[j].Year" />
+                                    <nhs-date-input asp-for="@Model.OrderItemsDeliveryDates[i].Date"
+                                                    day="@Model.OrderItemsDeliveryDates[i].Day"
+                                                    month="@Model.OrderItemsDeliveryDates[i].Month"
+                                                    year="@Model.OrderItemsDeliveryDates[i].Year" />
                                 </nhs-fieldset-form-label>
                             </nhs-table-cell>
                         </nhs-table-row-container>
-                    } *@
+                    }
                 </nhs-table>
             </nhs-expander>
 
