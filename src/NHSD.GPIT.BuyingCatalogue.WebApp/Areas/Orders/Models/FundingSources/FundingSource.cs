@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
         public FundingSource(string internalOrgId, CallOffId callOffId, OrderWrapper orderWrapper, OrderItem orderItem)
         {
-            Title = "Confirm Funding source";
+            Title = "Confirm funding source";
             Caption = orderItem.CatalogueItem.Name;
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
