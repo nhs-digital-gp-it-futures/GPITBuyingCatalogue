@@ -20,7 +20,7 @@ resource "azurerm_container_registry_task" "registry_purge" {
             mcr.microsoft.com/acr/acr-cli:0.19 purge
             --registry $RegistryName
             --filter '.*:.*'
-            --ago 14d
+            --ago 30d
             --keep 10
             --untagged
     YAML
