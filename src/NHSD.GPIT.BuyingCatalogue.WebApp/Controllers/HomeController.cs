@@ -87,5 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
         public IActionResult GPIT()
             => View();
+
+        public IActionResult CPLP()
+           => View();
     }
 }
