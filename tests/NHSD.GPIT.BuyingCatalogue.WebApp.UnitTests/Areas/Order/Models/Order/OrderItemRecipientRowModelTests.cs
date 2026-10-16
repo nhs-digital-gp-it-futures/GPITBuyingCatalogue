@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -74,6 +75,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             var model = new OrderItemRecipientRowModel(recipient, amendOrderItemModel, callOffId.ToString());
 
             model.OrderItemId.Should().Be(expectedOrderItem.Id);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Construct_UsesDisplayNumberForMatchingOrderItemAndRecipient(
+            CatalogueItemId catalogueItemId,
+            CallOffId callOffId,
+            int expectedDisplayNumber)
+        {
+            var orderItem = BuildOrderItem(10, catalogueItemId, CatalogueItemType.AssociatedService);
+            var recipient = BuildRecipient([orderItem]);
+            recipient.OrderItemSublocationRecipients.First().DisplayNumber = expectedDisplayNumber;
+            var amendOrderItemModel = new AmendOrderItemModel(
+                callOffId,
+                OrderTypeEnum.Solution,
+                [recipient],
+                null,
+                orderItem,
+                null,
+                null);
+
+            var model = new OrderItemRecipientRowModel(recipient, amendOrderItemModel, callOffId.ToString());
+
+            model.DisplayNumber.Should().Be(expectedDisplayNumber);
         }
 
         private static OrderItem BuildOrderItem(
