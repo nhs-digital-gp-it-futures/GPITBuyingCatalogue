@@ -1,6 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
 @{
     Layout = "Layouts/_FullWidthLayout";
     ViewBag.Title = "Buying Catalogue";
@@ -41,12 +39,13 @@
                                 "Discover solutions and services, run a direct award or on catalogue competition and order digital solutions for your healthcare practices and organisations", 
                                 Url.Action(nameof(HomeController.GPIT), typeof(HomeController).ControllerName())) { WidthClass = "nhsuk-grid-column-one-half"})"/>
 
-                    <partial name="_ActionCard" 
-                        model="@(
-                            new ActionCardModel(
-                                "Community Pharmacy", 
-                                "Discover assured solutions for Community Pharmacy", 
-                                Url.Action(nameof(CommunityPharmacyController.Solutions), typeof(CommunityPharmacyController).ControllerName(), new { area = typeof(CommunityPharmacyController).AreaName() })) { WidthClass = "nhsuk-grid-column-one-half"})"/>
+                    <partial name="_ActionCard"
+                             model="@(
+                             new ActionCardModel(
+                                 "Community Pharmacy",
+                                 "Discover assured solutions for Community Pharmacy",
+                                 Url.Action(nameof(HomeController.CommunityPharmacy), typeof(HomeController).ControllerName()))
+                             { WidthClass = "nhsuk-grid-column-one-half" })" />
                 </div>
             </div>
         </div>
