@@ -84,5 +84,16 @@
                 </li>
             </ul>
         }
+
+        @if (User.CanManageReferenceData())
+        {
+            <h2>Manage reference data</h2>
+            <ul>
+                <li>
+                    <a href="@Url.Action(nameof(ManageCapabilitiesController.Index), typeof(ManageCapabilitiesController).ControllerName())">Manage capabilities</a>
+                    <p>Add or Edit existing capabilities.</p>
+                </li>
+            </ul>
+        }
     </div>
 </div>
