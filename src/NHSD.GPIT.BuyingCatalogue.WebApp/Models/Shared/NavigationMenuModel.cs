@@ -38,8 +38,8 @@ public readonly struct NavigationMenuModel
     private static readonly Func<IUrlHelper, KeyValuePair<string, string>> CommunityPharmacy = urlHelper => new KeyValuePair<string, string>(
         "Community Pharmacy",
         urlHelper.Action(
-            nameof(CommunityPharmacyController.Solutions),
-            typeof(CommunityPharmacyController).ControllerName(),
+            nameof(HomeController.CommunityPharmacy),
+            typeof(HomeController).ControllerName(),
             new { area = typeof(CommunityPharmacyController).AreaName() }));
 
     private static readonly Func<IUrlHelper, KeyValuePair<string, string>> Logout = urlHelper =>
