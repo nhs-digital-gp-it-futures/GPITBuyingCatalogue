@@ -14,17 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
              Dictionary<int, string[]> capabilitiesAndEpics);
 
         Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
-             PageOptions options = null,
-             Dictionary<int, string[]> capabilitiesAndEpics = null,
-             string search = null,
-             string selectedFrameworkId = null,
-             string selectedApplicationTypeIds = null,
-             string selectedHostingTypeIds = null,
-             Dictionary<SupportedIntegrations, int[]> selectedIntegrationsAndTypes = null);
+            SolutionsFilters filters,
+            PageOptions options = null);
 
         Task<IList<CatalogueItem>> GetAllSolutionsFilteredFromFilterIds(
             FilterIdsModel filterIds);
 
-        Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
+        Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15, bool? isCommunityPharmacy = null);
     }
 }

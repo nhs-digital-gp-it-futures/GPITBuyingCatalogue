@@ -35,17 +35,20 @@ class suggestionSearchConfig {
     form: HTMLFormElement;
     defaultInput: HTMLElement;
     formInputLabel: HTMLElement;
+    placeholderText: string;
 
     constructor(modelId: string,
                 ajaxUrl: string,
                 queryParameterName: string,
                 titleText: string,
-                currentPageUrl: string) {
+                currentPageUrl: string,
+                placeholderText: string) {
         this.modelId = modelId;
         this.ajaxUrl = ajaxUrl;
         this.queryParameterName = queryParameterName;
         this.titleText = titleText;
         this.currentPageUrl = currentPageUrl;
+        this.placeholderText = placeholderText;
         let form = document.getElementById(modelId.concat("-search-form"));
 
         if (!(form instanceof HTMLFormElement))
@@ -64,12 +67,14 @@ class suggestionSearchConfig {
             element: document.getElementById(this.modelId.concat("-container")),
             id: this.modelId,
             source: this.source.bind(this),
+            placeholder: this.placeholderText,
             name: this.queryParameterName,
             confirmOnBlur: false,
             onConfirm: this.onConfirm.bind(this),
             defaultValue: this.defaultValue(),
             minLength: 2,
             cssNamespace: "suggestion-search",
+            
             templates: {
                 inputValue: this.inputValue.bind(this),
                 suggestion: this.suggestion.bind(this),
