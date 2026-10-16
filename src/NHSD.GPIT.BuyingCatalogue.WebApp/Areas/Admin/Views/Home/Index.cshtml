@@ -57,6 +57,7 @@
         @if (User.CanManageUsers())
         {
             <h2>Manage users</h2>
+            
             <ul>
                 <li asp-authorize-policy="@CataloguePermissions.ManageUsers">
                     <a href="@Url.Action(nameof(UsersController.Index), typeof(UsersController).ControllerName())">Manage all users</a>
