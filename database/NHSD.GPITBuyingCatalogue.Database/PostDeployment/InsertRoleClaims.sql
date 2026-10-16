@@ -17,6 +17,8 @@ VALUES
     ('ManageBuyerOrganisations', 'buyer-organisations.manage'),
     ('ManageSupplierOrganisations', 'supplier-organisations.manage'),
     ('ManageUsers', 'users.manage'),
+    ('ManageCapabilities', 'capabilities.manage'),
+    ('ManageEpics', 'epics.manage'),
     ('ManageAllowedEmailDomains', 'allowed-email-domains.manage'),
     ('ManageAccountCreationRequests', 'account-creation-requests.manage'),
     ('ManageAllOrders', 'orders.manage');
@@ -36,7 +38,9 @@ VALUES
     (@OnboardingRole, 'ManageCatalogueSolutions'),
     (@OnboardingRole, 'ManageContractingVehicles'),
     (@OnboardingRole, 'ManageSupplierDefinedEpics'),
-    (@OnboardingRole, 'ManageSupplierOrganisations');
+    (@OnboardingRole, 'ManageSupplierOrganisations'),
+    (@OnboardingRole, 'ManageCapabilities'),
+    (@OnboardingRole, 'ManageEpics');
 
 INSERT INTO @RoleClaimMap
 VALUES

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 {
@@ -47,6 +48,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                         && x.Capabilities.Any(y => capabilityIds.Contains(y.Id))
                         && dbContext.CatalogueItemEpics.Any(y => y.EpicId == x.Id))
                 .ToListAsync();
+        }
+
+        public async Task<PagedList<Epic>> GetEpics(PageOptions pageOptions)
+        {
+            var query = dbContext.Epics.AsNoTracking();
+            var totalNumberOfItems = await query.CountAsync();
+            if (pageOptions != null)
+            {
+                if (pageOptions.PageNumber != 0)
+                    query = query.Skip((pageOptions.PageNumber - 1) * pageOptions.PageSize);
+
+                query = query.Take(pageOptions.PageSize);
+            }
+            else
+            {
+                pageOptions = new PageOptions("1", totalNumberOfItems);
+            }
+
+            pageOptions.TotalNumberOfItems = totalNumberOfItems;
+
+            var epics = await query.OrderBy(epic => epic.Id).ToListAsync();
+
+            return new PagedList<Epic>(epics, pageOptions);
         }
     }
 }
