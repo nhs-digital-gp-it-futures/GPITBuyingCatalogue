@@ -1,18 +1,19 @@
-﻿﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
+﻿﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
 @{
     Layout = "Layouts/_FullWidthLayout";
-    ViewBag.Title = "Solutions for Community pharmacies";
+    ViewBag.Title = "Solutions for community pharmacies";
 
     // Required for Adobe Analytics (see _HeadIncludes partial for more info)
     ViewBag.PageName = "CP landing page";
     var steps = new[]
         {
         new StepModel( "Discover solutions", "Explore solutions for NHS services", 1),
-        new StepModel( "Evaluate", "Review solution details including features and pricing", 2),
+        new StepModel( "Evaluate", "Review solution details, including features and pricing", 2),
         new StepModel( "Contact your preferred supplier", "Contact a supplier to discuss your needs", 3)
     };
 }
@@ -29,8 +30,7 @@
                         <p class="nhsuk-body-l nhsuk-u-margin-bottom-0" style="white-space: nowrap;">
                             Discover solutions for NHS services
                         </p>
-
-                        <a href="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })"
+                        <a href="@Url.Action(nameof(CommunityPharmacyController.Solutions), typeof(CommunityPharmacyController).ControllerName(), new { Area = typeof(CommunityPharmacyController).AreaName() })"
                            class="nhsuk-u-padding-2 nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-0"
                            style="display:inline-block; border:2px solid #ffffff; border-radius:4px; color:#ffffff; text-decoration:none;">
                             Discover pharmacy solutions
@@ -63,7 +63,7 @@
             <div class="nhsuk-grid-column-full">
                 <h2>Guidance for buyers</h2>
                 <ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-5">
-                    <partial name="_TransparentActionCard" model="@(new ActionCardModel("How we assure solutions", "Solutions must meet the capabilities and standards set outby the NHS to ensure they are safe and secure for healthcare organisations", Url.Action(nameof(HomeController.CommunityPharmacy), typeof(HomeController).ControllerName())) { ShowChevronIcon = true, WidthClass = "nhsuk-grid-column-one-half" })" />
+                    <partial name="_TransparentActionCard" model="@(new ActionCardModel("How we assure solutions", "Solutions must meet the capabilities and standards set out by the NHS to ensure they are safe and secure for healthcare organisations", Url.Action(nameof(HomeController.CommunityPharmacy), typeof(HomeController).ControllerName())) { ShowChevronIcon = true, WidthClass = "nhsuk-grid-column-one-half" })" />
                     <partial name="_TransparentActionCard" model="@(new ActionCardModel("What to discuss with a supplier", "Guidance for community pharmacists when speaking to suppliers", Url.Action(nameof(HomeController.CommunityPharmacy), typeof(HomeController).ControllerName())) { ShowChevronIcon = true, WidthClass = "nhsuk-grid-column-one-half", OpenInNewTab = true })" />
                 </ul>
             </div>
@@ -77,7 +77,7 @@
             <div class="nhsuk-grid-column-full">
                 <h2>Information for suppliers</h2>
                 <ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-5">
-                    <partial name="_TransparentActionCard" model="@(new ActionCardModel("Become an assured supplier", "Find out how to work with us and become assured supplier", Url.Action(nameof(HomeController.CommunityPharmacy), typeof(HomeController).ControllerName())) { ShowChevronIcon = false, WidthClass = "nhsuk-grid-column-one-half", OpenInNewTab = true })" />
+                    <partial name="_TransparentActionCard" model="@(new ActionCardModel("Become an assured supplier", "Find out how to work with us and become an assured supplier", Url.Action(nameof(HomeController.CommunityPharmacy), typeof(HomeController).ControllerName())) { ShowChevronIcon = false, WidthClass = "nhsuk-grid-column-one-half", OpenInNewTab = true })" />
                     <partial name="_TransparentActionCard" model="@(new ActionCardModel("Roadmap (opens in a new window)", "Information for suppliers about future changes to standards and capalities", "https://nhse-dsic.atlassian.net/wiki/spaces/DCSDR/overview") { ShowChevronIcon = false, WidthClass = "nhsuk-grid-column-one-half", OpenInNewTab = true })" />
                 </ul>
             </div>
@@ -85,16 +85,3 @@
     </div>
 </section>
 
-<section class="help-strip">
-    <div class="nhsuk-width-container app-section__content help-strip__container">
-        <div class="help-strip__content">
-            <h2 class="help-strip__title">Get help</h2>
-            <p class="help-strip__text">
-                For help using the Buying Catalogue, contact the National Commercial and Procurement Hub
-            </p>
-        </div>
-        <a class="help-strip__button" href="#" style="color: #fff;">
-            Contact the Procurement Hub
-        </a>
-    </div>
-</section>

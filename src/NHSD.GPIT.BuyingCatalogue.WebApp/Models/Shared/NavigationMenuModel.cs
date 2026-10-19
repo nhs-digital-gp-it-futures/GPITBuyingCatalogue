@@ -40,7 +40,7 @@ public readonly struct NavigationMenuModel
         urlHelper.Action(
             nameof(HomeController.CommunityPharmacy),
             typeof(HomeController).ControllerName(),
-            new { area = typeof(CommunityPharmacyController).AreaName() }));
+            new { area = string.Empty }));
 
     private static readonly Func<IUrlHelper, KeyValuePair<string, string>> Logout = urlHelper =>
         new KeyValuePair<string, string>(
