@@ -215,6 +215,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             return View(model);
         }
 
+        [HttpPost("{orderItemId}/change-organisations-dates")]
+        public async Task<IActionResult> ChangeOrganisationsDates(string internalOrgId, CallOffId callOffId, int orderItemId)
+        {
+            return RedirectToAction(
+                nameof(Review),
+                typeof(DeliveryDatesController).ControllerName(),
+                new { internalOrgId, callOffId, orderItemId });
+        }
+
         [HttpGet("{orderItemId}/set-organisation-delivery-dates/{recipientOrganisationId}")]
         public async Task<IActionResult> SetOrganisationDeliveryDates(
             string internalOrgId,
@@ -237,7 +246,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 recipientOrganisationId,
                 orderItemRecipients)
             {
-                BackLink = Url.Action(
+                BackLink = string.IsNullOrEmpty(selectedRecipients) 
+                ? Url.Action(
+                    nameof(Review),
+                    typeof(DeliveryDatesController).ControllerName(),
+                    new { internalOrgId, callOffId, orderItemId })
+                : Url.Action(
                     nameof(ChangeOrganisationsDates),
                     typeof(DeliveryDatesController).ControllerName(),
                     new { internalOrgId, callOffId, orderItemId, selectedRecipients }),
@@ -247,7 +261,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         }
 
         [HttpPost("{orderItemId}/set-organisation-delivery-dates/{recipientOrganisationId}")]
-        public async Task<IActionResult> SetOrganisationDeliveryDates(string internalOrgId, CallOffId callOffId, int orderItemId, SetOrganisationDeliveryDatesModel model)
+        public async Task<IActionResult> SetOrganisationDeliveryDates(
+            string internalOrgId,
+            CallOffId callOffId,
+            int orderItemId,
+            SetOrganisationDeliveryDatesModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -261,6 +279,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             }).ToList();
 
             await deliveryDateService.SetRecipientOrderItemDeliveryDatesAsync(recipientOrderItemDeliveryDates);
+
+            if (model.SelectedRecipients is null || model.SelectedRecipients.Count == 0)
+            {
+                return RedirectToAction(
+                    nameof(Review),
+                    typeof(DeliveryDatesController).ControllerName(),
+                    new { internalOrgId, callOffId, orderItemId });
+            }
 
             return RedirectToAction(
                 nameof(ChangeOrganisationsDates),
@@ -389,12 +415,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 new { internalOrgId, callOffId, orderItemId });
         }
 
-        [HttpGet("review")]
-        public async Task<IActionResult> Review(string internalOrgId, CallOffId callOffId)
+        [HttpGet("{orderItemId}/review")]
+        public async Task<IActionResult> Review(string internalOrgId, CallOffId callOffId, int orderItemId)
         {
             var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
-            var model = new ReviewModel(orderWrapper)
+            var model = new ReviewModel(orderWrapper, orderItemId)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
