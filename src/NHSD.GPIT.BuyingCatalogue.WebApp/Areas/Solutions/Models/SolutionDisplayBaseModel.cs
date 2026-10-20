@@ -140,6 +140,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             {
                 breadcrumbItems.Add(new()
                 {
+                    Action = nameof(HomeController.CommunityPharmacy),
+                    Controller = typeof(HomeController).ControllerName(),
+                    Name = "Community Pharmacy",
+                    Show = true,
+                    RouteData = new Dictionary<string, string> { { "area", typeof(HomeController).AreaName() } },
+                });
+                breadcrumbItems.Add(new()
+                {
                     Action = nameof(CommunityPharmacyController.Solutions),
                     Controller = typeof(CommunityPharmacyController).ControllerName(),
                     Name = "Catalogue solutions",
@@ -149,6 +157,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             }
             else
             {
+                breadcrumbItems.Add(new()
+                {
+                    Action = nameof(HomeController.GPIT),
+                    Controller = typeof(HomeController).ControllerName(),
+                    Name = "General Practice",
+                    Show = true,
+                    RouteData = new Dictionary<string, string> { { "area", typeof(HomeController).AreaName() } },
+                });
                 breadcrumbItems.Add(new()
                 {
                     Action = nameof(SolutionsController.Index),
