@@ -1,9 +1,5 @@
-﻿﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home﻿
 @{
     Layout = "Layouts/_FullWidthLayout";
     ViewBag.Title = "Solutions for community pharmacies";
@@ -18,7 +14,33 @@
     };
 }
 
-<section class="nhsuk-hero nhsuk-hero--image nhsuk-hero--image-description ">
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(HomeController.Index)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
+                       class="nhsuk-breadcrumb__link">Home</a>
+                </li>
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(HomeController.CommunityPharmacy)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
+                       class="nhsuk-breadcrumb__link">Community Pharmacy</a>
+                </li>
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(CommunityPharmacyController.Solutions)"
+                       asp-controller="@typeof(CommunityPharmacyController).ControllerName()"
+                       asp-area="@typeof(CommunityPharmacyController).AreaName()"
+                       class="nhsuk-breadcrumb__link">Catalogue Solutions</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
+
+<section class="nhsuk-hero nhsuk-hero--image nhsuk-hero--image-description app-community-pharmacy-hero">
     <div class="nhsuk-hero__overlay">
         <div class="nhsuk-width-container ">
             <div class="nhsuk-grid-row">
