@@ -12,7 +12,6 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
-using NHSD.GPIT.BuyingCatalogue.Services.Contracts;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
@@ -63,6 +62,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             }
 
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+            int? orderItemId = order.GetOrderItemIds().Count > 0 ? order.GetOrderItemIds()[0] : null;
+
+            if (model.ApplyToAll == true)
+            {
+                await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.Date!.Value);
+
+                return RedirectToAction(
+                    nameof(Review),
+                    typeof(DeliveryDatesController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
 
             if (order.DeliveryDate.HasValue && order.DeliveryDate.Value != model.Date!.Value)
             {
@@ -75,7 +85,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             }
 
             await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.Date!.Value);
-            int? orderItemId = order.GetOrderItemIds().Count > 0 ? order.GetOrderItemIds()[0] : null;
 
             return RedirectToAction(
                 nameof(SelectOrganisations),
@@ -216,12 +225,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         }
 
         [HttpPost("{orderItemId}/change-organisations-dates")]
-        public async Task<IActionResult> ChangeOrganisationsDates(string internalOrgId, CallOffId callOffId, int orderItemId)
+        public async Task<IActionResult> ChangeOrganisationsDates(string internalOrgId, CallOffId callOffId)
         {
             return RedirectToAction(
                 nameof(Review),
                 typeof(DeliveryDatesController).ControllerName(),
-                new { internalOrgId, callOffId, orderItemId });
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("{orderItemId}/set-organisation-delivery-dates/{recipientOrganisationId}")]
@@ -250,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 ? Url.Action(
                     nameof(Review),
                     typeof(DeliveryDatesController).ControllerName(),
-                    new { internalOrgId, callOffId, orderItemId })
+                    new { internalOrgId, callOffId })
                 : Url.Action(
                     nameof(ChangeOrganisationsDates),
                     typeof(DeliveryDatesController).ControllerName(),
@@ -285,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 return RedirectToAction(
                     nameof(Review),
                     typeof(DeliveryDatesController).ControllerName(),
-                    new { internalOrgId, callOffId, orderItemId });
+                    new { internalOrgId, callOffId });
             }
 
             return RedirectToAction(
@@ -415,12 +424,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 new { internalOrgId, callOffId, orderItemId });
         }
 
-        [HttpGet("{orderItemId}/review")]
-        public async Task<IActionResult> Review(string internalOrgId, CallOffId callOffId, int orderItemId)
+        [HttpGet("review")]
+        public async Task<IActionResult> Review(string internalOrgId, CallOffId callOffId)
         {
             var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
-            var model = new ReviewModel(orderWrapper, orderItemId)
+            var model = new ReviewModel(orderWrapper)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),

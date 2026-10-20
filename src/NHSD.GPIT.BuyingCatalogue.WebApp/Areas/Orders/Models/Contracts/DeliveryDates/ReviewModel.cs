@@ -10,13 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 {
     public class ReviewModel : NavBaseModel
     {
-        private readonly Dictionary<int, string> orderItemNames = new();
+        private readonly Dictionary<int, string> orderItemNames = [];
 
         public ReviewModel()
         {
         }
 
-        public ReviewModel(OrderWrapper orderWrapper, int orderItemId)
+        public ReviewModel(OrderWrapper orderWrapper)
         {
             var order = orderWrapper.Order;
             InternalOrgId = order.OrderingParty.InternalIdentifier;
@@ -25,17 +25,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             PracticeReorganisationName = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient?.Name ?? string.Empty;
             DeliveryDate = order.DeliveryDate;
 
+            var orderItems = order.GetOrderItemIds();
+            if (orderItems.Count == 0)
+            {
+                throw new InvalidOperationException($"No order items found for CallOffId {CallOffId}");
+            }
+
+            OrderItemId = orderItems[0];
+
             orderItemNames = order.OrderItems.ToDictionary(
                 x => x.Id,
                 x => x.CatalogueItem.Name);
 
-            var orderItem = orderWrapper.Order.OrderItem(orderItemId);
+            var orderItem = orderWrapper.Order.OrderItem(OrderItemId);
             var item = orderItem.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
                 ? orderItem.Parent
                 : orderItem;
 
             AssociatedServiceIds = [.. order.GetAssociatedServices().Select(x => x.Id)];
-            OrderItemId = orderItemId;
             Recipients = orderWrapper.DetermineOrderRecipients(item).GroupBy(y => y.ParentSublocation.SublocationOrganisation.Name)
                 .Select(x => new KeyValuePair<string, OrderSublocationRecipient[]>(
                     x.Key,
