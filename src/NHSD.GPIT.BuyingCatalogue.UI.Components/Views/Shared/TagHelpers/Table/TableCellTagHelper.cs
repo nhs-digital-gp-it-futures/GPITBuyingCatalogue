@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 {
-    [HtmlTargetElement(TagHelperName, ParentTag = TableRowContainerTagHelper.TagHelperName)]
+    [HtmlTargetElement(TagHelperName)]
     public sealed class TableCellTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-table-cell";
