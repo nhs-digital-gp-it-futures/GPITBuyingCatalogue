@@ -241,6 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             string recipientOrganisationId,
             string selectedRecipients)
         {
+            var orderWrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
             var orderItemRecipients = await deliveryDateService.GetRecipientOrderItemsDeliveryDatesAsync(callOffId.OrderNumber, recipientOrganisationId);
 
             if (orderItemRecipients is null || !orderItemRecipients.Any())
@@ -253,7 +254,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 callOffId,
                 orderItemId,
                 recipientOrganisationId,
-                orderItemRecipients)
+                orderItemRecipients,
+                orderWrapper.Order)
             {
                 BackLink = string.IsNullOrEmpty(selectedRecipients) 
                 ? Url.Action(

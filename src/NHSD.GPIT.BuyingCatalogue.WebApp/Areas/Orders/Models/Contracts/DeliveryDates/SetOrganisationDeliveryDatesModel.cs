@@ -16,14 +16,15 @@ public class SetOrganisationDeliveryDatesModel : NavBaseModel
         CallOffId callOffId,
         int orderItemId,
         string recipientOrganisationId,
-        IEnumerable<OrderItemSublocationRecipient> recipientOrderItems)
+        IEnumerable<OrderItemSublocationRecipient> recipientOrderItems,
+        Order order)
     {
         InternalOrgId = internalOrgId;
         CallOffId = callOffId;
         OrderItemId = orderItemId;
         RecipientOrganisationId = recipientOrganisationId;
         RecipientOrganisationName = recipientOrderItems.First()?.Recipient?.RecipientOdsOrganisation?.Name ?? string.Empty;
-        OrderItemsDeliveryDates = [.. recipientOrderItems.Select(x => new OrderItemDeliveryDate(x.Id, x.OrderItem.CatalogueItem.Name, x.DeliveryDate))];
+        OrderItemsDeliveryDates = [.. recipientOrderItems.Select(x => new OrderItemDeliveryDate(x.Id, x.OrderItem.CatalogueItem.Name, x.DeliveryDate, order))];
     }
 
     public string InternalOrgId { get; set; }

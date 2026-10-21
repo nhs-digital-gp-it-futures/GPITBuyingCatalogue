@@ -22,6 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             InternalOrgId = order.OrderingParty.InternalIdentifier;
             CallOffId = order.CallOffId;
             OrderType = order.OrderType;
+            SolutionName = order.OrderType.GetSolutionNameFromOrder(order);
             PracticeReorganisationName = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient?.Name ?? string.Empty;
             DeliveryDate = order.DeliveryDate;
 
@@ -62,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public DateTime? DeliveryDate { get; set; }
 
-        public List<int> AssociatedServiceIds { get; set; } = new();
+        public List<int> AssociatedServiceIds { get; set; } = [];
 
         public Dictionary<string, OrderSublocationRecipient[]> Recipients { get; set; }
 
