@@ -174,4 +174,36 @@ public class CommunityPharmacyController(ISolutionsFilterService solutionsFilter
 
         return View(new CommunityPharmacyHostingTypeModel(item, contentStatus));
     }
+
+    [HttpGet("{solutionId}/development-plans")]
+    public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId)
+    {
+        var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
+        if (item is null)
+            return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+        if (item.PublishedStatus == PublicationStatus.Suspended)
+            return RedirectToAction(nameof(Summary), new { solutionId });
+
+        var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+        var workOffPlans = await solutionsService.GetWorkOffPlans(solutionId);
+
+        return View(new CommunityPharmacyDevelopmentPlansModel(item, workOffPlans, contentStatus));
+    }
+
+    [HttpGet("{solutionId}/supplier-details")]
+    public async Task<IActionResult> SupplierDetails(CatalogueItemId solutionId)
+    {
+        var item = await solutionsService.GetSolutionWithSupplierDetails(solutionId);
+        if (item is null)
+            return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+        if (item.PublishedStatus == PublicationStatus.Suspended)
+            return RedirectToAction(nameof(Summary), new { solutionId });
+
+        var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+        return View(new CommunityPharmacySupplierDetails(item, contentStatus));
+    }
 }

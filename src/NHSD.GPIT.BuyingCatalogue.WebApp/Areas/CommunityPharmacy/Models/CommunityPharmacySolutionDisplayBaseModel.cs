@@ -20,7 +20,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
         : base(catalogueItem, contentStatus, isSubPage)
     {
         SetBreadcrumb();
-        SetSections(contentStatus);
+        SetSections();
         SetPaginationFooter();
     }
 
@@ -55,7 +55,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
             };
         }
 
-    private void SetSections(CatalogueItemContentStatus contentStatus)
+    private void SetSections()
         {
             Sections = new List<SectionModel>
             {
@@ -117,7 +117,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.DevelopmentPlans),
+                    Action = nameof(CommunityPharmacyController.DevelopmentPlans),
                     Controller = ControllerName,
                     Name = "Development plans",
                     Show = CatalogueItemContentStatus.ShowDevelopmentPlans,
