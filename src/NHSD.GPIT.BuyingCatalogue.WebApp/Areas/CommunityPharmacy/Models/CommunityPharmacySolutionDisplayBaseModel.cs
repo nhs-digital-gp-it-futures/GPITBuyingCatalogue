@@ -109,7 +109,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.HostingType),
+                    Action = nameof(CommunityPharmacyController.HostingType),
                     Controller = ControllerName,
                     Name = "Hosting type",
                     Show = true,

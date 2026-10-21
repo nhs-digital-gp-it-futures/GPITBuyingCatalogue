@@ -159,4 +159,19 @@ public class CommunityPharmacyController(ISolutionsFilterService solutionsFilter
 
         return View(new CommunityPharmacyApplicationTypesModel(item, contentStatus));
     }
+
+    [HttpGet("{solutionId}/hosting-type")]
+    public async Task<IActionResult> HostingType(CatalogueItemId solutionId)
+    {
+        var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
+        if (item is null)
+            return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+        if (item.PublishedStatus == PublicationStatus.Suspended)
+            return RedirectToAction(nameof(Summary), new { solutionId });
+
+        var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+        return View(new CommunityPharmacyHostingTypeModel(item, contentStatus));
+    }
 }
