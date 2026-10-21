@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                 .ToListAsync();
         }
 
-        public async Task<PagedList<Epic>> GetEpics(PageOptions pageOptions)
+        public async Task<PagedList<Epic>> GetEpicsAsync(PageOptions pageOptions)
         {
             var query = dbContext.Epics.AsNoTracking();
             var totalNumberOfItems = await query.CountAsync();

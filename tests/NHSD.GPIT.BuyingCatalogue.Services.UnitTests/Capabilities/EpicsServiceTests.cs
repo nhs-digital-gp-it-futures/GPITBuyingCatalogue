@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
 
             var pageOptions = new PageOptions(page, 2);
 
-            var result = await service.GetEpics(pageOptions);
+            var result = await service.GetEpicsAsync(pageOptions);
 
             result.Items.Should().HaveCount(pageSize);
             result.Options.Should().BeSameAs(pageOptions);
@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             dbContext.Epics.AddRange(epics);
             await dbContext.SaveChangesAsync();
 
-            var result = await service.GetEpics(null);
+            var result = await service.GetEpicsAsync(null);
 
             result.Items.Should().BeEquivalentTo(epics);
             result.Options.PageNumber.Should().Be(1);
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         {
             dbContext.Epics.Should().BeEmpty();
 
-            var result = await service.GetEpics(null);
+            var result = await service.GetEpicsAsync(null);
 
             result.Items.Should().BeEmpty();
             result.Options.PageNumber.Should().Be(1);

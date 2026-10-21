@@ -22,13 +22,13 @@ public class ManageEpicsController(IEpicsService epicsService) : Controller
             PageSize = 20,
         };
 
-        var pagedList = await epicsService.GetEpics(inputOptions);
+        var pagedList = await epicsService.GetEpicsAsync(inputOptions);
         var model = new ViewEpicsModel(pagedList.Items.Select(epic => new Epic(
                 epic.Name,
                 epic.Id,
                 epic.IsActive)))
         {
-            Title = "Manage Epics",
+            Title = "Manage epics",
             BackLink = Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName()),
             Advice = "View existing epics",
             PageOptions = pagedList.Options,

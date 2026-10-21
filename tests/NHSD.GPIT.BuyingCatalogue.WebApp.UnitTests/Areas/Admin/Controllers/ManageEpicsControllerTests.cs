@@ -38,11 +38,11 @@ public static class ManageEpicsControllerTests
         [Frozen] IEpicsService epicsService,
         ManageEpicsController controller)
     {
-        epicsService.GetEpics(Arg.Any<PageOptions>()).Returns(epics);
+        epicsService.GetEpicsAsync(Arg.Any<PageOptions>()).Returns(epics);
 
         await controller.Index(page);
 
-        await epicsService.Received().GetEpics(
+        await epicsService.Received().GetEpicsAsync(
             Arg.Is<PageOptions>(x => x.PageNumber == expectedPageNumber && x.PageSize == 20));
     }
 
@@ -59,7 +59,7 @@ public static class ManageEpicsControllerTests
         epics.Items[0].IsActive = true;
         epics.Items.Skip(1).ToList().ForEach(x => x.IsActive = false);
 
-        epicsService.GetEpics(Arg.Any<PageOptions>()).Returns(epics);
+        epicsService.GetEpicsAsync(Arg.Any<PageOptions>()).Returns(epics);
         urlHelper.Action(Arg.Any<UrlActionContext>()).Returns(backLink);
 
         var expected = new ViewEpicsModel(epics.Items.Select(x => new EpicModel(x.Name, x.Id, x.IsActive)))
@@ -84,7 +84,7 @@ public static class ManageEpicsControllerTests
         [Frozen] IEpicsService epicsService,
         ManageEpicsController controller)
     {
-        epicsService.GetEpics(Arg.Any<PageOptions>()).Returns(new PagedList<Epic>(new List<Epic>(), pageOptions));
+        epicsService.GetEpicsAsync(Arg.Any<PageOptions>()).Returns(new PagedList<Epic>(new List<Epic>(), pageOptions));
 
         var result = (await controller.Index(null)).As<ViewResult>();
 
