@@ -132,8 +132,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Controller = typeof(HomeController).ControllerName(),
                     Name = "Home",
                     Show = true,
-                    RouteData = new Dictionary<string, string> { { "area", typeof(HomeController).AreaName() } },
-                }
+                    RouteData = new Dictionary<string, string> { { "area", typeof(HomeController).AreaName() }, },
+                },
             };
 
             if (solutionType == SolutionType.CommunityPharmacy)
