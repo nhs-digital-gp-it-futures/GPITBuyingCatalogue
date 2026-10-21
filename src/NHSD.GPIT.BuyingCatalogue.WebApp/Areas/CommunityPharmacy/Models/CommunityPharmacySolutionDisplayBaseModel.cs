@@ -19,7 +19,9 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
         bool isSubPage = false)
         : base(catalogueItem, contentStatus, isSubPage)
     {
-        
+        SetBreadcrumb();
+        SetSections(contentStatus);
+        SetPaginationFooter();
     }
 
     private void SetBreadcrumb()
@@ -36,11 +38,19 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.Index),
-                    Controller = typeof(SolutionsController).ControllerName(),
-                    Name = "Catalogue solutions",
+                    Action = nameof(HomeController.Index),
+                    Controller = typeof(HomeController).ControllerName(),
+                    Name = "Community pharmacy",
                     Show = true,
-                    RouteData = new Dictionary<string, string> { { "area", typeof(SolutionsController).AreaName() }, },
+                    RouteData = new Dictionary<string, string> { { "area", typeof(HomeController).AreaName() }, },
+                },
+                new()
+                {
+                    Action = nameof(CommunityPharmacyController.Solutions),
+                    Controller = typeof(CommunityPharmacyController).ControllerName(),
+                    Name = "Pharmacy solutions",
+                    Show = true,
+                    RouteData = new Dictionary<string, string> { { "area", typeof(CommunityPharmacyController).AreaName() }, },
                 },
             };
         }
@@ -51,7 +61,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
             {
                 new()
                 {
-                    Action = nameof(SolutionsController.Description),
+                    Action = nameof(CommunityPharmacyController.Summary),
                     Controller = ControllerName,
                     Name = "Summary",
                     Show = CatalogueItemContentStatus.ShowDescription,
@@ -59,15 +69,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.Features),
-                    Controller = ControllerName,
-                    Name = "Features",
-                    Show = contentStatus.ShowFeatures,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
-                },
-                new()
-                {
-                    Action = nameof(SolutionsController.ListPrice),
+                    Action = nameof(CommunityPharmacyController.ListPrice),
                     Controller = ControllerName,
                     Name = "List price",
                     Show = CatalogueItemContentStatus.ShowListPrice,
@@ -75,55 +77,31 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.Capabilities),
+                    Action = nameof(CommunityPharmacyController.Capabilities),
                     Controller = ControllerName,
-                    Name = "Capabilities and Epics",
+                    Name = "Capabilities",
                     Show = CatalogueItemContentStatus.ShowCapabilities,
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.AdditionalServices),
+                    Action = nameof(CommunityPharmacyController.Standards),
                     Controller = ControllerName,
-                    Name = "Additional services",
-                    Show = contentStatus.ShowAdditionalServices,
+                    Name = "Standards",
+                    Show = CatalogueItemContentStatus.ShowStandards,
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.AssociatedServices),
+                    Action = nameof(CommunityPharmacyController.Integrations),
                     Controller = ControllerName,
-                    Name = "Associated services",
-                    Show = contentStatus.ShowAssociatedServices,
+                    Name = "Integrations",
+                    Show = true,
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.Implementation),
-                    Controller = ControllerName,
-                    Name = "Implementation",
-                    Show = contentStatus.ShowImplementation,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
-                },
-                new()
-                {
-                    Action = nameof(SolutionsController.SupplierDetails),
-                    Controller = ControllerName,
-                    Name = "Supplier details",
-                    Show = CatalogueItemContentStatus.ShowSupplierDetails,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
-                },
-                new()
-                {
-                    Action = nameof(SolutionsController.Interoperability),
-                    Controller = ControllerName,
-                    Name = nameof(SolutionsController.Interoperability),
-                    Show = contentStatus.ShowInteroperability,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
-                },
-                new()
-                {
-                    Action = nameof(SolutionsController.ApplicationTypes),
+                    Action = nameof(CommunityPharmacyController.ApplicationTypes),
                     Controller = ControllerName,
                     Name = "Application type",
                     Show = CatalogueItemContentStatus.ShowApplicationsType,
@@ -134,31 +112,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                     Action = nameof(SolutionsController.HostingType),
                     Controller = ControllerName,
                     Name = "Hosting type",
-                    Show = contentStatus.ShowHosting,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
-                },
-                new()
-                {
-                    Action = nameof(SolutionsController.DataProcessingInformation),
-                    Controller = ControllerName,
-                    Name = "Data processing information",
-                    Show = CatalogueItemContentStatus.ShowDataProcessingInformation,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
-                },
-                new()
-                {
-                    Action = nameof(SolutionsController.Standards),
-                    Controller = ControllerName,
-                    Name = "Standards",
-                    Show = CatalogueItemContentStatus.ShowStandards,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
-                },
-                new()
-                {
-                    Action = nameof(SolutionsController.ServiceLevelAgreement),
-                    Controller = ControllerName,
-                    Name = "Service Level Agreement",
-                    Show = CatalogueItemContentStatus.ShowServiceLevelAgreements,
+                    Show = true,
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -167,6 +121,14 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                     Controller = ControllerName,
                     Name = "Development plans",
                     Show = CatalogueItemContentStatus.ShowDevelopmentPlans,
+                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.SupplierDetails),
+                    Controller = ControllerName,
+                    Name = "Supplier contact details",
+                    Show = CatalogueItemContentStatus.ShowSupplierDetails,
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
             };

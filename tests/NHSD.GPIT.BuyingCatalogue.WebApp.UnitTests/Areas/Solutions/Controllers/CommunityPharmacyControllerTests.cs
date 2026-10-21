@@ -7,10 +7,13 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
@@ -27,6 +30,73 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "CommunityPharmacy");
             typeof(CommunityPharmacyController)
                 .Should().BeDecoratedWith<RouteAttribute>(x => x.Template == "community-pharmacy");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task ApplicationTypes_PublishedSolution_ReturnsCommunityPharmacyModel(
+            Solution solution,
+            CatalogueItemContentStatus contentStatus,
+            [Frozen] ISolutionsService solutionsService,
+            CommunityPharmacyController controller)
+        {
+            var catalogueItem = solution.CatalogueItem;
+            catalogueItem.PublishedStatus = PublicationStatus.Published;
+            solution.ApplicationTypeDetail = new ApplicationTypeDetail
+            {
+                ApplicationTypes = new() { ApplicationType.BrowserBased.EnumMemberName() },
+                BrowsersSupported = new() { new() { BrowserName = "Chrome", MinimumBrowserVersion = "100" } },
+            };
+            solutionsService.GetSolutionWithBasicInformation(catalogueItem.Id).Returns(catalogueItem);
+            solutionsService.GetContentStatusForCatalogueItem(catalogueItem.Id).Returns(contentStatus);
+
+            var result = (await controller.ApplicationTypes(catalogueItem.Id)).Should().BeOfType<ViewResult>().Subject;
+            var model = result.Model.Should().BeOfType<CommunityPharmacyApplicationTypesModel>().Subject;
+
+            result.ViewName.Should().BeNullOrEmpty();
+            model.ApplicationTypesDetails.ApplicationTypes.Items.Should().ContainKey("Browser-based application");
+            model.ApplicationTypesDetails.BrowserBasedApplication.Items["Supported browser types"].List
+                .Should().Equal("Chrome (Version 100)");
+            model.ApplicationTypesDetails.NativeDesktopApplication.Should().BeNull();
+            model.ApplicationTypesDetails.NativeMobileApplication.Should().BeNull();
+            model.SelectedSection.Should().Be("Application type");
+            model.Sections.Single(s => s.Selected).Action.Should().Be(nameof(CommunityPharmacyController.ApplicationTypes));
+            model.BreadcrumbItems.Last().Controller.Should().Be("CommunityPharmacy");
+            model.PaginationFooter.Previous.Name.Should().Be("Integrations");
+            model.PaginationFooter.Next.Name.Should().Be("Hosting type");
+            model.PaginationFooter.FullWidth.Should().BeTrue();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task ApplicationTypes_MissingSolution_ReturnsBadRequest(
+            CatalogueItemId solutionId,
+            [Frozen] ISolutionsService solutionsService,
+            CommunityPharmacyController controller)
+        {
+            solutionsService.GetSolutionWithBasicInformation(solutionId).Returns(default(CatalogueItem));
+
+            var result = (await controller.ApplicationTypes(solutionId)).Should().BeOfType<BadRequestObjectResult>().Subject;
+
+            result.Value.Should().Be($"No Catalogue Item found for Id: {solutionId}");
+            await solutionsService.DidNotReceive().GetContentStatusForCatalogueItem(Arg.Any<CatalogueItemId>());
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task ApplicationTypes_SuspendedSolution_RedirectsToSummary(
+            CatalogueItem catalogueItem,
+            [Frozen] ISolutionsService solutionsService,
+            CommunityPharmacyController controller)
+        {
+            catalogueItem.PublishedStatus = PublicationStatus.Suspended;
+            solutionsService.GetSolutionWithBasicInformation(catalogueItem.Id).Returns(catalogueItem);
+
+            var result = (await controller.ApplicationTypes(catalogueItem.Id)).Should().BeOfType<RedirectToActionResult>().Subject;
+
+            result.ActionName.Should().Be(nameof(CommunityPharmacyController.Summary));
+            result.RouteValues["solutionId"].Should().Be(catalogueItem.Id);
+            await solutionsService.DidNotReceive().GetContentStatusForCatalogueItem(Arg.Any<CatalogueItemId>());
         }
 
         [Theory]

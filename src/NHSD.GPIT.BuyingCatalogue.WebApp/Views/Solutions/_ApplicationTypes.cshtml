@@ -1,0 +1,17 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.IApplicationTypesDisplayModel
+
+<p>This catalogue solution is supported by the following client application types:</p>
+
+@Html.DisplayFor(m => m.ApplicationTypesDetails.ApplicationTypes)
+
+<nhs-expander label-text="Browser-based application" open="false">
+    @Html.DisplayFor(m => m.ApplicationTypesDetails.BrowserBasedApplication)
+</nhs-expander>
+
+<nhs-expander label-text="Native desktop application" open="false">
+    @Html.DisplayFor(m => m.ApplicationTypesDetails.NativeDesktopApplication)
+</nhs-expander>
+
+<nhs-expander label-text="Native mobile or tablet application" open="false">
+    @Html.DisplayFor(m => m.ApplicationTypesDetails.NativeMobileApplication)
+</nhs-expander>

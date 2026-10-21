@@ -2,7 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Solutions
 {
     public class SolutionStandardsExpanderModel
     {

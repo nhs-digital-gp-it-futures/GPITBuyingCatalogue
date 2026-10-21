@@ -1,0 +1,63 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models.SummaryModel
+<partial name="_SolutionSummary" model="Model" />
+@if (Model.HasSummary())
+{
+    <h2>Overview</h2>
+    <p class="community-pharmacy-summary__overview">@Model.Summary</p>
+}
+
+<div class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-5">
+    <div class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+        <nhs-card title="NHS assurance" size="Medium">
+            <ul class="nhsuk-list nhsuk-list--tick nhsuk-u-margin-bottom-0">
+                @foreach (var item in Model.NhsAssurance)
+                {
+                    <li>
+                        <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                            <path stroke-width="4" stroke-linecap="round" d="M18.4 7.8l-8.5 8.4L5.6 12"></path>
+                        </svg>
+                        @item
+                    </li>
+                }
+            </ul>
+        </nhs-card>
+    </div>
+    @if (Model.HasContactDetails() || Model.HasSupplierUrl())
+    {
+        <div class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+            <nhs-card title="Supplier contact details">
+                @if (Model.HasContactDetails())
+                {
+                    foreach (var contact in Model.Contacts)
+                    {
+                        <div class="community-pharmacy-summary__contact-panel nhsuk-u-padding-3 nhsuk-u-margin-bottom-4">
+                            @if (!string.IsNullOrWhiteSpace(contact.NameOrDepartment))
+                            {
+                                <h3 class="nhsuk-heading-xs nhsuk-u-margin-bottom-1">@contact.NameOrDepartment</h3>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(contact.PhoneNumber))
+                            {
+                                <p class="nhsuk-u-margin-bottom-0">@contact.PhoneNumber</p>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(contact.Email))
+                            {
+                                <p class="nhsuk-u-margin-bottom-0"><a href="mailto:@contact.Email">@contact.Email</a></p>
+                            }
+                        </div>
+                    }
+                }
+                @if (Model.HasSupplierUrl())
+                {
+                    <div class="community-pharmacy-summary__contact-panel nhsuk-u-padding-3 nhsuk-u-margin-bottom-4">
+                        <h3 class="nhsuk-heading-xs nhsuk-u-margin-bottom-1">Website</h3>
+                        <p class="nhsuk-u-margin-bottom-0"><a href="@Model.SupplierUrl">@Model.SupplierUrl</a></p>
+                    </div>
+                }
+                @if (Model.HasContactDetails() && !string.IsNullOrWhiteSpace(Model.Contacts.FirstOrDefault()?.Email))
+                {
+                    <a class="nhsuk-button nhsuk-u-width-full nhsuk-u-margin-bottom-0" href="mailto:@Model.Contacts.FirstOrDefault()?.Email" draggable="false">Contact @Model.SupplierName</a>
+                }
+            </nhs-card>
+        </div>
+    }
+</div>

@@ -1,10 +1,10 @@
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.CapabilitiesViewModel
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.ICapabilitiesModel
 
 <nhs-table>
     <nhs-table-column>Capability</nhs-table-column>
     @if (!string.IsNullOrWhiteSpace(Model.CapabilitiesHeading))
     {
-        <nhs-table-column>Details</nhs-table-column>
+        <nhs-table-column numeric="true">Details</nhs-table-column>
     }
     else
     {

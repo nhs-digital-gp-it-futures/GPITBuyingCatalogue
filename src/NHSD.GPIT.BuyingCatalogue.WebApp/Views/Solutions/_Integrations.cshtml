@@ -1,0 +1,127 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.IIntegrationsModel
+
+<p>View information about the systems this catalogue solution integrates with to exchange data:</p>
+<h2>
+    NHS assured integrations
+</h2>
+<p>
+    There are three types of integrations specified and assured by the NHS: IM1, GP Connect and the NHS App.
+</p>
+<ul>
+    <li>
+        <a href="https://digital.nhs.uk/services/gp-it-futures-systems/im1-pairing-integration" target="_blank">More information on IM1 (opens in new tab)</a>
+    </li>
+    <li>
+        <a href="https://digital.nhs.uk/services/gp-connect" target="_blank">More information on GP Connect (opens in new tab)</a>
+    </li>
+    <li>
+        <a href="https://digital.nhs.uk/services/nhs-app" target="_blank">More information on the NHS App (opens in new tab)</a>
+    </li>
+</ul>
+<hr>
+
+@if (Model.IM1Integrations.Any())
+{
+    <h2 class="nhsuk-heading-s">IM1 integrations</h2>
+
+    @foreach (var integrations in Model.IM1Integrations.GroupBy(x => x.IntegrationType.Name))
+    {
+        <nhs-expander label-text="@($"IM1 {integrations.Key}")" open="false">
+            <nhs-table data-test-id="table-integrations-@integrations.Key.ToLowerInvariant().Replace(' ', '-')">
+                <nhs-table-column>
+                    Provider or<br>consumer
+                </nhs-table-column>
+                <nhs-table-column>
+                    Integrates with<br>system
+                </nhs-table-column>
+                <nhs-table-column>
+                    Description
+                </nhs-table-column>
+                <nhs-table-column></nhs-table-column>
+                @foreach (var integration in integrations)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            @(integration.IsConsumer.GetValueOrDefault() ? "Consumer" : "Provider")
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            @integration.IntegratesWith
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <p class="nhsuk-u-margin-0">
+                                @integration.Description
+                            </p>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        </nhs-expander>
+    }
+    <hr>
+}
+
+
+@if (Model.GpConnectIntegrations.Any())
+{
+    <h2 class="nhsuk-heading-s">GP Connect integrations</h2>
+
+    @foreach (var integrations in Model.GpConnectIntegrations.GroupBy(x => x.IntegrationType.Name))
+    {
+        <nhs-expander label-text="@($"GP Connect {integrations.Key}")" open="false">
+            <nhs-table data-test-id="table-gpconnect-@integrations.Key.ToLowerInvariant().Replace(' ', '-')">
+                <nhs-table-column>
+                    Provider or<br>consumer
+                </nhs-table-column>
+                <nhs-table-column>
+                    Additional information about the integration
+                </nhs-table-column>
+                <nhs-table-column></nhs-table-column>
+                @foreach (var integration in integrations)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            @(integration.IsConsumer.GetValueOrDefault() ? "Consumer" : "Provider")
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <p class="nhsuk-u-margin-0">
+                                @integration.Description
+                            </p>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        </nhs-expander>
+    }
+    <hr>
+}
+
+@if (Model.NhsAppIntegrations.Any())
+{
+    <nhs-card title="NHS App integrations">
+        <nhs-table>
+            <nhs-table-column>Integration</nhs-table-column>
+            <nhs-table-column>Description</nhs-table-column>
+            @foreach (var integration in Model.NhsAppIntegrations)
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>@integration.IntegrationType.Name</nhs-table-cell>
+                    <nhs-table-cell>@integration.IntegrationType.Description</nhs-table-cell>
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+    </nhs-card>
+    <hr>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.IntegrationsUrl))
+{
+    <h3 class="nhsuk-heading-s">Supplier asserted integrations</h3>
+    <p>Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</p>
+    <p>
+        <a href="@Model.IntegrationsUrl" target="_blank">
+            View the Supplier Asserted Integrations for this catalogue solution (opens in a new tab)
+        </a>
+    </p>
+}
+
+
