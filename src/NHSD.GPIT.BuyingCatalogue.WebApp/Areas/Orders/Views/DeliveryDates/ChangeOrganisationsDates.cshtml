@@ -1,4 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
+@using static System.Runtime.InteropServices.JavaScript.JSType
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.SelectOrganisationsModel
 @{
@@ -10,9 +11,9 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-page-title title="Change delivery dates"
-                        caption="@ViewBag.Title"
-                        advice="Select the organisation to change the delivery date for the solution or service" />
-                        
+        caption="@ViewBag.Title"
+        advice="Select the organisation to change the delivery date for the solution or service" />
+
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
             <input type="hidden" asp-for="@Model.CallOffId" />
@@ -24,6 +25,7 @@
                     <nhs-table>
                         <nhs-table-column>Organisation</nhs-table-column>
                         <nhs-table-column>ODS Code</nhs-table-column>
+                        <nhs-table-column>Status</nhs-table-column>
                         <nhs-table-column></nhs-table-column>
                         @foreach (var recipient in locationGroup.Value)
                         {
@@ -33,6 +35,7 @@
                             <input type="hidden" asp-for="@Model.Recipients[index].RecipientName" />
                             <input type="hidden" asp-for="@Model.Recipients[index].RecipientOdsCode" />
                             <input type="hidden" asp-for="@Model.Recipients[index].RecipientOrganisationId" />
+                            <input type="hidden" asp-for="@Model.Recipients[index].Status" />
 
                             <nhs-table-row-container>
                                 <nhs-table-cell>
@@ -42,16 +45,22 @@
                                     @Model.Recipients[index].RecipientOdsCode
                                 </nhs-table-cell>
                                 <nhs-table-cell>
+                                @if (!string.IsNullOrEmpty(Model.Recipients[index].Status))
+                                {
+                                    <nhs-tag colour="Blue" text="@Model.Recipients[index].Status" />
+                                }
+                                </nhs-table-cell>
+                                <nhs-table-cell>
                                     <span>
                                         <a asp-action="@nameof(DeliveryDatesController.SetOrganisationDeliveryDates)"
-                                           asp-controller="@typeof(DeliveryDatesController).ControllerName()"
-                                           asp-route-internalOrgId="@Model.InternalOrgId"
-                                           asp-route-callOffId="@Model.CallOffId"
-                                           asp-route-orderItemId="@Model.OrderItemId"
-                                           asp-route-recipientOrganisationId="@Model.Recipients[index].RecipientOrganisationId"
-                                           asp-route-selectedRecipients="@Model.GetQueryStringRecipientIds()"
-                                           asp-route-area="@typeof(DeliveryDatesController).AreaName()"
-                                           style="white-space: nowrap;">Change</a>
+                                            asp-controller="@typeof(DeliveryDatesController).ControllerName()"
+                                            asp-route-internalOrgId="@Model.InternalOrgId"
+                                            asp-route-callOffId="@Model.CallOffId"
+                                            asp-route-orderItemId="@Model.OrderItemId"
+                                            asp-route-recipientOrganisationId="@Model.Recipients[index].RecipientOrganisationId"
+                                            asp-route-selectedRecipients="@Model.GetQueryStringRecipientIds()"
+                                            asp-route-area="@typeof(DeliveryDatesController).AreaName()"
+                                            style="white-space: nowrap;">Change</a>
                                     </span>
                                 </nhs-table-cell>
                             </nhs-table-row-container>

@@ -103,6 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 .Include(x => x.RecipientOdsOrganisation)
                 .Include(x => x.ParentSublocation)
                 .ThenInclude(x => x.SublocationOrganisation)
+                .Include(x => x.OrderItemSublocationRecipients)
                 .Where(x => x.Order.OrderNumber == orderNumber && selectedRecipients.Contains(x.RecipientOdsOrganisation.Id))
                 .AsNoTracking()
                 .ToListAsync();

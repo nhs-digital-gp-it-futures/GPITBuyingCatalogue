@@ -17,4 +17,6 @@ public class SelectRecipientToEditModel
     public required string RecipientName { get; set; }
 
     public required string RecipientOdsCode { get; set; }
+
+    public string Status { get; set; }
 }

@@ -143,4 +143,56 @@ public static class ReviewModelTests
 
         sublocation.SublocationRecipients.Add(recipient);
     }
+
+    [Fact]
+    public static void HasUpdatedDeliveryDates_WhenDeliveryDateIsNull_ReturnsFalse()
+    {
+        var model = new ReviewModel
+        {
+            DeliveryDate = null,
+        };
+        var recipient = new OrderSublocationRecipient();
+
+        var result = model.HasUpdatedDeliveryDates(recipient);
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public static void HasUpdatedDeliveryDates_WhenAllRecipientDatesMatch_ReturnsFalse()
+    {
+        var deliveryDate = new DateTime(2025, 1, 1);
+        var model = new ReviewModel
+        {
+            DeliveryDate = deliveryDate,
+        };
+        var recipient = new OrderSublocationRecipient();
+        recipient.OrderItemSublocationRecipients.Add(new OrderItemSublocationRecipient
+        {
+            DeliveryDate = deliveryDate,
+        });
+
+        var result = model.HasUpdatedDeliveryDates(recipient);
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public static void HasUpdatedDeliveryDates_WhenRecipientDateDiffers_ReturnsTrue()
+    {
+        var deliveryDate = new DateTime(2025, 1, 1);
+        var model = new ReviewModel
+        {
+            DeliveryDate = deliveryDate,
+        };
+        var recipient = new OrderSublocationRecipient();
+        recipient.OrderItemSublocationRecipients.Add(new OrderItemSublocationRecipient
+        {
+            DeliveryDate = deliveryDate.AddDays(1),
+        });
+
+        var result = model.HasUpdatedDeliveryDates(recipient);
+
+        result.Should().BeTrue();
+}
 }

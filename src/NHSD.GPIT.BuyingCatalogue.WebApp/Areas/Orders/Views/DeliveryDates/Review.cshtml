@@ -74,12 +74,19 @@
                     <nhs-table>
                         <nhs-table-column>Organisation</nhs-table-column>
                         <nhs-table-column>ODS code</nhs-table-column>
+                        <nhs-table-column>Status</nhs-table-column>
                         <nhs-table-column></nhs-table-column>
                         @foreach (var recipient in locationGroup.Value)
                         {
                             <nhs-table-row-container>
                                 <nhs-table-cell>@recipient.RecipientOdsOrganisation.Name</nhs-table-cell>
                                 <nhs-table-cell>@recipient.RecipientOdsCode</nhs-table-cell>
+                                <nhs-table-cell>
+                                    @if (@Model.HasUpdatedDeliveryDates(recipient))
+                                    {
+                                        <nhs-tag colour="Blue" text="Updated" />
+                                    }
+                                </nhs-table-cell>
                                 <nhs-table-cell>
                                     <span>
                                         <a asp-action="@nameof(DeliveryDatesController.SetOrganisationDeliveryDates)"

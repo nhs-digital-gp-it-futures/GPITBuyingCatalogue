@@ -72,5 +72,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         public string OrderItemName(int orderItemId) => orderItemNames.ContainsKey(orderItemId)
             ? orderItemNames[orderItemId]
             : string.Empty;
+
+        public bool HasUpdatedDeliveryDates(OrderSublocationRecipient recipient)
+        {
+            if (DeliveryDate is null)
+            {
+                return false;
+            }
+
+            return recipient.OrderItemSublocationRecipients.Any(x => x.DeliveryDate != DeliveryDate);
+        }
     }
 }

@@ -199,6 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         [HttpGet("{orderItemId}/change-organisations-dates")]
         public async Task<IActionResult> ChangeOrganisationsDates(string internalOrgId, CallOffId callOffId, int orderItemId, string selectedRecipients)
         {
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var selectedRecipientsList = selectedRecipients.Split(',').ToList();
             var recipients = await deliveryDateService.GetSelectedRecipientsAsync(callOffId.OrderNumber, selectedRecipientsList);
             var model = new SelectOrganisationsModel()
@@ -214,6 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                     ParentSublocationName = x.ParentSublocation.SublocationOrganisation.Name,
                     ParentSublocationOdsCode = x.ParentSublocationOdsCode,
                     Selected = true,
+                    Status = x.OrderItemSublocationRecipients.Any(x => x.DeliveryDate != orderWrapper.Order.DeliveryDate) ? "Updated" : string.Empty,
                 })],
                 BackLink = Url.Action(
                     nameof(SelectOrganisations),

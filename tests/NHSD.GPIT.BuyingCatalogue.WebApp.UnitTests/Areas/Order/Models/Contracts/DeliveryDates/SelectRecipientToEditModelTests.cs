@@ -17,6 +17,7 @@ public static class SelectRecipientToEditModelTests
             RecipientOrganisationId = "recipient-id",
             RecipientName = "Recipient organisation",
             RecipientOdsCode = "RECIPIENT1",
+            Status = "Updated",
         };
 
         model.Selected.Should().BeTrue();
@@ -25,6 +26,7 @@ public static class SelectRecipientToEditModelTests
         model.RecipientOrganisationId.Should().Be("recipient-id");
         model.RecipientName.Should().Be("Recipient organisation");
         model.RecipientOdsCode.Should().Be("RECIPIENT1");
+        model.Status.Should().Be("Updated");
     }
 
     [Fact]
@@ -40,5 +42,6 @@ public static class SelectRecipientToEditModelTests
         };
 
         model.Selected.Should().BeFalse();
+        model.Status.Should().BeNull();
     }
 }
