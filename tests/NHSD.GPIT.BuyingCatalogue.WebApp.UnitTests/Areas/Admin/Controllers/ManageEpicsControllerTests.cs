@@ -64,7 +64,7 @@ public static class ManageEpicsControllerTests
 
         var expected = new ViewEpicsModel(epics.Items.Select(x => new EpicModel(x.Name, x.Id, x.IsActive)))
         {
-            Title = "Manage Epics",
+            Title = "Manage epics",
             Advice = "View existing epics",
             BackLink = backLink,
             PageOptions = epics.Options,
