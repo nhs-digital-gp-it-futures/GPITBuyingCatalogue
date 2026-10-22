@@ -1,0 +1,47 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageEpics.ViewEpicsModel;
+
+@{
+    var total = Model.PageOptions.TotalNumberOfItems;
+    var displayPerPage = Model.PageOptions.PageSize;
+    var currentPageNumber = Model.PageOptions.PageNumber;
+    var start = (currentPageNumber - 1) * displayPerPage + 1;
+    var finish = displayPerPage * currentPageNumber;
+    var solutionDisplayTotal = $"Showing {start} to {finish} of {total} epics";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@Model.Title" advice="@Model.Advice"/>
+        
+        <h2>Epics list</h2>
+        
+        @if (Model.Epics.Any())
+        {
+            <p class="bc-u-block-float-left">@solutionDisplayTotal</p>
+            <nhs-table>
+                <nhs-table-column>Epic</nhs-table-column>
+                <nhs-table-column>Reference</nhs-table-column>
+                <nhs-table-column>Status</nhs-table-column>
+            
+                @foreach (var epic in Model.Epics)
+                {
+                    var statusText = epic.IsActive ? "Active" : "Inactive";
+                    var statusColour = epic.IsActive ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;
+                    <nhs-table-row-container>
+                        <nhs-table-cell>@epic.Name</nhs-table-cell>
+                        <nhs-table-cell>@epic.Reference</nhs-table-cell>
+                        <nhs-table-cell><nhs-tag text="@statusText" colour="@statusColour"/></nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        }
+        
+        <govuk-pagination
+            current-page-number="@Model.PageOptions.PageNumber" 
+            total-number-of-pages="@Model.PageOptions.NumberOfPages" />
+    </div>
+</div>
+
