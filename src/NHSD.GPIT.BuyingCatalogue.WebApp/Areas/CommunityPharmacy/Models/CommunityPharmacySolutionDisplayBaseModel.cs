@@ -125,7 +125,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.SupplierDetails),
+                    Action = nameof(CommunityPharmacyController.SupplierDetails),
                     Controller = ControllerName,
                     Name = "Supplier contact details",
                     Show = CatalogueItemContentStatus.ShowSupplierDetails,
