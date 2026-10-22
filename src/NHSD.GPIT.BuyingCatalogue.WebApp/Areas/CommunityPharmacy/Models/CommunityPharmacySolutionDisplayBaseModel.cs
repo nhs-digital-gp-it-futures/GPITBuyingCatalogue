@@ -39,7 +39,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                 },
                 new()
                 {
-                    Action = nameof(HomeController.Index),
+                    Action = nameof(HomeController.CommunityPharmacy),
                     Controller = typeof(HomeController).ControllerName(),
                     Name = "Community pharmacy",
                     Show = true,

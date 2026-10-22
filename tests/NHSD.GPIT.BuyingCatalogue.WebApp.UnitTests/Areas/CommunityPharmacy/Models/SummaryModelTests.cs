@@ -9,6 +9,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.CommunityPharmacy.Mod
 
 public static class SummaryModelTests
 {
+    [Fact]
+    public static void NhsAssurance_ReturnsExpectedServices()
+    {
+        SummaryModel.NhsAssurance.Should().Equal(
+            "Pharmacy first",
+            "Pharmacy contraception",
+            "Blood pressure check",
+            "Smoking cessation",
+            "Discharge medicine",
+            "New medicines");
+    }
+
     [Theory]
     [MockAutoData]
     public static void Construct_PropertiesCorrectlySet(
