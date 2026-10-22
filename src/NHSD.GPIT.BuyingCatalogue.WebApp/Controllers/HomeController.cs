@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
@@ -85,7 +86,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             return View(new ErrorModel(error));
         }
 
+        [ExcludeFromCodeCoverage]
         public IActionResult GPIT()
             => View();
+
+        [ExcludeFromCodeCoverage]
+        public IActionResult CommunityPharmacy()
+           => View();
     }
 }
