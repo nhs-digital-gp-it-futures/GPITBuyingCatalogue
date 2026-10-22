@@ -258,6 +258,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             user.CanManageOrders().Should().Be(expected);
         }
 
+        [Theory]
+        [MockInlineAutoData(CataloguePermissions.ManageCatalogueSolutions, false)]
+        [MockInlineAutoData(CataloguePermissions.ManageContractingVehicles, false)]
+        [MockInlineAutoData(CataloguePermissions.ManageSupplierDefinedEpics, false)]
+        [MockInlineAutoData(CataloguePermissions.ManageCapabilitiesAndEpics, false)]
+        [MockInlineAutoData(CataloguePermissions.ManageInteroperability, false)]
+        [MockInlineAutoData(CataloguePermissions.ManageBuyerOrganisations, false)]
+        [MockInlineAutoData(CataloguePermissions.ManageSupplierOrganisations, false)]
+        [MockInlineAutoData(CataloguePermissions.ManageUsers, false)]
+        [MockInlineAutoData(CataloguePermissions.ManageAccountCreationRequests, false)]
+        [MockInlineAutoData(CataloguePermissions.ManageAllowedEmailDomains, false)]
+        [MockInlineAutoData(CataloguePermissions.ManageAllOrders, false)]
+        [MockInlineAutoData(CataloguePermissions.ManageCapabilities, true)]
+        [MockInlineAutoData(CataloguePermissions.ManageEpics, true)]
+        public static void User_CanManageReferenceData_ReturnsExpected(string claim, bool expected)
+        {
+            var user = CreatePrincipal(CataloguePermissions.ClaimType, claim);
+
+            user.CanManageReferenceData().Should().Be(expected);
+        }
+
         [Fact]
         public static void IsAdminUser_Returns_Expected()
         {
@@ -267,6 +288,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             user.CanManageUsers().Should().Be(true);
             user.CanManageOrganisations().Should().Be(true);
             user.CanManageSolutions().Should().Be(true);
+            user.CanManageReferenceData().Should().Be(true);
         }
 
         private static ClaimsPrincipal CreatePrincipal(string claim, string value)

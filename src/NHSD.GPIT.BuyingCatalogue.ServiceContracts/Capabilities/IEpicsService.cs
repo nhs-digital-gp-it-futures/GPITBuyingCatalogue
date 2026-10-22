@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities
 {
@@ -9,5 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities
         Task<List<Epic>> GetEpicsByIds(IEnumerable<string> epicIds);
 
         Task<List<Epic>> GetReferencedEpicsByCapabilityIds(IEnumerable<int> capabilityIds);
+
+        Task<PagedList<Epic>> GetEpicsAsync(PageOptions pageOptions);
     }
 }
