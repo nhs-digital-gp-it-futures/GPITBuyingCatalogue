@@ -23,7 +23,7 @@ public class SummaryModel : CommunityPharmacySolutionDisplayBaseModel
 
     public string SupplierUrl { get; init; }
 
-    public IList<string> NhsAssurance =>
+    public static IList<string> NhsAssurance =>
     [
         "Pharmacy first", "Pharmacy contraception", "Blood pressure check", "Smoking cessation", "Discharge medicine",
         "New medicines",

@@ -51,8 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.Integrations)
                 .ThenInclude(x => x.IntegrationType)
                 .ThenInclude(x => x.Integration)
-                .Include(ci => ci.Supplier)
-                .ThenInclude(ci => ci.SupplierContacts)
+                .Include(ci => ci.Supplier.SupplierContacts)
                 .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithCapabilities(CatalogueItemId solutionId) =>

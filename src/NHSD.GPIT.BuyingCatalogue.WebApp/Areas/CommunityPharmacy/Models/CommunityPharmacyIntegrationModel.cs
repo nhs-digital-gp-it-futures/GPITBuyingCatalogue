@@ -30,6 +30,5 @@ public class CommunityPharmacyIntegrationModel : CommunityPharmacySolutionDispla
 
     public string IntegrationsUrl { get; set; }
 
-
     public override int Index => 4;
 }

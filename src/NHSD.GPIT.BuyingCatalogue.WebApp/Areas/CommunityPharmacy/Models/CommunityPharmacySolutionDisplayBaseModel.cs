@@ -11,6 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models;
 
 public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDisplayBaseModel
 {
+    private const string SolutionIdString = "solutionId";
     private static readonly string ControllerName = typeof(CommunityPharmacyController).ControllerName();
 
     protected CommunityPharmacySolutionDisplayBaseModel(
@@ -65,7 +66,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                     Controller = ControllerName,
                     Name = "Summary",
                     Show = CatalogueItemContentStatus.ShowDescription,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
+                    RouteData = new Dictionary<string, string> { { SolutionIdString, SolutionId.ToString() }, },
                 },
                 new()
                 {
@@ -73,7 +74,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                     Controller = ControllerName,
                     Name = "List price",
                     Show = CatalogueItemContentStatus.ShowListPrice,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
+                    RouteData = new Dictionary<string, string> { { SolutionIdString, SolutionId.ToString() }, },
                 },
                 new()
                 {
@@ -81,7 +82,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                     Controller = ControllerName,
                     Name = "Capabilities",
                     Show = CatalogueItemContentStatus.ShowCapabilities,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
+                    RouteData = new Dictionary<string, string> { { SolutionIdString, SolutionId.ToString() }, },
                 },
                 new()
                 {
@@ -89,7 +90,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                     Controller = ControllerName,
                     Name = "Standards",
                     Show = CatalogueItemContentStatus.ShowStandards,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
+                    RouteData = new Dictionary<string, string> { { SolutionIdString, SolutionId.ToString() }, },
                 },
                 new()
                 {
@@ -97,7 +98,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                     Controller = ControllerName,
                     Name = "Integrations",
                     Show = true,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
+                    RouteData = new Dictionary<string, string> { { SolutionIdString, SolutionId.ToString() }, },
                 },
                 new()
                 {
@@ -105,7 +106,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                     Controller = ControllerName,
                     Name = "Application type",
                     Show = CatalogueItemContentStatus.ShowApplicationsType,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
+                    RouteData = new Dictionary<string, string> { { SolutionIdString, SolutionId.ToString() }, },
                 },
                 new()
                 {
@@ -113,7 +114,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                     Controller = ControllerName,
                     Name = "Hosting type",
                     Show = true,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
+                    RouteData = new Dictionary<string, string> { { SolutionIdString, SolutionId.ToString() }, },
                 },
                 new()
                 {
@@ -121,7 +122,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                     Controller = ControllerName,
                     Name = "Development plans",
                     Show = CatalogueItemContentStatus.ShowDevelopmentPlans,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
+                    RouteData = new Dictionary<string, string> { { SolutionIdString, SolutionId.ToString() }, },
                 },
                 new()
                 {
@@ -129,7 +130,7 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
                     Controller = ControllerName,
                     Name = "Supplier contact details",
                     Show = CatalogueItemContentStatus.ShowSupplierDetails,
-                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
+                    RouteData = new Dictionary<string, string> { { SolutionIdString, SolutionId.ToString() }, },
                 },
             };
         }

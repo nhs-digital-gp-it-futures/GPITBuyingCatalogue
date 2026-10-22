@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models.SummaryModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models.SummaryModel
 <partial name="_SolutionSummary" model="Model" />
 @if (Model.HasSummary())
 {
@@ -10,7 +11,7 @@
     <div class="nhsuk-grid-column-one-half nhsuk-card-group__item">
         <nhs-card title="NHS assurance" size="Medium">
             <ul class="nhsuk-list nhsuk-list--tick nhsuk-u-margin-bottom-0">
-                @foreach (var item in Model.NhsAssurance)
+                @foreach (var item in SummaryModel.NhsAssurance)
                 {
                     <li>
                         <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
