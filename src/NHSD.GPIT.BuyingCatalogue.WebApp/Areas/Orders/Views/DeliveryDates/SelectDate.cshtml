@@ -1,4 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.SelectDateModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
+
+@model SelectDateModel
 @{
     ViewBag.Title = "Planned delivery date";
 }
@@ -44,7 +46,7 @@
                                          size="Small">
                     <legend name="same delivery date"></legend>
                     <nhs-radio-buttons asp-for="ApplyToAll"
-                                       values="@Model.ApplyToAllOptions.Cast<object>()"
+                                       values="@SelectDateModel.ApplyToAllOptions.Cast<object>()"
                                        value-name="Value"
                                        display-name="Text"
                                        hint-name="Advice" />

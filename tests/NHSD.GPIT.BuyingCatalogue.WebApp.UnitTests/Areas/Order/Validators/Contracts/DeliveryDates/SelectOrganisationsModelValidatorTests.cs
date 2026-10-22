@@ -1,4 +1,5 @@
 ﻿using FluentValidation.TestHelper;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.DeliveryDates;
 using Xunit;
@@ -12,6 +13,8 @@ public static class SelectOrganisationsModelValidatorTests
     {
         var model = new SelectOrganisationsModel
         {
+            InternalOrgId = "internal-org-id",
+            CallOffId = default(CallOffId),
             Recipients = null,
         };
         var validator = new SelectOrganisationsModelValidator();
@@ -27,6 +30,8 @@ public static class SelectOrganisationsModelValidatorTests
     {
         var model = new SelectOrganisationsModel
         {
+            InternalOrgId = "internal-org-id",
+            CallOffId = default(CallOffId),
             Recipients =
             [
                 CreateRecipient(selected: false),
@@ -46,6 +51,8 @@ public static class SelectOrganisationsModelValidatorTests
     {
         var model = new SelectOrganisationsModel
         {
+            InternalOrgId = "internal-org-id",
+            CallOffId = default(CallOffId),
             Recipients =
             [
                 CreateRecipient(selected: false),

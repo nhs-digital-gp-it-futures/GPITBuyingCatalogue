@@ -93,6 +93,9 @@ public static class SetOrganisationDeliveryDatesModelTests
     {
         var model = new SetOrganisationDeliveryDatesModel
         {
+            InternalOrgId = "internal-org-id",
+            CallOffId = default,
+            OrderItemId = 42,
             RecipientOrganisationName = "Recipient organisation",
         };
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -13,10 +14,11 @@ public class SelectOrganisationsModel : NavBaseModel
     {
     }
 
-    public SelectOrganisationsModel(OrderWrapper orderWrapper, string internalOrgId, int orderItemId)
+    [SetsRequiredMembers]
+    public SelectOrganisationsModel(OrderWrapper orderWrapper, string internalOrgId, CallOffId callOffId, int orderItemId)
     {
         InternalOrgId = internalOrgId;
-        CallOffId = orderWrapper.Order.CallOffId;
+        CallOffId = callOffId;
         OrderItemId = orderItemId;
         Recipients = [.. orderWrapper.DetermineOrderRecipients(orderWrapper.Order.OrderItem(orderItemId))
             .Where(x => !string.Equals(
@@ -32,9 +34,9 @@ public class SelectOrganisationsModel : NavBaseModel
             })];
     }
 
-    public string InternalOrgId { get; set; }
+    public required string InternalOrgId { get; set; }
 
-    public CallOffId CallOffId { get; set; }
+    public required CallOffId CallOffId { get; set; }
 
     public int? OrderItemId { get; set; }
 

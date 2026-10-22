@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -11,6 +12,7 @@ public class SetOrganisationDeliveryDatesModel : NavBaseModel
     {
     }
 
+    [SetsRequiredMembers]
     public SetOrganisationDeliveryDatesModel(
         string internalOrgId,
         CallOffId callOffId,
@@ -27,11 +29,11 @@ public class SetOrganisationDeliveryDatesModel : NavBaseModel
         OrderItemsDeliveryDates = [.. recipientOrderItems.Select(x => new OrderItemDeliveryDate(x.Id, x.OrderItem.CatalogueItem.Name, x.DeliveryDate, order))];
     }
 
-    public string InternalOrgId { get; set; }
+    public required string InternalOrgId { get; set; }
 
-    public CallOffId CallOffId { get; set; }
+    public required CallOffId CallOffId { get; set; }
 
-    public int OrderItemId { get; set; }
+    public required int OrderItemId { get; set; }
 
     public string RecipientOrganisationId { get; set; }
 

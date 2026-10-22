@@ -59,6 +59,7 @@ public static class SelectOrganisationsModelTests
         var model = new SelectOrganisationsModel(
             new OrderWrapper(order),
             "internal-org-id",
+            order.CallOffId,
             orderItem.Id);
 
         model.InternalOrgId.Should().Be("internal-org-id");
@@ -76,10 +77,68 @@ public static class SelectOrganisationsModelTests
     }
 
     [Fact]
+    public static void Constructor_AssignsRequiredPropertiesFromArguments()
+    {
+        var orderItem = new OrderItem
+        {
+            Id = 84,
+            CatalogueItem = new CatalogueItem { Name = "Catalogue item" },
+        };
+        var sublocation = new OrderSublocation
+        {
+            SublocationOdsCode = "sublocation-ods-code",
+            SublocationOrganisation = new OdsOrganisation { Name = "Parent organisation" },
+        };
+        var recipient = new OrderSublocationRecipient
+        {
+            ParentSublocation = sublocation,
+            ParentSublocationOdsCode = sublocation.SublocationOdsCode,
+            RecipientOdsCode = "recipient-ods-code",
+            RecipientOdsOrganisation = new OdsOrganisation
+            {
+                Id = "recipient-org-id",
+                Name = "Recipient organisation",
+            },
+        };
+        recipient.OrderItemSublocationRecipients.Add(new OrderItemSublocationRecipient
+        {
+            OrderItem = orderItem,
+            OrderItemId = orderItem.Id,
+        });
+        sublocation.SublocationRecipients.Add(recipient);
+
+        var order = new OrderEntity
+        {
+            OrderNumber = 456,
+            Revision = 2,
+            AssociatedServicesOnlyDetails = new AssociatedServicesOnlyDetails(),
+            OrderItems = [orderItem],
+            OrderSublocations = [sublocation],
+        };
+        var internalOrgId = "internal-org-id";
+
+        var model = new SelectOrganisationsModel(
+            new OrderWrapper(order),
+            internalOrgId,
+            order.CallOffId,
+            orderItem.Id);
+
+        model.InternalOrgId.Should().Be(internalOrgId);
+        model.CallOffId.Should().Be(order.CallOffId);
+        model.OrderItemId.Should().Be(orderItem.Id);
+        model.Recipients.Should().ContainSingle();
+        model.Recipients[0].RecipientOrganisationId.Should().Be("recipient-org-id");
+        model.Recipients[0].RecipientName.Should().Be("Recipient organisation");
+        model.Recipients[0].RecipientOdsCode.Should().Be("recipient-ods-code");
+    }
+
+    [Fact]
     public static void GetRecipientsByLocation_GroupsRecipientsAndSortsByName()
     {
         var model = new SelectOrganisationsModel
         {
+            InternalOrgId = "internal-org-id",
+            CallOffId = default,
             Recipients =
             [
                 CreateRecipient("Location A", "Zulu organisation", "recipient-1"),
@@ -100,6 +159,8 @@ public static class SelectOrganisationsModelTests
     {
         var model = new SelectOrganisationsModel
         {
+            InternalOrgId = "internal-org-id",
+            CallOffId = default,
             Recipients =
             [
                 CreateRecipient("Location A", "Organisation 1", "recipient/1"),
@@ -117,6 +178,8 @@ public static class SelectOrganisationsModelTests
     {
         var model = new SelectOrganisationsModel
         {
+            InternalOrgId = "internal-org-id",
+            CallOffId = default,
             Recipients = [],
         };
 
@@ -130,6 +193,8 @@ public static class SelectOrganisationsModelTests
     {
         var model = new SelectOrganisationsModel
         {
+            InternalOrgId = "internal-org-id",
+            CallOffId = default,
             Recipients = [],
         };
 

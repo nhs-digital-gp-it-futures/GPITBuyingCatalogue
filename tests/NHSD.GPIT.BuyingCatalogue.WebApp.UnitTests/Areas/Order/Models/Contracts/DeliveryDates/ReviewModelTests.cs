@@ -130,20 +130,6 @@ public static class ReviewModelTests
             });
     }
 
-    private static void AddRecipientWithDeliveryDate(
-        OrderSublocation sublocation,
-        OrderSublocationRecipient recipient,
-        DateTime date,
-        string odsCode,
-        string organisationName)
-    {
-        recipient.ParentSublocation = sublocation;
-        recipient.RecipientOdsCode = odsCode;
-        recipient.RecipientOdsOrganisation = new OdsOrganisation { Id = odsCode, Name = organisationName };
-
-        sublocation.SublocationRecipients.Add(recipient);
-    }
-
     [Fact]
     public static void HasUpdatedDeliveryDates_WhenDeliveryDateIsNull_ReturnsFalse()
     {
@@ -194,5 +180,19 @@ public static class ReviewModelTests
         var result = model.HasUpdatedDeliveryDates(recipient);
 
         result.Should().BeTrue();
-}
+    }
+
+    private static void AddRecipientWithDeliveryDate(
+        OrderSublocation sublocation,
+        OrderSublocationRecipient recipient,
+        DateTime date,
+        string odsCode,
+        string organisationName)
+    {
+        recipient.ParentSublocation = sublocation;
+        recipient.RecipientOdsCode = odsCode;
+        recipient.RecipientOdsOrganisation = new OdsOrganisation { Id = odsCode, Name = organisationName };
+
+        sublocation.SublocationRecipients.Add(recipient);
+    }
 }

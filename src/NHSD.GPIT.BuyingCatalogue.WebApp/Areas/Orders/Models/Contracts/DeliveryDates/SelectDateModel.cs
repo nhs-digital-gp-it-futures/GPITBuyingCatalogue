@@ -34,6 +34,12 @@ public class SelectDateModel : DateInputModel
         ApplyToAll = applyToAll;
     }
 
+    public static IEnumerable<SelectOption<bool>> ApplyToAllOptions =>
+    [
+        new(YesOption, YesAdvice, true),
+        new(NoOption, NoAdvice, false),
+    ];
+
     public string InternalOrgId { get; set; }
 
     public CallOffId CallOffId { get; set; }
@@ -47,12 +53,6 @@ public class SelectDateModel : DateInputModel
     public DateTime? ExistingDeliveryDate { get; set; }
 
     public bool? ApplyToAll { get; set; }
-
-    public IEnumerable<SelectOption<bool>> ApplyToAllOptions =>
-    [
-        new(YesOption, YesAdvice, true),
-        new(NoOption, NoAdvice, false),
-    ];
 
     public DateTime? ContractEndDate
     {
