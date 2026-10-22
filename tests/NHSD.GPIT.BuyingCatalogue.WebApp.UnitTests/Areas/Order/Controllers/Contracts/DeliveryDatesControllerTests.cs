@@ -99,17 +99,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         {
             order.SetupCatalogueSolution();
             order.DeliveryDate = null;
+            model.ApplyToAll = false;
 
             orderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.SelectDate(internalOrgId, callOffId, model);
 
-            await deliveryDatesService.Received().SetDeliveryDate(internalOrgId, callOffId, model.Date.Value);
+            await deliveryDatesService.Received().SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value);
             await orderService.Received().GetOrderThin(callOffId, internalOrgId);
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actual.ActionName.Should().Be(nameof(DeliveryDatesController.EditDates));
+            actual.ActionName.Should().Be(nameof(DeliveryDatesController.SelectOrganisations));
             actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
             actual.RouteValues.Should()
                 .BeEquivalentTo(
@@ -165,23 +166,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         {
             order.SetupCatalogueSolution();
             order.DeliveryDate = model.Date;
+            model.ApplyToAll = false;
 
             orderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.SelectDate(internalOrgId, callOffId, model);
 
             await orderService.Received().GetOrderThin(callOffId, internalOrgId);
-            await deliveryDatesService.Received().ResetRecipientDeliveryDates(order.Id);
+            await deliveryDatesService.Received().SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value);
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actual.ActionName.Should().Be(nameof(DeliveryDatesController.EditDates));
+            actual.ActionName.Should().Be(nameof(DeliveryDatesController.SelectOrganisations));
             actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
             actual.RouteValues.Should()
                 .BeEquivalentTo(
                     new RouteValueDictionary
                     {
-                        { "InternalOrgId", internalOrgId },
+                        { "internalOrgId", internalOrgId },
                         { "callOffId", callOffId },
                         { "orderItemId", order.OrderItems.First().Id },
                     });
@@ -229,6 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             CallOffId callOffId,
             SelectDateModel model,
             EntityFramework.Ordering.Models.Order order,
+            [Frozen] IDeliveryDateService deliveryDatesService,
             [Frozen] IOrderService orderService,
             DeliveryDatesController controller)
         {
@@ -244,15 +247,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actual.ActionName.Should().Be(nameof(DeliveryDatesController.ConfirmChanges));
+            actual.ActionName.Should().Be(applyToAll
+                ? nameof(DeliveryDatesController.Review)
+                : nameof(DeliveryDatesController.ConfirmChanges));
             actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
-            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            var expectedRouteValues = applyToAll
+                ? new RouteValueDictionary
+                {
+                    { "internalOrgId", internalOrgId },
+                    { "callOffId", callOffId },
+                }
+                : new RouteValueDictionary
+                {
+                    { "internalOrgId", internalOrgId },
+                    { "callOffId", callOffId },
+                    { "deliveryDate", model.Date.Value.ToString(DeliveryDatesController.DateFormat) },
+                    { "applyToAll", model.ApplyToAll },
+                };
+
+            actual.RouteValues.Should().BeEquivalentTo(expectedRouteValues);
+
+            if (applyToAll)
             {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-                { "deliveryDate", model.Date.Value.ToString(DeliveryDatesController.DateFormat) },
-                { "applyToAll", model.ApplyToAll },
-            });
+                await deliveryDatesService.Received().SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value);
+            }
         }
 
         [Theory]
