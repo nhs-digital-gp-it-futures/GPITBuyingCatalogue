@@ -1,12 +1,13 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageCapabilities.ManageCapabilitiesModel;
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @{
-    ViewBag.Title = "Manage capabilities";
-
+    ViewBag.Title = "Manage capabilities"; 
     var capabilityCount = Model.Options?.TotalNumberOfItems ?? Model.Capabilities.Count;
-    var capabilityTitle = capabilityCount == 1
-        ? "1 capability found"
-        : $"{capabilityCount} capabilities found";
+    var displayPerPage = Model.Options.PageSize;
+    var currentPageNumber = Model.Options.PageNumber;
+    var start = (currentPageNumber - 1) * displayPerPage + 1;
+    var finish = Math.Min(displayPerPage * currentPageNumber, capabilityCount);
+    var solutionDisplayTotal = $"Showing {start} to {finish} of {capabilityCount} capabilities";
 }
 
 @section Breadcrumbs {
@@ -35,7 +36,7 @@
         @if (Model.Capabilities is not null && Model.Capabilities.Count > 0)
         {
             <nhs-card-v2>
-                <nhs-card-content title="@capabilityTitle">
+                <nhs-card-content title="@solutionDisplayTotal">
                     <nhs-table data-test-id="capability-table">
                         <nhs-table-column>Name</nhs-table-column>
                         <nhs-table-column>Reference</nhs-table-column>

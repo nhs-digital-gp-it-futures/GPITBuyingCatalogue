@@ -22,7 +22,7 @@ public class ManageCapabilityModel : NavBaseModel
         Description = capability.Description;
         SourceUrl = capability.SourceUrl;
         Status = capability.Status;
-       
+
         CatalogueItemsExpanderModel = new CapabilityCatalogueItemsExpanderModel
         {
             CatalogueItems = capability.CatalogueItemCapabilities.Select(x => new AdminManageCapabilityCatalogueItem
