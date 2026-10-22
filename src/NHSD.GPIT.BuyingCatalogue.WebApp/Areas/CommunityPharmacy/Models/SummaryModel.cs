@@ -15,6 +15,12 @@ public class SummaryModel : CommunityPharmacySolutionDisplayBaseModel
         SupplierUrl = catalogueItem.Supplier.SupplierUrl;
     }
 
+    public static IList<string> NhsAssurance =>
+    [
+        "Pharmacy first", "Pharmacy contraception", "Blood pressure check", "Smoking cessation", "Discharge medicine",
+        "New medicines",
+    ];
+
     public override int Index => 0;
 
     public string Summary { get; init; }
@@ -22,12 +28,6 @@ public class SummaryModel : CommunityPharmacySolutionDisplayBaseModel
     public IList<SupplierContact> Contacts { get; init; }
 
     public string SupplierUrl { get; init; }
-
-    public static IList<string> NhsAssurance =>
-    [
-        "Pharmacy first", "Pharmacy contraception", "Blood pressure check", "Smoking cessation", "Discharge medicine",
-        "New medicines",
-    ];
 
     public bool HasSummary() => !string.IsNullOrWhiteSpace(Summary);
 
