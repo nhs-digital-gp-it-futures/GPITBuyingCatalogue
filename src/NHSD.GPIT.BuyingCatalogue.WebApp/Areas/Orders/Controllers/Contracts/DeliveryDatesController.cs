@@ -259,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 orderItemRecipients,
                 orderWrapper.Order)
             {
-                BackLink = string.IsNullOrEmpty(selectedRecipients) 
+                BackLink = string.IsNullOrEmpty(selectedRecipients)
                 ? Url.Action(
                     nameof(Review),
                     typeof(DeliveryDatesController).ControllerName(),
