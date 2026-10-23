@@ -16,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
