@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                     new { internalOrgId, callOffId });
             }
 
-            if (order.DeliveryDate.HasValue && order.DeliveryDate.Value != model.Date!.Value)
+            if (order.DeliveryDate.HasValue && order.DeliveryDate.Value != model.Date.Value)
             {
                 var deliveryDate = model.Date?.ToString(DateFormat);
 
