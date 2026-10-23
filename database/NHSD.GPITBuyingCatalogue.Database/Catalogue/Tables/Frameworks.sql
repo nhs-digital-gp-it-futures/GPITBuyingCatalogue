@@ -16,7 +16,9 @@
     IsExpired BIT NOT NULL DEFAULT(0),
     SupportsFoundationSolution BIT NULL DEFAULT(0),
     MaximumTerm INT NULL,
+    SolutionTypeId int DEFAULT 0 NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_Frameworks PRIMARY KEY (Id),
     CONSTRAINT FK_Frameworks_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers (Id),
+    CONSTRAINT FK_Frameworks_SolutionType FOREIGN KEY (SolutionTypeId) REFERENCES catalogue.SolutionTypes(Id),
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.Frameworks_History));
