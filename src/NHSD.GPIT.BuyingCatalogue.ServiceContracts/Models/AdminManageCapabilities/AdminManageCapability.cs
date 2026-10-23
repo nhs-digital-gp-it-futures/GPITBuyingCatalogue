@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdminManageCapabilit
 
         public required string Name { get; set; }
 
-        public string? CapabilityCategoryName { get; set; }
+        public string CapabilityCategoryName { get; set; }
 
         public required CapabilityStatus Status { get; set; }
     }

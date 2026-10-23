@@ -50,10 +50,4 @@ public class ManageCapabilityModel : NavBaseModel
     public CapabilityStatus Status { get; set; }
 
     public CapabilityCatalogueItemsExpanderModel CatalogueItemsExpanderModel { get; set; }
-
-    public IReadOnlyList<SelectOption<CapabilityStatus>> AvailableStatuses =>
-        [
-            new SelectOption<CapabilityStatus>("Effective", CapabilityStatus.Effective),
-            new SelectOption<CapabilityStatus>("Expired", CapabilityStatus.Expired)
-        ];
 }
