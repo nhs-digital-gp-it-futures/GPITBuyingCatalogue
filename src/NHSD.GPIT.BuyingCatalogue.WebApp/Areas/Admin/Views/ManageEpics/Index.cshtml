@@ -6,7 +6,7 @@
     var displayPerPage = Model.PageOptions.PageSize;
     var currentPageNumber = Model.PageOptions.PageNumber;
     var start = (currentPageNumber - 1) * displayPerPage + 1;
-    var finish = displayPerPage * currentPageNumber;
+    var finish = Math.Min(displayPerPage * currentPageNumber, total);
     var solutionDisplayTotal = $"Showing {start} to {finish} of {total} epics";
 }
 
