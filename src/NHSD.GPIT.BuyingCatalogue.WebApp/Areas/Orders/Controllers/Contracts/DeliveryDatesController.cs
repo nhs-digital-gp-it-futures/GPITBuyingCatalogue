@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -62,7 +63,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            if (order.DeliveryDate.HasValue && order.DeliveryDate.Value != model.Date!.Value)
+            if (model.ApplyToAll == true)
+            {
+                await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value);
+
+                return RedirectToAction(
+                    nameof(Review),
+                    typeof(DeliveryDatesController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
+            if (order.DeliveryDate.HasValue && order.DeliveryDate.Value != model.Date.Value)
             {
                 var deliveryDate = model.Date?.ToString(DateFormat);
 
@@ -72,31 +83,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                     new { internalOrgId, callOffId, deliveryDate, model.ApplyToAll });
             }
 
-            if (model.ApplyToAll == true)
-            {
-                await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.Date!.Value);
-
-                return RedirectToAction(
-                    nameof(Review),
-                    typeof(DeliveryDatesController).ControllerName(),
-                    new { internalOrgId, callOffId });
-            }
-
-            if (order.DeliveryDate == null)
-            {
-                await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, model.Date!.Value);
-            }
-            else
-            {
-                await deliveryDateService.ResetRecipientDeliveryDates(order.Id);
-            }
-
-            int? orderItemId = order.GetOrderItemIds().Count > 0 ? order.GetOrderItemIds()[0] : null;
+            await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value);
 
             return RedirectToAction(
-                nameof(EditDates),
+                nameof(SelectOrganisations),
                 typeof(DeliveryDatesController).ControllerName(),
-                new { internalOrgId, callOffId, OrderItemId = orderItemId });
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("confirm")]
@@ -148,6 +140,169 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 nameof(Review),
                 typeof(DeliveryDatesController).ControllerName(),
                 new { internalOrgId, callOffId });
+        }
+
+        [HttpGet("select-organisations")]
+        public async Task<IActionResult> SelectOrganisations(string internalOrgId, CallOffId callOffId)
+        {
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            int? orderItemId = orderWrapper.Order.GetOrderItemIds().Count > 0 ? orderWrapper.Order.GetOrderItemIds()[0] : null;
+            if (orderItemId is null)
+            {
+                return NotFound();
+            }
+
+            var model = new SelectOrganisationsModel(orderWrapper, internalOrgId, callOffId, orderItemId.Value)
+            {
+                BackLink = Url.Action(
+                    nameof(SelectDate),
+                    typeof(DeliveryDatesController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("select-organisations")]
+        public async Task<IActionResult> SelectOrganisations(string internalOrgId, CallOffId callOffId, SelectOrganisationsModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var selectedRecipients = string.Join(
+                ",",
+                model.Recipients.Where(x => x.Selected).Select(x => x.RecipientOrganisationId));
+
+            return RedirectToAction(
+                nameof(ChangeOrganisationsDates),
+                typeof(DeliveryDatesController).ControllerName(),
+                new { internalOrgId, callOffId, selectedRecipients });
+        }
+
+        [HttpGet("change-organisations-dates")]
+        public async Task<IActionResult> ChangeOrganisationsDates(string internalOrgId, CallOffId callOffId, string selectedRecipients)
+        {
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            int? orderItemId = orderWrapper.Order.GetOrderItemIds().Count > 0 ? orderWrapper.Order.GetOrderItemIds()[0] : null;
+            if (orderItemId is null)
+            {
+                return NotFound();
+            }
+
+            var selectedRecipientsList = selectedRecipients.Split(',').ToList();
+            var recipients = await deliveryDateService.GetSelectedRecipientsAsync(callOffId.OrderNumber, selectedRecipientsList);
+            var model = new SelectOrganisationsModel()
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                OrderItemId = orderItemId,
+                Recipients = [.. recipients.Select(x => new SelectRecipientToEditModel()
+                {
+                    RecipientOrganisationId = x.RecipientOdsOrganisation.Id,
+                    RecipientName = x.RecipientOdsOrganisation.Name,
+                    RecipientOdsCode = x.RecipientOdsCode,
+                    ParentSublocationName = x.ParentSublocation.SublocationOrganisation.Name,
+                    ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                    Selected = true,
+                    Status = x.OrderItemSublocationRecipients.Any(x => x.DeliveryDate != orderWrapper.Order.DeliveryDate) ? "Updated" : string.Empty,
+                })],
+                BackLink = Url.Action(
+                    nameof(SelectOrganisations),
+                    typeof(DeliveryDatesController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("change-organisations-dates")]
+        public async Task<IActionResult> ChangeOrganisationsDates(string internalOrgId, CallOffId callOffId)
+        {
+            return RedirectToAction(
+                nameof(Review),
+                typeof(DeliveryDatesController).ControllerName(),
+                new { internalOrgId, callOffId });
+        }
+
+        [HttpGet("set-organisation-delivery-dates/{recipientOrganisationId}")]
+        public async Task<IActionResult> SetOrganisationDeliveryDates(
+            string internalOrgId,
+            CallOffId callOffId,
+            string recipientOrganisationId,
+            string selectedRecipients)
+        {
+            var orderWrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
+            int? orderItemId = orderWrapper.Order.GetOrderItemIds().Count > 0 ? orderWrapper.Order.GetOrderItemIds()[0] : null;
+            if (orderItemId is null)
+            {
+                return NotFound();
+            }
+
+            var orderItemRecipients = await deliveryDateService.GetRecipientOrderItemsDeliveryDatesAsync(callOffId.OrderNumber, recipientOrganisationId);
+
+            if (orderItemRecipients is null || !orderItemRecipients.Any())
+            {
+                return NotFound();
+            }
+
+            var model = new SetOrganisationDeliveryDatesModel(
+                internalOrgId,
+                callOffId,
+                orderItemId.Value,
+                recipientOrganisationId,
+                orderItemRecipients,
+                orderWrapper.Order)
+            {
+                BackLink = string.IsNullOrEmpty(selectedRecipients)
+                ? Url.Action(
+                    nameof(Review),
+                    typeof(DeliveryDatesController).ControllerName(),
+                    new { internalOrgId, callOffId })
+                : Url.Action(
+                    nameof(ChangeOrganisationsDates),
+                    typeof(DeliveryDatesController).ControllerName(),
+                    new { internalOrgId, callOffId, selectedRecipients }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("set-organisation-delivery-dates/{recipientOrganisationId}")]
+        public async Task<IActionResult> SetOrganisationDeliveryDates(
+            string internalOrgId,
+            CallOffId callOffId,
+            string recipientOrganisationId,
+            SetOrganisationDeliveryDatesModel model)
+        {
+            model.RecipientOrganisationId = recipientOrganisationId;
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var recipientOrderItemDeliveryDates = model.OrderItemsDeliveryDates.Select(x => new RecipientOrderItemDeliveryDateDto
+            {
+                OrderSublocationRecipientId = x.OrderSublocationRecipientId,
+                DeliveryDate = x.Date,
+            }).ToList();
+
+            await deliveryDateService.SetRecipientOrderItemDeliveryDatesAsync(recipientOrderItemDeliveryDates);
+
+            if (model.SelectedRecipients is null || model.SelectedRecipients.Count == 0)
+            {
+                return RedirectToAction(
+                    nameof(Review),
+                    typeof(DeliveryDatesController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
+            return RedirectToAction(
+                nameof(ChangeOrganisationsDates),
+                typeof(DeliveryDatesController).ControllerName(),
+                new { internalOrgId, callOffId, model.SelectedRecipients });
         }
 
         [HttpGet("{orderItemId}/edit")]

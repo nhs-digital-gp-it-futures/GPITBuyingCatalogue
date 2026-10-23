@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 {
     public class ReviewModel : NavBaseModel
     {
-        private readonly Dictionary<int, string> orderItemNames = new();
+        private readonly Dictionary<int, string> orderItemNames = [];
 
         public ReviewModel()
         {
@@ -26,19 +26,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             PracticeReorganisationName = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient?.Name ?? string.Empty;
             DeliveryDate = order.DeliveryDate;
 
+            var orderItems = order.GetOrderItemIds();
+            if (orderItems.Count == 0)
+            {
+                throw new InvalidOperationException($"No order items found for CallOffId {CallOffId}");
+            }
+
+            OrderItemId = orderItems[0];
+
             orderItemNames = order.OrderItems.ToDictionary(
                 x => x.Id,
                 x => x.CatalogueItem.Name);
 
-            OrderWrapper = orderWrapper;
+            var orderItem = orderWrapper.Order.OrderItem(OrderItemId);
+            var item = orderItem.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+                ? orderItem.Parent
+                : orderItem;
 
-            SolutionId = order.GetSolutionOrderItem()?.Id;
-            AdditionalServiceIds = order.GetAdditionalServices().Select(x => x.Id).ToList();
-            AssociatedServiceIds = order.GetAssociatedServices().Select(x => x.Id).ToList();
-            AssociatedServiceIdsForAdditionalServices = order.GetAdditionalServices()
-                .ToDictionary(
-                    additionalService => additionalService.CatalogueItemId,
-                    additionalService => additionalService.Services.Select(service => service.Id).ToList());
+            AssociatedServiceIds = [.. order.GetAssociatedServices().Select(x => x.Id)];
+            Recipients = orderWrapper.DetermineOrderRecipients(item).GroupBy(y => y.ParentSublocation.SublocationOrganisation.Name)
+                .Select(x => new KeyValuePair<string, OrderSublocationRecipient[]>(
+                    x.Key,
+                    [.. x.OrderBy(y => y.RecipientOdsOrganisation.Name)]))
+                .ToDictionary();
         }
 
         public string InternalOrgId { get; set; }
@@ -53,45 +63,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public DateTime? DeliveryDate { get; set; }
 
-        public int? SolutionId { get; set; }
+        public List<int> AssociatedServiceIds { get; set; } = [];
 
-        public List<int> AdditionalServiceIds { get; set; } = new();
+        public Dictionary<string, OrderSublocationRecipient[]> Recipients { get; set; }
 
-        public List<int> AssociatedServiceIds { get; set; } = new();
-
-        public Dictionary<CatalogueItemId, List<int>> AssociatedServiceIdsForAdditionalServices { get; set; }
-
-        public OrderWrapper OrderWrapper { get; set; } = new();
+        public int OrderItemId { get; set; }
 
         public string OrderItemName(int orderItemId) => orderItemNames.ContainsKey(orderItemId)
             ? orderItemNames[orderItemId]
             : string.Empty;
 
-        public List<DateTime?> OrderItemDates(int orderItemId)
+        public bool HasUpdatedDeliveryDates(OrderSublocationRecipient recipient)
         {
-            return GetRecipientsForItem(orderItemId)
-                .Select(x => x.DeliveryDate)
-                .Distinct()
-                .OrderBy(x => x)
-                .ToList();
-        }
+            if (DeliveryDate is null)
+            {
+                return false;
+            }
 
-        public List<(string OdsCode, string Name, DateTime? DeliveryDate)> OrderItemRecipients(int orderItemId)
-        {
-            return GetRecipientsForItem(orderItemId)
-                .OrderBy(x => x.RecipientName)
-                .Select(x => (x.OdsCode, x.RecipientName, x.DeliveryDate))
-                .ToList();
-        }
-
-        private List<OrderItemRecipientModel> GetRecipientsForItem(int orderItemId)
-        {
-            var orderItem = OrderWrapper.OrderItems.FirstOrDefault(x => x.Id == orderItemId);
-            if (orderItem == null) return [];
-
-            return OrderWrapper.DetermineOrderRecipients(orderItem)
-                .Select(x => new OrderItemRecipientModel(x, orderItem.Id))
-                .ToList();
+            return recipient.OrderItemSublocationRecipients.Any(x => x.DeliveryDate != DeliveryDate);
         }
     }
 }
