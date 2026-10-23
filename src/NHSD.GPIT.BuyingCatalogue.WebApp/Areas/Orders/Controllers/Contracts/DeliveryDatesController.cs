@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 
             if (model.ApplyToAll == true)
             {
-                await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.Date!.Value);
+                await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value);
 
                 return RedirectToAction(
                     nameof(Review),
