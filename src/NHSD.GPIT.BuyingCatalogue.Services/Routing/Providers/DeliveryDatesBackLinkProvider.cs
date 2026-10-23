@@ -48,9 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 .Distinct()
                 .ToList();
 
-            IEnumerable<string> solutionOdsCodes = orderWrapper.DetermineOrderRecipients(solution)
-                .Select(x => x.RecipientOdsCode);
-
             if (solutionDates.Count == 0
                 || solutionDates.All(x => x == order.DeliveryDate))
             {

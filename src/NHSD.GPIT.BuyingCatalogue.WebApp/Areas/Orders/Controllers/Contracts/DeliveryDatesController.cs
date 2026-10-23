@@ -62,7 +62,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             }
 
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            int? orderItemId = order.GetOrderItemIds().Count > 0 ? order.GetOrderItemIds()[0] : null;
 
             if (model.ApplyToAll == true)
             {
