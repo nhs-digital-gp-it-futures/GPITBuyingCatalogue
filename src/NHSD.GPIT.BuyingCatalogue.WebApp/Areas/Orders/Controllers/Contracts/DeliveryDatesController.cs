@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                     new { internalOrgId, callOffId, deliveryDate, model.ApplyToAll });
             }
 
-            await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.Date!.Value);
+            await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value);
 
             return RedirectToAction(
                 nameof(SelectOrganisations),
