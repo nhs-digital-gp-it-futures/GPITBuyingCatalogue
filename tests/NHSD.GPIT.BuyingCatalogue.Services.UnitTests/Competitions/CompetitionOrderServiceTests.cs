@@ -13,8 +13,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions;
@@ -93,6 +95,35 @@ public static class CompetitionOrderServiceTests
         var callOffId = await service.CreateDirectAwardOrder(organisation.InternalIdentifier, competition.Id, solution.CatalogueItemId);
 
         callOffId.Should().NotBe(default);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task CreateDirectAwardOrder_Solution_SetsOrderItemRecipientDisplayNumbers(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        [Frozen] IOrderItemRecipientDisplayNumberService orderItemRecipientDisplayNumberService,
+        CompetitionOrderService service)
+    {
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competition.CompetitionSolutions = [competitionSolution];
+
+        dbContext.Organisations.Add(organisation);
+        dbContext.Competitions.Add(competition);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        var callOffId = await service.CreateDirectAwardOrder(organisation.InternalIdentifier, competition.Id, solution.CatalogueItemId);
+
+        await orderItemRecipientDisplayNumberService.Received(1)
+            .SetOrderItemRecipientDisplayNumbers(callOffId, organisation.InternalIdentifier);
     }
 
     [Theory]
@@ -299,6 +330,42 @@ public static class CompetitionOrderServiceTests
         var callOffId = await service.CreateOrder(organisation.InternalIdentifier, competition.Id, solution.CatalogueItemId);
 
         callOffId.Should().NotBe(default);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task CreateOrder_WinningSolution_SetsOrderItemRecipientDisplayNumbers(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        CompetitionCatalogueItemPrice price,
+        CompetitionCatalogueItemPriceTier priceTier,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        [Frozen] IOrderItemRecipientDisplayNumberService orderItemRecipientDisplayNumberService,
+        CompetitionOrderService service)
+    {
+        price.Tiers = [priceTier];
+
+        competitionSolution.Price = price;
+        competitionSolution.CatalogueItem = solution.CatalogueItem;
+        competitionSolution.IsShortlisted = true;
+        competitionSolution.IsWinningSolution = true;
+
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competition.CompetitionSolutions = [competitionSolution];
+
+        dbContext.Organisations.Add(organisation);
+        dbContext.Competitions.Add(competition);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        var callOffId = await service.CreateOrder(organisation.InternalIdentifier, competition.Id, solution.CatalogueItemId);
+
+        await orderItemRecipientDisplayNumberService.Received(1)
+            .SetOrderItemRecipientDisplayNumbers(callOffId, organisation.InternalIdentifier);
     }
 
     [Theory]

@@ -34,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public DateTime? DeliveryDate { get; set; }
 
+        public int? DisplayNumber { get; set; }
+
         public DateTime LastUpdated { get; set; }
 
         public int? LastUpdatedBy { get; set; }
@@ -52,6 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 RecipientOdsCode = RecipientOdsCode,
                 Quantity = Quantity,
                 DeliveryDate = DeliveryDate,
+                DisplayNumber = DisplayNumber,
                 OrderItem = OrderItem.Clone(),
             };
         }
