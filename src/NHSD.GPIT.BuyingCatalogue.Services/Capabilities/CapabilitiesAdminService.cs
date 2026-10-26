@@ -37,7 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                     Id = x.Id,
                     CapabilityRef = x.CapabilityRef,
                     Name = x.Name,
-                    CapabilityCategoryName = x.Category.Name,
                     Status = x.Status,
                 })
                 .ToListAsync();

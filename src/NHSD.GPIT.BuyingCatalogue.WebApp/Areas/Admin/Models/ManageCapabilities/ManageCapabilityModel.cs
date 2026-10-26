@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdminManageCapabilities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageCapabilities;
@@ -22,18 +18,6 @@ public class ManageCapabilityModel : NavBaseModel
         Description = capability.Description;
         SourceUrl = capability.SourceUrl;
         Status = capability.Status;
-
-        CatalogueItemsExpanderModel = new CapabilityCatalogueItemsExpanderModel
-        {
-            CatalogueItems = capability.CatalogueItemCapabilities.Select(x => new AdminManageCapabilityCatalogueItem
-            {
-                Id = x.CatalogueItem.Id,
-                Name = x.CatalogueItem.Name,
-                SupplierName = x.CatalogueItem.Supplier.Name,
-                CatalogueItemType = x.CatalogueItem.CatalogueItemType,
-                PublishedStatus = x.CatalogueItem.PublishedStatus,
-            }),
-        };
     }
 
     public int Id { get; set; }
@@ -48,6 +32,4 @@ public class ManageCapabilityModel : NavBaseModel
     public string SourceUrl { get; set; }
 
     public CapabilityStatus Status { get; set; }
-
-    public CapabilityCatalogueItemsExpanderModel CatalogueItemsExpanderModel { get; set; }
 }

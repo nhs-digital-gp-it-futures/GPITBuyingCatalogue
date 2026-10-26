@@ -30,6 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new ManageCapabilitiesModel(capabilities.Items, capabilities.Options)
             {
+                Title = "Manage capabilities",
+                Advice = "View existing capabilities",
                 BackLink = Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName()),
             };
 

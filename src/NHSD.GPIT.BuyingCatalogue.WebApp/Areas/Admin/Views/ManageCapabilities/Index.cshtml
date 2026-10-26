@@ -10,54 +10,34 @@
     var solutionDisplayTotal = $"Showing {start} to {finish} of {capabilityCount} capabilities";
 }
 
-@section Breadcrumbs {
-    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
-        <div class="nhsuk-width-container">
-            <ol class="nhsuk-breadcrumb__list">
-                <li class="nhsuk-breadcrumb__item">
-                    <a class="nhsuk-breadcrumb__link"
-                       data-test-id="home-crumb"
-                       asp-action="@nameof(HomeController.Index)"
-                       asp-controller="@typeof(HomeController).ControllerName()"
-                       asp-area="@typeof(HomeController).AreaName()">Go back</a>
-                </li>
-            </ol>
-        </div>
-    </nav>
-}
+<partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="@ViewBag.Title" advice="" />
-    </div>
-
     <div class="nhsuk-grid-column-full">
-        
-        @if (Model.Capabilities is not null && Model.Capabilities.Count > 0)
+        <nhs-page-title title="@Model.Title" advice="@Model.Advice" />
+
+        @if (Model.Capabilities.Any())
         {
-            <nhs-card-v2>
-                <nhs-card-content title="@solutionDisplayTotal">
-                    <nhs-table data-test-id="capability-table">
-                        <nhs-table-column>Name</nhs-table-column>
-                        <nhs-table-column>Reference</nhs-table-column>
-                        <nhs-table-column>Status</nhs-table-column>
-                        @foreach (var capabilities in Model.Capabilities)
-                        {
-                            var statusText = capabilities.Status.ToString();
-                            var statusColour = statusText == "Effective" ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;
-                            <nhs-table-row-container>
-                                <nhs-table-cell>@capabilities.Name</nhs-table-cell>
-                                <nhs-table-cell>@capabilities.CapabilityRef</nhs-table-cell>
-                                <nhs-table-cell><nhs-tag text="@statusText" colour="@statusColour" /></nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    </nhs-table>
-                    <govuk-pagination current-page-number="@Model.Options.PageNumber"
-                                      total-number-of-pages="@Model.Options.NumberOfPages" />
-                </nhs-card-content>
-            </nhs-card-v2>
+            <p class="bc-u-block-float-left">@solutionDisplayTotal</p>
+            <nhs-table>
+                <nhs-table-column>Capability</nhs-table-column>
+                <nhs-table-column>Reference</nhs-table-column>
+                <nhs-table-column>Status</nhs-table-column>
+                @foreach (var capabilities in Model.Capabilities)
+                {
+                    var statusText = capabilities.Status.ToString();
+                    var statusColour = statusText == "Effective" ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;
+                    <nhs-table-row-container>
+                        <nhs-table-cell>@capabilities.Name</nhs-table-cell>
+                        <nhs-table-cell>@capabilities.CapabilityRef</nhs-table-cell>
+                        <nhs-table-cell><nhs-tag text="@statusText" colour="@statusColour" /></nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
         }
-       
+
+        <govuk-pagination current-page-number="@Model.Options.PageNumber"
+                          total-number-of-pages="@Model.Options.NumberOfPages" />
     </div>
 </div>
 
