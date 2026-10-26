@@ -84,5 +84,16 @@
                 </li>
             </ul>
         }
+        
+        @if (User.CanManageReferenceData())
+        {
+            <h2>Manage Reference Data</h2>
+            <ul>
+                <li asp-authorize-policy="@CataloguePermissions.ManageEpics">
+                    <a href="@Url.Action(nameof(ManageEpicsController.Index), typeof(ManageEpicsController).ControllerName())">Manage epics</a>
+                    <p>Add or edit existing epics.</p>
+                </li>
+            </ul>
+        }
     </div>
 </div>
