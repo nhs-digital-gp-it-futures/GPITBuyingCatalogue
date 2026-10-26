@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageEpics;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
-
+[Authorize(Policy = "ManageEpics")]
 [Area("Admin")]
 [Route("admin/manage-epics")]
 public class ManageEpicsController(IEpicsService epicsService) : Controller
