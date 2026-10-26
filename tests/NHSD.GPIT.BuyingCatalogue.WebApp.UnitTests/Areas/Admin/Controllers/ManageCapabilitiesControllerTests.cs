@@ -62,8 +62,11 @@ public static class ManageCapabilitiesControllerTests
         ManageCapabilitiesController controller)
     {
         var pagedList = new PagedList<AdminManageCapability>(items, new PageOptions(page, 20));
-        var expected = new ManageCapabilitiesModel(pagedList.Items, pagedList.Options);
-
+        var expected = new ManageCapabilitiesModel(pagedList.Items, pagedList.Options)
+        {
+            Title = "Manage capabilities",
+            Advice = "View existing capabilities",
+        };
         capabilitiesAdminService.GetPagedCapabilitiesAsync(Arg.Any<PageOptions>()).Returns(pagedList);
 
         var result = (await controller.Index(page)).As<ViewResult>();
