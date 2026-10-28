@@ -67,15 +67,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 PageSize = 10,
             };
 
+            var solutionsFilters = new SolutionsFilters
+            {
+                CapabilitiesAndEpics = filters.GetCapabilityAndEpicIds(),
+                Search = search,
+                SelectedFrameworkId = selectedFrameworkId,
+                SelectedApplicationTypeIds = selectedApplicationTypeIds,
+                SelectedHostingTypeIds = selectedHostingTypeIds,
+                SelectedIntegrationsAndTypes = filters.GetIntegrationsAndTypes(),
+                IsCommunityPharmacy = false,
+            };
+
             (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
-                    inputOptions,
-                    filters.GetCapabilityAndEpicIds(),
-                    search,
-                    selectedFrameworkId,
-                    selectedApplicationTypeIds,
-                    selectedHostingTypeIds,
-                    filters.GetIntegrationsAndTypes());
+                    solutionsFilters,
+                    inputOptions);
 
             var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
             var integrations = await integrationsService.GetIntegrationsWithTypes();
@@ -129,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
 
-            var results = await solutionsFilterService.GetSolutionsBySearchTerm(search);
+            var results = await solutionsFilterService.GetSolutionsBySearchTerm(search, isCommunityPharmacy: false);
 
             return Json(
                 results.Select(
@@ -149,15 +155,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 PageSize = 10,
             };
 
+            var solutionsFilters = new SolutionsFilters
+            {
+                CapabilitiesAndEpics = filters.GetCapabilityAndEpicIds(),
+                Search = filters.Search,
+                SelectedFrameworkId = filters.SelectedFrameworkId,
+                SelectedApplicationTypeIds = filters.SelectedApplicationTypeIds,
+                SelectedHostingTypeIds = filters.SelectedHostingTypeIds,
+                SelectedIntegrationsAndTypes = filters.GetIntegrationsAndTypes(),
+                IsCommunityPharmacy = false,
+            };
+
             (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
-                    inputOptions,
-                    filters.GetCapabilityAndEpicIds(),
-                    filters.Search,
-                    filters.SelectedFrameworkId,
-                    filters.SelectedApplicationTypeIds,
-                    filters.SelectedHostingTypeIds,
-                    filters.GetIntegrationsAndTypes());
+                    solutionsFilters,
+                    inputOptions);
 
             var model = new SolutionsResultsModel()
             {
