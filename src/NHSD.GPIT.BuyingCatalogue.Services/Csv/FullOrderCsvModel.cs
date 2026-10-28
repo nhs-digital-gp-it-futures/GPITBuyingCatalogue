@@ -21,7 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
         public string ServiceRecipientItemId
         {
-            get => field ??= $"{CallOffId}-{ServiceRecipientId}-{ProductId}-{OrderItemId}";
+            get => field ??= DisplayNumber is null
+                ? $"{CallOffId}-{ServiceRecipientId}-{ProductId}-{OrderItemId}"
+                : $"{CallOffId}-{ServiceRecipientId}-{DisplayNumber}";
             set;
         }
 
@@ -32,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         public string ProductId { get; set; }
 
         public int OrderItemId { get; set; }
+
+        public int? DisplayNumber { get; set; }
 
         public string ProductName { get; set; }
 

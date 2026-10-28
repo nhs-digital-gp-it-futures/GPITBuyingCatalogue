@@ -7,6 +7,7 @@ CREATE TABLE [ordering].[OrderItemSublocationRecipientsV2]
     [RecipientOdsCode] NVARCHAR(10) NOT NULL,
     [Quantity] int NULL CONSTRAINT PositiveQuantityV2_OrderItemSublocationRecipients_Quantity CHECK (Quantity >= 0),
     [DeliveryDate] date NULL,
+    [DisplayNumber] int NULL,
     [LastUpdated] datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
     [LastUpdatedBy] int NULL,
     [SysStartTime] datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
