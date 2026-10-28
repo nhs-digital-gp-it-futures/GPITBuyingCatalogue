@@ -18,7 +18,7 @@
      [SupplierDetails] tinyint NOT NULL,
      [ServiceLevelAgreement] tinyint NOT NULL,
      CONSTRAINT PK_SolutionSections PRIMARY KEY ([SolutionTypeId]),
-     CONSTRAINT FK_SolutionSections_SolutionType FOREIGN KEY ([SolutionTypeId]) REFERENCES catalogue.StandardTypes([Id]),
+     CONSTRAINT FK_SolutionSections_SolutionType FOREIGN KEY ([SolutionTypeId]) REFERENCES catalogue.SolutionTypes([Id]),
      CONSTRAINT FK_SolutionSections_Details_SolutionSectionRequirements FOREIGN KEY ([Details]) REFERENCES catalogue.SolutionSectionRequirements([Id]),
      CONSTRAINT FK_SolutionSections_Description_SolutionSectionRequirements FOREIGN KEY ([Description]) REFERENCES catalogue.SolutionSectionRequirements([Id]),
      CONSTRAINT FK_SolutionSections_Features_SolutionSectionRequirements FOREIGN KEY ([Features]) REFERENCES catalogue.SolutionSectionRequirements([Id]),

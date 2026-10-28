@@ -10,10 +10,10 @@
 :r ./InsertPublicationStatuses.sql
 :r ./InsertSolutionCapabilityStatuses.sql
 :r ./InsertSolutionEpicStatuses.sql
-:r ./InsertSolutionSectionRequirements.sql
-:r ./InsertSolutionSections.sql
 :r ./InsertCatalogueItemTypes.sql
 :r ./InsertSolutionTypes.sql
+:r ./InsertSolutionSectionRequirements.sql
+:r ./InsertSolutionSections.sql
 :r ./InsertCataloguePriceTypes.sql
 :r ./InsertCataloguePriceCalculationTypes.sql
 :r ./InsertCataloguePriceQuantityCalculationTypes.sql
