@@ -70,9 +70,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<List<CatalogueItem>> GetSupplierSolutionsWithAssociatedServices(int? supplierId, PracticeReorganisationTypeEnum practiceReorganisationType, string selectedFrameworkId);
 
-        Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null);
+        Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null, SolutionType? solutionType = null);
 
-        Task<IList<CatalogueItem>> GetAllSolutionsForSearchTerm(string searchTerm);
+        Task<IList<CatalogueItem>> GetAllSolutionsForSearchTerm(string searchTerm, SolutionType? solutionType = null);
 
         Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model);
 

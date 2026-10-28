@@ -508,8 +508,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
-        public async Task<IList<CatalogueItem>> GetAllSolutions(
-            PublicationStatus? publicationStatus = null)
+        public async Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null, SolutionType? solutionType = null)
         {
             var query = dbContext.CatalogueItems
                 .Include(i => i.Solution)
@@ -520,15 +519,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             if (publicationStatus is not null)
                 query = query.Where(i => i.PublishedStatus == publicationStatus.Value);
 
+            // PH: next phase, dont do anything with solutiontype yet  .
+            _ = solutionType;
+
             return await query
                 .OrderBy(i => i.Name)
                 .ToListAsync();
         }
 
-        public async Task<IList<CatalogueItem>> GetAllSolutionsForSearchTerm(string searchTerm)
+        public async Task<IList<CatalogueItem>> GetAllSolutionsForSearchTerm(string searchTerm, SolutionType? solutionType = null)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 throw new ArgumentNullException(nameof(searchTerm));
+
+            // PH : next phase, dont do anything with solutiontype yet  .
+            _ = solutionType;
 
             return await dbContext.CatalogueItems
                 .Include(i => i.Solution)

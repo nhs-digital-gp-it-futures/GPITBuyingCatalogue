@@ -40,9 +40,11 @@ public sealed class CatalogueSolutionsController(
     private readonly ISolutionPublicationStatusService publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
 
     [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] string search = null)
+    public async Task<IActionResult> Index(
+     [FromQuery] string search = null,
+     [FromQuery] SolutionType? solutionType = null)
     {
-        var solutions = await GetFilteredItems(search);
+        var solutions = await GetFilteredItems(search, solutionType);
 
         var solutionModel = new CatalogueSolutionsModel(solutions)
         {
@@ -53,14 +55,16 @@ public sealed class CatalogueSolutionsController(
     }
 
     [HttpPost]
-    public async Task<IActionResult> Index(CatalogueSolutionsModel model)
+    public async Task<IActionResult> Index(
+    CatalogueSolutionsModel model,
+    [FromQuery] SolutionType? solutionType = null)
     {
         var status = string.IsNullOrWhiteSpace(model.SelectedPublicationStatus)
             ? (PublicationStatus?)null
             : Enum.Parse<PublicationStatus>(model.SelectedPublicationStatus, ignoreCase: true);
 
-        var solutions = await solutionsService.GetAllSolutions(status);
-        var filteredSolutions = await GetFilteredItems(model.SearchTerm);
+        var solutions = await solutionsService.GetAllSolutions(status, solutionType);
+        var filteredSolutions = await GetFilteredItems(model.SearchTerm, solutionType);
 
         model.SetSolutions(solutions.Intersect(filteredSolutions));
 
@@ -68,9 +72,10 @@ public sealed class CatalogueSolutionsController(
     }
 
     [HttpGet("search-results")]
-    public async Task<IActionResult> SearchResults([FromQuery] string search)
+    public async Task<IActionResult> SearchResults([FromQuery] string search,
+    [FromQuery] SolutionType? solutionType = null)
     {
-        var results = await GetFilteredItems(search);
+        var results = await GetFilteredItems(search,solutionType);
 
         return Json(results.Take(15).Select(x => new HtmlEncodedSuggestionSearchResult(
             x.Name,
@@ -422,10 +427,10 @@ public sealed class CatalogueSolutionsController(
             new { solutionId });
     }
 
-    private async Task<IEnumerable<CatalogueItem>> GetFilteredItems(string search)
+    private async Task<IEnumerable<CatalogueItem>> GetFilteredItems(string search, SolutionType? solutionType)
     {
         return string.IsNullOrWhiteSpace(search)
-            ? await solutionsService.GetAllSolutions()
-            : await solutionsService.GetAllSolutionsForSearchTerm(search);
+            ? await solutionsService.GetAllSolutions(solutionType: solutionType)
+            : await solutionsService.GetAllSolutionsForSearchTerm(search, solutionType);
     }
 }
