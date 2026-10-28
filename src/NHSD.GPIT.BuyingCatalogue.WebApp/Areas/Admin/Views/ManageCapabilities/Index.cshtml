@@ -1,0 +1,43 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageCapabilities.ManageCapabilitiesModel;
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+@{
+    ViewBag.Title = "Manage capabilities"; 
+    var capabilityCount = Model.Options?.TotalNumberOfItems ?? Model.Capabilities.Count;
+    var displayPerPage = Model.Options.PageSize;
+    var currentPageNumber = Model.Options.PageNumber;
+    var start = (currentPageNumber - 1) * displayPerPage + 1;
+    var finish = Math.Min(displayPerPage * currentPageNumber, capabilityCount);
+    var solutionDisplayTotal = $"Showing {start} to {finish} of {capabilityCount} capabilities";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@Model.Title" advice="@Model.Advice" />
+
+        @if (Model.Capabilities.Any())
+        {
+            <p class="bc-u-block-float-left">@solutionDisplayTotal</p>
+            <nhs-table>
+                <nhs-table-column>Capability</nhs-table-column>
+                <nhs-table-column>Reference</nhs-table-column>
+                <nhs-table-column>Status</nhs-table-column>
+                @foreach (var capabilities in Model.Capabilities)
+                {
+                    var statusText = capabilities.Status.ToString();
+                    var statusColour = statusText == "Effective" ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;
+                    <nhs-table-row-container>
+                        <nhs-table-cell>@capabilities.Name</nhs-table-cell>
+                        <nhs-table-cell>@capabilities.CapabilityRef</nhs-table-cell>
+                        <nhs-table-cell><nhs-tag text="@statusText" colour="@statusColour" /></nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        }
+
+        <govuk-pagination current-page-number="@Model.Options.PageNumber"
+                          total-number-of-pages="@Model.Options.NumberOfPages" />
+    </div>
+</div>
+
