@@ -72,8 +72,7 @@ public sealed class CatalogueSolutionsController(
     }
 
     [HttpGet("search-results")]
-    public async Task<IActionResult> SearchResults([FromQuery] string search,
-    [FromQuery] SolutionType? solutionType = null)
+    public async Task<IActionResult> SearchResults([FromQuery] string search, [FromQuery] SolutionType? solutionType = null)
     {
         var results = await GetFilteredItems(search,solutionType);
 
