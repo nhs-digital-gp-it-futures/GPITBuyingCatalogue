@@ -86,6 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<Solution> Solutions { get; set; }
 
+        public DbSet<SolutionSections> SolutionSections { get; set; }
+
         public DbSet<Supplier> Suppliers { get; set; }
 
         public DbSet<SupplierContact> SupplierContacts { get; set; }
