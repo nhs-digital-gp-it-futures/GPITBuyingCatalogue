@@ -1,0 +1,38 @@
+.community-pharmacy-pricing {
+    &__table {
+        .nhsuk-form-group {
+            margin-bottom: 0;
+        }
+
+        .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row {
+            display: table-row;
+
+            td {
+                @include nhsuk-font(16);
+
+                border-bottom: 1px solid $color_nhsuk-grey-4;
+                display: table-cell;
+                vertical-align: middle;
+            }
+
+            td:first-child {
+                padding-right: nhsuk-spacing(3);
+                text-align: left;
+                width: 40%;
+            }
+
+            td:last-child {
+                text-align: right;
+            }
+
+            &:last-child td {
+                border-bottom: 0;
+                padding-bottom: 0;
+            }
+        }
+    }
+
+    &__disclaimer {
+        color: $color_nhsuk-grey-1;
+    }
+}

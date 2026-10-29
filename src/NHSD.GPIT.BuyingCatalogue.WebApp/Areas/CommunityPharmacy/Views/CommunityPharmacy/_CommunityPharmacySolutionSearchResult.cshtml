@@ -1,5 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionSearchResultModel;
 
 <div class="nhsuk-card nhs-card--border-radius">
@@ -12,9 +12,9 @@
                 }
                 else
                 {
-                    <a asp-area="@typeof(SolutionsController).AreaName()"
-                       asp-controller="@typeof(SolutionsController).ControllerName()"
-                       asp-action="@nameof(SolutionsController.Description)"
+                    <a asp-area="@typeof(CommunityPharmacyController).AreaName()"
+                       asp-controller="@typeof(CommunityPharmacyController).ControllerName()"
+                       asp-action="@nameof(CommunityPharmacyController.Summary)"
                        asp-route-solutionId="@Model.CatalogueItem.Id">
                         @Model.CatalogueItem.Name
                     </a>

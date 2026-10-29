@@ -1,0 +1,51 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.ISupplierDetailsModel
+
+@if (!string.IsNullOrWhiteSpace(Model.Summary) || !String.IsNullOrWhiteSpace(Model.Url))
+{
+    <nhs-card title="@Model.Name">
+        @if (!string.IsNullOrWhiteSpace(Model.Summary))
+        {
+            <p style="white-space: pre-line">@Model.Summary</p>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.Url))
+        {
+            <p>
+                <a href="@Model.Url" target="_blank">Find out more about this supplier (opens in a new tab)</a>
+            </p>
+        }
+    </nhs-card>
+}
+@if (Model.HasContacts())
+{
+    <nhs-expander label-text="Contact details" open="false">
+        @foreach (var contact in Model.Contacts)
+        {
+            <nhs-summary-list>
+                @if (!string.IsNullOrWhiteSpace(contact.FullName))
+                {
+                    <nhs-summary-list-row label-text="Contact name">
+                        <p>
+                            @contact.FullName
+                        </p>
+                    </nhs-summary-list-row>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(contact.Department))
+                {
+                    <nhs-summary-list-row label-text="Department">
+                        <p>
+                            @contact.Department
+                        </p>
+                    </nhs-summary-list-row>
+                }
+                <nhs-summary-list-row label-text="Contact details">
+                    @if (!string.IsNullOrWhiteSpace(contact.PhoneNumber))
+                    {
+                        <p>@contact.PhoneNumber</p>
+                    }
+                    <p>@contact.Email</p>
+                </nhs-summary-list-row>
+            </nhs-summary-list>
+        }
+    </nhs-expander>
+}
