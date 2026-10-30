@@ -8,12 +8,10 @@
     var mergerSplit = Model.OrderType.MergerOrSplit && Model.AssociatedServiceIds.Count == 1;
 
     var caption = mergerSplit
-        ? Model.OrderItemName(Model.AssociatedServiceIds[0])
+        ? $"{Model.OrderItemName(Model.AssociatedServiceIds[0])} - Order {Model.CallOffId}"
         : $"Order {Model.CallOffId}";
 
-    var advice = mergerSplit
-        ? "Make sure the correct planned delivery dates have been applied for each of your service recipients"
-        : "Check you’ve entered the correct planned delivery dates for each organisation";
+    var advice = "Check you’ve entered the correct planned delivery dates for each organisation";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
