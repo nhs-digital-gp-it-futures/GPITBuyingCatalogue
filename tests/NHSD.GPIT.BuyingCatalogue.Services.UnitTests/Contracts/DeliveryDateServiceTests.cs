@@ -170,6 +170,79 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [MockInMemoryDbAutoData]
+        public static async Task GetSelectedRecipientsAsync_ReturnsSelectedRecipientsForOrder(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            DeliveryDateService service)
+        {
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            var selectedRecipientId = order.FlattenedRecipients.First().RecipientOdsCode;
+            var selectedOrganisationId = order.FlattenedRecipients.First().RecipientOdsOrganisation.Id;
+
+            var result = await service.GetSelectedRecipientsAsync(
+                order.OrderNumber,
+                [selectedOrganisationId]);
+
+            result.Should().ContainSingle()
+                .Which.RecipientOdsCode.Should().Be(selectedRecipientId);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetSelectedRecipientsAsync_WithDifferentOrderNumber_ReturnsNoRecipients(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            DeliveryDateService service)
+        {
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            var selectedOrganisationId = order.FlattenedRecipients.First().RecipientOdsOrganisation.Id;
+
+            var result = await service.GetSelectedRecipientsAsync(
+                order.OrderNumber + 1,
+                [selectedOrganisationId]);
+
+            result.Should().BeEmpty();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetRecipientOrderItemsDeliveryDatesAsync_ReturnsRecipientOrderItems(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            DeliveryDateService service)
+        {
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            var recipientOdsCode = order.FlattenedRecipients.First().RecipientOdsCode;
+            var expectedIds = order.FlattenedRecipients.First()
+                .OrderItemSublocationRecipients
+                .Select(x => x.Id)
+                .ToList();
+
+            var result = await service.GetRecipientOrderItemsDeliveryDatesAsync(
+                order.OrderNumber,
+                recipientOdsCode);
+
+            result.Select(x => x.Id).Should().BeEquivalentTo(expectedIds);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task SetRecipientOrderItemDeliveryDatesAsync_WithNullDeliveryDates_ThrowsArgumentNullException(
+            DeliveryDateService service)
+        {
+            var action = async () => await service.SetRecipientOrderItemDeliveryDatesAsync(null);
+
+            await action.Should().ThrowAsync<ArgumentNullException>();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
         public static async Task ResetDeliveryDates_AllRecipientsAffected_UpdatesDatabase(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,

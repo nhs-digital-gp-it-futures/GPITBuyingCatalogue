@@ -1,0 +1,59 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.SetOrganisationDeliveryDatesModel
+@{
+    ViewBag.Title = $"Order {Model.CallOffId}";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary />
+
+        <nhs-page-title title="@Model.GetPageTitle()"
+                        caption="@ViewBag.Title"
+                        advice="Enter the correct planned delivery dates for each solution or service." />
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.InternalOrgId" />
+            <input type="hidden" asp-for="@Model.CallOffId" />
+            <input type="hidden" asp-for="@Model.OrderItemId" />
+            <input type="hidden" asp-for="@Model.RecipientOrganisationId" />
+            <input type="hidden" asp-for="@Model.RecipientOrganisationName" />
+            <input type="hidden" asp-for="@Model.SelectedRecipients" />
+
+            <nhs-expander label-text="@Model.RecipientOrganisationName" open="true">
+                <nhs-table>
+                    <nhs-table-column>Solution or service</nhs-table-column>
+                    <nhs-table-column>Planned delivery date</nhs-table-column>
+                    @for (var i = 0; i < Model.OrderItemsDeliveryDates.Count; i++)
+                    {
+                        <input type="hidden" asp-for="@Model.OrderItemsDeliveryDates[i].CatalogueItemName" />
+                        <input type="hidden" asp-for="@Model.OrderItemsDeliveryDates[i].CommencementDate" />
+                        <input type="hidden" asp-for="@Model.OrderItemsDeliveryDates[i].MaximumTerm" />
+                        <input type="hidden" asp-for="@Model.OrderItemsDeliveryDates[i].IsAmend" />
+
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                <input type="hidden" asp-for="@Model.OrderItemsDeliveryDates[i].OrderSublocationRecipientId" />
+                                <div>
+                                    @Model.OrderItemsDeliveryDates[i].CatalogueItemName
+                                </div>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <nhs-fieldset-form-label asp-for="@Model">
+                                    <nhs-date-input asp-for="@Model.OrderItemsDeliveryDates[i].Date"
+                                                    day="@Model.OrderItemsDeliveryDates[i].Day"
+                                                    month="@Model.OrderItemsDeliveryDates[i].Month"
+                                                    year="@Model.OrderItemsDeliveryDates[i].Year" />
+                                </nhs-fieldset-form-label>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </nhs-expander>
+
+            <nhs-submit-button />
+        </form>
+    </div>
+</div>

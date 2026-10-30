@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using LinqKit;
@@ -95,6 +96,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             recipients.ForEach(x => x.DeliveryDate = null);
 
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<OrderSublocationRecipient>> GetSelectedRecipientsAsync(int orderNumber, IEnumerable<string> selectedRecipients)
+        {
+            return await dbContext.OrderSublocationRecipients
+                .Include(x => x.RecipientOdsOrganisation)
+                .Include(x => x.ParentSublocation.SublocationOrganisation)
+                .Include(x => x.OrderItemSublocationRecipients)
+                .Where(x => x.Order.OrderNumber == orderNumber && selectedRecipients.Contains(x.RecipientOdsOrganisation.Id))
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<OrderItemSublocationRecipient>> GetRecipientOrderItemsDeliveryDatesAsync(int orderNumber, string recipientId)
+        {
+            var orderItems = await dbContext.OrderItemSublocationRecipients
+                .Include(x => x.Recipient.RecipientOdsOrganisation)
+                .Include(x => x.OrderItem.CatalogueItem)
+                .Where(x => x.OrderItem.Order.OrderNumber == orderNumber && x.RecipientOdsCode == recipientId)
+                .AsNoTracking()
+                .ToListAsync();
+
+            return orderItems;
+        }
+
+        [ExcludeFromCodeCoverage(Justification = "EF Core’s InMemory provider does not support ExecuteUpdateAsync")]
+        public async Task SetRecipientOrderItemDeliveryDatesAsync(IEnumerable<RecipientOrderItemDeliveryDateDto> deliveryDates)
+        {
+            ArgumentNullException.ThrowIfNull(deliveryDates);
+
+            foreach (var deliveryDate in deliveryDates)
+            {
+                await dbContext.Set<OrderItemSublocationRecipient>()
+                    .Where(r => r.Id == deliveryDate.OrderSublocationRecipientId)
+                    .ExecuteUpdateAsync(s => s.SetProperty(r => r.DeliveryDate, _ => deliveryDate.DeliveryDate));
+            }
         }
     }
 }

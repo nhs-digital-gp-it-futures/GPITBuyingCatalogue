@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -12,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         public const string DayName = "day";
         public const string MonthName = "month";
         public const string YearName = "year";
+        public const string ShowExampleName = "show-example-text";
 
         private const string DateInputItemClass = "nhsuk-date-input__item";
         private const string DateInputLabelClass = "nhsuk-date-input__label";
@@ -43,6 +45,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(YearName)]
         public ModelExpression Year { get; set; }
 
+        [HtmlAttributeName(ShowExampleName)]
+        public bool ShowExampleText { get; set; }
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = TagHelperConstants.Div;
@@ -71,6 +76,16 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, Day);
             TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, Month);
             TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, Year);
+
+            if (ShowExampleText)
+            {
+                var today = DateTime.UtcNow;
+                var exampleText = new TagBuilder(TagHelperConstants.Span);
+                exampleText.AddCssClass(TagHelperConstants.NhsHint);
+                exampleText.MergeAttribute("style", "margin-top:15px");
+                exampleText.InnerHtml.Append($"For example, {today:dd MM yyyy}");
+                output.Content.AppendHtml(exampleText);
+            }
         }
 
         private static TagBuilder BuildDateInputContainerItem(bool removeRightMargin)
