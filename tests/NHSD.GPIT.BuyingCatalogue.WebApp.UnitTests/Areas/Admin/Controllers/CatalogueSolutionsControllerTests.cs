@@ -343,7 +343,7 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] ISolutionsService mockService,
         CatalogueSolutionsController controller)
     {
-        var model = new CatalogueSolutionsModel { SelectedPublicationStatus = status.ToString() };
+        var model = new CatalogueSolutionsModel { SelectedPublicationStatus = status.ToString(), SolutionType = SolutionType.GPIT };
 
         mockService
             .GetAllSolutions(status)
@@ -373,6 +373,7 @@ public static class CatalogueSolutionsControllerTests
         {
             SearchTerm = searchTerm,
             SelectedPublicationStatus = status.ToString(),
+            SolutionType = SolutionType.GPIT,
         };
 
         model.SetSolutions(new[] { expected });
@@ -405,7 +406,7 @@ public static class CatalogueSolutionsControllerTests
         solution.LastUpdatedBy = userId;
         solution.LastUpdatedByUser = aspNetUser;
         aspNetUser.Id = userId;
-        var expectedModel = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem);
+        var expectedModel = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT);
 
         mockSolutionService.GetSolutionThin(solution.CatalogueItemId)
             .Returns(solution.CatalogueItem);
@@ -413,7 +414,7 @@ public static class CatalogueSolutionsControllerTests
         mockSolutionService.GetSolutionLoadingStatuses(solution.CatalogueItemId)
             .Returns(solutionLoadingStatuses);
 
-        var actual = (await controller.ManageCatalogueSolution(solution.CatalogueItemId)).As<ViewResult>();
+        var actual = (await controller.ManageCatalogueSolution(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
         await mockSolutionService
             .Received()

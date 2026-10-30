@@ -287,7 +287,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem)
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT)
             {
                 SelectedPublicationStatus = PublicationStatus.Published,
             };

@@ -47,6 +47,7 @@ public sealed class CatalogueSolutionsController(
         var solutionModel = new CatalogueSolutionsModel(solutions)
         {
             SearchTerm = search,
+            SolutionType = solutionType,
         };
 
         return View(solutionModel);
@@ -107,8 +108,8 @@ public sealed class CatalogueSolutionsController(
         return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
     }
 
-    [HttpGet("manage/{solutionId}")]
-    public async Task<IActionResult> ManageCatalogueSolution(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}")]
+    public async Task<IActionResult> ManageCatalogueSolution(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
         if (solution is null)
@@ -116,13 +117,13 @@ public sealed class CatalogueSolutionsController(
 
         var solutionStatuses = await solutionsService.GetSolutionLoadingStatuses(solutionId);
 
-        var model = new ManageCatalogueSolutionModel(solutionStatuses, solution);
+        var model = new ManageCatalogueSolutionModel(solutionStatuses, solution, solutionType);
 
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}")]
-    public async Task<IActionResult> SetPublicationStatus(CatalogueItemId solutionId, ManageCatalogueSolutionModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}")]
+    public async Task<IActionResult> SetPublicationStatus(SolutionType solutionType, CatalogueItemId solutionId, ManageCatalogueSolutionModel model)
     {
         if (!ModelState.IsValid)
             return View("ManageCatalogueSolution", model);
@@ -133,7 +134,7 @@ public sealed class CatalogueSolutionsController(
 
         await publicationStatusService.SetPublicationStatus(solutionId, model.SelectedPublicationStatus);
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index), new { solutionType });
     }
 
     [HttpGet("manage/{solutionId}/details")]

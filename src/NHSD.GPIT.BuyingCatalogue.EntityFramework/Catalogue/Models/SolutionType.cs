@@ -4,9 +4,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 public enum SolutionType
 {
-    [Display(Name = "GPIT")]
+    [Display(Name = "GP")]
     GPIT,
 
-    [Display(Name = "Community Pharmacy")]
+    [Display(Name = "community pharmacy")]
     CommunityPharmacy,
 }
