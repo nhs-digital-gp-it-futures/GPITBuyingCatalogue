@@ -94,19 +94,15 @@ public static class DeliveryDatesControllerTests
         SelectDateModel model,
         EntityFramework.Ordering.Models.Order order,
         [Frozen] IDeliveryDateService deliveryDatesService,
-        [Frozen] IOrderService orderService,
         DeliveryDatesController controller)
     {
         order.SetupCatalogueSolution();
         order.DeliveryDate = null;
         model.ApplyToAll = false;
 
-        orderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
-
         var result = await controller.SelectDate(internalOrgId, callOffId, model);
 
         await deliveryDatesService.Received().SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value);
-        await orderService.Received().GetOrderThin(callOffId, internalOrgId);
 
         var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -129,19 +125,15 @@ public static class DeliveryDatesControllerTests
         SelectDateModel model,
         EntityFramework.Ordering.Models.Order order,
         [Frozen] IDeliveryDateService deliveryDatesService,
-        [Frozen] IOrderService orderService,
         DeliveryDatesController controller)
     {
         order.SetupCatalogueSolution();
         order.DeliveryDate = null;
         model.ApplyToAll = true;
 
-        orderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
-
         var result = await controller.SelectDate(internalOrgId, callOffId, model);
 
         await deliveryDatesService.Received().SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value);
-        await orderService.Received().GetOrderThin(callOffId, internalOrgId);
 
         var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -160,18 +152,14 @@ public static class DeliveryDatesControllerTests
         SelectDateModel model,
         EntityFramework.Ordering.Models.Order order,
         [Frozen] IDeliveryDateService deliveryDatesService,
-        [Frozen] IOrderService orderService,
         DeliveryDatesController controller)
     {
         order.SetupCatalogueSolution();
         order.DeliveryDate = model.Date;
         model.ApplyToAll = false;
 
-        orderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
-
         var result = await controller.SelectDate(internalOrgId, callOffId, model);
 
-        await orderService.Received().GetOrderThin(callOffId, internalOrgId);
         await deliveryDatesService.Received().SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value);
 
         var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -195,18 +183,14 @@ public static class DeliveryDatesControllerTests
         SelectDateModel model,
         EntityFramework.Ordering.Models.Order order,
         [Frozen] IDeliveryDateService deliveryDatesService,
-        [Frozen] IOrderService orderService,
         DeliveryDatesController controller)
     {
         order.SetupCatalogueSolution();
         order.DeliveryDate = model.Date;
         model.ApplyToAll = true;
 
-        orderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
-
         var result = await controller.SelectDate(internalOrgId, callOffId, model);
 
-        await orderService.Received().GetOrderThin(callOffId, internalOrgId);
         await deliveryDatesService.Received().SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value);
 
         var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
