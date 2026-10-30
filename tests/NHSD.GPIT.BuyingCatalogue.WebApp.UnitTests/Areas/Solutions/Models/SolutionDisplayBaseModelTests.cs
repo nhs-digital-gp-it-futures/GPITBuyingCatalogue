@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -20,6 +21,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             childType
                 .Should()
                 .BeAssignableTo<SolutionDisplayBaseModel>();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Construct_WithCommunityPharmacy_SetsExpectedBreadcrumbs(
+            CatalogueItem catalogueItem,
+            Solution solution,
+            CatalogueItemContentStatus contentStatus)
+        {
+            catalogueItem.Solution = solution;
+            solution.FrameworkSolutions = new List<FrameworkSolution>
+            {
+                new() { Framework = new EntityFramework.Catalogue.Models.Framework { SolutionType = SolutionType.CommunityPharmacy }, },
+            };
+
+            var model = new SolutionDisplayStub(catalogueItem, contentStatus);
+
+            model.BreadcrumbItems.Select(x => x.Name)
+                .Should()
+                .Equal("Home", "Community Pharmacy", "Catalogue solutions");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Construct_WithGpit_SetsExpectedBreadcrumbs(
+            CatalogueItem catalogueItem,
+            Solution solution,
+            CatalogueItemContentStatus contentStatus)
+        {
+            catalogueItem.Solution = solution;
+            solution.FrameworkSolutions = new List<FrameworkSolution>
+            {
+                new() { Framework = new EntityFramework.Catalogue.Models.Framework { SolutionType = SolutionType.GPIT }, },
+            };
+
+            var model = new SolutionDisplayStub(catalogueItem, contentStatus);
+
+            model.BreadcrumbItems.Select(x => x.Name)
+                .Should()
+                .Equal("Home", "General Practice", "Catalogue solutions");
         }
 
         [Theory]

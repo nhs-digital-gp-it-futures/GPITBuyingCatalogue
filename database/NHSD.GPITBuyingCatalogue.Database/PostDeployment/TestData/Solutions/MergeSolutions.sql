@@ -1,5 +1,7 @@
 ﻿IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE'
 BEGIN
+    DECLARE @communityPharmacyFrameworkId NVARCHAR(36) = N'CP001';
+
     MERGE INTO [catalogue].[Solutions] AS TARGET
     USING (
     VALUES
@@ -82,6 +84,26 @@ A typical practice deployment takes up to 4 weeks, but some practices are ‘liv
         (N'100021-018', NULL, N'Dummy 18', NULL, NULL, N'{"ClientApplicationTypes":["browser-based"],"BrowsersSupported":[{"BrowserName":"Google Chrome","MinimumBrowserVersion":null}],"MobileResponsive":true,"Plugins":{"Required":false,"AdditionalInformation":null},"HardwareRequirements":null,"NativeMobileHardwareRequirements":null,"NativeDesktopHardwareRequirements":null,"AdditionalInformation":null,"MinimumConnectionSpeed":null,"MinimumDesktopResolution":null,"MobileFirstDesign":null,"NativeMobileFirstDesign":null,"MobileOperatingSystems":null,"MobileConnectionDetails":null,"MobileMemoryAndStorage":null,"MobileThirdParty":null,"NativeMobileAdditionalInformation":null,"NativeDesktopOperatingSystemsDescription":null,"NativeDesktopMinimumConnectionSpeed":null,"NativeDesktopThirdParty":null,"NativeDesktopMemoryAndStorage":null,"NativeDesktopAdditionalInformation":null,"ExistingApplicationTypes":[0]}', NULL, NULL, NULL, NULL, NULL, 0, GETUTCDATE(), 2),
         (N'100021-019', NULL, N'Dummy 19', NULL, NULL, N'{"ClientApplicationTypes":["browser-based"],"BrowsersSupported":[{"BrowserName":"Google Chrome","MinimumBrowserVersion":null}],"MobileResponsive":true,"Plugins":{"Required":false,"AdditionalInformation":null},"HardwareRequirements":null,"NativeMobileHardwareRequirements":null,"NativeDesktopHardwareRequirements":null,"AdditionalInformation":null,"MinimumConnectionSpeed":null,"MinimumDesktopResolution":null,"MobileFirstDesign":null,"NativeMobileFirstDesign":null,"MobileOperatingSystems":null,"MobileConnectionDetails":null,"MobileMemoryAndStorage":null,"MobileThirdParty":null,"NativeMobileAdditionalInformation":null,"NativeDesktopOperatingSystemsDescription":null,"NativeDesktopMinimumConnectionSpeed":null,"NativeDesktopThirdParty":null,"NativeDesktopMemoryAndStorage":null,"NativeDesktopAdditionalInformation":null,"ExistingApplicationTypes":[0]}', NULL, NULL, NULL, NULL, NULL, 0, GETUTCDATE(), 2),
         (N'100021-020', NULL, N'Dummy 20', NULL, NULL, N'{"ClientApplicationTypes":["browser-based"],"BrowsersSupported":[{"BrowserName":"Google Chrome","MinimumBrowserVersion":null}],"MobileResponsive":true,"Plugins":{"Required":false,"AdditionalInformation":null},"HardwareRequirements":null,"NativeMobileHardwareRequirements":null,"NativeDesktopHardwareRequirements":null,"AdditionalInformation":null,"MinimumConnectionSpeed":null,"MinimumDesktopResolution":null,"MobileFirstDesign":null,"NativeMobileFirstDesign":null,"MobileOperatingSystems":null,"MobileConnectionDetails":null,"MobileMemoryAndStorage":null,"MobileThirdParty":null,"NativeMobileAdditionalInformation":null,"NativeDesktopOperatingSystemsDescription":null,"NativeDesktopMinimumConnectionSpeed":null,"NativeDesktopThirdParty":null,"NativeDesktopMemoryAndStorage":null,"NativeDesktopAdditionalInformation":null,"ExistingApplicationTypes":[0]}', NULL, NULL, NULL, NULL, NULL, 0, GETUTCDATE(), 2),
+        (N'100022-001', NULL, N'Helps community pharmacies manage vaccination appointments, clinical records and service submissions.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-06-15T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-002', NULL, N'Supports community pharmacy consultations, referrals and outcomes reporting.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-07-20T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-003', NULL, N'Enables community pharmacies to record blood pressure checks and manage follow-up activity.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-25T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-004', NULL, N'Test community pharmacy solution 4.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-04T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-005', NULL, N'Test community pharmacy solution 5.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-05T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-006', NULL, N'Test community pharmacy solution 6.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-06T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-007', NULL, N'Test community pharmacy solution 7.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-07T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-008', NULL, N'Test community pharmacy solution 8.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-08T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-009', NULL, N'Test community pharmacy solution 9.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-09T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-010', NULL, N'Test community pharmacy solution 10.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-10T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-011', NULL, N'Test community pharmacy solution 11.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-11T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-012', NULL, N'Test community pharmacy solution 12.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-12T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-013', NULL, N'Test community pharmacy solution 13.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-13T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-014', NULL, N'Test community pharmacy solution 14.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-14T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-015', NULL, N'Test community pharmacy solution 15.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-15T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-016', NULL, N'Test community pharmacy solution 16.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-16T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-017', NULL, N'Test community pharmacy solution 17.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-17T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-018', NULL, N'Test community pharmacy solution 18.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-18T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-019', NULL, N'Test community pharmacy solution 19.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-19T09:00:00.0000000' AS DateTime2), 2),
+        (N'100022-020', NULL, N'Test community pharmacy solution 20.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, CAST(N'2026-08-20T09:00:00.0000000' AS DateTime2), 2),
         (N'10004-001', NULL, N'Audit+ is a tool designed to raise standards of clinical care. Comparing the patients clinical record with a database of evidence based guidance, specific to medical history & personal circumstances, delivering prompts to the GP & tools to support patient management within & outside a consultation.', N'Audit+ is a unique software suite that helps healthcare organisations deliver highly effective Advanced Population Health to reduce the prevalence of long-term conditions more effectively. 
 
 The software suite provides the most customisable, flexible data audits on the market for more advanced patient data identification & collection.? By automatically identifying eligible patients according to a list of programmed rules, Audit+ helps primary care teams manage high impact & effective preventative programs with little administrative burden & easy automatic processes.? 
@@ -464,6 +486,26 @@ Key activities:
     MERGE INTO [catalogue].[FrameworkSolutions] AS TARGET
     USING (
     VALUES
+        (@communityPharmacyFrameworkId, N'100022-001', 0, CAST(N'2026-06-15T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-002', 0, CAST(N'2026-07-20T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-003', 0, CAST(N'2026-08-25T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-004', 0, CAST(N'2026-08-04T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-005', 0, CAST(N'2026-08-05T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-006', 0, CAST(N'2026-08-06T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-007', 0, CAST(N'2026-08-07T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-008', 0, CAST(N'2026-08-08T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-009', 0, CAST(N'2026-08-09T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-010', 0, CAST(N'2026-08-10T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-011', 0, CAST(N'2026-08-11T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-012', 0, CAST(N'2026-08-12T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-013', 0, CAST(N'2026-08-13T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-014', 0, CAST(N'2026-08-14T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-015', 0, CAST(N'2026-08-15T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-016', 0, CAST(N'2026-08-16T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-017', 0, CAST(N'2026-08-17T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-018', 0, CAST(N'2026-08-18T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-019', 0, CAST(N'2026-08-19T09:00:00.0000000' AS DateTime2), 2),
+        (@communityPharmacyFrameworkId, N'100022-020', 0, CAST(N'2026-08-20T09:00:00.0000000' AS DateTime2), 2),
         (N'ATP001', N'10046-006', 0, GETUTCDATE(), 2),
         (N'ATP001', N'10047-001', 0, GETUTCDATE(), 2),
         (N'ATP001', N'10052-002', 1, GETUTCDATE(), 2),

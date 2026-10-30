@@ -26,5 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public ICollection<FundingType> FundingTypes { get; set; } = new HashSet<FundingType>();
 
         public int MaximumTerm { get; set; }
+
+        public SolutionType SolutionType { get; set; }
     }
 }

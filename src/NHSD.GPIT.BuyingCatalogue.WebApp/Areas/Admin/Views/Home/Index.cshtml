@@ -1,4 +1,6 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Identity
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.Framework.Identity
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 @{
     ViewBag.Title = "Buying Catalogue admin";
 }
@@ -16,8 +18,12 @@
             <h2>Manage solutions</h2>
             <ul>
                 <li asp-authorize-policy="@CataloguePermissions.ManageCatalogueSolutions">
-                    <a href="@Url.Action(nameof(CatalogueSolutionsController.Index), typeof(CatalogueSolutionsController).ControllerName())">Manage catalogue solutions</a>
+                    <a href="@Url.Action(nameof(CatalogueSolutionsController.Index), typeof(CatalogueSolutionsController).ControllerName(), new { solutionType = SolutionType.GPIT })">Manage GP solutions</a>
                     <p>Add new solutions and edit ones that are already published.</p>
+                </li>
+                <li asp-authorize-policy="@CataloguePermissions.ManageCatalogueSolutions">
+                    <a href="@Url.Action(nameof(CatalogueSolutionsController.Index), typeof(CatalogueSolutionsController).ControllerName(), new { solutionType = SolutionType.CommunityPharmacy })">Manage community pharmacy solutions</a>
+                    <p>Manage community pharmacy catalogue solutions.</p>
                 </li>
                 <li asp-authorize-policy="@CataloguePermissions.ManageContractingVehicles">
                     <a href="@Url.Action(nameof(FrameworksController.Dashboard), typeof(FrameworksController).ControllerName())">Manage contracting vehicles</a>
