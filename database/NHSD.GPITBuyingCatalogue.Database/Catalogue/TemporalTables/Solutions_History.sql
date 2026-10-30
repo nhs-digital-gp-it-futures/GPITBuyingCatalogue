@@ -13,6 +13,7 @@
      AboutUrl nvarchar(1000) NULL,
      IsPilotSolution bit DEFAULT 0 NOT NULL,
      LastUpdated datetime2(7) NOT NULL,
+     SolutionTypeId int NOT NULL DEFAULT(0),
      LastUpdatedBy int NULL,
      SysStartTime datetime2(0) NOT NULL,
      SysEndTime datetime2(0) NOT NULL

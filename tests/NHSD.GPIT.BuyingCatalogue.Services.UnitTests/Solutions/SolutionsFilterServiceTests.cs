@@ -42,9 +42,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsFilterService service)
         {
-            gpitFramework.SolutionType = SolutionType.GPIT;
+            gpitSolution.SolutionType = SolutionType.GPIT;
+            communityPharmacySolution.SolutionType = SolutionType.CommunityPharmacy;
             gpitFramework.IsExpired = false;
-            communityPharmacyFramework.SolutionType = SolutionType.CommunityPharmacy;
             communityPharmacyFramework.IsExpired = false;
 
             gpitSolution.CatalogueItem.Supplier.Name = "GPIT Supplier";
@@ -96,9 +96,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
     [Frozen] BuyingCatalogueDbContext context,
     SolutionsFilterService service)
         {
-            gpitFramework.SolutionType = SolutionType.GPIT;
+            gpitSolution.SolutionType = SolutionType.GPIT;
+            communityPharmacySolution.SolutionType = SolutionType.CommunityPharmacy;
             gpitFramework.IsExpired = false;
-            communityPharmacyFramework.SolutionType = SolutionType.CommunityPharmacy;
             communityPharmacyFramework.IsExpired = false;
 
             gpitSolution.CatalogueItem.Supplier.Name = "GPIT Supplier";
@@ -151,9 +151,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsFilterService service)
         {
-            gpitFramework.SolutionType = SolutionType.GPIT;
+            gpitSolution.SolutionType = SolutionType.GPIT;
+            communityPharmacySolution.SolutionType = SolutionType.CommunityPharmacy;
             gpitFramework.IsExpired = false;
-            communityPharmacyFramework.SolutionType = SolutionType.CommunityPharmacy;
             communityPharmacyFramework.IsExpired = false;
 
             gpitSolution.CatalogueItem.Name = "GPIT Solution";

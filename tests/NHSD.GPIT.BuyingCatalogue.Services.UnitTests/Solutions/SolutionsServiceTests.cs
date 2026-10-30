@@ -771,6 +771,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
+        [MockInMemoryDbInlineAutoData(SolutionType.GPIT)]
+        [MockInMemoryDbInlineAutoData(SolutionType.CommunityPharmacy)]
+        public static async Task AddCatalogueSolution_SetsSolutionTypeFromSelectedFramework(
+            SolutionType solutionType,
+            [Frozen] BuyingCatalogueDbContext context,
+            EntityFramework.Catalogue.Models.Framework framework,
+            CreateSolutionModel model,
+            SolutionsService service)
+        {
+            framework.SolutionType = solutionType;
+            context.Frameworks.Add(framework);
+            model.Frameworks = new List<FrameworkModel>
+            {
+                new() { FrameworkId = framework.Id, Selected = true },
+            };
+            await context.SaveChangesAsync();
+
+            var catalogueItemId = await service.AddCatalogueSolution(model);
+            context.ChangeTracker.Clear();
+
+            var solution = await context.Solutions.SingleAsync(x => x.CatalogueItemId == catalogueItemId);
+            solution.SolutionType.Should().Be(solutionType);
+        }
+
+        [Theory]
         [MockInMemoryDbAutoData]
         public static async Task AddCatalogueSolution_StandardsDefaultedAsMet_SetsInProgressSolutionStandards(
             CreateSolutionModel model,

@@ -85,10 +85,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             if (filters.IsCommunityPharmacy is not null)
             {
                 query = filters.IsCommunityPharmacy == true
-                    ? query.Where(i =>
-                        i.Solution.FrameworkSolutions.Any(fs => fs.Framework.SolutionType == SolutionType.CommunityPharmacy))
-                    : query.Where(i =>
-                        i.Solution.FrameworkSolutions.Any(fs => fs.Framework.SolutionType == SolutionType.GPIT));
+                    ? query.Where(i => i.Solution.SolutionType == SolutionType.CommunityPharmacy)
+                    : query.Where(i => i.Solution.SolutionType == SolutionType.GPIT);
             }
 
             var totalNumberOfItems = await query.CountAsync();
@@ -148,14 +146,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         && ci.CatalogueItemType == CatalogueItemType.Solution
                         && AllowedPublicationStatuses.Contains(ci.PublishedStatus, null)
                         && ci.Supplier.IsActive
-                        && (ci.Solution.FrameworkSolutions.Count == 1
-                            && ci.Solution.FrameworkSolutions.First().Framework.SolutionType
-                            == SolutionType.CommunityPharmacy))
+                        && ci.Solution.SolutionType == SolutionType.CommunityPharmacy)
                     .Select(ci => new SearchFilterModel { Title = ci.Name, Category = "Solution", });
 
                  searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
                     .Where(s => s.Name.Contains(searchTerm) && s.IsActive && s.CatalogueItems.Any(ci =>
-                            ci.Solution.FrameworkSolutions.Any(fs => fs.Framework.SolutionType == SolutionType.CommunityPharmacy)))
+                            ci.CatalogueItemType == CatalogueItemType.Solution
+                            && ci.Solution != null
+                            && ci.Solution.SolutionType == SolutionType.CommunityPharmacy))
                     .Select(s => new SearchFilterModel { Title = s.Name, Category = "Supplier", });
             }
             else
@@ -166,14 +164,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                        && ci.CatalogueItemType == CatalogueItemType.Solution
                        && AllowedPublicationStatuses.Contains(ci.PublishedStatus, null)
                        && ci.Supplier.IsActive
-                       && (ci.Solution.FrameworkSolutions.Count == 1
-                           && ci.Solution.FrameworkSolutions.First().Framework.SolutionType
-                           == SolutionType.GPIT))
+                       && ci.Solution.SolutionType == SolutionType.GPIT)
                    .Select(ci => new SearchFilterModel { Title = ci.Name, Category = "Solution", });
 
                 searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
                     .Where(s => s.Name.Contains(searchTerm) && s.IsActive && s.CatalogueItems.Any(ci =>
-                            ci.Solution.FrameworkSolutions.Any(fs => fs.Framework.SolutionType == SolutionType.GPIT)))
+                            ci.CatalogueItemType == CatalogueItemType.Solution
+                            && ci.Solution != null
+                            && ci.Solution.SolutionType == SolutionType.GPIT))
                     .Select(s => new SearchFilterModel { Title = s.Name, Category = "Supplier", });
             }
 
