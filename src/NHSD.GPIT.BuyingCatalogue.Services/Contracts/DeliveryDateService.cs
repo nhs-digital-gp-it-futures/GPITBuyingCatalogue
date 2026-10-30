@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using LinqKit;
@@ -120,6 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             return orderItems;
         }
 
+        [ExcludeFromCodeCoverage(Justification = "EF Core’s InMemory provider does not support ExecuteUpdateAsync")]
         public async Task SetRecipientOrderItemDeliveryDatesAsync(IEnumerable<RecipientOrderItemDeliveryDateDto> deliveryDates)
         {
             ArgumentNullException.ThrowIfNull(deliveryDates);
