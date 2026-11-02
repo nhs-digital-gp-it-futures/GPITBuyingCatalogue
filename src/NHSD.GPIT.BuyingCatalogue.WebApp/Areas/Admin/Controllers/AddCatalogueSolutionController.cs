@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -26,14 +27,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
+        [HttpGet("{solutionType}")]
+        public async Task<IActionResult> Index(SolutionType solutionType)
         {
             var suppliers = await suppliersService.GetAllSuppliers();
 
             var model = new SolutionModel()
             {
-                BackLink = Url.Action(nameof(CatalogueSolutionsController.Index), typeof(CatalogueSolutionsController).ControllerName()),
+                BackLink = Url.Action(nameof(CatalogueSolutionsController.Index), typeof(CatalogueSolutionsController).ControllerName(), new { solutionType }),
             }.WithSelectListItems(suppliers);
 
             model.Frameworks = await GetFrameworks();
@@ -41,8 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View("Details", model);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Index(SolutionModel model)
+        [HttpPost("{solutionType}")]
+        public async Task<IActionResult> Index(SolutionType solutionType, SolutionModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -65,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(
                 nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { solutionId = catalogueItemId });
+                new { solutionType, solutionId = catalogueItemId });
         }
 
         private async Task<IList<FrameworkModel>> GetFrameworks() => (await solutionsService.GetAllFrameworks())
