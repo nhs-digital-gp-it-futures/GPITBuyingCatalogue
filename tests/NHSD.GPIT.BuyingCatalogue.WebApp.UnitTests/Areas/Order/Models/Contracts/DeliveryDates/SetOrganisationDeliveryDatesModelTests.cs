@@ -89,6 +89,44 @@ public static class SetOrganisationDeliveryDatesModelTests
     }
 
     [Fact]
+    public static void Constructor_WithAssociatedService_IncludesParentCatalogueItemName()
+    {
+        var parentOrderItem = new OrderItem
+        {
+            CatalogueItem = new CatalogueItem
+            {
+                Name = "Additional service",
+                CatalogueItemType = CatalogueItemType.AdditionalService,
+            },
+        };
+        var orderItem = new OrderItem
+        {
+            CatalogueItem = new CatalogueItem
+            {
+                Name = "Associated service",
+                CatalogueItemType = CatalogueItemType.AssociatedService,
+            },
+            Parent = parentOrderItem,
+        };
+        var orderItemRecipient = new OrderItemSublocationRecipient
+        {
+            OrderItem = orderItem,
+        };
+        var order = new OrderEntity();
+
+        var model = new SetOrganisationDeliveryDatesModel(
+            "internal-org-id",
+            order.CallOffId,
+            orderItem.Id,
+            "recipient-org-id",
+            [orderItemRecipient],
+            order);
+
+        model.OrderItemsDeliveryDates.Should().ContainSingle()
+            .Which.CatalogueItemName.Should().Be("Additional service - Associated service");
+    }
+
+    [Fact]
     public static void GetPageTitle_ReturnsRecipientOrganisationName()
     {
         var model = new SetOrganisationDeliveryDatesModel

@@ -36,30 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static async Task SetDeliveryDate_UpdatesDatabase(
-            Order order,
-            DateTime deliveryDate,
-            [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] IOrderService mockOrderService,
-            DeliveryDateService service)
-        {
-            order.DeliveryDate = null;
-            context.Orders.Add(order);
-            await context.SaveChangesAsync();
-
-            mockOrderService.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier).Returns(new OrderWrapper(order));
-
-            await service.SetDeliveryDate(order.OrderingParty.InternalIdentifier, order.CallOffId, deliveryDate);
-            context.ChangeTracker.Clear();
-
-            var dbOrder = await context.Orders
-                .FirstAsync(x => x.Id == order.Id);
-
-            dbOrder.DeliveryDate.Should().Be(deliveryDate);
-        }
-
-        [Theory]
-        [MockInMemoryDbAutoData]
         public static async Task SetAllDeliveryDates_UpdatesDatabase(
             Order order,
             DateTime initialDate,
@@ -93,83 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static async Task ResetRecipientDeliveryDates_UpdatesDatabase(
-            Order order,
-            DateTime initialDate,
-            [Frozen] BuyingCatalogueDbContext context,
-            DeliveryDateService service)
-        {
-            order.DeliveryDate = null;
-            order.OrderItems.ForEach(x =>
-                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x, initialDate)));
-            context.Orders.Add(order);
-            await context.SaveChangesAsync();
-
-            await service.ResetRecipientDeliveryDates(order.Id);
-            context.ChangeTracker.Clear();
-
-            Order dbOrder = await context.Orders.Include(x => x.OrderItems)
-                .Include(x => x.OrderSublocations)
-                .ThenInclude(y => y.SublocationRecipients)
-                .ThenInclude(x => x.OrderItemSublocationRecipients)
-                .FirstAsync(x => x.Id == order.Id);
-
-            dbOrder.OrderItems.ForEach(x =>
-                order.FlattenedRecipients.ForEach(r => r.GetDeliveryDateForItem(x.Id).Should().Be(null)));
-        }
-
-        [Theory]
-        [MockInMemoryDbAutoData]
-        public static async Task SetDeliveryDates_UpdatesDatabase(
-            Order order,
-            [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] IOrderService mockOrderService,
-            DeliveryDateService service)
-        {
-            var initialDate = DateTime.Today;
-            var newDate = initialDate.AddDays(1);
-
-            order.DeliveryDate = initialDate;
-            order.OrderItems.ForEach(x =>
-                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x, initialDate)));
-            context.Orders.Add(order);
-            await context.SaveChangesAsync();
-
-            var orderItem = order.OrderItems.First();
-            var catalogueItemId = orderItem.CatalogueItemId;
-
-            List<RecipientDeliveryDateDto> deliveryDates = order.FlattenedRecipients
-                .Select(x => new RecipientDeliveryDateDto(x.RecipientOdsCode, newDate))
-                .ToList();
-
-            mockOrderService.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier).Returns(new OrderWrapper(order));
-
-            await service.SetDeliveryDates(order.Id, orderItem, deliveryDates);
-            context.ChangeTracker.Clear();
-
-            Order dbOrder = await context.Orders.Include(x => x.OrderItems)
-                .Include(x => x.OrderSublocations)
-                .ThenInclude(y => y.SublocationRecipients)
-                .ThenInclude(x => x.OrderItemSublocationRecipients)
-                .FirstAsync(x => x.Id == order.Id);
-
-            dbOrder.DeliveryDate.Should().Be(initialDate);
-
-            dbOrder.OrderItems
-                .Where(o => o.CatalogueItemId == orderItem.CatalogueItemId)
-                .ForEach(x =>
-                    order.FlattenedRecipients.ForEach(r =>
-                        r.GetDeliveryDateForItem(x.Id).Should().Be(newDate)));
-
-            dbOrder.OrderItems
-                .Where(o => o.CatalogueItemId != orderItem.CatalogueItemId)
-                .ForEach(x =>
-                    order.FlattenedRecipients.ForEach(r =>
-                        r.GetDeliveryDateForItem(x.Id).Should().Be(initialDate)));
-        }
-
-        [Theory]
-        [MockInMemoryDbAutoData]
         public static async Task GetSelectedRecipientsAsync_ReturnsSelectedRecipientsForOrder(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
@@ -182,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             var selectedOrganisationId = order.FlattenedRecipients.First().RecipientOdsOrganisation.Id;
 
             var result = await service.GetSelectedRecipientsAsync(
-                order.OrderNumber,
+                order.CallOffId,
                 [selectedOrganisationId]);
 
             result.Should().ContainSingle()
@@ -191,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static async Task GetSelectedRecipientsAsync_WithDifferentOrderNumber_ReturnsNoRecipients(
+        public static async Task GetSelectedRecipientsAsync_WithDifferentCallOffId_ReturnsNoRecipients(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
             DeliveryDateService service)
@@ -201,8 +100,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             var selectedOrganisationId = order.FlattenedRecipients.First().RecipientOdsOrganisation.Id;
 
+            var differentCallOffId = new CallOffId(order.CallOffId.OrderNumber + 1, order.CallOffId.Revision);
+
             var result = await service.GetSelectedRecipientsAsync(
-                order.OrderNumber + 1,
+                differentCallOffId,
                 [selectedOrganisationId]);
 
             result.Should().BeEmpty();
@@ -225,10 +126,51 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
                 .ToList();
 
             var result = await service.GetRecipientOrderItemsDeliveryDatesAsync(
-                order.OrderNumber,
+                order.CallOffId,
                 recipientOdsCode);
 
             result.Select(x => x.Id).Should().BeEquivalentTo(expectedIds);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetMostCommonRecipientDeliveryDateAsync_ReturnsMostCommonDeliveryDate(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            DeliveryDateService service)
+        {
+            var mostCommonDeliveryDate = DateTime.Today.AddDays(1);
+            var otherDeliveryDate = DateTime.Today;
+            var recipientOrderItems = order.FlattenedRecipients
+                .SelectMany(x => x.OrderItemSublocationRecipients)
+                .ToList();
+            recipientOrderItems.Should().HaveCountGreaterThan(1);
+
+            recipientOrderItems.ForEach(x => x.DeliveryDate = mostCommonDeliveryDate);
+            recipientOrderItems.First().DeliveryDate = otherDeliveryDate;
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            var result = await service.GetMostCommonRecipientDeliveryDateAsync(order.CallOffId);
+
+            result.Should().Be(mostCommonDeliveryDate);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetMostCommonRecipientDeliveryDateAsync_WithNoMatchingCallOffId_ReturnsNull(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            DeliveryDateService service)
+        {
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            var differentCallOffId = new CallOffId(order.CallOffId.OrderNumber + 1, order.CallOffId.Revision);
+
+            var result = await service.GetMostCommonRecipientDeliveryDateAsync(differentCallOffId);
+
+            result.Should().BeNull();
         }
 
         [Theory]

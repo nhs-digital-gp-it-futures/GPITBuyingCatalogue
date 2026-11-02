@@ -25,16 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task SetDeliveryDate(string internalOrgId, CallOffId callOffId, DateTime deliveryDate)
-        {
-            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var order = wrapper.Order;
-
-            order.DeliveryDate = deliveryDate;
-
-            await dbContext.SaveChangesAsync();
-        }
-
         public async Task SetAllDeliveryDates(string internalOrgId, CallOffId callOffId, DateTime deliveryDate)
         {
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
@@ -47,35 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             orderItems.ForEach(i => wrapper
                 .DetermineOrderRecipients(i)
                 .ForEach(r => r.SetDeliveryDateForItem(i, deliveryDate)));
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task ResetRecipientDeliveryDates(int orderId)
-        {
-            List<OrderItemSublocationRecipient> recipients = await dbContext.OrderItemSublocationRecipients
-                .Where(x => x.OrderId == orderId)
-                .ToListAsync();
-
-            recipients.ForEach(x => x.DeliveryDate = null);
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task SetDeliveryDates(int orderId, OrderItem orderItem, List<RecipientDeliveryDateDto> deliveryDates)
-        {
-            var recipients = await dbContext.OrderSublocationRecipients
-                .Where(x => x.OrderId == orderId)
-                .ToListAsync();
-            var recipientsDict = recipients.ToDictionary(recipient => recipient.RecipientOdsCode);
-
-            deliveryDates?.ForEach(date =>
-            {
-                if (recipientsDict.TryGetValue(date.OdsCode, out OrderSublocationRecipient recipient))
-                {
-                    recipient.SetDeliveryDateForItem(orderItem, date.DeliveryDate);
-                }
-            });
 
             await dbContext.SaveChangesAsync();
         }
@@ -98,27 +59,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<OrderSublocationRecipient>> GetSelectedRecipientsAsync(int orderNumber, IEnumerable<string> selectedRecipients)
+        public async Task<IEnumerable<OrderSublocationRecipient>> GetSelectedRecipientsAsync(CallOffId callOffId, IEnumerable<string> selectedRecipients)
         {
             return await dbContext.OrderSublocationRecipients
                 .Include(x => x.RecipientOdsOrganisation)
                 .Include(x => x.ParentSublocation.SublocationOrganisation)
                 .Include(x => x.OrderItemSublocationRecipients)
-                .Where(x => x.Order.OrderNumber == orderNumber && selectedRecipients.Contains(x.RecipientOdsOrganisation.Id))
+                .Where(x => x.Order.OrderNumber == callOffId.OrderNumber
+                    && x.Order.Revision == callOffId.Revision
+                    && selectedRecipients.Contains(x.RecipientOdsOrganisation.Id))
                 .AsNoTracking()
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<OrderItemSublocationRecipient>> GetRecipientOrderItemsDeliveryDatesAsync(int orderNumber, string recipientId)
+        public async Task<IEnumerable<OrderItemSublocationRecipient>> GetRecipientOrderItemsDeliveryDatesAsync(CallOffId callOffId, string recipientId)
         {
-            var orderItems = await dbContext.OrderItemSublocationRecipients
+            return await dbContext.OrderItemSublocationRecipients
                 .Include(x => x.Recipient.RecipientOdsOrganisation)
                 .Include(x => x.OrderItem.CatalogueItem)
-                .Where(x => x.OrderItem.Order.OrderNumber == orderNumber && x.RecipientOdsCode == recipientId)
+                .Include(x => x.OrderItem.Parent.CatalogueItem)
+                .Where(x => x.OrderItem.Order.OrderNumber == callOffId.OrderNumber
+                    && x.OrderItem.Order.Revision == callOffId.Revision
+                    && x.RecipientOdsCode == recipientId)
                 .AsNoTracking()
                 .ToListAsync();
-
-            return orderItems;
         }
 
         [ExcludeFromCodeCoverage(Justification = "EF Core’s InMemory provider does not support ExecuteUpdateAsync")]
@@ -129,9 +93,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             foreach (var deliveryDate in deliveryDates)
             {
                 await dbContext.Set<OrderItemSublocationRecipient>()
-                    .Where(r => r.Id == deliveryDate.OrderSublocationRecipientId)
+                    .Where(r => r.Id == deliveryDate.OrderSublocationRecipientId
+                        && r.OrderItem.Order.OrderNumber == deliveryDate.CallOffId.OrderNumber
+                        && r.OrderItem.Order.Revision == deliveryDate.CallOffId.Revision)
                     .ExecuteUpdateAsync(s => s.SetProperty(r => r.DeliveryDate, _ => deliveryDate.DeliveryDate));
             }
+        }
+
+        public async Task<DateTime?> GetMostCommonRecipientDeliveryDateAsync(CallOffId callOffId)
+        {
+            return await dbContext.OrderItemSublocationRecipients
+                .Where(x =>
+                    x.OrderItem.Order.OrderNumber == callOffId.OrderNumber &&
+                    x.OrderItem.Order.Revision == callOffId.Revision)
+                .GroupBy(x => x.DeliveryDate)
+                .OrderByDescending(group => group.Count())
+                .ThenBy(group => group.Key)
+                .Select(group => group.Key)
+                .FirstOrDefaultAsync();
         }
     }
 }

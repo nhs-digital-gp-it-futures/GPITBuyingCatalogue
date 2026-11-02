@@ -1,4 +1,5 @@
 ﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
@@ -12,16 +13,25 @@ public class OrderItemDeliveryDate : DateInputModel
 
     public OrderItemDeliveryDate(
         int orderItemId,
-        string catalogueItemName,
+        OrderItem orderItem,
         DateTime? deliveryDate,
         Order order)
     {
         OrderSublocationRecipientId = orderItemId;
-        CatalogueItemName = catalogueItemName;
         CommencementDate = order.CommencementDate;
         MaximumTerm = order.MaximumTerm;
         IsAmend = order.IsAmendment;
         SetDateFields(deliveryDate);
+
+        if (orderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService &&
+            orderItem.Parent.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService)
+        {
+            CatalogueItemName = $"{orderItem.Parent.CatalogueItem.Name} - {orderItem.CatalogueItem.Name}";
+        }
+        else
+        {
+            CatalogueItemName = orderItem.CatalogueItem.Name;
+        }
     }
 
     public int OrderSublocationRecipientId { get; init; }

@@ -324,7 +324,7 @@ public static class DeliveryDatesControllerTests
 
         orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(orderWrapper);
         deliveryDatesService.GetSelectedRecipientsAsync(
-                callOffId.OrderNumber,
+                callOffId,
                 Arg.Any<IEnumerable<string>>())
             .Returns([recipient]);
 
@@ -335,7 +335,7 @@ public static class DeliveryDatesControllerTests
 
         await orderService.Received().GetOrderWithOrderItems(callOffId, internalOrgId);
         await deliveryDatesService.Received().GetSelectedRecipientsAsync(
-            callOffId.OrderNumber,
+            callOffId,
             Arg.Any<IEnumerable<string>>());
 
         var expected = new SelectOrganisationsModel
@@ -404,7 +404,7 @@ public static class DeliveryDatesControllerTests
 
         orderService.GetOrderThin(callOffId, internalOrgId).Returns(orderWrapper);
         deliveryDatesService.GetRecipientOrderItemsDeliveryDatesAsync(
-                callOffId.OrderNumber,
+                callOffId,
                 recipientOrganisationId)
             .Returns([recipientOrderItem]);
 
@@ -416,7 +416,7 @@ public static class DeliveryDatesControllerTests
 
         await orderService.Received().GetOrderThin(callOffId, internalOrgId);
         await deliveryDatesService.Received().GetRecipientOrderItemsDeliveryDatesAsync(
-            callOffId.OrderNumber,
+            callOffId,
             recipientOrganisationId);
 
         var expected = new SetOrganisationDeliveryDatesModel(
@@ -445,7 +445,7 @@ public static class DeliveryDatesControllerTests
         order.OrderItems.Clear();
         orderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
         deliveryDatesService.GetRecipientOrderItemsDeliveryDatesAsync(
-                callOffId.OrderNumber,
+                callOffId,
                 recipientOrganisationId)
             .Returns([]);
 
@@ -555,7 +555,7 @@ public static class DeliveryDatesControllerTests
 
         await orderService.Received().GetOrderWithOrderItems(callOffId, internalOrgId);
 
-        var expected = new ReviewModel(new OrderWrapper(order));
+        var expected = new ReviewModel(new OrderWrapper(order), order.DeliveryDate);
         var actual = result.Should().BeOfType<ViewResult>().Subject;
 
         actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));

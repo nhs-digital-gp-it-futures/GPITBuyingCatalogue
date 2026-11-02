@@ -43,7 +43,7 @@ public static class ReviewModelTests
         order.OrderItems.Add(solution);
 
         order.DeliveryDate = date;
-        var model = new ReviewModel(new OrderWrapper(order));
+        var model = new ReviewModel(new OrderWrapper(order), order.DeliveryDate);
 
         model.InternalOrgId.Should().Be(order.OrderingParty.InternalIdentifier);
         model.CallOffId.Should().Be(order.CallOffId);
@@ -105,7 +105,7 @@ public static class ReviewModelTests
         order.OrderSublocations.Add(secondSublocation);
         order.OrderItems.Add(solution);
 
-        var model = new ReviewModel(new OrderWrapper(order));
+        var model = new ReviewModel(new OrderWrapper(order), order.DeliveryDate);
 
         var result = model.Recipients;
         result.Should().BeEquivalentTo(
@@ -169,7 +169,8 @@ public static class ReviewModelTests
         var deliveryDate = new DateTime(2025, 1, 1);
         var model = new ReviewModel
         {
-            DeliveryDate = deliveryDate,
+            DeliveryDate = deliveryDate.AddDays(10),
+            OriginalDeliveryDate = deliveryDate,
         };
         var recipient = new OrderSublocationRecipient();
         recipient.OrderItemSublocationRecipients.Add(new OrderItemSublocationRecipient

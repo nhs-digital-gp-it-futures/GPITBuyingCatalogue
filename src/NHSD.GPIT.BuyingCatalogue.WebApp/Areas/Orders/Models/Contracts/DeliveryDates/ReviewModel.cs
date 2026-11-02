@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         {
         }
 
-        public ReviewModel(OrderWrapper orderWrapper)
+        public ReviewModel(OrderWrapper orderWrapper, DateTime? mostCommonDeliveryDate)
         {
             var order = orderWrapper.Order;
             InternalOrgId = order.OrderingParty.InternalIdentifier;
@@ -24,7 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             OrderType = order.OrderType;
             SolutionName = order.OrderType.GetSolutionNameFromOrder(order);
             PracticeReorganisationName = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient?.Name ?? string.Empty;
-            DeliveryDate = order.DeliveryDate;
+            DeliveryDate = mostCommonDeliveryDate is not null ? mostCommonDeliveryDate : order.DeliveryDate;
+            OriginalDeliveryDate = order.DeliveryDate;
 
             var orderItems = order.GetOrderItemIds();
             if (orderItems.Count == 0)
@@ -63,6 +64,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public DateTime? DeliveryDate { get; set; }
 
+        public DateTime? OriginalDeliveryDate { get; set; }
+
         public List<int> AssociatedServiceIds { get; set; } = [];
 
         public Dictionary<string, OrderSublocationRecipient[]> Recipients { get; set; }
@@ -75,12 +78,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public bool HasUpdatedDeliveryDates(OrderSublocationRecipient recipient)
         {
-            if (DeliveryDate is null)
+            if (OriginalDeliveryDate is null)
             {
                 return false;
             }
 
-            return recipient.OrderItemSublocationRecipients.Any(x => x.DeliveryDate != DeliveryDate);
+            return recipient.OrderItemSublocationRecipients.Any(x => x.DeliveryDate != OriginalDeliveryDate);
         }
     }
 }

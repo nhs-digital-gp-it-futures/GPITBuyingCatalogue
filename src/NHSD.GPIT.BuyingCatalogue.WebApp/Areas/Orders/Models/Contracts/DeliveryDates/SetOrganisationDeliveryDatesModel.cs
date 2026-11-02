@@ -26,7 +26,7 @@ public class SetOrganisationDeliveryDatesModel : NavBaseModel
         OrderItemId = orderItemId;
         RecipientOrganisationId = recipientOrganisationId;
         RecipientOrganisationName = recipientOrderItems.First()?.Recipient?.RecipientOdsOrganisation?.Name ?? string.Empty;
-        OrderItemsDeliveryDates = [.. recipientOrderItems.Select(x => new OrderItemDeliveryDate(x.Id, x.OrderItem.CatalogueItem.Name, x.DeliveryDate, order))];
+        OrderItemsDeliveryDates = [.. recipientOrderItems.Select(x => new OrderItemDeliveryDate(x.Id, x.OrderItem, x.DeliveryDate, order))];
     }
 
     public required string InternalOrgId { get; set; }
