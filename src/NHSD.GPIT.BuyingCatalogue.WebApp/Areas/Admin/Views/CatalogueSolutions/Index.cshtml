@@ -49,7 +49,8 @@
                 <nhs-submit-button text="Apply filter"/>
                 <br/>
                 <a asp-action="@nameof(CatalogueSolutionsController.Index)"
-                   asp-controller="@typeof(CatalogueSolutionsController).ControllerName()">
+                   asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                   asp-route-solutionType="@Model.SolutionType">
                     Clear filter
                 </a>
             </nhs-expander>
@@ -107,7 +108,8 @@
                     <a id="reset-search-link"
                        asp-area="@typeof(CatalogueSolutionsController).AreaName()"
                        asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                       asp-action="@nameof(CatalogueSolutionsController.Index)">select a solution from the complete list</a>.
+                       asp-action="@nameof(CatalogueSolutionsController.Index)"
+                       asp-route-solutionType="@Model.SolutionType">select a solution from the complete list</a>.
                 </p>
             </div>
         }

@@ -122,80 +122,50 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .ThenInclude(wp => wp.Standard)
                 .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
-        public async Task<SolutionLoadingStatusesModel> GetSolutionLoadingStatuses(CatalogueItemId solutionId)
+        public async Task<SolutionLoadingStatusesModel> GetSolutionLoadingStatuses(CatalogueItemId solutionId, SolutionSections solutionSections)
         {
             var solution = await dbContext.CatalogueItems
                 .AsNoTracking()
+                .Include(ci => ci.Solution)
+                    .ThenInclude(s => s.ServiceLevelAgreement)
+                    .ThenInclude(sla => sla.Contacts)
+                .Include(ci => ci.Solution)
+                    .ThenInclude(s => s.ServiceLevelAgreement)
+                    .ThenInclude(sla => sla.ServiceHours)
+                .Include(ci => ci.Solution)
+                    .ThenInclude(s => s.ServiceLevelAgreement)
+                    .ThenInclude(sla => sla.ServiceLevels)
+                .Include(ci => ci.Solution)
+                    .ThenInclude(s => s.DataProcessingInformation)
+                    .ThenInclude(data => data.Details)
+                .Include(ci => ci.Solution)
+                    .ThenInclude(s => s.DataProcessingInformation)
+                    .ThenInclude(data => data.Location)
+                .Include(ci => ci.Solution)
+                    .ThenInclude(s => s.DataProcessingInformation)
+                    .ThenInclude(data => data.Officer)
+                .Include(ci => ci.Solution)
+                    .ThenInclude(s => s.AdditionalServices)
+                    .ThenInclude(additional => additional.CatalogueItem)
                 .Where(ci => ci.Id == solutionId)
                 .Select(
                     ci => new SolutionLoadingStatusesModel
                     {
-                        Description = (!string.IsNullOrWhiteSpace(ci.Solution.Summary))
-                            ? TaskProgress.Completed
-                            : TaskProgress.NotStarted,
-                        AdditionalServices = ci.Solution.AdditionalServices
-                            .Any(add => add.CatalogueItem.PublishedStatus == PublicationStatus.Published)
-                            ? TaskProgress.Completed
-                            : ci.Solution.AdditionalServices.Count != 0
-                                ? TaskProgress.InProgress
-                                : TaskProgress.Optional,
-                        AssociatedServices = ci.SupplierServiceAssociations.Count != 0
-                            ? TaskProgress.Completed
-                            : TaskProgress.Optional,
-                        Features = !string.IsNullOrWhiteSpace(ci.Solution.Features)
-                            ? TaskProgress.Completed
-                            : TaskProgress.Optional,
-                        Interoperability = ci.Solution.Integrations.Count > 0
-                            ? TaskProgress.Completed
-                            : TaskProgress.Optional,
-                        Implementation = !string.IsNullOrWhiteSpace(ci.Solution.ImplementationDetail)
-                            ? TaskProgress.Completed
-                            : TaskProgress.Optional,
-                        ListPrice = ci.CataloguePrices.Any(cp => cp.PublishedStatus == PublicationStatus.Published)
-                            ? TaskProgress.Completed
-                            : ci.CataloguePrices.Count != 0
-                                ? TaskProgress.InProgress
-                                : TaskProgress.NotStarted,
-                        ApplicationType = ci.Solution.ApplicationTypeDetail != null
-                            ? TaskProgress.Completed
-                            : TaskProgress.NotStarted,
-                        HostingType = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid()
-                            ? TaskProgress.Completed
-                            : TaskProgress.NotStarted,
-                        DataProcessing = ci.Solution.DataProcessingInformation != null
-                            && ci.Solution.DataProcessingInformation.Details != null
-                            && ci.Solution.DataProcessingInformation.Location != null
-                            && ci.Solution.DataProcessingInformation.Officer != null
-                                ? TaskProgress.Completed
-                                : ci.Solution.DataProcessingInformation != null
-                                && (ci.Solution.DataProcessingInformation.Details != null
-                                    || ci.Solution.DataProcessingInformation.Location != null
-                                    || ci.Solution.DataProcessingInformation.Officer != null
-                                    || ci.Solution.DataProcessingInformation.SubProcessors.Count != 0)
-                                    ? TaskProgress.InProgress
-                                    : TaskProgress.NotStarted,
-                        Standards = ci.Solution.SolutionStandards.All(x => x.Status == StandardCompliance.FullyMet)
-                            ? TaskProgress.Completed
-                            : TaskProgress.InProgress,
-                        DevelopmentPlans = ci.Solution.WorkOffPlans.Count != 0
-                            ? TaskProgress.Completed
-                            : TaskProgress.Optional,
-                        CapabilitiesAndEpics = ci.CatalogueItemCapabilities.Count != 0
-                            ? TaskProgress.Completed
-                            : TaskProgress.NotStarted,
-                        SupplierDetails = ci.CatalogueItemContacts.Count != 0
-                            ? TaskProgress.Completed
-                            : TaskProgress.NotStarted,
-                        ServiceLevelAgreement = (ci.Solution.ServiceLevelAgreement != null &&
-                            ci.Solution.ServiceLevelAgreement.Contacts.Count != 0 &&
-                            ci.Solution.ServiceLevelAgreement.ServiceHours.Count != 0 &&
-                            ci.Solution.ServiceLevelAgreement.ServiceLevels.Count != 0)
-                            ? TaskProgress.Completed
-                            : (ci.Solution.ServiceLevelAgreement.Contacts.Count != 0 ||
-                                ci.Solution.ServiceLevelAgreement.ServiceHours.Count != 0 ||
-                                ci.Solution.ServiceLevelAgreement.ServiceLevels.Count != 0)
-                                ? TaskProgress.InProgress
-                                : TaskProgress.NotStarted,
+                        Description = GetSolutionSectionStatusFromString(solutionSections.Description, ci.Solution.Summary),
+                        AdditionalServices = GetAdditionalServicesStatus(solutionSections.AdditionalServices, ci.Solution.AdditionalServices),
+                        AssociatedServices = GetSolutionSectionStatusFromCount(solutionSections.AssociatedServices, ci.SupplierServiceAssociations.Count),
+                        Features = GetSolutionSectionStatusFromString(solutionSections.Features, ci.Solution.Features),
+                        Interoperability = GetSolutionSectionStatusFromCount(solutionSections.Integrations, ci.Solution.Integrations.Count),
+                        Implementation = GetSolutionSectionStatusFromString(solutionSections.Implementation, ci.Solution.ImplementationDetail),
+                        ListPrice = GetListPriceStatus(solutionSections.ListPrice, ci.CataloguePrices),
+                        ApplicationType = GetApplicationTypeStatus(solutionSections.ApplicationType, ci.Solution.ApplicationTypeDetail),
+                        HostingType = GetHostingTypeStatus(solutionSections.HostingType, ci.Solution.Hosting),
+                        DataProcessing = GetDataProcessingStatus(solutionSections.DataProcessingInformation, ci.Solution.DataProcessingInformation),
+                        Standards = GetStandardsStatus(solutionSections.Standards, ci.Solution.SolutionStandards),
+                        DevelopmentPlans = GetSolutionSectionStatusFromCount(solutionSections.DevelopmentPlans, ci.Solution.WorkOffPlans.Count),
+                        CapabilitiesAndEpics = GetSolutionSectionStatusFromCount(solutionSections.CapabilitiesAndEpics, ci.CatalogueItemCapabilities.Count),
+                        SupplierDetails = GetSolutionSectionStatusFromCount(solutionSections.SupplierDetails, ci.CatalogueItemContacts.Count),
+                        ServiceLevelAgreement = GetServiceLevelAgreementStatus(solutionSections.ServiceLevelAgreement, ci.Solution.ServiceLevelAgreement),
                     })
                 .FirstOrDefaultAsync();
 
@@ -670,6 +640,195 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             }
 
             return applicationTypeDetail;
+        }
+
+        private static TaskProgress GetApplicationTypeStatus(
+            SolutionSectionRequirement applicationTypeSection,
+            ApplicationTypeDetail applicationTypeDetail)
+        {
+            if (applicationTypeSection == SolutionSectionRequirement.NotApplicable)
+            {
+                return TaskProgress.NotApplicable;
+            }
+
+            if (applicationTypeDetail != null)
+            {
+                return TaskProgress.Completed;
+            }
+
+            return applicationTypeSection == SolutionSectionRequirement.Mandatory
+                ? TaskProgress.NotStarted
+                : TaskProgress.Optional;
+        }
+
+        private static TaskProgress GetHostingTypeStatus(
+            SolutionSectionRequirement hostingTypeSection,
+            Hosting hosting)
+        {
+            if (hostingTypeSection == SolutionSectionRequirement.NotApplicable)
+            {
+                return TaskProgress.NotApplicable;
+            }
+
+            if (hosting != null && hosting.IsValid())
+            {
+                return TaskProgress.Completed;
+            }
+
+            return hostingTypeSection == SolutionSectionRequirement.Mandatory
+                ? TaskProgress.NotStarted
+                : TaskProgress.Optional;
+        }
+
+        private static TaskProgress GetAdditionalServicesStatus(
+            SolutionSectionRequirement additionalServicesSection,
+            ICollection<AdditionalService> additionalServices)
+        {
+            if (additionalServicesSection == SolutionSectionRequirement.NotApplicable)
+            {
+                return TaskProgress.NotApplicable;
+            }
+
+            if (additionalServices.Any(add => add.CatalogueItem.PublishedStatus == PublicationStatus.Published))
+            {
+                return TaskProgress.Completed;
+            }
+
+            if (additionalServices.Count != 0)
+            {
+                return TaskProgress.InProgress;
+            }
+
+            return additionalServicesSection == SolutionSectionRequirement.Mandatory
+                ? TaskProgress.NotStarted
+                : TaskProgress.Optional;
+        }
+
+        private static TaskProgress GetListPriceStatus(
+            SolutionSectionRequirement listPriceSection,
+            ICollection<CataloguePrice> cataloguePrices)
+        {
+            if (listPriceSection == SolutionSectionRequirement.NotApplicable)
+            {
+                return TaskProgress.NotApplicable;
+            }
+
+            if (cataloguePrices.Any(cp => cp.PublishedStatus == PublicationStatus.Published))
+            {
+                return TaskProgress.Completed;
+            }
+
+            if (cataloguePrices.Count != 0)
+            {
+                return TaskProgress.InProgress;
+            }
+
+            return listPriceSection == SolutionSectionRequirement.Mandatory
+                ? TaskProgress.NotStarted
+                : TaskProgress.Optional;
+        }
+
+        private static TaskProgress GetServiceLevelAgreementStatus(
+            SolutionSectionRequirement serviceLevelAgreementSection,
+            EntityFramework.Catalogue.Models.ServiceLevelAgreements serviceLevelAgreement)
+        {
+            if (serviceLevelAgreementSection == SolutionSectionRequirement.NotApplicable)
+            {
+                return TaskProgress.NotApplicable;
+            }
+
+            if (serviceLevelAgreement != null &&
+                serviceLevelAgreement.Contacts.Count != 0 &&
+                serviceLevelAgreement.ServiceHours.Count != 0 &&
+                serviceLevelAgreement.ServiceLevels.Count != 0)
+            {
+                return TaskProgress.Completed;
+            }
+
+            if (serviceLevelAgreement.Contacts.Count != 0 ||
+                serviceLevelAgreement.ServiceHours.Count != 0 ||
+                serviceLevelAgreement.ServiceLevels.Count != 0)
+            {
+                return TaskProgress.InProgress;
+            }
+
+            return serviceLevelAgreementSection == SolutionSectionRequirement.Mandatory
+                ? TaskProgress.NotStarted
+                : TaskProgress.Optional;
+        }
+
+        private static TaskProgress GetDataProcessingStatus(SolutionSectionRequirement dataProcessingSection, DataProcessingInformation dataProcessingInformation)
+        {
+            if (dataProcessingSection == SolutionSectionRequirement.NotApplicable)
+            {
+                return TaskProgress.NotApplicable;
+            }
+
+            if (dataProcessingInformation != null
+                && dataProcessingInformation.Details != null
+                && dataProcessingInformation.Location != null
+                && dataProcessingInformation.Officer != null)
+            {
+                return TaskProgress.Completed;
+            }
+
+            if (dataProcessingInformation != null
+                && (dataProcessingInformation.Details != null
+                    || dataProcessingInformation.Location != null
+                    || dataProcessingInformation.Officer != null
+                    || dataProcessingInformation.SubProcessors.Count != 0))
+            {
+                return TaskProgress.InProgress;
+            }
+
+            return dataProcessingSection == SolutionSectionRequirement.Mandatory
+                ? TaskProgress.NotStarted
+                : TaskProgress.Optional;
+        }
+
+        private static TaskProgress GetStandardsStatus(SolutionSectionRequirement solutionStandardsSection, ICollection<SolutionStandard> solutionStandards)
+        {
+            return solutionStandardsSection switch
+            {
+                SolutionSectionRequirement.NotApplicable => TaskProgress.NotApplicable,
+                _ => solutionStandards.All(x => x.Status == StandardCompliance.FullyMet)
+                    ? TaskProgress.Completed
+                    : TaskProgress.InProgress,
+            };
+        }
+
+        private static TaskProgress GetSolutionSectionStatusFromCount(SolutionSectionRequirement solutionSection, int count)
+        {
+            return solutionSection switch
+            {
+                SolutionSectionRequirement.NotApplicable => TaskProgress.NotApplicable,
+                SolutionSectionRequirement.Optional => count != 0
+                    ? TaskProgress.Completed
+                    : TaskProgress.Optional,
+                SolutionSectionRequirement.Mandatory => count != 0
+                    ? TaskProgress.Completed
+                    : TaskProgress.NotStarted,
+                _ => count != 0
+                    ? TaskProgress.Completed
+                    : TaskProgress.NotStarted,
+            };
+        }
+
+        private static TaskProgress GetSolutionSectionStatusFromString(SolutionSectionRequirement detailsSection, string summary)
+        {
+            return detailsSection switch
+            {
+                SolutionSectionRequirement.NotApplicable => TaskProgress.NotApplicable,
+                SolutionSectionRequirement.Optional => !string.IsNullOrWhiteSpace(summary)
+                    ? TaskProgress.Completed
+                    : TaskProgress.Optional,
+                SolutionSectionRequirement.Mandatory => !string.IsNullOrWhiteSpace(summary)
+                    ? TaskProgress.Completed
+                    : TaskProgress.NotStarted,
+                _ => !string.IsNullOrWhiteSpace(summary)
+                    ? TaskProgress.Completed
+                    : TaskProgress.NotStarted,
+            };
         }
 
         private async Task<CatalogueItem> GetCatalogueItem(CatalogueItemId id) => await dbContext.CatalogueItems

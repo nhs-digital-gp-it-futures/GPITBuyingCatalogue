@@ -20,7 +20,8 @@ public sealed class ManageCatalogueSolutionModel : NavBaseModel
     public ManageCatalogueSolutionModel(
         SolutionLoadingStatusesModel solutionLoadingStatuses,
         CatalogueItem solution,
-        SolutionType solutionType)
+        SolutionType solutionType,
+        SolutionSections solutionSections)
     {
         SolutionType = solutionType;
         SolutionId = solution.Id;
@@ -48,6 +49,8 @@ public sealed class ManageCatalogueSolutionModel : NavBaseModel
         RoadmapStatus = solutionLoadingStatuses.DevelopmentPlans;
         SupplierDetailsStatus = solutionLoadingStatuses.SupplierDetails;
         SlaStatus = solutionLoadingStatuses.ServiceLevelAgreement;
+
+        SolutionSections = solutionSections;
     }
 
     public CatalogueItemId SolutionId { get; init; }
@@ -57,6 +60,8 @@ public sealed class ManageCatalogueSolutionModel : NavBaseModel
     public string SolutionName { get; init; }
 
     public PublicationStatus SolutionPublicationStatus { get; init; }
+
+    public SolutionSections SolutionSections { get; set; }
 
     public string SupplierName { get; init; }
 

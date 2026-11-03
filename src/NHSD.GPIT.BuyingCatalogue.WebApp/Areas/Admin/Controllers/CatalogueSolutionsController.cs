@@ -13,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
+using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
@@ -30,7 +31,8 @@ public sealed class CatalogueSolutionsController(
     ISuppliersService suppliersService,
     ICapabilitiesService capabilitiesService,
     IAssociatedServicesService associatedServicesService,
-    ISolutionPublicationStatusService publicationStatusService)
+    ISolutionPublicationStatusService publicationStatusService,
+    ISolutionSectionsService solutionSectionsService)
     : Controller
 {
     private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
@@ -38,6 +40,7 @@ public sealed class CatalogueSolutionsController(
     private readonly ICapabilitiesService capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
     private readonly IAssociatedServicesService associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
     private readonly ISolutionPublicationStatusService publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
+    private readonly ISolutionSectionsService solutionSectionsService = solutionSectionsService ?? throw new ArgumentNullException(nameof(solutionSectionsService));
 
     [HttpGet("{solutionType}")]
     public async Task<IActionResult> Index([FromRoute] SolutionType solutionType, [FromQuery] string search = null)
@@ -115,9 +118,13 @@ public sealed class CatalogueSolutionsController(
         if (solution is null)
             return BadRequest($"No Solution found for Id: {solutionId}");
 
-        var solutionStatuses = await solutionsService.GetSolutionLoadingStatuses(solutionId);
+        var solutionSections = await solutionSectionsService.GetSolutionSectionsAsync(solutionType);
+        if (solutionSections is null)
+            return BadRequest($"No Solution Sections found for Id: {solutionId}, with Solution Type: {solutionType}");
 
-        var model = new ManageCatalogueSolutionModel(solutionStatuses, solution, solutionType);
+        var solutionStatuses = await solutionsService.GetSolutionLoadingStatuses(solutionId, solutionSections);
+
+        var model = new ManageCatalogueSolutionModel(solutionStatuses, solution, solutionType, solutionSections);
 
         return View(model);
     }
@@ -130,7 +137,7 @@ public sealed class CatalogueSolutionsController(
 
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
-        if (solution.PublishedStatus == model.SelectedPublicationStatus) return RedirectToAction(nameof(Index));
+        if (solution.PublishedStatus == model.SelectedPublicationStatus) return RedirectToAction(nameof(Index), new { solutionType });
 
         await publicationStatusService.SetPublicationStatus(solutionId, model.SelectedPublicationStatus);
 

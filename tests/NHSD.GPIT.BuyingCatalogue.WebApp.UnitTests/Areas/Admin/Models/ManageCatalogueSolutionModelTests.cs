@@ -15,7 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [MockAutoData]
         public static void PublicationStatuses_Returns_AllStatuses(
             Solution solution,
-            SolutionLoadingStatusesModel solutionLoadingStatuses)
+            SolutionLoadingStatusesModel solutionLoadingStatuses,
+            SolutionSections solutionSections)
         {
             var expected = solution.CatalogueItem
                 .PublishedStatus
@@ -23,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
                 .Select(p => new SelectOption<string>(p.Description(), p.EnumMemberName()))
                 .ToList();
 
-            var actual = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT).PublicationStatuses;
+            var actual = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections).PublicationStatuses;
 
             actual.Should().BeEquivalentTo(expected);
         }
@@ -32,10 +33,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [MockAutoData]
         public static void StatusFeatures_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
-            SolutionLoadingStatusesModel solutionLoadingStatuses)
+            SolutionLoadingStatusesModel solutionLoadingStatuses,
+            SolutionSections solutionSections)
         {
             var expected = solutionLoadingStatuses.Features;
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT);
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections);
 
             var actual = model.FeaturesStatus;
 
@@ -46,10 +48,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [MockAutoData]
         public static void StatusDescription_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
-            SolutionLoadingStatusesModel solutionLoadingStatuses)
+            SolutionLoadingStatusesModel solutionLoadingStatuses,
+            SolutionSections solutionSections)
         {
             var expected = solutionLoadingStatuses.Description;
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT);
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections);
 
             var actual = model.DescriptionStatus;
 
@@ -60,10 +63,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [MockAutoData]
         public static void StatusImplementation_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
-            SolutionLoadingStatusesModel solutionLoadingStatuses)
+            SolutionLoadingStatusesModel solutionLoadingStatuses,
+            SolutionSections solutionSections)
         {
             var expected = solutionLoadingStatuses.Implementation;
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT);
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections);
 
             var actual = model.ImplementationStatus;
 
@@ -74,10 +78,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [MockAutoData]
         public static void StatusRoadmap_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
-            SolutionLoadingStatusesModel solutionLoadingStatuses)
+            SolutionLoadingStatusesModel solutionLoadingStatuses,
+            SolutionSections solutionSections)
         {
             var expected = solutionLoadingStatuses.DevelopmentPlans;
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT);
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections);
 
             var actual = model.RoadmapStatus;
 
@@ -88,10 +93,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [MockAutoData]
         public static void StatusInteroperability_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
-            SolutionLoadingStatusesModel solutionLoadingStatuses)
+            SolutionLoadingStatusesModel solutionLoadingStatuses,
+            SolutionSections solutionSections)
         {
             var expected = solutionLoadingStatuses.Interoperability;
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT);
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections);
 
             var actual = model.InteroperabilityStatus;
 
@@ -102,10 +108,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [MockAutoData]
         public static void StatusListPrice_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
-            SolutionLoadingStatusesModel solutionLoadingStatuses)
+            SolutionLoadingStatusesModel solutionLoadingStatuses,
+            SolutionSections solutionSections)
         {
             var expected = solutionLoadingStatuses.ListPrice;
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT);
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections);
 
             var actual = model.ListPriceStatus;
 
