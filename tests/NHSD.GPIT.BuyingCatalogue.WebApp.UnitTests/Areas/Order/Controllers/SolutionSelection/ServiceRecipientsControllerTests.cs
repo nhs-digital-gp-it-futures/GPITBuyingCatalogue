@@ -9,7 +9,9 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using LinqKit;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -1580,16 +1582,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderService.GetOrderThin(order.CallOffId, internalOrganisationId).Returns(new OrderWrapper(order));
 
+            controller.TempData = new TempDataDictionary(
+                new DefaultHttpContext(),
+                Substitute.For<ITempDataProvider>());
+
             var result =
                 (await controller.ConfirmSublocations(callingModel, internalOrganisationId, order.CallOffId))
                 .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderController.Order));
-            result.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmSublocations));
+            result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
             result.RouteValues.Should()
                 .BeEquivalentTo(
                     new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", order.CallOffId } });
+            controller.TempData.Should().ContainKey("MergeRecipientsWarning");
+            controller.TempData["MergeRecipientsWarning"].Should()
+                .Be("To be able to merge the number of recipients must be at least 2.");
         }
 
         [Theory]
