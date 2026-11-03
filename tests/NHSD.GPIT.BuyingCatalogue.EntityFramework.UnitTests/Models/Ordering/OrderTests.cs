@@ -271,20 +271,6 @@ public static class OrderTests
         result.Should().BeEmpty();
     }
 
-    private static OrderSublocationRecipient CreateRecipient(
-        string recipientOdsCode,
-        OrderItem orderItem,
-        int orderId)
-    {
-        return new OrderSublocationRecipient
-        {
-            OrderId = orderId,
-            RecipientOdsCode = recipientOdsCode,
-            OrderItemSublocationRecipients =
-            [new OrderItemSublocationRecipient(orderId, recipientOdsCode, orderItem)],
-        };
-    }
-
     public static IEnumerable<object[]> OrderRecipientsWithOrderItemsAndExpectedResults()
     {
         var framework = new Catalogue.Models.Framework { Id = new Random().Next().ToString() };
@@ -550,5 +536,19 @@ public static class OrderTests
             orderItemId);
 
         result.Should().BeEquivalentTo(expectedRecipients);
+    }
+
+    private static OrderSublocationRecipient CreateRecipient(
+        string recipientOdsCode,
+        OrderItem orderItem,
+        int orderId)
+    {
+        return new OrderSublocationRecipient
+        {
+            OrderId = orderId,
+            RecipientOdsCode = recipientOdsCode,
+            OrderItemSublocationRecipients =
+            [new OrderItemSublocationRecipient(orderId, recipientOdsCode, orderItem)],
+        };
     }
 }
