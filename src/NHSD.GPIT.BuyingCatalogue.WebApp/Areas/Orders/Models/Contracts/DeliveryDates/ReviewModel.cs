@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
                 : orderItem;
 
             AssociatedServiceIds = [.. order.GetAssociatedServices().Select(x => x.Id)];
-            Recipients = orderWrapper.DetermineOrderRecipients(item).GroupBy(y => y.ParentSublocation.SublocationOrganisation.Name)
+            Recipients = orderWrapper.DetermineOrderRecipientsWithNewServices(item).GroupBy(y => y.ParentSublocation.SublocationOrganisation.Name)
                 .Select(x => new KeyValuePair<string, OrderSublocationRecipient[]>(
                     x.Key,
                     [.. x.OrderBy(y => y.RecipientOdsOrganisation.Name)]))

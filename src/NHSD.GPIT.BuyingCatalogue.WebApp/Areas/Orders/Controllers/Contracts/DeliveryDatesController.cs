@@ -4,12 +4,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts;
@@ -23,16 +21,13 @@ public class DeliveryDatesController : Controller
 
     private readonly IDeliveryDateService deliveryDateService;
     private readonly IOrderService orderService;
-    private readonly ISolutionsService solutionsService;
 
     public DeliveryDatesController(
         IDeliveryDateService deliveryDateService,
-        IOrderService orderService,
-        ISolutionsService solutionsService)
+        IOrderService orderService)
     {
         this.deliveryDateService = deliveryDateService ?? throw new ArgumentNullException(nameof(deliveryDateService));
         this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-        this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
     }
 
     [HttpGet("select")]

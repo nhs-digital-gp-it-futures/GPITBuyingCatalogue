@@ -128,6 +128,163 @@ public static class OrderTests
         result.Should().BeEquivalentTo(currentOrder.FlattenedRecipients);
     }
 
+    [Theory]
+    [MockAutoData]
+    public static void OrderRecipients_DeterminesRecipientsForNewCatalogueItemOnExistingRecipient(
+        Order previousOrder,
+        Order currentOrder,
+        OrderItem previousOrderItem,
+        OrderItem currentOrderItem)
+    {
+        previousOrder.OrderNumber = currentOrder.OrderNumber;
+        previousOrder.Revision = 1;
+        currentOrder.Revision = 2;
+
+        previousOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+        currentOrderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+        previousOrderItem.CatalogueItemId = new CatalogueItemId(1, "Prev");
+        currentOrderItem.CatalogueItemId = new CatalogueItemId(2, "Curr");
+        currentOrderItem.Parent = previousOrderItem;
+        currentOrderItem.ParentId = previousOrderItem.Id;
+
+        var recipient = new OrderSublocationRecipient
+        {
+            OrderId = currentOrder.Id,
+            ParentSublocationOdsCode = "XXXX",
+            RecipientOdsCode = "AAAA",
+            OrderItemSublocationRecipients =
+            [new OrderItemSublocationRecipient(currentOrder.Id, "AAAA", currentOrderItem)],
+        };
+        var previousRecipient = new OrderSublocationRecipient
+        {
+            OrderId = previousOrder.Id,
+            ParentSublocationOdsCode = "XXXX",
+            RecipientOdsCode = "AAAA",
+            OrderItemSublocationRecipients =
+            [new OrderItemSublocationRecipient(previousOrder.Id, "AAAA", previousOrderItem)],
+        };
+        previousOrder.OrderItems = [previousOrderItem];
+        previousOrder.OrderSublocations =
+        [
+            new OrderSublocation
+            {
+                SublocationRecipients = [previousRecipient],
+            },
+        ];
+        currentOrder.OrderItems = [currentOrderItem];
+        currentOrder.OrderSublocations =
+        [
+            new OrderSublocation
+            {
+                SublocationRecipients = [recipient],
+            },
+        ];
+
+        var result = currentOrder.DetermineOrderRecipientsWithNewServices(previousOrder, currentOrderItem.Id);
+
+        result.Should().ContainSingle().Which.Should().Be(recipient);
+    }
+
+    [Fact]
+    public static void OrderRecipientsWithNewServices_ReturnsAllCurrentRecipientsWhenOrderHasNewService()
+    {
+        var existingCatalogueItemId = new CatalogueItemId(1, "Exist");
+        var newCatalogueItemId = new CatalogueItemId(1, "New");
+        var previousOrderItem = new OrderItem
+        {
+            Id = 1,
+            CatalogueItemId = existingCatalogueItemId,
+            CatalogueItem = new CatalogueItem { Id = existingCatalogueItemId },
+        };
+        var currentOrderItem = new OrderItem
+        {
+            Id = 2,
+            CatalogueItemId = newCatalogueItemId,
+            CatalogueItem = new CatalogueItem { Id = newCatalogueItemId },
+        };
+        var previousRecipient = CreateRecipient("AAAA", previousOrderItem, 1);
+        var currentRecipient = CreateRecipient("AAAA", currentOrderItem, 2);
+        var newCurrentRecipient = CreateRecipient("AAAB", currentOrderItem, 2);
+        var previousOrder = new Order
+        {
+            OrderItems = [previousOrderItem],
+            OrderSublocations = [new OrderSublocation { SublocationRecipients = [previousRecipient] }],
+        };
+        var currentOrder = new Order
+        {
+            OrderItems = [previousOrderItem, currentOrderItem],
+            OrderSublocations =
+            [
+                new OrderSublocation
+                {
+                    SublocationRecipients = [currentRecipient, newCurrentRecipient],
+                },
+            ],
+        };
+
+        var result = currentOrder.DetermineOrderRecipientsWithNewServices(previousOrder, currentOrderItem.Id);
+
+        result.Should().BeEquivalentTo([currentRecipient, newCurrentRecipient]);
+    }
+
+    [Fact]
+    public static void OrderRecipientsWithNewServices_WithNoPreviousOrder_ReturnsAllCurrentRecipients()
+    {
+        var catalogueItemId = new CatalogueItemId(1, "Service");
+        var orderItem = new OrderItem
+        {
+            Id = 1,
+            CatalogueItemId = catalogueItemId,
+            CatalogueItem = new CatalogueItem { Id = catalogueItemId },
+        };
+        var firstRecipient = CreateRecipient("AAAA", orderItem, 1);
+        var secondRecipient = CreateRecipient("AAAB", orderItem, 1);
+        var currentOrder = new Order
+        {
+            OrderItems = [orderItem],
+            OrderSublocations =
+            [
+                new OrderSublocation
+                {
+                    SublocationRecipients = [firstRecipient, secondRecipient],
+                },
+            ],
+        };
+
+        var result = currentOrder.DetermineOrderRecipientsWithNewServices(null, orderItem.Id);
+
+        result.Should().BeEquivalentTo([firstRecipient, secondRecipient]);
+    }
+
+    [Fact]
+    public static void OrderRecipientsWithNewServices_WithUnknownOrderItem_ReturnsNoRecipients()
+    {
+        var currentOrder = new Order
+        {
+            OrderItems = [],
+            OrderSublocations =
+            [new OrderSublocation { SublocationRecipients = [new OrderSublocationRecipient()] }],
+        };
+
+        var result = currentOrder.DetermineOrderRecipientsWithNewServices(new Order(), 1);
+
+        result.Should().BeEmpty();
+    }
+
+    private static OrderSublocationRecipient CreateRecipient(
+        string recipientOdsCode,
+        OrderItem orderItem,
+        int orderId)
+    {
+        return new OrderSublocationRecipient
+        {
+            OrderId = orderId,
+            RecipientOdsCode = recipientOdsCode,
+            OrderItemSublocationRecipients =
+            [new OrderItemSublocationRecipient(orderId, recipientOdsCode, orderItem)],
+        };
+    }
+
     public static IEnumerable<object[]> OrderRecipientsWithOrderItemsAndExpectedResults()
     {
         var framework = new Catalogue.Models.Framework { Id = new Random().Next().ToString() };

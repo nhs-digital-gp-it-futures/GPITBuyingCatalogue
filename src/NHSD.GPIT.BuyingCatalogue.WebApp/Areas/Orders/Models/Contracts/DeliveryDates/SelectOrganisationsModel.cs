@@ -20,7 +20,7 @@ public class SelectOrganisationsModel : NavBaseModel
         InternalOrgId = internalOrgId;
         CallOffId = callOffId;
         OrderItemId = orderItemId;
-        Recipients = [.. orderWrapper.DetermineOrderRecipients(orderWrapper.Order.OrderItem(orderItemId))
+        Recipients = [.. orderWrapper.DetermineOrderRecipientsWithNewServices(orderWrapper.Order.OrderItem(orderItemId))
             .Where(x => !string.Equals(
                 x.RecipientOdsCode,
                 orderWrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode))
