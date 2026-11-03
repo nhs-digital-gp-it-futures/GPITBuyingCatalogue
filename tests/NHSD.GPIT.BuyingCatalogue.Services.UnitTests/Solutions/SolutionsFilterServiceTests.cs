@@ -9,7 +9,6 @@ using FluentAssertions;
 using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
@@ -75,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var filters = new SolutionsFilters { IsCommunityPharmacy = false, };
+            var filters = new SolutionsFilters { SolutionType = SolutionType.GPIT, };
 
             var result = await service.GetAllSolutionsFiltered(filters);
 
@@ -132,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             (await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.CountAsync(context.CatalogueItems))
                 .Should().BeGreaterThan(0);
 
-            var result = await service.GetAllSolutionsFiltered(new SolutionsFilters { IsCommunityPharmacy = true });
+            var result = await service.GetAllSolutionsFiltered(new SolutionsFilters { SolutionType = SolutionType.CommunityPharmacy });
 
             result.CatalogueItems.Should().ContainSingle();
             result.CatalogueItems.Select(ci => ci.Name).Should().Contain("Community Pharmacy Solution");
@@ -182,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var result = await service.GetAllSolutionsFiltered(new SolutionsFilters { IsCommunityPharmacy = true });
+            var result = await service.GetAllSolutionsFiltered(new SolutionsFilters { SolutionType = SolutionType.CommunityPharmacy });
 
             result.CatalogueItems.Should().BeEmpty();
         }
