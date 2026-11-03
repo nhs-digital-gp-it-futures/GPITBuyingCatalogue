@@ -9,8 +9,8 @@ public class TimescalesPage : BasePage
     private ILocator DayInput => Page.GetByRole(AriaRole.Textbox, new() { Name = "Day" });
     private ILocator MonthInput => Page.GetByRole(AriaRole.Textbox, new() { Name = "Month", Exact = true });
     private ILocator YearInput => Page.GetByRole(AriaRole.Textbox, new() { Name = "Year" });
-    private ILocator InitialPeriodInput => Page.GetByRole(AriaRole.Textbox, new() { Name = "What is the call-off agreement initial period (in months)?" });
-    private ILocator DurationInput => Page.GetByRole(AriaRole.Textbox, new() { Name = "What is the call-off agreement duration (in months)?" });
+    private ILocator InitialPeriodInput => Page.GetByRole(AriaRole.Textbox, new() { Name = "Call-off agreement initial period (in months)" });
+    private ILocator DurationInput => Page.GetByRole(AriaRole.Textbox, new() { Name = "Call-off agreement duration (in months)" });
 
     public TimescalesPage(IPage page) : base(page) { }
 
@@ -19,7 +19,7 @@ public class TimescalesPage : BasePage
 
     public async Task EnterTimescalesAsync(string day, string month, string year, string initialPeriod, string duration)
     {
-        await AssertHeadingAsync("Timescales for call-off agreement");
+        await AssertHeadingAsync("Add timescales to call-off agreement");
         await DayInput.FillAsync(day);
         await MonthInput.FillAsync(month);
         await YearInput.FillAsync(year);
