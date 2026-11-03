@@ -8,6 +8,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+FROM node:24-alpine3.23 AS node
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0.401-alpine3.23 AS build
 COPY --from=node /usr/local/ /usr/local/
@@ -17,7 +18,6 @@ COPY ["src/NHSD.GPIT.BuyingCatalogue.WebApp/NHSD.GPIT.BuyingCatalogue.WebApp.csp
 RUN dotnet restore "src/NHSD.GPIT.BuyingCatalogue.WebApp/NHSD.GPIT.BuyingCatalogue.WebApp.csproj"
 
 COPY . .
-RUN apk add --update npm
 
 WORKDIR "/src/src/NHSD.GPIT.BuyingCatalogue.WebApp"
 RUN dotnet build "NHSD.GPIT.BuyingCatalogue.WebApp.csproj" -c Release -o /app/build
