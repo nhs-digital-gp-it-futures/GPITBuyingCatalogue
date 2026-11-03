@@ -21,12 +21,14 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NSubstitute.ReturnsExtensions;
 using Xunit;
+using static NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing.Constants;
 using EntityOdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
 using ServiceContractOdsOrganisation = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations.OdsOrganisation;
 
@@ -1193,7 +1195,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             result.Model.Should()
                 .BeEquivalentTo(
                     expectedModel,
-                    opt => opt.Excluding(m => m.Title)
+                    opt => opt
+                        .Excluding(m => m.Title)
                         .Excluding(m => m.Caption)
                         .Excluding(m => m.Advice)
                         .Excluding(m => m.BackLink)
@@ -1602,8 +1605,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockAutoData]
         public static async Task ConfirmSublocations_Post_MergerOrSplit_RedirectToPracticeReorganisationSelection(
             OrderTypeEnum orderType,
             string internalOrganisationId,
@@ -1626,7 +1628,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(controller.SelectRecipientForPracticeReorganisation));
+            result.ActionName.Should().Be(nameof(controller.ConfirmSublocationRecipients));
             result.RouteValues.Should()
                 .BeEquivalentTo(
                     new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", order.CallOffId } });
@@ -1634,7 +1636,57 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static async Task ConfirmSublocationsRecipients_ReturnsView(
+        public static async Task SelectSublocations_Post_NoRemoves_SetsSublocationsAndRedirectsToConfirm(
+            Organisation organisation,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService ordersService,
+            ServiceRecipientsController controller)
+        {
+            var existingSublocations = new List<OrderSublocation>
+            {
+                CommonOrderSublocationFactory("XXXX"),
+                CommonOrderSublocationFactory("XXXA"),
+            };
+
+            order.OrderingParty = organisation;
+            order.OrderSublocations = existingSublocations;
+
+            ordersService.GetOrderWithSublocations(order.CallOffId, organisation.InternalIdentifier)
+                .Returns(new OrderWrapper(order));
+
+            var callingModel = new SelectSublocationsModel
+            {
+                RenderedSublocations =
+                [
+                    new() { Text = "XXXX", Value = "XXXX", Selected = true },
+                    new() { Text = "XXXA", Value = "XXXA", Selected = true },
+                ],
+            };
+
+            var result =
+                (await controller.SelectSublocations(callingModel, organisation.InternalIdentifier, order.CallOffId))
+                .As<RedirectToActionResult>();
+
+            await ordersService.Received(1)
+                .SetSublocations(
+                    order.CallOffId,
+                    organisation.InternalIdentifier,
+                    Arg.Is<HashSet<string>>(hs =>
+                        AreStringHashSetsEquivalent(hs, new HashSet<string> { "XXXX", "XXXA" })));
+
+            result.ActionName.Should().Be(nameof(controller.ConfirmSublocations));
+            result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
+            result.RouteValues.Should().BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "callOffId", order.CallOffId },
+                    { "internalOrgId", organisation.InternalIdentifier },
+                });
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task ConfirmSublocationRecipients_ReturnsView(
             Organisation organisation,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderService ordersService,
