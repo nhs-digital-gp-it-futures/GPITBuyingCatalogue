@@ -128,6 +128,21 @@ public static class OrderTests
         result.Should().BeEquivalentTo(currentOrder.FlattenedRecipients);
     }
 
+    [Theory]
+    [MockMemberAutoData(nameof(OrderRecipientsWithOrderItemsAndExpectedResults))]
+    public static void OrderRecipients_DeterminesRecipientsForOrder_Scenarios(
+        Order previousOrder,
+        Order currentOrder,
+        int orderItemId,
+        List<OrderSublocationRecipient> expectedRecipients)
+    {
+        ICollection<OrderSublocationRecipient> result = currentOrder.DetermineOrderRecipients(
+            previousOrder,
+            orderItemId);
+
+        result.Should().BeEquivalentTo(expectedRecipients);
+    }
+
     public static IEnumerable<object[]> OrderRecipientsWithOrderItemsAndExpectedResults()
     {
         var framework = new Catalogue.Models.Framework { Id = new Random().Next().ToString() };
@@ -378,20 +393,5 @@ public static class OrderTests
                 },
             ],
         ];
-    }
-
-    [Theory]
-    [MockMemberAutoData(nameof(OrderRecipientsWithOrderItemsAndExpectedResults))]
-    public static void OrderRecipients_DeterminesRecipientsForOrder_Scenarios(
-        Order previousOrder,
-        Order currentOrder,
-        int orderItemId,
-        List<OrderSublocationRecipient> expectedRecipients)
-    {
-        ICollection<OrderSublocationRecipient> result = currentOrder.DetermineOrderRecipients(
-            previousOrder,
-            orderItemId);
-
-        result.Should().BeEquivalentTo(expectedRecipients);
     }
 }
