@@ -88,15 +88,18 @@ public class CommunityPharmacyController(ISolutionsFilterService solutionsFilter
         if (item is null)
             return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
+        if (item.PublishedStatus == PublicationStatus.Suspended)
+            return RedirectToAction(nameof(Summary), new { solutionId });
+
         var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-        return View(new CommunityPharmacyListPriceModel(item, contentStatus));
+        return View("~/Views/Solutions/ListPrice.cshtml", new CommunityPharmacyListPriceModel(item, contentStatus));
     }
 
     [HttpGet("{solutionId}/capabilities")]
     public async Task<IActionResult> Capabilities(CatalogueItemId solutionId)
     {
-        var item = await solutionsService.GetSolutionWithCataloguePrice(solutionId);
+        var item = await solutionsService.GetSolutionWithCapabilities(solutionId);
 
         if (item is null)
             return BadRequest($"No Catalogue Item found for Id: {solutionId}");
@@ -106,7 +109,31 @@ public class CommunityPharmacyController(ISolutionsFilterService solutionsFilter
 
         var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-        return View(new CommunityPharmacyCapabilitiesModel(item, contentStatus));
+        return View("~/Views/Solutions/Capabilities.cshtml", new CommunityPharmacyCapabilitiesModel(item, contentStatus));
+    }
+
+    [HttpGet("{solutionId}/capability/{capabilityId}")]
+    public async Task<IActionResult> CheckEpics(CatalogueItemId solutionId, int capabilityId)
+    {
+        var item = await solutionsService.GetSolutionCapability(solutionId, capabilityId);
+        if (item is null)
+            return BadRequest($"No Catalogue Item found for Id: {solutionId} with Capability Id: {capabilityId}");
+
+        if (item.PublishedStatus == PublicationStatus.Suspended)
+            return RedirectToAction(nameof(Summary), new { solutionId });
+
+        var solutionCapability = item.CatalogueItemCapabilities
+            .First(cic => cic.CapabilityId == capabilityId);
+
+        var model = new SolutionCheckEpicsModel(solutionCapability, item)
+        {
+            BackLink = Url.Action(
+                nameof(Capabilities),
+                typeof(CommunityPharmacyController).ControllerName(),
+                new { solutionId }),
+        };
+
+        return View("~/Views/Solutions/CheckEpics.cshtml", model);
     }
 
     [HttpGet("{solutionId}/standards")]
@@ -126,7 +153,7 @@ public class CommunityPharmacyController(ISolutionsFilterService solutionsFilter
 
         var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-        return View(new CommunityPharmacyStandardsModel(item, standards, standardsWithWorkOffPlans, contentStatus));
+        return View("~/Views/Solutions/Standards.cshtml", new CommunityPharmacyStandardsModel(item, standards, standardsWithWorkOffPlans, contentStatus));
     }
 
     [HttpGet("{solutionId}/integrations")]
@@ -141,7 +168,7 @@ public class CommunityPharmacyController(ISolutionsFilterService solutionsFilter
 
         var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-        return View(new CommunityPharmacyIntegrationModel(item, contentStatus));
+        return View("~/Views/Solutions/Integrations.cshtml", new CommunityPharmacyIntegrationModel(item, contentStatus));
     }
 
     [HttpGet("{solutionId}/application-types")]
@@ -157,7 +184,7 @@ public class CommunityPharmacyController(ISolutionsFilterService solutionsFilter
 
         var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-        return View(new CommunityPharmacyApplicationTypesModel(item, contentStatus));
+        return View("~/Views/Solutions/ApplicationTypes.cshtml", new CommunityPharmacyApplicationTypesModel(item, contentStatus));
     }
 
     [HttpGet("{solutionId}/hosting-type")]
@@ -172,7 +199,7 @@ public class CommunityPharmacyController(ISolutionsFilterService solutionsFilter
 
         var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-        return View(new CommunityPharmacyHostingTypeModel(item, contentStatus));
+        return View("~/Views/Solutions/HostingType.cshtml", new CommunityPharmacyHostingTypeModel(item, contentStatus));
     }
 
     [HttpGet("{solutionId}/development-plans")]
@@ -189,7 +216,7 @@ public class CommunityPharmacyController(ISolutionsFilterService solutionsFilter
 
         var workOffPlans = await solutionsService.GetWorkOffPlans(solutionId);
 
-        return View(new CommunityPharmacyDevelopmentPlansModel(item, workOffPlans, contentStatus));
+        return View("~/Views/Solutions/DevelopmentPlans.cshtml", new CommunityPharmacyDevelopmentPlansModel(item, workOffPlans, contentStatus));
     }
 
     [HttpGet("{solutionId}/supplier-details")]
@@ -204,6 +231,6 @@ public class CommunityPharmacyController(ISolutionsFilterService solutionsFilter
 
         var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-        return View(new CommunityPharmacySupplierDetails(item, contentStatus));
+        return View("~/Views/Solutions/SupplierDetails.cshtml", new CommunityPharmacySupplierDetails(item, contentStatus));
     }
 }

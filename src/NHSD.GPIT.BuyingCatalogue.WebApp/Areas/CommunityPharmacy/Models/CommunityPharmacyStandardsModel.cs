@@ -13,7 +13,7 @@ public class CommunityPharmacyStandardsModel : CommunityPharmacySolutionDisplayB
         IEnumerable<StandardComplianceModel> standards,
         IEnumerable<string> standardsWithWorkOffPlans,
         CatalogueItemContentStatus contentStatus)
-        : base(catalogueItem, contentStatus)
+        : base(catalogueItem, contentStatus, shouldShowStandardsCategory: true)
     {
         Standards = standards
             .Where(x => x.Compliance is StandardCompliance.InProgress or StandardCompliance.FullyMet)

@@ -1,13 +1,13 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
-@{
-    string UnitDefinition = "";
-}
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.IListPriceModel;
 
 <article class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <partial name="_solutionSummary" model="Model"/>
+        <partial name="~/Views/Solutions/_SolutionSummary.cshtml" model="Model" />
+        @{
+            string UnitDefinition = "";
+        }
 
         @if (Model.TieredListPrices.Any())
         {
@@ -98,8 +98,8 @@
                                  type="Secondary"
                                  text=@buttonText />
         }
+        @{
+            static string GetTierName(int index) => $"Tier {index + 1}";
+        }
     </div>
 </article>
-@{
-    static string GetTierName(int index) => $"Tier {index + 1}";
-}

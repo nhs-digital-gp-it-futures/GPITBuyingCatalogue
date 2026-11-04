@@ -16,7 +16,7 @@ public class CommunityPharmacySupplierDetails : CommunityPharmacySolutionDisplay
         Name = catalogueItem.Supplier?.Name;
         Url = catalogueItem.Supplier?.SupplierUrl;
 
-        Contacts = catalogueItem.Supplier?.SupplierContacts
+        Contacts = catalogueItem.CatalogueItemContacts
             .Select(mc => new SupplierContactViewModel(mc))
             .ToList();
     }

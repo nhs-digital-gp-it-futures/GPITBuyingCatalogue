@@ -1,4 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.ISupplierDetailsModel
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.ISupplierDetailsModel
+
+<partial name="~/Views/Solutions/_SolutionSummary.cshtml" model="Model" />
 
 @if (!string.IsNullOrWhiteSpace(Model.Summary) || !String.IsNullOrWhiteSpace(Model.Url))
 {

@@ -17,8 +17,9 @@ public abstract class CommunityPharmacySolutionDisplayBaseModel : SolutionDispla
     protected CommunityPharmacySolutionDisplayBaseModel(
         CatalogueItem catalogueItem,
         CatalogueItemContentStatus contentStatus,
-        bool isSubPage = false)
-        : base(catalogueItem, contentStatus, isSubPage)
+        bool isSubPage = false,
+        bool shouldShowStandardsCategory = false)
+        : base(catalogueItem, contentStatus, shouldShowStandardsCategory, isSubPage)
     {
         SetBreadcrumb();
         SetSections();

@@ -1,6 +1,8 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Solutions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.IStandardsModel
+
+<partial name="~/Views/Solutions/_SolutionSummary.cshtml" model="Model" />
 
 @{
     var overarchingStandards = Model.Standards.Where(s => s.Type == StandardType.Overarching).OrderBy(s => s.Name).ToList();
@@ -60,5 +62,3 @@
 {
     <partial name="~/Views/Solutions/_StandardsExpander.cshtml" model="otherStandardsExpanderModel"/>
 }
-
-

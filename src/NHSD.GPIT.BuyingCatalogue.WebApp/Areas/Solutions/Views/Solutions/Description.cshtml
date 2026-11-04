@@ -1,7 +1,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDescriptionModel;
 <article class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <partial name="_solutionSummary" model="Model"/>
+        <partial name="~/Views/Solutions/_SolutionSummary.cshtml" model="Model"/>
         @if (Model.IsSuspended())
         {
             <p data-test-id="solution-suspended-notice">This catalogue solution has been suspended from the Buying Catalogue and is not available at this time.</p>
