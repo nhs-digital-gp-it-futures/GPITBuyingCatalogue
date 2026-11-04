@@ -39,9 +39,9 @@ public sealed class CatalogueSolutionsController(
     private readonly IAssociatedServicesService associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
     private readonly ISolutionPublicationStatusService publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
 
-    [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] string search = null)
-    {
+    [HttpGet("{solutionType}")]
+    public async Task<IActionResult> Index([FromRoute] SolutionType solutionType, [FromQuery] string search = null)
+   {
         var solutions = await GetFilteredItems(search);
 
         var solutionModel = new CatalogueSolutionsModel(solutions)
@@ -52,8 +52,8 @@ public sealed class CatalogueSolutionsController(
         return View(solutionModel);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Index(CatalogueSolutionsModel model)
+    [HttpPost("{solutionType}")]
+    public async Task<IActionResult> Index([FromRoute] SolutionType solutionType, CatalogueSolutionsModel model)
     {
         var status = string.IsNullOrWhiteSpace(model.SelectedPublicationStatus)
             ? (PublicationStatus?)null
