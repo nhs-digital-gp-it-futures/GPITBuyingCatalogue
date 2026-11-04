@@ -1,10 +1,8 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
-@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ContractBilling.ContractBillingItemModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ContractBilling.ContractBillingItemModel
 @{
-    ViewBag.Title = "Bespoke associated service milestone";
+    ViewBag.Title = Model.IsEdit
+         ? "Edit bespoke associated service milestone"
+         : "Add bespoke associated service milestone";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -14,8 +12,7 @@
         <nhs-validation-summary/>
 
         <nhs-page-title title="@ViewBag.Title"
-                        caption="Order @Model.CallOffId"
-                        advice="@Model.Advice"/>
+                        caption="Order @Model.CallOffId" />
 
         <form method="post">
             <div class="nhsuk-u-margin-top-9">
@@ -26,16 +23,15 @@
 
                 <nhs-select asp-for="SelectedOrderItemId"
                             asp-items="@Model.OrderItemOptions"
-                            label-text="Associated service name"
-                            label-hint="Select the associated service this milestone will apply to." />
+                            label-text="Select Associated service" />
                 
                 <nhs-input asp-for="Name"
                            label-text="Milestone name"
-                           label-hint="Provide a name for the milestone you want to add to this order."/>
+                           label-hint="Provide a short name for the milestone" />
 
                 <nhs-textarea asp-for="PaymentTrigger"
                               label-text="Milestone payment trigger"
-                              label-hint="Provide a description of how this milestone will trigger payments as part of this order."/>
+                              label-hint="Describe how this milestone will trigger payments" />
 
                 <nhs-button-group>
                     <nhs-submit-button text="Save and continue"/>

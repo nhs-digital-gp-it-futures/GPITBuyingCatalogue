@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, callOffId, orderWrapper, orderItem);
 
-            model.Title.Should().Be("Funding source");
+            model.Title.Should().Be("Confirm funding source");
             model.CallOffId.Should().Be(callOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be(orderItem.CatalogueItem.Name);
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, callOffId, orderWrapper, orderItem);
 
-            model.Title.Should().Be("Funding source");
+            model.Title.Should().Be("Confirm funding source");
             model.CallOffId.Should().Be(callOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be(orderItem.CatalogueItem.Name);

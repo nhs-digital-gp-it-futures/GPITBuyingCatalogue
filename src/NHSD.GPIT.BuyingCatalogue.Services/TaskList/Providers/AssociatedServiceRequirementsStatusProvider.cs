@@ -21,7 +21,7 @@ public class AssociatedServiceRequirementsStatusProvider : ITaskProgressProvider
             return TaskProgress.NotApplicable;
         }
 
-        if (!TaskListStatusService.IsTaskCompleted(state.SolutionOrService))
+        if (!TaskListStatusService.IsTaskCompleted(state.AssociatedServiceBilling))
         {
             return TaskProgress.CannotStart;
         }
