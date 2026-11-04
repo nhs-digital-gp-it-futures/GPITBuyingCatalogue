@@ -4,6 +4,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.CommunityPharmacy.Models;
@@ -12,7 +13,7 @@ public static class CommunityPharmacyListPriceModelTests
 {
     [Theory]
     [MockAutoData]
-    public static void Construct_OnlyIncludesPublishedFlatPrices(
+    public static void Construct_OnlyIncludesPublishedPricesByType(
         Solution solution,
         CatalogueItemContentStatus contentStatus)
     {
@@ -24,9 +25,13 @@ public static class CommunityPharmacyListPriceModelTests
 
         var model = new CommunityPharmacyListPriceModel(solution.CatalogueItem, contentStatus);
 
-        model.ListPrices.Should().ContainSingle()
+        model.FlatListPrices.Should().ContainSingle()
             .Which.Should().BeSameAs(prices.Single(x => x.CataloguePriceType == CataloguePriceType.Flat
                 && x.PublishedStatus == PublicationStatus.Published));
+        model.TieredListPrices.Should().ContainSingle()
+            .Which.Should().BeSameAs(prices.Single(x => x.CataloguePriceType == CataloguePriceType.Tiered
+                && x.PublishedStatus == PublicationStatus.Published));
+        model.HasFlatListPrices().Should().BeTrue();
         model.SelectedSection.Should().Be("List price");
     }
 
@@ -40,6 +45,8 @@ public static class CommunityPharmacyListPriceModelTests
 
         var model = new CommunityPharmacyListPriceModel(solution.CatalogueItem, contentStatus);
 
-        model.ListPrices.Should().BeEmpty();
+        model.FlatListPrices.Should().BeEmpty();
+        model.TieredListPrices.Should().BeEmpty();
+        model.HasFlatListPrices().Should().BeFalse();
     }
 }

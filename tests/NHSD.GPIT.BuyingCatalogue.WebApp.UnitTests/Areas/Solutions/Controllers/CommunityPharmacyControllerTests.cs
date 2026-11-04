@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +8,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -18,6 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
 
@@ -47,6 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [InlineData(nameof(CommunityPharmacyController.Summary), "{solutionId}")]
         [InlineData(nameof(CommunityPharmacyController.ListPrice), "{solutionId}/list-price")]
         [InlineData(nameof(CommunityPharmacyController.Capabilities), "{solutionId}/capabilities")]
+        [InlineData(nameof(CommunityPharmacyController.CheckEpics), "{solutionId}/capability/{capabilityId}")]
         [InlineData(nameof(CommunityPharmacyController.Standards), "{solutionId}/standards")]
         [InlineData(nameof(CommunityPharmacyController.Integrations), "{solutionId}/integrations")]
         [InlineData(nameof(CommunityPharmacyController.ApplicationTypes), "{solutionId}/application-types")]
@@ -57,43 +60,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             typeof(CommunityPharmacyController).GetMethod(action)
                 .Should().BeDecoratedWith<HttpGetAttribute>(x => x.Template == template);
-        }
-
-        [Theory]
-        [MockInlineAutoData(PublicationStatus.Published)]
-        [MockInlineAutoData(PublicationStatus.InRemediation)]
-        public static async Task ApplicationTypes_ValidSolution_ReturnsCommunityPharmacyModel(
-            PublicationStatus publicationStatus,
-            Solution solution,
-            CatalogueItemContentStatus contentStatus,
-            [Frozen] ISolutionsService solutionsService,
-            CommunityPharmacyController controller)
-        {
-            var catalogueItem = solution.CatalogueItem;
-            catalogueItem.PublishedStatus = publicationStatus;
-            solution.ApplicationTypeDetail = new ApplicationTypeDetail
-            {
-                ApplicationTypes = new() { ApplicationType.BrowserBased.EnumMemberName() },
-                BrowsersSupported = new() { new() { BrowserName = "Chrome", MinimumBrowserVersion = "100" } },
-            };
-            solutionsService.GetSolutionWithBasicInformation(catalogueItem.Id).Returns(catalogueItem);
-            solutionsService.GetContentStatusForCatalogueItem(catalogueItem.Id).Returns(contentStatus);
-
-            var result = (await controller.ApplicationTypes(catalogueItem.Id)).Should().BeOfType<ViewResult>().Subject;
-            var model = result.Model.Should().BeOfType<CommunityPharmacyApplicationTypesModel>().Subject;
-
-            result.ViewName.Should().BeNullOrEmpty();
-            model.ApplicationTypesDetails.ApplicationTypes.Items.Should().ContainKey("Browser-based application");
-            model.ApplicationTypesDetails.BrowserBasedApplication.Items["Supported browser types"].List
-                .Should().Equal("Chrome (Version 100)");
-            model.ApplicationTypesDetails.NativeDesktopApplication.Should().BeNull();
-            model.ApplicationTypesDetails.NativeMobileApplication.Should().BeNull();
-            model.SelectedSection.Should().Be("Application type");
-            model.Sections.Single(s => s.Selected).Action.Should().Be(nameof(CommunityPharmacyController.ApplicationTypes));
-            model.BreadcrumbItems.Last().Controller.Should().Be("CommunityPharmacy");
-            model.PaginationFooter.Previous.Name.Should().Be("Integrations");
-            model.PaginationFooter.Next.Name.Should().Be("Hosting type");
-            model.PaginationFooter.FullWidth.Should().BeTrue();
         }
 
         [Theory]
@@ -174,7 +140,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [MockInlineAutoData(PublicationStatus.Published)]
         [MockInlineAutoData(PublicationStatus.InRemediation)]
-        [MockInlineAutoData(PublicationStatus.Suspended)]
         public static async Task ListPrice_ValidSolution_ReturnsExpectedModelAndView(
             PublicationStatus publicationStatus,
             Solution solution,
@@ -190,11 +155,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var result = await controller.ListPrice(catalogueItem.Id);
 
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            viewResult.ViewName.Should().BeNullOrEmpty();
+            viewResult.ViewName.Should().Be("~/Views/Solutions/ListPrice.cshtml");
             viewResult.Model.Should().BeOfType<CommunityPharmacyListPriceModel>()
                 .Which.Should().BeEquivalentTo(new CommunityPharmacyListPriceModel(catalogueItem, contentStatus));
             await solutionsService.Received(1).GetSolutionWithCataloguePrice(catalogueItem.Id);
             await solutionsService.Received(1).GetContentStatusForCatalogueItem(catalogueItem.Id);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task ListPrice_SuspendedSolution_RedirectsToSummary(
+            CatalogueItem catalogueItem,
+            [Frozen] ISolutionsService solutionsService,
+            CommunityPharmacyController controller)
+        {
+            catalogueItem.PublishedStatus = PublicationStatus.Suspended;
+            solutionsService.GetSolutionWithCataloguePrice(catalogueItem.Id).Returns(catalogueItem);
+
+            var result = (await controller.ListPrice(catalogueItem.Id)).Should().BeOfType<RedirectToActionResult>().Subject;
+
+            result.ActionName.Should().Be(nameof(CommunityPharmacyController.Summary));
+            result.RouteValues?["solutionId"].Should().Be(catalogueItem.Id);
+            await solutionsService.DidNotReceive().GetContentStatusForCatalogueItem(Arg.Any<CatalogueItemId>());
         }
 
         [Theory]
@@ -228,16 +210,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = publicationStatus;
-            solutionsService.GetSolutionWithCataloguePrice(catalogueItem.Id).Returns(catalogueItem);
+            solutionsService.GetSolutionWithCapabilities(catalogueItem.Id).Returns(catalogueItem);
             solutionsService.GetContentStatusForCatalogueItem(catalogueItem.Id).Returns(contentStatus);
 
             var result = await controller.Capabilities(catalogueItem.Id);
 
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            viewResult.ViewName.Should().BeNullOrEmpty();
+            viewResult.ViewName.Should().Be("~/Views/Solutions/Capabilities.cshtml");
             viewResult.Model.Should().BeOfType<CommunityPharmacyCapabilitiesModel>()
                 .Which.Should().BeEquivalentTo(new CommunityPharmacyCapabilitiesModel(catalogueItem, contentStatus));
-            await solutionsService.Received(1).GetSolutionWithCataloguePrice(catalogueItem.Id);
+            await solutionsService.Received(1).GetSolutionWithCapabilities(catalogueItem.Id);
             await solutionsService.Received(1).GetContentStatusForCatalogueItem(catalogueItem.Id);
         }
 
@@ -249,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] ISolutionStandardsService solutionStandardsService,
             CommunityPharmacyController controller)
         {
-            solutionsService.GetSolutionWithCataloguePrice(solutionId).Returns(default(CatalogueItem));
+            solutionsService.GetSolutionWithCapabilities(solutionId).Returns(default(CatalogueItem));
 
             var result = await controller.Capabilities(solutionId);
 
@@ -269,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             CommunityPharmacyController controller)
         {
             catalogueItem.PublishedStatus = PublicationStatus.Suspended;
-            solutionsService.GetSolutionWithCataloguePrice(catalogueItem.Id).Returns(catalogueItem);
+            solutionsService.GetSolutionWithCapabilities(catalogueItem.Id).Returns(catalogueItem);
 
             var result = await controller.Capabilities(catalogueItem.Id);
 
@@ -278,6 +260,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             await solutionsService.DidNotReceive().GetContentStatusForCatalogueItem(Arg.Any<CatalogueItemId>());
             await solutionsService.DidNotReceive().GetWorkOffPlans(Arg.Any<CatalogueItemId>());
             await solutionStandardsService.DidNotReceive().GetSolutionStandards(Arg.Any<CatalogueItemId>());
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task CheckEpics_MissingSolution_ReturnsBadRequest(
+            CatalogueItemId solutionId,
+            int capabilityId,
+            [Frozen] ISolutionsService solutionsService,
+            CommunityPharmacyController controller)
+        {
+            solutionsService.GetSolutionCapability(solutionId, capabilityId).Returns(default(CatalogueItem));
+
+            var result = (await controller.CheckEpics(solutionId, capabilityId)).Should().BeOfType<BadRequestObjectResult>().Subject;
+
+            result.Value.Should().Be($"No Catalogue Item found for Id: {solutionId} with Capability Id: {capabilityId}");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task CheckEpics_SuspendedSolution_RedirectsToSummary(
+            CatalogueItem catalogueItem,
+            int capabilityId,
+            [Frozen] ISolutionsService solutionsService,
+            CommunityPharmacyController controller)
+        {
+            catalogueItem.PublishedStatus = PublicationStatus.Suspended;
+            solutionsService.GetSolutionCapability(catalogueItem.Id, capabilityId).Returns(catalogueItem);
+
+            var result = (await controller.CheckEpics(catalogueItem.Id, capabilityId)).Should().BeOfType<RedirectToActionResult>().Subject;
+
+            result.ActionName.Should().Be(nameof(CommunityPharmacyController.Summary));
         }
 
         [Theory]
@@ -303,7 +316,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var result = await controller.Standards(catalogueItem.Id);
 
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            viewResult.ViewName.Should().BeNullOrEmpty();
+            viewResult.ViewName.Should().Be("~/Views/Solutions/Standards.cshtml");
             viewResult.Model.Should().BeOfType<CommunityPharmacyStandardsModel>()
                 .Which.Should().BeEquivalentTo(new CommunityPharmacyStandardsModel(catalogueItem, standards, workOffPlans.Select(x => x.StandardId), contentStatus));
             await solutionsService.Received(1).GetSolutionWithBasicInformation(catalogueItem.Id);
@@ -369,7 +382,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var result = await controller.Integrations(catalogueItem.Id);
 
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            viewResult.ViewName.Should().BeNullOrEmpty();
+            viewResult.ViewName.Should().Be("~/Views/Solutions/Integrations.cshtml");
             viewResult.Model.Should().BeOfType<CommunityPharmacyIntegrationModel>()
                 .Which.Should().BeEquivalentTo(new CommunityPharmacyIntegrationModel(catalogueItem, contentStatus));
             await solutionsService.Received(1).GetSolutionWithBasicInformation(catalogueItem.Id);
@@ -433,7 +446,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var result = await controller.HostingType(catalogueItem.Id);
 
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            viewResult.ViewName.Should().BeNullOrEmpty();
+            viewResult.ViewName.Should().Be("~/Views/Solutions/HostingType.cshtml");
             viewResult.Model.Should().BeOfType<CommunityPharmacyHostingTypeModel>()
                 .Which.Should().BeEquivalentTo(new CommunityPharmacyHostingTypeModel(catalogueItem, contentStatus));
             await solutionsService.Received(1).GetSolutionWithBasicInformation(catalogueItem.Id);
@@ -499,7 +512,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var result = await controller.DevelopmentPlans(catalogueItem.Id);
 
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            viewResult.ViewName.Should().BeNullOrEmpty();
+            viewResult.ViewName.Should().Be("~/Views/Solutions/DevelopmentPlans.cshtml");
             viewResult.Model.Should().BeOfType<CommunityPharmacyDevelopmentPlansModel>()
                 .Which.Should().BeEquivalentTo(new CommunityPharmacyDevelopmentPlansModel(catalogueItem, workOffPlans, contentStatus));
             await solutionsService.Received(1).GetSolutionWithBasicInformation(catalogueItem.Id);
@@ -564,7 +577,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var result = await controller.SupplierDetails(catalogueItem.Id);
 
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            viewResult.ViewName.Should().BeNullOrEmpty();
+            viewResult.ViewName.Should().Be("~/Views/Solutions/SupplierDetails.cshtml");
             viewResult.Model.Should().BeOfType<CommunityPharmacySupplierDetails>()
                 .Subject.Should().BeEquivalentTo(new CommunityPharmacySupplierDetails(catalogueItem, contentStatus));
             await solutionsService.Received(1).GetSolutionWithSupplierDetails(catalogueItem.Id);

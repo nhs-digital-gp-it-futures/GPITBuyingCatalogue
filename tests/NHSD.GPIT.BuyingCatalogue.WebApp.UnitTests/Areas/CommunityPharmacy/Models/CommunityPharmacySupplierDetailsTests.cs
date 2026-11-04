@@ -24,7 +24,8 @@ public static class CommunityPharmacySupplierDetailsTests
         model.Summary.Should().Be(supplier.Summary);
         model.Name.Should().Be(supplier.Name);
         model.Url.Should().Be(supplier.SupplierUrl);
-        model.Contacts.Should().BeEquivalentTo(supplier.SupplierContacts.Select(x => new SupplierContactViewModel(x)));
+        model.Contacts.Should().BeEquivalentTo(solution.CatalogueItem.CatalogueItemContacts.Select(x => new SupplierContactViewModel(x)));
+        model.Contacts.Should().BeEquivalentTo(new SolutionSupplierDetailsModel(solution.CatalogueItem, contentStatus).Contacts);
         model.HasContacts().Should().BeTrue();
         model.SelectedSection.Should().Be("Supplier contact details");
         model.PaginationFooter.Previous.Name.Should().Be("Development plans");
@@ -37,7 +38,7 @@ public static class CommunityPharmacySupplierDetailsTests
         Solution solution,
         CatalogueItemContentStatus contentStatus)
     {
-        solution.CatalogueItem.Supplier.SupplierContacts.Clear();
+        solution.CatalogueItem.CatalogueItemContacts.Clear();
 
         var model = new CommunityPharmacySupplierDetails(solution.CatalogueItem, contentStatus);
 
