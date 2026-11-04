@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -43,9 +44,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             LastReviewed = catalogueItem.Solution.LastUpdated;
             Frameworks = catalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().ToList();
             SupplierName = catalogueItem.Supplier.Name;
+            if (Frameworks.Count == 0)
+                throw new InvalidOperationException("A solution must have at least one framework.");
+            var solutionType = Frameworks[0].SolutionType;
 
             SetSections(contentStatus);
-            SetBreadcrumb();
+            SetBreadcrumb(solutionType);
             SetPaginationFooter();
 
             ShowSideNavigation = !IsSuspended();
@@ -118,9 +122,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public bool IsSuspended() => PublicationStatus == PublicationStatus.Suspended;
 
-        private void SetBreadcrumb()
+        private void SetBreadcrumb(SolutionType solutionType)
         {
-            BreadcrumbItems = new List<SectionModel>()
+            var breadcrumbItems = new List<SectionModel>
             {
                 new()
                 {
@@ -130,15 +134,48 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Show = true,
                     RouteData = new Dictionary<string, string> { { "area", typeof(HomeController).AreaName() }, },
                 },
-                new()
+            };
+
+            if (solutionType == SolutionType.CommunityPharmacy)
+            {
+                breadcrumbItems.Add(new()
+                {
+                    Action = nameof(HomeController.CommunityPharmacy),
+                    Controller = typeof(HomeController).ControllerName(),
+                    Name = "Community Pharmacy",
+                    Show = true,
+                    RouteData = new Dictionary<string, string> { { "area", typeof(HomeController).AreaName() } },
+                });
+                breadcrumbItems.Add(new()
+                {
+                    Action = nameof(CommunityPharmacyController.Solutions),
+                    Controller = typeof(CommunityPharmacyController).ControllerName(),
+                    Name = "Catalogue solutions",
+                    Show = true,
+                    RouteData = new Dictionary<string, string> { { "area", typeof(CommunityPharmacyController).AreaName() } },
+                });
+            }
+            else
+            {
+                breadcrumbItems.Add(new()
+                {
+                    Action = nameof(HomeController.GPIT),
+                    Controller = typeof(HomeController).ControllerName(),
+                    Name = "General Practice",
+                    Show = true,
+                    RouteData = new Dictionary<string, string> { { "area", typeof(HomeController).AreaName() } },
+                });
+                breadcrumbItems.Add(new()
                 {
                     Action = nameof(SolutionsController.Index),
                     Controller = typeof(SolutionsController).ControllerName(),
                     Name = "Catalogue solutions",
                     Show = true,
-                    RouteData = new Dictionary<string, string> { { "area", typeof(SolutionsController).AreaName() }, },
-                },
-            };
+                    RouteData = new Dictionary<string, string> { { "area", typeof(SolutionsController).AreaName() } },
+                });
+            }
+
+            BreadcrumbItems = breadcrumbItems;
         }
 
         private void SetSections(CatalogueItemContentStatus contentStatus)

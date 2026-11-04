@@ -227,6 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                         SelectedApplicationTypeIds = filters.SelectedApplicationTypeIds,
                         SelectedHostingTypeIds = filters.SelectedHostingTypeIds,
                         SelectedIntegrationsAndTypes = filters.GetIntegrationsAndTypes(),
+                        IsCommunityPharmacy = false,
                     });
 
             await mockService.Received().GetAllSolutionsFiltered(
@@ -243,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] ISolutionsFilterService mockService,
             SolutionsController controller)
         {
-            mockService.GetSolutionsBySearchTerm(search, Arg.Any<int>()).Returns(searchResults);
+            mockService.GetSolutionsBySearchTerm(search, Arg.Any<int>(), false).Returns(searchResults);
 
             var context = new DefaultHttpContext();
             context.HttpContext.Request.Headers.Referer = uri.ToString();
@@ -262,7 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var result = await controller.FilterSearchSuggestions(search);
 
-            await mockService.Received().GetSolutionsBySearchTerm(search, Arg.Any<int>());
+            await mockService.Received().GetSolutionsBySearchTerm(search, Arg.Any<int>(), false);
             var actualResult = result.Should().BeOfType<JsonResult>().Subject;
             actualResult.Value.Should().BeEquivalentTo(expectedResults);
         }
