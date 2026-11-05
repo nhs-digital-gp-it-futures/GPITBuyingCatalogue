@@ -34,7 +34,7 @@ public class CommunityPharmacyController(ISolutionsFilterService solutionsFilter
             PageSize = CommunityPharmacySolutionsModel.SearchResultsPerPage,
         };
 
-        var filters = new SolutionsFilters() { IsCommunityPharmacy = true, Search = search, };
+        var filters = new SolutionsFilters() { SolutionType = SolutionType.CommunityPharmacy, Search = search, };
 
         (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
             await solutionsFilterService.GetAllSolutionsFiltered(
