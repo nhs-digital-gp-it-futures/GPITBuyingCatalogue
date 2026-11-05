@@ -12,7 +12,6 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using FluentAssertions;
-using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
@@ -266,7 +265,39 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             record.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
             record.ServiceRecipientId.Should().Be(recipient.RecipientOdsCode);
             record.ServiceRecipientName.Should().Be(recipient.RecipientOdsOrganisation.Name);
-            record.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{orderItem.CatalogueItemId}-{orderItem.Id}");
+            record.ServiceRecipientItemId.Should()
+                .Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{DisplayNumberFor(recipient, orderItem)}");
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task Null_DisplayNumber_Returns_Expected_ServiceRecipientItemId(
+            Order order,
+            OrderItem orderItem,
+            CsvService service,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            IFixture fixture)
+        {
+            OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, [orderItem]);
+            recipient.OrderItemSublocationRecipients.FirstOrDefault(oir => oir.OrderItemId == orderItem.Id)
+                ?.DisplayNumber = null;
+
+            await SaveOrderWithRecipients(
+                order,
+                [orderItem],
+                [recipient],
+                dbContext);
+
+            await using var fullOrderStream = new MemoryStream();
+            await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
+            fullOrderStream.Position = 0;
+
+            List<FullOrderCsvModel> records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap());
+
+            records.Count.Should().Be(1);
+            FullOrderCsvModel record = records.First();
+            record.ServiceRecipientItemId.Should()
+                .Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{orderItem.CatalogueItemId}-{orderItem.Id}");
         }
 
         [Theory]
@@ -434,7 +465,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             record.ServiceRecipientToRetain.Should()
                 .Be(
                     $"{order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Name} ({order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Id})");
-            record.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{orderItem.CatalogueItemId}-{orderItem.Id}");
+            record.ServiceRecipientItemId.Should()
+                .Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{DisplayNumberFor(recipient, orderItem)}");
         }
 
         [Theory]
@@ -481,7 +513,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             record.ServiceRecipientToSplit.Should()
                 .Be(
                     $"{order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Name} ({order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Id})");
-            record.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{orderItem.CatalogueItemId}-{orderItem.Id}");
+            record.ServiceRecipientItemId.Should()
+                .Be($"{order.CallOffId}-{recipient.RecipientOdsCode}-{DisplayNumberFor(recipient, orderItem)}");
         }
 
         [Theory]
@@ -527,14 +560,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             record1.Should().NotBeNull();
             record1!.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
             record1.ServiceRecipientName.Should().Be(recipient1.RecipientOdsOrganisation.Name);
-            record1.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient1.RecipientOdsCode}-{orderItem.CatalogueItemId}-{orderItem.Id}");
+            record1.ServiceRecipientItemId.Should()
+                .Be($"{order.CallOffId}-{recipient1.RecipientOdsCode}-{DisplayNumberFor(recipient1, orderItem)}");
 
             FullOrderCsvModel record2 = records
                 .FirstOrDefault(r => r.ServiceRecipientId == recipient2.RecipientOdsCode);
             record2.Should().NotBeNull();
             record2!.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
             record2.ServiceRecipientName.Should().Be(recipient2.RecipientOdsOrganisation.Name);
-            record2.ServiceRecipientItemId.Should().Be($"{order.CallOffId}-{recipient2.RecipientOdsCode}-{orderItem.CatalogueItemId}-{orderItem.Id}");
+            record2.ServiceRecipientItemId.Should()
+                .Be($"{order.CallOffId}-{recipient2.RecipientOdsCode}-{DisplayNumberFor(recipient2, orderItem)}");
         }
 
         [Theory]
@@ -889,29 +924,40 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
                 .Create();
             recipient.RecipientOdsCode = recipient.RecipientOdsOrganisation.Id;
 
-            UpdateRecipientToItem(recipient, orderItems);
+            UpdateRecipientToItem(fixture, recipient, orderItems);
 
             return recipient;
         }
 
         private static void UpdateRecipientToItem(
+            IFixture fixture,
             OrderSublocationRecipient recipient,
             OrderItem[] orderItems)
         {
             foreach (OrderItem orderItem in orderItems)
             {
+                var displayNumber = fixture.Create<int>();
+                if (displayNumber == orderItem.Id)
+                {
+                    displayNumber++;
+                }
+
                 recipient.OrderItemSublocationRecipients.Add(
                     new OrderItemSublocationRecipient
                     {
                         OrderId = recipient.OrderId,
                         RecipientOdsCode = recipient.RecipientOdsCode,
                         OrderItemId = orderItem.Id,
+                        DisplayNumber = displayNumber,
                         Quantity = 1,
                         Recipient = recipient,
                         OrderItem = orderItem,
                     });
             }
         }
+
+        private static int? DisplayNumberFor(OrderSublocationRecipient recipient, OrderItem orderItem) =>
+            recipient.OrderItemSublocationRecipients.Single(x => x.OrderItemId == orderItem.Id).DisplayNumber;
 
         public class CallOffIdConverter : DefaultTypeConverter
         {
