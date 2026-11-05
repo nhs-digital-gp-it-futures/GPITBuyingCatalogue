@@ -24,7 +24,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
                 .Select(p => new SelectOption<string>(p.Description(), p.EnumMemberName()))
                 .ToList();
 
-            var actual = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections).PublicationStatuses;
+            var actual = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, solutionSections)
+            {
+                SolutionType = SolutionType.GPIT,
+            }.PublicationStatuses;
 
             actual.Should().BeEquivalentTo(expected);
         }
@@ -37,7 +40,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             SolutionSections solutionSections)
         {
             var expected = solutionLoadingStatuses.Features;
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections);
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, solutionSections)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             var actual = model.FeaturesStatus;
 
@@ -52,7 +58,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             SolutionSections solutionSections)
         {
             var expected = solutionLoadingStatuses.Description;
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections);
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, solutionSections)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             var actual = model.DescriptionStatus;
 
@@ -67,7 +76,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             SolutionSections solutionSections)
         {
             var expected = solutionLoadingStatuses.Implementation;
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections);
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, solutionSections)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             var actual = model.ImplementationStatus;
 
@@ -82,7 +94,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             SolutionSections solutionSections)
         {
             var expected = solutionLoadingStatuses.DevelopmentPlans;
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections);
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, solutionSections)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             var actual = model.RoadmapStatus;
 
@@ -97,7 +112,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             SolutionSections solutionSections)
         {
             var expected = solutionLoadingStatuses.Interoperability;
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections);
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, solutionSections)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             var actual = model.InteroperabilityStatus;
 
@@ -112,7 +130,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             SolutionSections solutionSections)
         {
             var expected = solutionLoadingStatuses.ListPrice;
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections);
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, solutionSections)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             var actual = model.ListPriceStatus;
 

@@ -124,7 +124,10 @@ public sealed class CatalogueSolutionsController(
 
         var solutionStatuses = await solutionsService.GetSolutionLoadingStatuses(solutionId, solutionSections);
 
-        var model = new ManageCatalogueSolutionModel(solutionStatuses, solution, solutionType, solutionSections);
+        var model = new ManageCatalogueSolutionModel(solutionStatuses, solution, solutionSections)
+        {
+            SolutionType = solutionType,
+        };
 
         return View(model);
     }

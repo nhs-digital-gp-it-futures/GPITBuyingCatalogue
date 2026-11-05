@@ -27,6 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             {
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -42,6 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var model = new ManageCatalogueSolutionModel
             {
                 SelectedPublicationStatus = PublicationStatus.Unpublished,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -73,6 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             {
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -103,6 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             {
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -137,6 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             {
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -168,6 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             {
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -198,6 +204,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             {
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -229,6 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             {
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -252,6 +260,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             {
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -287,9 +296,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, new SolutionSections())
+            var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, new SolutionSections())
             {
                 SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);

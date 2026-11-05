@@ -408,7 +408,10 @@ public static class CatalogueSolutionsControllerTests
         solution.LastUpdatedBy = userId;
         solution.LastUpdatedByUser = aspNetUser;
         aspNetUser.Id = userId;
-        var expectedModel = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, SolutionType.GPIT, solutionSections);
+        var expectedModel = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, solutionSections)
+        {
+            SolutionType = SolutionType.GPIT,
+        };
 
         mockSolutionService.GetSolutionThin(solution.CatalogueItemId)
             .Returns(solution.CatalogueItem);
@@ -950,6 +953,7 @@ public static class CatalogueSolutionsControllerTests
         {
             SelectedPublicationStatus = catalogueItem.PublishedStatus,
             SolutionPublicationStatus = catalogueItem.PublishedStatus,
+            SolutionType = SolutionType.GPIT,
         };
 
         solutionsService.GetSolutionThin(catalogueItem.Id)
@@ -980,6 +984,7 @@ public static class CatalogueSolutionsControllerTests
         {
             SelectedPublicationStatus = PublicationStatus.Published,
             SolutionPublicationStatus = catalogueItem.PublishedStatus,
+            SolutionType = SolutionType.GPIT,
         };
 
         mockSolutionService.GetSolutionThin(catalogueItem.Id)
@@ -1006,6 +1011,7 @@ public static class CatalogueSolutionsControllerTests
         {
             SelectedPublicationStatus = PublicationStatus.Published,
             SolutionPublicationStatus = catalogueItem.PublishedStatus,
+            SolutionType = SolutionType.GPIT,
         };
 
         mockSolutionService.GetSolutionThin(catalogueItem.Id)
@@ -1031,6 +1037,7 @@ public static class CatalogueSolutionsControllerTests
         {
             SelectedPublicationStatus = publicationStatus,
             SolutionPublicationStatus = publicationStatus,
+            SolutionType = SolutionType.GPIT,
         };
 
         mockSolutionService.GetSolutionThin(solution.Id)

@@ -125,28 +125,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<SolutionLoadingStatusesModel> GetSolutionLoadingStatuses(CatalogueItemId solutionId, SolutionSections solutionSections)
         {
             var solution = await dbContext.CatalogueItems
-                .AsNoTracking()
-                .Include(ci => ci.Solution)
-                    .ThenInclude(s => s.ServiceLevelAgreement)
-                    .ThenInclude(sla => sla.Contacts)
-                .Include(ci => ci.Solution)
-                    .ThenInclude(s => s.ServiceLevelAgreement)
-                    .ThenInclude(sla => sla.ServiceHours)
-                .Include(ci => ci.Solution)
-                    .ThenInclude(s => s.ServiceLevelAgreement)
-                    .ThenInclude(sla => sla.ServiceLevels)
-                .Include(ci => ci.Solution)
-                    .ThenInclude(s => s.DataProcessingInformation)
-                    .ThenInclude(data => data.Details)
-                .Include(ci => ci.Solution)
-                    .ThenInclude(s => s.DataProcessingInformation)
-                    .ThenInclude(data => data.Location)
-                .Include(ci => ci.Solution)
-                    .ThenInclude(s => s.DataProcessingInformation)
-                    .ThenInclude(data => data.Officer)
-                .Include(ci => ci.Solution)
-                    .ThenInclude(s => s.AdditionalServices)
+                .Include(ci => ci.Solution.ServiceLevelAgreement.Contacts)
+                .Include(ci => ci.Solution.ServiceLevelAgreement.ServiceHours)
+                .Include(ci => ci.Solution.ServiceLevelAgreement.ServiceLevels)
+                .Include(ci => ci.Solution.DataProcessingInformation.Details)
+                .Include(ci => ci.Solution.DataProcessingInformation.Location)
+                .Include(ci => ci.Solution.DataProcessingInformation.Officer)
+                .Include(ci => ci.Solution.AdditionalServices)
                     .ThenInclude(additional => additional.CatalogueItem)
+                .AsNoTracking()
+                .AsSplitQuery()
                 .Where(ci => ci.Id == solutionId)
                 .Select(
                     ci => new SolutionLoadingStatusesModel
@@ -745,9 +733,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 return TaskProgress.Completed;
             }
 
-            if (serviceLevelAgreement.Contacts.Count != 0 ||
+            if (serviceLevelAgreement != null && (serviceLevelAgreement.Contacts.Count != 0 ||
                 serviceLevelAgreement.ServiceHours.Count != 0 ||
-                serviceLevelAgreement.ServiceLevels.Count != 0)
+                serviceLevelAgreement.ServiceLevels.Count != 0))
             {
                 return TaskProgress.InProgress;
             }
