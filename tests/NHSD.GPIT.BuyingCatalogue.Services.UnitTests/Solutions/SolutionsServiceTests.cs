@@ -450,151 +450,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             GetStatus(actual, section).Should().Be(expected, $"section={section}, requirement={requirement}, state={state}");
         }
 
-        private static void SetRequirement(SolutionSections sections, string section, SolutionSectionRequirement requirement)
-        {
-            var property = section == "DataProcessing"
-                ? nameof(SolutionSections.DataProcessingInformation)
-                : section == "Interoperability"
-                    ? nameof(SolutionSections.Integrations)
-                : section;
-
-            typeof(SolutionSections).GetProperty(property).SetValue(sections, requirement);
-        }
-
-        private static TaskProgress GetStatus(SolutionLoadingStatusesModel statuses, string section)
-        {
-            var property = section == "Interoperability"
-                ? nameof(SolutionLoadingStatusesModel.Interoperability)
-                : section;
-
-            return (TaskProgress)typeof(SolutionLoadingStatusesModel).GetProperty(property).GetValue(statuses);
-        }
-
-        private static Solution ConfigureSolution(Solution source, string section, int state, List<Standard> standards)
-        {
-            var solution = new Solution
-            {
-                CatalogueItemId = source.CatalogueItemId,
-                ServiceLevelAgreement = new NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.ServiceLevelAgreements
-                {
-                    SolutionId = source.CatalogueItemId,
-                    Contacts = new HashSet<SlaContact>(),
-                    ServiceHours = new HashSet<ServiceAvailabilityTimes>(),
-                    ServiceLevels = new HashSet<SlaServiceLevel>(),
-                },
-            };
-
-            solution.ServiceLevelAgreement.Solution = solution;
-
-            solution.CatalogueItem = new CatalogueItem
-            {
-                Id = solution.CatalogueItemId,
-                Name = "Solution",
-                CatalogueItemType = CatalogueItemType.Solution,
-                Solution = solution,
-            };
-
-            solution.Summary = state == 1 ? "Summary" : null;
-            solution.Features = state == 1 ? "Features" : null;
-            solution.ImplementationDetail = state == 1 ? "Implementation" : null;
-            solution.ApplicationTypeDetail = section == "ApplicationType" && state == 1 ? new ApplicationTypeDetail() : null;
-            solution.Hosting = section == "HostingType" && state == 1 ? new Hosting { PublicCloud = new PublicCloud { Summary = "Hosting" } } : null;
-
-            solution.AdditionalServices = [];
-            solution.CatalogueItem.SupplierServiceAssociations = [];
-            solution.WorkOffPlans = [];
-            solution.CatalogueItem.CatalogueItemCapabilities = [];
-            solution.CatalogueItem.CatalogueItemContacts = [];
-            solution.CatalogueItem.CataloguePrices = [];
-            solution.SolutionStandards = [];
-            solution.Integrations = [];
-
-            if (state > 0)
-            {
-                switch (section)
-                {
-                    case "AssociatedServices": solution.CatalogueItem.SupplierServiceAssociations.Add(new SupplierServiceAssociation
-                    {
-                        CatalogueItemId = solution.CatalogueItemId,
-                        AssociatedServiceId = new CatalogueItemId(999997, "997"),
-                    }); break;
-                    case "Interoperability": solution.Integrations.Add(new SolutionIntegration { CatalogueItemId = solution.CatalogueItemId }); break;
-                    case "DevelopmentPlans": solution.WorkOffPlans.Add(new WorkOffPlan { SolutionId = solution.CatalogueItemId, StandardId = standards[0].Id, Standard = standards[0], Details = "Details" }); break;
-                    case "CapabilitiesAndEpics": solution.CatalogueItem.CatalogueItemCapabilities.Add(new CatalogueItemCapability
-                    {
-                        CatalogueItemId = solution.CatalogueItemId,
-                        CapabilityId = 1,
-                    }); break;
-                    case "SupplierDetails": solution.CatalogueItem.CatalogueItemContacts.Add(new SupplierContact()); break;
-                    case "AdditionalServices": solution.AdditionalServices.Add(new AdditionalService
-                    {
-                        SolutionId = solution.CatalogueItemId,
-                        CatalogueItemId = new CatalogueItemId(999998, "998"),
-                        CatalogueItem = new CatalogueItem
-                        {
-                            Id = new CatalogueItemId(999998, "998"),
-                            Name = "Additional service",
-                            CatalogueItemType = CatalogueItemType.AdditionalService,
-                            PublishedStatus = state == 2 ? PublicationStatus.Published : PublicationStatus.Unpublished,
-                        },
-                    }); break;
-                    case "ListPrice": solution.CatalogueItem.CataloguePrices.Add(new CataloguePrice
-                    {
-                        CatalogueItemId = solution.CatalogueItemId,
-                        CurrencyCode = "GBP",
-                        PublishedStatus = state == 2 ? PublicationStatus.Published : PublicationStatus.Unpublished,
-                    }); break;
-                    case "Standards": solution.SolutionStandards.Add(new SolutionStandard { Standard = standards[0], Status = state == 1 ? StandardCompliance.InProgress : StandardCompliance.FullyMet }); break;
-                    case "DataProcessing": solution.DataProcessingInformation = new DataProcessingInformation
-                    {
-                        SolutionId = solution.CatalogueItemId,
-                        DataProcessingDetailsId = 1,
-                        Details = new DataProcessingDetails
-                        {
-                            Subject = "Subject",
-                            Duration = "Duration",
-                            ProcessingNature = "Processing nature",
-                            PersonalDataTypes = "Personal data types",
-                            DataSubjectCategories = "Data subject categories",
-                        },
-                        Location = state == 2 ? new DataProcessingLocation { DataProcessingInfoId = 1, ProcessingLocation = "Location" } : null,
-                        Officer = state == 2 ? new DataProtectionOfficer { DataProcessingInfoId = 1, Name = "Name", EmailAddress = "email@example.com", PhoneNumber = "0123456789" } : null,
-                    }; break;
-                }
-            }
-
-            if (section == "AdditionalServices" && state > 0)
-            {
-                var additionalService = solution.AdditionalServices.Single();
-                additionalService.Solution = solution;
-                additionalService.CatalogueItem.AdditionalService = additionalService;
-            }
-
-            if (section == "ServiceLevelAgreement" && state > 0)
-            {
-                solution.ServiceLevelAgreement.Contacts.Add(new SlaContact
-                {
-                    SolutionId = solution.CatalogueItemId,
-                    ServiceLevelAgreement = solution.ServiceLevelAgreement,
-                });
-            }
-            if (section == "ServiceLevelAgreement" && state == 2)
-            {
-                solution.ServiceLevelAgreement.ServiceHours.Add(new ServiceAvailabilityTimes
-                {
-                    SolutionId = solution.CatalogueItemId,
-                    ServiceLevelAgreement = solution.ServiceLevelAgreement,
-                });
-                solution.ServiceLevelAgreement.ServiceLevels.Add(new SlaServiceLevel
-                {
-                    SolutionId = solution.CatalogueItemId,
-                    ServiceLevelAgreement = solution.ServiceLevelAgreement,
-                });
-            }
-
-            return solution;
-        }
-
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task GetSolutionStandardsForEditing_ReturnsStandardsForSolution(
@@ -1625,6 +1480,157 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 new() { Name = SolutionName, Supplier = new Supplier { Name = $"{Junk}{searchTerm}" } },
                 new() { Name = SolutionName, Supplier = new Supplier { Name = $"{Junk}{searchTerm}{Junk}" } },
             };
+        }
+
+        private static void SetRequirement(SolutionSections sections, string section, SolutionSectionRequirement requirement)
+        {
+            var property = section == "DataProcessing"
+                ? nameof(SolutionSections.DataProcessingInformation)
+                : section == "Interoperability"
+                    ? nameof(SolutionSections.Integrations)
+                : section;
+
+            typeof(SolutionSections).GetProperty(property).SetValue(sections, requirement);
+        }
+
+        private static TaskProgress GetStatus(SolutionLoadingStatusesModel statuses, string section)
+        {
+            var property = section == "Interoperability"
+                ? nameof(SolutionLoadingStatusesModel.Interoperability)
+                : section;
+
+            return (TaskProgress)typeof(SolutionLoadingStatusesModel).GetProperty(property).GetValue(statuses);
+        }
+
+        private static Solution ConfigureSolution(Solution source, string section, int state, List<Standard> standards)
+        {
+            var solution = new Solution
+            {
+                CatalogueItemId = source.CatalogueItemId,
+                ServiceLevelAgreement = new NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.ServiceLevelAgreements
+                {
+                    SolutionId = source.CatalogueItemId,
+                    Contacts = new HashSet<SlaContact>(),
+                    ServiceHours = new HashSet<ServiceAvailabilityTimes>(),
+                    ServiceLevels = new HashSet<SlaServiceLevel>(),
+                },
+            };
+
+            solution.ServiceLevelAgreement.Solution = solution;
+
+            solution.CatalogueItem = new CatalogueItem
+            {
+                Id = solution.CatalogueItemId,
+                Name = "Solution",
+                CatalogueItemType = CatalogueItemType.Solution,
+                Solution = solution,
+            };
+
+            solution.Summary = state == 1 ? "Summary" : null;
+            solution.Features = state == 1 ? "Features" : null;
+            solution.ImplementationDetail = state == 1 ? "Implementation" : null;
+            solution.ApplicationTypeDetail = section == "ApplicationType" && state == 1 ? new ApplicationTypeDetail() : null;
+            solution.Hosting = section == "HostingType" && state == 1 ? new Hosting { PublicCloud = new PublicCloud { Summary = "Hosting" } } : null;
+
+            solution.AdditionalServices = [];
+            solution.CatalogueItem.SupplierServiceAssociations = [];
+            solution.WorkOffPlans = [];
+            solution.CatalogueItem.CatalogueItemCapabilities = [];
+            solution.CatalogueItem.CatalogueItemContacts = [];
+            solution.CatalogueItem.CataloguePrices = [];
+            solution.SolutionStandards = [];
+            solution.Integrations = [];
+
+            if (state > 0)
+            {
+                switch (section)
+                {
+                    case "AssociatedServices":
+                        solution.CatalogueItem.SupplierServiceAssociations.Add(new SupplierServiceAssociation
+                        {
+                            CatalogueItemId = solution.CatalogueItemId,
+                            AssociatedServiceId = new CatalogueItemId(999997, "997"),
+                        }); break;
+                    case "Interoperability": solution.Integrations.Add(new SolutionIntegration { CatalogueItemId = solution.CatalogueItemId }); break;
+                    case "DevelopmentPlans": solution.WorkOffPlans.Add(new WorkOffPlan { SolutionId = solution.CatalogueItemId, StandardId = standards[0].Id, Standard = standards[0], Details = "Details" }); break;
+                    case "CapabilitiesAndEpics":
+                        solution.CatalogueItem.CatalogueItemCapabilities.Add(new CatalogueItemCapability
+                        {
+                            CatalogueItemId = solution.CatalogueItemId,
+                            CapabilityId = 1,
+                        }); break;
+                    case "SupplierDetails": solution.CatalogueItem.CatalogueItemContacts.Add(new SupplierContact()); break;
+                    case "AdditionalServices":
+                        solution.AdditionalServices.Add(new AdditionalService
+                        {
+                            SolutionId = solution.CatalogueItemId,
+                            CatalogueItemId = new CatalogueItemId(999998, "998"),
+                            CatalogueItem = new CatalogueItem
+                            {
+                                Id = new CatalogueItemId(999998, "998"),
+                                Name = "Additional service",
+                                CatalogueItemType = CatalogueItemType.AdditionalService,
+                                PublishedStatus = state == 2 ? PublicationStatus.Published : PublicationStatus.Unpublished,
+                            },
+                        }); break;
+                    case "ListPrice":
+                        solution.CatalogueItem.CataloguePrices.Add(new CataloguePrice
+                        {
+                            CatalogueItemId = solution.CatalogueItemId,
+                            CurrencyCode = "GBP",
+                            PublishedStatus = state == 2 ? PublicationStatus.Published : PublicationStatus.Unpublished,
+                        }); break;
+                    case "Standards": solution.SolutionStandards.Add(new SolutionStandard { Standard = standards[0], Status = state == 1 ? StandardCompliance.InProgress : StandardCompliance.FullyMet }); break;
+                    case "DataProcessing":
+                        solution.DataProcessingInformation = new DataProcessingInformation
+                        {
+                            SolutionId = solution.CatalogueItemId,
+                            DataProcessingDetailsId = 1,
+                            Details = new DataProcessingDetails
+                            {
+                                Subject = "Subject",
+                                Duration = "Duration",
+                                ProcessingNature = "Processing nature",
+                                PersonalDataTypes = "Personal data types",
+                                DataSubjectCategories = "Data subject categories",
+                            },
+                            Location = state == 2 ? new DataProcessingLocation { DataProcessingInfoId = 1, ProcessingLocation = "Location" } : null,
+                            Officer = state == 2 ? new DataProtectionOfficer { DataProcessingInfoId = 1, Name = "Name", EmailAddress = "email@example.com", PhoneNumber = "0123456789" } : null,
+                        }; break;
+                }
+            }
+
+            if (section == "AdditionalServices" && state > 0)
+            {
+                var additionalService = solution.AdditionalServices.Single();
+                additionalService.Solution = solution;
+                additionalService.CatalogueItem.AdditionalService = additionalService;
+            }
+
+            if (section == "ServiceLevelAgreement" && state > 0)
+            {
+                solution.ServiceLevelAgreement.Contacts.Add(new SlaContact
+                {
+                    SolutionId = solution.CatalogueItemId,
+                    ServiceLevelAgreement = solution.ServiceLevelAgreement,
+                });
+            }
+
+            if (section == "ServiceLevelAgreement" && state == 2)
+            {
+                solution.ServiceLevelAgreement.ServiceHours.Add(new ServiceAvailabilityTimes
+                {
+                    SolutionId = solution.CatalogueItemId,
+                    ServiceLevelAgreement = solution.ServiceLevelAgreement,
+                });
+                solution.ServiceLevelAgreement.ServiceLevels.Add(new SlaServiceLevel
+                {
+                    SolutionId = solution.CatalogueItemId,
+                    ServiceLevelAgreement = solution.ServiceLevelAgreement,
+                });
+            }
+
+            return solution;
         }
     }
 }
