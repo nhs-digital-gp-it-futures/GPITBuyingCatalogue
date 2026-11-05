@@ -75,6 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 SelectedApplicationTypeIds = selectedApplicationTypeIds,
                 SelectedHostingTypeIds = selectedHostingTypeIds,
                 SelectedIntegrationsAndTypes = filters.GetIntegrationsAndTypes(),
+                SolutionType = SolutionType.GPIT,
             };
 
             (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
@@ -162,6 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 SelectedApplicationTypeIds = filters.SelectedApplicationTypeIds,
                 SelectedHostingTypeIds = filters.SelectedHostingTypeIds,
                 SelectedIntegrationsAndTypes = filters.GetIntegrationsAndTypes(),
+                SolutionType = SolutionType.GPIT,
             };
 
             (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
