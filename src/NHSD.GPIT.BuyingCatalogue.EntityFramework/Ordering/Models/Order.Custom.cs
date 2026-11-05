@@ -423,6 +423,33 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             // it doesn't exist on this order so no recipients apply
         }
 
+        public ICollection<OrderSublocationRecipient> DetermineOrderRecipientsWithNewServices(
+            Order previous,
+            int orderItemId)
+        {
+            var orderItem = OrderItems.FirstOrDefault(item => item.Id == orderItemId);
+            var item = orderItem is not null
+                && orderItem.Parent?.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
+                    ? orderItem.Parent
+                    : orderItem;
+
+            if (orderItem is null || !Exists(orderItem.CatalogueItemId))
+            {
+                return [];
+            }
+
+            if (previous == null || IsNewCatalogueItemInAmendment(previous.OrderItems, OrderItems)
+                || (!previous.Exists(item.CatalogueItemId)
+                && item.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService))
+            {
+                return [.. GetOrderRecipients()];
+            }
+
+            return [.. GetOrderRecipients()
+                .Where(PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(previous, item.CatalogueItemId))
+                .Where(CurrentRecipientDidNotExistInPreviousOrderPredicate(previous, IsAmendment))];
+        }
+
         public bool Exists(CatalogueItemId catalogueItemId)
         {
             return OrderItems.Any(x => x.CatalogueItemId == catalogueItemId);
@@ -450,6 +477,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             return cr => previous == null || (isAmendment
                 && previous.FlattenedRecipients.All(previousRecipient => previousRecipient.RecipientOdsCode != cr.RecipientOdsCode));
+        }
+
+        private static bool IsNewCatalogueItemInAmendment(
+            ICollection<OrderItem> previousOrderItems,
+            ICollection<OrderItem> currentOrderItems)
+        {
+            return currentOrderItems.Any(currentOrderItem =>
+                previousOrderItems.All(previousOrderItem =>
+                    previousOrderItem.CatalogueItemId != currentOrderItem.CatalogueItemId));
         }
 
         private bool AllValuesEntered(
