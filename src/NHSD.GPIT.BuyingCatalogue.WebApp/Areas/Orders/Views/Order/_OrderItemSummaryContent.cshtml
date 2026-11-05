@@ -33,19 +33,19 @@
         {
             <nhs-table-column>Status</nhs-table-column>
             var orderIdWithCatalogueItem = Model.OrderWrapper.PreviousOrders.SelectMany(o => o.OrderItems).FirstOrDefault(oi => oi.CatalogueItemId == Model.CatalogueItem.Id)?.OrderId;
+            var serviceRecipientCallOffIdDict = Model.PreviousRecipientsForItem.ToDictionary(
+                recipient => recipient,
+                recipient => Model.OrderWrapper.GetCallOffIdForPreviousRecipient(recipient, orderIdWithCatalogueItem));
             
-            @foreach (var serviceRecipient in Model.PreviousRecipientsForItem.OrderBy(recipient => Model.OrderWrapper.GetCallOffIdForPreviousRecipient(recipient, orderIdWithCatalogueItem)))
+            @foreach (var itemRecipientRowModel in Model.PreviousRecipientsForItem.Select(x => new OrderItemRecipientRowModel(x, Model, serviceRecipientCallOffIdDict[x])).OrderBy(x => x.DisplayNumber ?? x.OrderItemId))
             {
-                var callOffId = Model.OrderWrapper.GetCallOffIdForPreviousRecipient(serviceRecipient, orderIdWithCatalogueItem);
-                var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, callOffId);
                 <nhs-table-row-container>
                     <partial name="_OrderItemRecipientRow" model="@itemRecipientRowModel" />
                 </nhs-table-row-container>
             }
         }
-         @foreach (var serviceRecipient in Model.RolledUpRecipientsForItem.Where(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)))
+         @foreach (var itemRecipientRowModel in Model.RolledUpRecipientsForItem.Where(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)).Select(x => new OrderItemRecipientRowModel(x, Model, Model.CallOffId.ToString())).OrderBy(x => x.DisplayNumber))
         {
-            var itemRecipientRowModel = new OrderItemRecipientRowModel(serviceRecipient, Model, Model.CallOffId.ToString());
             <nhs-table-row-container>
                 <partial name="_OrderItemRecipientRow" model="itemRecipientRowModel" />
             </nhs-table-row-container>
