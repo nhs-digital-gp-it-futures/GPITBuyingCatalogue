@@ -77,13 +77,6 @@ public readonly struct NavigationMenuModel
                 typeof(SuppliersController).ControllerName(),
                 new { area = typeof(OrganisationsController).AreaName() }));
 
-    private static readonly Func<IUrlHelper, KeyValuePair<string, string>> AdminCatalogueSolutions = urlHelper => new(
-        "Catalogue solutions",
-        urlHelper.Action(
-            nameof(CatalogueSolutionsController.Index),
-            typeof(CatalogueSolutionsController).ControllerName(),
-            new { area = typeof(OrganisationsController).AreaName() }));
-
     private static readonly
         List<(Func<ClaimsPrincipal, bool> Key, Func<ClaimsPrincipal, IUrlHelper, RouteValueDictionary,
                 List<KeyValuePair<string, string>>>
@@ -147,7 +140,6 @@ public readonly struct NavigationMenuModel
                         AdminHome(urlHelper),
                         AdminBuyerOrganisations(urlHelper),
                         AdminSupplierOrganisations(urlHelper),
-                        AdminCatalogueSolutions(urlHelper),
                         Logout(urlHelper),
                     ]),
                 (
@@ -155,7 +147,6 @@ public readonly struct NavigationMenuModel
                     [
                         AdminHome(urlHelper),
                         AdminSupplierOrganisations(urlHelper),
-                        AdminCatalogueSolutions(urlHelper),
                         Logout(urlHelper),
                     ]),
                 (

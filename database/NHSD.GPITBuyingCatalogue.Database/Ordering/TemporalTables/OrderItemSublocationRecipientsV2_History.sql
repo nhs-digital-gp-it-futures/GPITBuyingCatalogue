@@ -7,6 +7,7 @@ CREATE TABLE [ordering].[OrderItemSublocationRecipientsV2_History]
     [RecipientOdsCode] NVARCHAR(10) NOT NULL,
     [Quantity] int,
     [DeliveryDate] date NULL,
+    [DisplayNumber] int NULL,
     [LastUpdated] datetime2(7) NOT NULL,
     [LastUpdatedBy] int NULL,
     [SysStartTime] datetime2(0) NOT NULL,
