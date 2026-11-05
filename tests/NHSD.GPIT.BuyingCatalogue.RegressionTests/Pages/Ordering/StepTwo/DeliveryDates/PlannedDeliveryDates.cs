@@ -27,11 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
 
             var names = SelectSolutionAndServices.SelectSolutionServices(solutionName, isAssociatedServiceOnly, associatedServices, additionalServices);
 
-            foreach (var name in names)
-            {
-                EditDatePlannedDeliveryDate();
-            }
-
             ReviewPlannedDeliveryDate();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -64,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
                 CommonActions.ClickSave();
                 CommonActions.PageLoadedCorrectGetIndex(
                     typeof(DeliveryDatesController),
-                    nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
+                    nameof(DeliveryDatesController.SelectOrganisations)).Should().BeTrue();
 
                 foreach (var name in names)
                 {
@@ -102,22 +97,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
 
                 SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(8));
                 CommonActions.ClickRadioButtonWithText("No");
-                ConfirmPlannedDeliveryPageYesOption();
 
                 CommonActions.PageLoadedCorrectGetIndex(
                     typeof(DeliveryDatesController),
-                    nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
+                    nameof(DeliveryDatesController.SelectOrganisations)).Should().BeTrue();
 
                 EditDefaultPlannedDeliveryDate(DateTime.Today.AddDays(9));
                 CommonActions.ClickSave();
 
                 var names = SelectSolutionAndServices.EditPlannedDeliveryDateSelectSolutionServices(isAssociatedServiceOnly, associatedServices, additionalServices);
-
-                foreach (var name in names)
-                {
-                    MatchDatesPlannedDeliveryDate();
-                    EditDatePlannedDeliveryDate();
-                }
 
                 ReviewPlannedDeliveryDate();
 
@@ -135,9 +123,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
 
                 SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(8));
                 CommonActions.ClickRadioButtonWithText("No");
-                ConfirmPlannedDeliveryPageYesOption();
-
-                EditDatePlannedDeliveryDate();
                 ReviewPlannedDeliveryDate();
 
                 CommonActions.PageLoadedCorrectGetIndex(
@@ -160,18 +145,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
             CommonActions.ElementAddValue(DeliveryDatesObjects.EditDatesYearInput(0), $"{date.Year}");
         }
 
-        public void ConfirmPlannedDeliveryPageYesOption()
-        {
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DeliveryDatesController),
-                nameof(DeliveryDatesController.ConfirmChanges)).Should().BeTrue();
-
-            CommonActions.ClickRadioButtonWithText(ConfirmChangesModel.YesOption);
-            CommonActions.ClickSave();
-        }
-
         public void ReviewPlannedDeliveryDate()
         {
             CommonActions.PageLoadedCorrectGetIndex(
@@ -179,25 +152,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
                 nameof(DeliveryDatesController.Review)).Should().BeTrue();
 
             CommonActions.ClickSaveAndContinue();
-        }
-
-        public void MatchDatesPlannedDeliveryDate()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DeliveryDatesController),
-                nameof(DeliveryDatesController.MatchDates)).Should().BeTrue();
-
-            CommonActions.ClickRadioButtonWithText(MatchDatesModel.YesOption);
-            CommonActions.ClickSave();
-        }
-
-        public void EditDatePlannedDeliveryDate()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DeliveryDatesController),
-                nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
-
-            CommonActions.ClickSave();
         }
     }
 }
