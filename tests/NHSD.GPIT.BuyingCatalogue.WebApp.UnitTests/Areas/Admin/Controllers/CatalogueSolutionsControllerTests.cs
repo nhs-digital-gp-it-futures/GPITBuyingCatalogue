@@ -289,7 +289,7 @@ public static class CatalogueSolutionsControllerTests
             .GetAllSolutions(null)
             .Returns(solutions);
 
-        var actual = (await controller.Index()).As<ViewResult>();
+        var actual = (await controller.Index(SolutionType.GPIT)).As<ViewResult>();
 
         await mockService
             .Received()
@@ -319,7 +319,7 @@ public static class CatalogueSolutionsControllerTests
             .GetAllSolutionsForSearchTerm(searchTerm)
             .Returns(solutions);
 
-        var actual = (await controller.Index(searchTerm)).As<ViewResult>();
+        var actual = (await controller.Index(SolutionType.GPIT, searchTerm)).As<ViewResult>();
 
         await mockService
             .Received()
@@ -349,7 +349,7 @@ public static class CatalogueSolutionsControllerTests
             .GetAllSolutions(status)
             .Returns(solutions);
 
-        var actual = (await controller.Index(model)).As<ViewResult>();
+        var actual = (await controller.Index(SolutionType.GPIT, model)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -381,7 +381,7 @@ public static class CatalogueSolutionsControllerTests
             .GetAllSolutions(status)
             .Returns(solutions);
 
-        var actual = (await controller.Index(model)).As<ViewResult>();
+        var actual = (await controller.Index(SolutionType.GPIT, model)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();

@@ -8,16 +8,19 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 
 public class CompetitionOrderService : ICompetitionOrderService
 {
     private readonly BuyingCatalogueDbContext dbContext;
+    private readonly IOrderItemRecipientDisplayNumberService orderItemRecipientDisplayNumberService;
 
-    public CompetitionOrderService(BuyingCatalogueDbContext dbContext)
+    public CompetitionOrderService(BuyingCatalogueDbContext dbContext, IOrderItemRecipientDisplayNumberService orderItemRecipientDisplayNumberService)
     {
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        this.orderItemRecipientDisplayNumberService = orderItemRecipientDisplayNumberService ?? throw new ArgumentNullException(nameof(orderItemRecipientDisplayNumberService));
     }
 
     public async Task<CallOffId> CreateDirectAwardOrder(string internalOrgId, int competitionId, CatalogueItemId solutionId)
@@ -61,6 +64,8 @@ public class CompetitionOrderService : ICompetitionOrderService
 
         dbContext.Orders.Add(order);
         await dbContext.SaveChangesAsync();
+
+        await orderItemRecipientDisplayNumberService.SetOrderItemRecipientDisplayNumbers(order.CallOffId, internalOrgId);
 
         return order.CallOffId;
     }
@@ -125,6 +130,8 @@ public class CompetitionOrderService : ICompetitionOrderService
         dbContext.Orders.Add(order);
         await dbContext.SaveChangesAsync();
         await AssignRecipientQuantities(nextOrderNumber, winningSolution);
+
+        await orderItemRecipientDisplayNumberService.SetOrderItemRecipientDisplayNumbers(order.CallOffId, internalOrgId);
 
         return order.CallOffId;
     }

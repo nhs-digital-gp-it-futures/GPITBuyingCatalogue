@@ -228,7 +228,7 @@ public static class NavigationMenuModelTests
 
         var model = new NavigationMenuModel(claimsPrincipal, urlHelper, routeValues);
 
-        model.Links.Should().HaveCount(5);
+        model.Links.Should().HaveCount(4);
 
         urlHelper.Received()
             .Action(
@@ -250,13 +250,6 @@ public static class NavigationMenuModelTests
                     x => string.Equals(x.Action, nameof(SuppliersController.Index)) && string.Equals(
                         x.Controller,
                         typeof(SuppliersController).ControllerName())));
-
-        urlHelper.Received()
-            .Action(
-                Arg.Is<UrlActionContext>(
-                    x => string.Equals(x.Action, nameof(CatalogueSolutionsController.Index)) && string.Equals(
-                        x.Controller,
-                        typeof(CatalogueSolutionsController).ControllerName())));
 
         urlHelper.Received()
             .Action(
@@ -286,7 +279,7 @@ public static class NavigationMenuModelTests
 
         var model = new NavigationMenuModel(claimsPrincipal, urlHelper, routeValues);
 
-        model.Links.Should().HaveCount(4);
+        model.Links.Should().HaveCount(3);
 
         urlHelper.Received()
             .Action(
@@ -301,13 +294,6 @@ public static class NavigationMenuModelTests
                     x => string.Equals(x.Action, nameof(SuppliersController.Index)) && string.Equals(
                         x.Controller,
                         typeof(SuppliersController).ControllerName())));
-
-        urlHelper.Received()
-            .Action(
-                Arg.Is<UrlActionContext>(
-                    x => string.Equals(x.Action, nameof(CatalogueSolutionsController.Index)) && string.Equals(
-                        x.Controller,
-                        typeof(CatalogueSolutionsController).ControllerName())));
 
         urlHelper.Received()
             .Action(
