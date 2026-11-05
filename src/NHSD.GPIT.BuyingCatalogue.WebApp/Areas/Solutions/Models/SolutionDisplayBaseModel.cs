@@ -46,10 +46,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             SupplierName = catalogueItem.Supplier.Name;
             if (Frameworks.Count == 0)
                 throw new InvalidOperationException("A solution must have at least one framework.");
-            var solutionType = Frameworks[0].SolutionType;
 
             SetSections(contentStatus);
-            SetBreadcrumb(solutionType);
+            SetBreadcrumb(catalogueItem.Solution.SolutionType);
             SetPaginationFooter();
 
             ShowSideNavigation = !IsSuspended();

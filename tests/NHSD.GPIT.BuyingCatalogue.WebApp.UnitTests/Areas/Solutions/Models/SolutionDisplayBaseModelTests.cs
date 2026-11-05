@@ -31,9 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             CatalogueItemContentStatus contentStatus)
         {
             catalogueItem.Solution = solution;
+            solution.SolutionType = SolutionType.CommunityPharmacy;
             solution.FrameworkSolutions = new List<FrameworkSolution>
             {
-                new() { Framework = new EntityFramework.Catalogue.Models.Framework { SolutionType = SolutionType.CommunityPharmacy }, },
+                new() { Framework = new EntityFramework.Catalogue.Models.Framework { SolutionType = SolutionType.GPIT }, },
             };
 
             var model = new SolutionDisplayStub(catalogueItem, contentStatus);
@@ -51,9 +52,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             CatalogueItemContentStatus contentStatus)
         {
             catalogueItem.Solution = solution;
+            solution.SolutionType = SolutionType.GPIT;
             solution.FrameworkSolutions = new List<FrameworkSolution>
             {
-                new() { Framework = new EntityFramework.Catalogue.Models.Framework { SolutionType = SolutionType.GPIT }, },
+                new() { Framework = new EntityFramework.Catalogue.Models.Framework { SolutionType = SolutionType.CommunityPharmacy }, },
             };
 
             var model = new SolutionDisplayStub(catalogueItem, contentStatus);

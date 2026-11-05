@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             const string page = "2";
 
             solutionsFilterService.GetAllSolutionsFiltered(
-                    Arg.Is<SolutionsFilters>(filters => filters.Search == search && filters.IsCommunityPharmacy == true),
+                    Arg.Is<SolutionsFilters>(filters => filters.Search == search && filters.SolutionType == SolutionType.CommunityPharmacy),
                     Arg.Any<PageOptions>())
                 .Returns((catalogueItems, returnedOptions, null));
 
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             model.ResultsModel.PageOptions.Should().BeSameAs(returnedOptions);
 
             await solutionsFilterService.Received(1).GetAllSolutionsFiltered(
-                Arg.Is<SolutionsFilters>(filters => filters.Search == search && filters.IsCommunityPharmacy == true),
+                Arg.Is<SolutionsFilters>(filters => filters.Search == search && filters.SolutionType == SolutionType.CommunityPharmacy),
                 Arg.Any<PageOptions>());
         }
 

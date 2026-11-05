@@ -17,5 +17,5 @@ public class SolutionsFilters
 
     public Dictionary<SupportedIntegrations, int[]> SelectedIntegrationsAndTypes { get; init; }
 
-    public bool? IsCommunityPharmacy { get; set; }
+    public SolutionType? SolutionType { get; set; }
 }

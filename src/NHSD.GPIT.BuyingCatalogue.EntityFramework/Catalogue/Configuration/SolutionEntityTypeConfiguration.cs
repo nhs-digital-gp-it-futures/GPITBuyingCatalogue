@@ -66,6 +66,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .WithMany()
                 .HasForeignKey(s => s.LastUpdatedBy)
                 .HasConstraintName("FK_Solutions_LastUpdatedBy");
+
+            builder.Property(i => i.SolutionType)
+                .HasConversion<int>()
+                .HasColumnName("SolutionTypeId")
+                .HasDefaultValue(SolutionType.GPIT);
         }
     }
 }
