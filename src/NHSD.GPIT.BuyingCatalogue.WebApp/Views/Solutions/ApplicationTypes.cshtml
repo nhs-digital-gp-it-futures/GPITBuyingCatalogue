@@ -4,17 +4,17 @@
     <partial name="~/Views/Solutions/_SolutionSummary.cshtml" model="Model" />
     <p>This catalogue solution is supported by the following client application types:</p>
 
-    @Html.DisplayFor(m => m.ApplicationTypesDetails.ApplicationTypes)
+    @Html.DisplayFor(m => m.ApplicationTypes)
 
     <nhs-expander label-text="Browser-based application" open="false">
-        @Html.DisplayFor(m => m.ApplicationTypesDetails.BrowserBasedApplication)
+        @Html.DisplayFor(m => m.BrowserBasedApplication)
     </nhs-expander>
 
     <nhs-expander label-text="Native desktop application" open="false">
-        @Html.DisplayFor(m => m.ApplicationTypesDetails.NativeDesktopApplication)
+        @Html.DisplayFor(m => m.NativeDesktopApplication)
     </nhs-expander>
 
     <nhs-expander label-text="Native mobile or tablet application" open="false">
-        @Html.DisplayFor(m => m.ApplicationTypesDetails.NativeMobileApplication)
+        @Html.DisplayFor(m => m.NativeMobileApplication)
     </nhs-expander>
 </article>

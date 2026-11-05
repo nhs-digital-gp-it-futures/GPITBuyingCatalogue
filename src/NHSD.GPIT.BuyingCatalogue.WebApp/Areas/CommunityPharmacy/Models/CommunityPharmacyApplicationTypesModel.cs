@@ -1,8 +1,8 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+﻿using System.ComponentModel.DataAnnotations;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models;
 
@@ -11,12 +11,29 @@ public class CommunityPharmacyApplicationTypesModel : CommunityPharmacySolutionD
     public CommunityPharmacyApplicationTypesModel(CatalogueItem catalogueItem, CatalogueItemContentStatus contentStatus, bool isSubPage = false)
         : base(catalogueItem, contentStatus, isSubPage)
     {
-        ApplicationTypesDetails = new ApplicationTypesDetailsModel(catalogueItem.Solution.EnsureAndGetApplicationType());
+        var applicationTypes = new ApplicationTypesModel(catalogueItem, contentStatus);
+        ApplicationTypeDetail = applicationTypes.ApplicationTypeDetail;
+        ApplicationTypes = applicationTypes.ApplicationTypes;
+        BrowserBasedApplication = applicationTypes.BrowserBasedApplication;
+        NativeDesktopApplication = applicationTypes.NativeDesktopApplication;
+        NativeMobileApplication = applicationTypes.NativeMobileApplication;
 
         PaginationFooter.FullWidth = true;
     }
 
     public override int Index => 5;
 
-    public ApplicationTypesDetailsModel ApplicationTypesDetails { get; }
+    [UIHint("DescriptionList")]
+    public DescriptionListViewModel ApplicationTypes { get; init; }
+
+    [UIHint("DescriptionList")]
+    public DescriptionListViewModel BrowserBasedApplication { get; init; }
+
+    [UIHint("DescriptionList")]
+    public DescriptionListViewModel NativeDesktopApplication { get; init; }
+
+    [UIHint("DescriptionList")]
+    public DescriptionListViewModel NativeMobileApplication { get; init; }
+
+    public ApplicationTypeDetail ApplicationTypeDetail { get; init; }
 }

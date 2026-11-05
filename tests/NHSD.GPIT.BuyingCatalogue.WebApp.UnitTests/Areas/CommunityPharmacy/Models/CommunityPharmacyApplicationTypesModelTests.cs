@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
@@ -11,24 +12,24 @@ public static class CommunityPharmacyApplicationTypesModelTests
 {
     [Theory]
     [MockAutoData]
-    public static void Construct_MapsApplicationTypesAndSetsFullWidthFooter(
+    public static void Construct_MapsApplicationTypes(
         Solution solution,
         CatalogueItemContentStatus contentStatus)
     {
         solution.ApplicationTypeDetail = new ApplicationTypeDetail
         {
-            ApplicationTypes = new() { ApplicationType.BrowserBased.EnumMemberName() },
+            ApplicationTypes = new() { ApplicationType.BrowserBased.Name() },
             BrowsersSupported = new() { new() { BrowserName = "Chrome", MinimumBrowserVersion = "100" } },
         };
 
         var model = new CommunityPharmacyApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
-        model.ApplicationTypesDetails.ApplicationTypeDetail.Should().BeSameAs(solution.ApplicationTypeDetail);
-        model.ApplicationTypesDetails.ApplicationTypes.Items.Should().ContainKey("Browser-based application");
-        model.ApplicationTypesDetails.BrowserBasedApplication.Items["Supported browser types"].List
+        model.ApplicationTypeDetail.Should().BeSameAs(solution.ApplicationTypeDetail);
+        model.ApplicationTypes.Items.Should().ContainKey("Browser-based application");
+        model.BrowserBasedApplication.Items["Supported browser types"].List
             .Should().Equal("Chrome (Version 100)");
-        model.ApplicationTypesDetails.NativeDesktopApplication.Should().BeNull();
-        model.ApplicationTypesDetails.NativeMobileApplication.Should().BeNull();
+        model.NativeDesktopApplication.Should().BeNull();
+        model.NativeMobileApplication.Should().BeNull();
         model.SelectedSection.Should().Be("Application type");
         model.PaginationFooter.FullWidth.Should().BeTrue();
     }
@@ -43,10 +44,10 @@ public static class CommunityPharmacyApplicationTypesModelTests
 
         var model = new CommunityPharmacyApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
-        model.ApplicationTypesDetails.Should().NotBeNull();
-        model.ApplicationTypesDetails.ApplicationTypes.Items.Should().BeEmpty();
-        model.ApplicationTypesDetails.BrowserBasedApplication.Should().BeNull();
-        model.ApplicationTypesDetails.NativeDesktopApplication.Should().BeNull();
-        model.ApplicationTypesDetails.NativeMobileApplication.Should().BeNull();
+        model.Should().NotBeNull();
+        model.ApplicationTypes.Items.Should().BeEmpty();
+        model.BrowserBasedApplication.Should().BeNull();
+        model.NativeDesktopApplication.Should().BeNull();
+        model.NativeMobileApplication.Should().BeNull();
     }
 }
