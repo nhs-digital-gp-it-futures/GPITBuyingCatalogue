@@ -227,6 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                         SelectedApplicationTypeIds = filters.SelectedApplicationTypeIds,
                         SelectedHostingTypeIds = filters.SelectedHostingTypeIds,
                         SelectedIntegrationsAndTypes = filters.GetIntegrationsAndTypes(),
+                        SolutionType = SolutionType.GPIT,
                     });
 
             await mockService.Received().GetAllSolutionsFiltered(
