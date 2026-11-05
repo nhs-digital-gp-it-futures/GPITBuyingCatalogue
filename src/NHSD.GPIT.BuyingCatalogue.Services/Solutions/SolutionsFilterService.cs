@@ -82,9 +82,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 query = query.AsExpandable().Where(x => integrationsPredicate.Invoke(x.Solution));
             }
 
-            query = filters.SolutionType is SolutionType.CommunityPharmacy
-                    ? query.Where(i => i.Solution.SolutionType == SolutionType.CommunityPharmacy)
-                    : query.Where(i => i.Solution.SolutionType == SolutionType.GPIT);
+            query = query.Where(ci =>
+                filters.SolutionType == SolutionType.CommunityPharmacy
+                    ? ci.Solution.SolutionType == SolutionType.CommunityPharmacy
+                    : ci.Solution.SolutionType == SolutionType.GPIT);
 
             var totalNumberOfItems = await query.CountAsync();
             query = (options?.Sort ?? PageOptions.SortOptions.AtoZ) switch
