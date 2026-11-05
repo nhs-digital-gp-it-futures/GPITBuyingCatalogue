@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
@@ -461,6 +462,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 typeof(ServiceRecipientsController).ControllerName(),
                 new { callOffId, internalOrgId });
 
+            if (TempData.TryGetValue("MergeRecipientsWarning", out var warning)
+                && warning is string warningMessage
+                && !string.IsNullOrWhiteSpace(warningMessage))
+            {
+                ModelState.AddModelError(string.Empty, warningMessage);
+            }
+
             return await SelectSublocationsOverview(callOffId, internalOrgId, true, backLink);
         }
 
@@ -493,9 +501,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var recipientsCount = model.Sublocations.Sum(s => s.ServiceRecipientCount);
             if (recipientsCount < requiredNumberOfRecipients)
             {
+                TempData["MergeRecipientsWarning"] = "To be able to merge the number of recipients must be at least 2.";
+
                 return RedirectToAction(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
+                    nameof(ConfirmSublocations),
+                    typeof(ServiceRecipientsController).ControllerName(),
                     new { callOffId, internalOrgId });
             }
 

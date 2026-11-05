@@ -9,7 +9,9 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using LinqKit;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -25,6 +27,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Ser
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NSubstitute.ReturnsExtensions;
 using Xunit;
+using static NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing.Constants;
 using EntityOdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
 using ServiceContractOdsOrganisation = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations.OdsOrganisation;
 
@@ -1191,7 +1194,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             result.Model.Should()
                 .BeEquivalentTo(
                     expectedModel,
-                    opt => opt.Excluding(m => m.Title)
+                    opt => opt
+                        .Excluding(m => m.Title)
                         .Excluding(m => m.Caption)
                         .Excluding(m => m.Advice)
                         .Excluding(m => m.BackLink)
@@ -1580,21 +1584,120 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderService.GetOrderThin(order.CallOffId, internalOrganisationId).Returns(new OrderWrapper(order));
 
+            controller.TempData = new TempDataDictionary(
+                new DefaultHttpContext(),
+                Substitute.For<ITempDataProvider>());
+
             var result =
                 (await controller.ConfirmSublocations(callingModel, internalOrganisationId, order.CallOffId))
                 .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderController.Order));
-            result.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmSublocations));
+            result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
             result.RouteValues.Should()
                 .BeEquivalentTo(
                     new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", order.CallOffId } });
+            controller.TempData.Should().ContainKey("MergeRecipientsWarning");
+            controller.TempData["MergeRecipientsWarning"].Should()
+                .Be("To be able to merge the number of recipients must be at least 2.");
         }
 
         [Theory]
-        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockAutoData]
+        public static async Task ConfirmSublocations_WarningInTempData_AddsModelError(
+    Organisation organisation,
+    EntityFramework.Ordering.Models.Order order,
+    [Frozen] IOrderService orderService,
+    ServiceRecipientsController controller)
+        {
+            // Arrange
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+            order.OrderSublocations ??= [];
+
+            orderService.GetOrderWithSublocations(order.CallOffId, organisation.InternalIdentifier)
+                .Returns(new OrderWrapper(order));
+
+            controller.TempData = new TempDataDictionary(
+                new DefaultHttpContext(),
+                Substitute.For<ITempDataProvider>());
+
+            const string warning = "Merged recipients warning";
+            controller.TempData["MergeRecipientsWarning"] = warning;
+
+            // Act
+            _ = await controller.ConfirmSublocations(organisation.InternalIdentifier, order.CallOffId);
+
+            // Assert
+            controller.ModelState.Should().ContainKey(string.Empty);
+            controller.ModelState[string.Empty]!.Errors.Should().ContainSingle();
+            controller.ModelState[string.Empty]!.Errors[0].ErrorMessage.Should().Be(warning);
+        }
+
+        [Theory]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
+        [MockInlineAutoData("   ")]
+        public static async Task ConfirmSublocations_WhitespaceWarning_DoesNotAddModelError(
+            string warningMessage,
+            Organisation organisation,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService orderService,
+            ServiceRecipientsController controller)
+        {
+            // Arrange
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+            order.OrderSublocations ??= [];
+
+            orderService.GetOrderWithSublocations(order.CallOffId, organisation.InternalIdentifier)
+                .Returns(new OrderWrapper(order));
+
+            controller.TempData = new TempDataDictionary(
+                new DefaultHttpContext(),
+                Substitute.For<ITempDataProvider>());
+
+            controller.TempData["MergeRecipientsWarning"] = warningMessage;
+
+            // Act
+            _ = await controller.ConfirmSublocations(organisation.InternalIdentifier, order.CallOffId);
+
+            // Assert
+            controller.ModelState.Should().NotContainKey(string.Empty);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task ConfirmSublocations_NonStringWarning_DoesNotAddModelError(
+            Organisation organisation,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService orderService,
+            ServiceRecipientsController controller)
+        {
+            // Arrange
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+            order.OrderSublocations ??= [];
+
+            orderService.GetOrderWithSublocations(order.CallOffId, organisation.InternalIdentifier)
+                .Returns(new OrderWrapper(order));
+
+            controller.TempData = new TempDataDictionary(
+                new DefaultHttpContext(),
+                Substitute.For<ITempDataProvider>());
+
+            controller.TempData["MergeRecipientsWarning"] = 123; // non-string
+
+            // Act
+            _ = await controller.ConfirmSublocations(organisation.InternalIdentifier, order.CallOffId);
+
+            // Assert
+            controller.ModelState.Should().NotContainKey(string.Empty);
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task ConfirmSublocations_Post_MergerOrSplit_RedirectToPracticeReorganisationSelection(
             OrderTypeEnum orderType,
             string internalOrganisationId,
@@ -1617,7 +1720,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(controller.SelectRecipientForPracticeReorganisation));
+            result.ActionName.Should().Be(nameof(controller.ConfirmSublocationRecipients));
             result.RouteValues.Should()
                 .BeEquivalentTo(
                     new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", order.CallOffId } });
@@ -1625,7 +1728,57 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static async Task ConfirmSublocationsRecipients_ReturnsView(
+        public static async Task SelectSublocations_Post_NoRemoves_SetsSublocationsAndRedirectsToConfirm(
+            Organisation organisation,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService ordersService,
+            ServiceRecipientsController controller)
+        {
+            var existingSublocations = new List<OrderSublocation>
+            {
+                CommonOrderSublocationFactory("XXXX"),
+                CommonOrderSublocationFactory("XXXA"),
+            };
+
+            order.OrderingParty = organisation;
+            order.OrderSublocations = existingSublocations;
+
+            ordersService.GetOrderWithSublocations(order.CallOffId, organisation.InternalIdentifier)
+                .Returns(new OrderWrapper(order));
+
+            var callingModel = new SelectSublocationsModel
+            {
+                RenderedSublocations =
+                [
+                    new() { Text = "XXXX", Value = "XXXX", Selected = true },
+                    new() { Text = "XXXA", Value = "XXXA", Selected = true },
+                ],
+            };
+
+            var result =
+                (await controller.SelectSublocations(callingModel, organisation.InternalIdentifier, order.CallOffId))
+                .As<RedirectToActionResult>();
+
+            await ordersService.Received(1)
+                .SetSublocations(
+                    order.CallOffId,
+                    organisation.InternalIdentifier,
+                    Arg.Is<HashSet<string>>(hs =>
+                        AreStringHashSetsEquivalent(hs, new HashSet<string> { "XXXX", "XXXA" })));
+
+            result.ActionName.Should().Be(nameof(controller.ConfirmSublocations));
+            result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
+            result.RouteValues.Should().BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "callOffId", order.CallOffId },
+                    { "internalOrgId", organisation.InternalIdentifier },
+                });
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task ConfirmSublocationRecipients_ReturnsView(
             Organisation organisation,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderService ordersService,
