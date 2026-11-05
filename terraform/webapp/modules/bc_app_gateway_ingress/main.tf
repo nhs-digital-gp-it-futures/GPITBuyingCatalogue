@@ -13,7 +13,7 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   custom_error_configuration {
     status_code           = "HttpStatus502"
-    custom_error_page_url = "https://gpitfuturesappgwcontent.z33.web.core.windows.net/index.html"
+    custom_error_page_url = "https://gpitfuturesappgwcontent.z33.web.core.windows.net/index-v2.html"
   }
 
   custom_error_configuration {
