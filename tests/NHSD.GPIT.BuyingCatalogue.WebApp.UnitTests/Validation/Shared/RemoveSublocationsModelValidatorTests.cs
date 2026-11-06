@@ -49,6 +49,5 @@ RemoveSublocationsModelValidator systemUnderTest)
                 .WithErrorMessage(
                     string.Format(RemoveSublocationsModelValidator.NoSelectionMadeErrorMessage, "sublocations"));
         }
-
     }
 }
