@@ -16,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
@@ -92,7 +93,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 ShowImplementation = true,
                 ShowHosting = true,
             };
-
             dbContext.Solutions.Add(solution);
             await dbContext.SaveChangesAsync();
             dbContext.ChangeTracker.Clear();
@@ -126,7 +126,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 ShowImplementation = false,
                 ShowHosting = false,
             };
-
             dbContext.Solutions.Add(solution);
             await dbContext.SaveChangesAsync();
             dbContext.AdditionalServices.RemoveRange(dbContext.AdditionalServices);
@@ -174,6 +173,60 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var result = await service.GetContentStatusForCatalogueItem(solution.CatalogueItemId);
 
             result.ShowInteroperability.Should().BeTrue();
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData(SolutionType.GPIT)]
+        [MockInMemoryDbInlineAutoData(SolutionType.CommunityPharmacy)]
+        public static async Task GetAllSolutions_ReturnsSolutionsForRequestedSolutionType(
+            SolutionType solutionType,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            var matchingId = new CatalogueItemId(1, "1");
+            var nonMatchingId = new CatalogueItemId(1, "2");
+            var supplier = new Supplier { Id = 1, Name = "Test supplier", LegalName = "Test supplier legal name" };
+            var matchingCatalogueItem = new CatalogueItem { Id = matchingId, Name = "Matching solution", SupplierId = supplier.Id, Supplier = supplier, CatalogueItemType = CatalogueItemType.Solution };
+            var nonMatchingCatalogueItem = new CatalogueItem { Id = nonMatchingId, Name = "Non-matching solution", SupplierId = supplier.Id, Supplier = supplier, CatalogueItemType = CatalogueItemType.Solution };
+            matchingCatalogueItem.Solution = new Solution { CatalogueItemId = matchingId, CatalogueItem = matchingCatalogueItem, SolutionType = solutionType };
+            nonMatchingCatalogueItem.Solution = new Solution { CatalogueItemId = nonMatchingId, CatalogueItem = nonMatchingCatalogueItem, SolutionType = solutionType == SolutionType.GPIT ? SolutionType.CommunityPharmacy : SolutionType.GPIT };
+
+            context.CatalogueItems.AddRange(matchingCatalogueItem, nonMatchingCatalogueItem);
+            context.Solutions.AddRange(matchingCatalogueItem.Solution, nonMatchingCatalogueItem.Solution);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var actual = await service.GetAllSolutions(solutionType);
+
+            actual.Should().ContainSingle();
+            actual.Single().Id.Should().Be(matchingCatalogueItem.Id);
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData(SolutionType.GPIT)]
+        [MockInMemoryDbInlineAutoData(SolutionType.CommunityPharmacy)]
+        public static async Task GetAllSolutionsForSearchTerm_ReturnsMatchingSolutionsForRequestedSolutionType(
+            SolutionType solutionType,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            var matchingId = new CatalogueItemId(1, "1");
+            var nonMatchingId = new CatalogueItemId(1, "2");
+            var supplier = new Supplier { Id = 1, Name = "Test supplier", LegalName = "Test supplier legal name" };
+            var matchingCatalogueItem = new CatalogueItem { Id = matchingId, Name = "Searchable solution", SupplierId = supplier.Id, Supplier = supplier, CatalogueItemType = CatalogueItemType.Solution };
+            var nonMatchingCatalogueItem = new CatalogueItem { Id = nonMatchingId, Name = "Searchable solution in another type", SupplierId = supplier.Id, Supplier = supplier, CatalogueItemType = CatalogueItemType.Solution };
+            matchingCatalogueItem.Solution = new Solution { CatalogueItemId = matchingId, CatalogueItem = matchingCatalogueItem, SolutionType = solutionType };
+            nonMatchingCatalogueItem.Solution = new Solution { CatalogueItemId = nonMatchingId, CatalogueItem = nonMatchingCatalogueItem, SolutionType = solutionType == SolutionType.GPIT ? SolutionType.CommunityPharmacy : SolutionType.GPIT };
+
+            context.CatalogueItems.AddRange(matchingCatalogueItem, nonMatchingCatalogueItem);
+            context.Solutions.AddRange(matchingCatalogueItem.Solution, nonMatchingCatalogueItem.Solution);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var actual = await service.GetAllSolutionsForSearchTerm(solutionType, "Searchable");
+
+            actual.Should().ContainSingle();
+            actual.Single().Id.Should().Be(matchingCatalogueItem.Id);
         }
 
         [Theory]
@@ -307,7 +360,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var actual = await service.GetSolutionLoadingStatuses(solution.CatalogueItemId);
+            var actual = await service.GetSolutionLoadingStatuses(solution.CatalogueItemId, new SolutionSections { ApplicationType = SolutionSectionRequirement.Mandatory });
             actual.ApplicationType.Should().Be(TaskProgress.NotStarted);
         }
 
@@ -322,7 +375,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var actual = await service.GetSolutionLoadingStatuses(solution.CatalogueItemId);
+            var actual = await service.GetSolutionLoadingStatuses(solution.CatalogueItemId, new SolutionSections { ApplicationType = SolutionSectionRequirement.Mandatory });
             actual.ApplicationType.Should().Be(TaskProgress.Completed);
         }
 
@@ -339,7 +392,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var actual = await service.GetSolutionLoadingStatuses(solution.CatalogueItemId);
+            var actual = await service.GetSolutionLoadingStatuses(solution.CatalogueItemId, new SolutionSections { Standards = SolutionSectionRequirement.Mandatory });
             actual.Standards.Should().Be(TaskProgress.InProgress);
         }
 
@@ -356,8 +409,97 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var actual = await service.GetSolutionLoadingStatuses(solution.CatalogueItemId);
+            var actual = await service.GetSolutionLoadingStatuses(solution.CatalogueItemId, new SolutionSections { Standards = SolutionSectionRequirement.Mandatory });
             actual.Standards.Should().Be(TaskProgress.Completed);
+        }
+
+        public static IEnumerable<object[]> GetSolutionLoadingStatusesTestData()
+        {
+            foreach (var section in new[] { "Description", "Features", "Implementation" })
+            {
+                yield return new object[] { section, SolutionSectionRequirement.NotApplicable, 0, TaskProgress.NotApplicable };
+                yield return new object[] { section, SolutionSectionRequirement.Optional, 0, TaskProgress.Optional };
+                yield return new object[] { section, SolutionSectionRequirement.Optional, 1, TaskProgress.Completed };
+                yield return new object[] { section, SolutionSectionRequirement.Mandatory, 0, TaskProgress.NotStarted };
+                yield return new object[] { section, SolutionSectionRequirement.Mandatory, 1, TaskProgress.Completed };
+            }
+
+            foreach (var section in new[] { "AssociatedServices", "Interoperability", "DevelopmentPlans", "CapabilitiesAndEpics", "SupplierDetails" })
+            {
+                yield return new object[] { section, SolutionSectionRequirement.NotApplicable, 0, TaskProgress.NotApplicable };
+                yield return new object[] { section, SolutionSectionRequirement.Optional, 0, TaskProgress.Optional };
+                yield return new object[] { section, SolutionSectionRequirement.Optional, 1, TaskProgress.Completed };
+                yield return new object[] { section, SolutionSectionRequirement.Mandatory, 0, TaskProgress.NotStarted };
+                yield return new object[] { section, SolutionSectionRequirement.Mandatory, 1, TaskProgress.Completed };
+            }
+
+            foreach (var section in new[] { "AdditionalServices", "ListPrice" })
+            {
+                yield return new object[] { section, SolutionSectionRequirement.NotApplicable, 0, TaskProgress.NotApplicable };
+                yield return new object[] { section, SolutionSectionRequirement.Optional, 0, TaskProgress.Optional };
+                yield return new object[] { section, SolutionSectionRequirement.Optional, 1, TaskProgress.InProgress };
+                yield return new object[] { section, SolutionSectionRequirement.Optional, 2, TaskProgress.Completed };
+                yield return new object[] { section, SolutionSectionRequirement.Mandatory, 0, TaskProgress.NotStarted };
+                yield return new object[] { section, SolutionSectionRequirement.Mandatory, 1, TaskProgress.InProgress };
+                yield return new object[] { section, SolutionSectionRequirement.Mandatory, 2, TaskProgress.Completed };
+            }
+
+            foreach (var section in new[] { "ApplicationType", "HostingType" })
+            {
+                yield return new object[] { section, SolutionSectionRequirement.NotApplicable, 0, TaskProgress.NotApplicable };
+                yield return new object[] { section, SolutionSectionRequirement.Optional, 0, TaskProgress.Optional };
+                yield return new object[] { section, SolutionSectionRequirement.Optional, 1, TaskProgress.Completed };
+                yield return new object[] { section, SolutionSectionRequirement.Mandatory, 0, TaskProgress.NotStarted };
+                yield return new object[] { section, SolutionSectionRequirement.Mandatory, 1, TaskProgress.Completed };
+            }
+
+            foreach (var section in new[] { "DataProcessing", "ServiceLevelAgreement" })
+            {
+                yield return new object[] { section, SolutionSectionRequirement.NotApplicable, 0, TaskProgress.NotApplicable };
+                yield return new object[] { section, SolutionSectionRequirement.Optional, 0, TaskProgress.Optional };
+                yield return new object[] { section, SolutionSectionRequirement.Optional, 1, TaskProgress.InProgress };
+                yield return new object[] { section, SolutionSectionRequirement.Optional, 2, TaskProgress.Completed };
+                yield return new object[] { section, SolutionSectionRequirement.Mandatory, 0, TaskProgress.NotStarted };
+                yield return new object[] { section, SolutionSectionRequirement.Mandatory, 1, TaskProgress.InProgress };
+                yield return new object[] { section, SolutionSectionRequirement.Mandatory, 2, TaskProgress.Completed };
+            }
+
+            yield return new object[] { "Standards", SolutionSectionRequirement.NotApplicable, 0, TaskProgress.NotApplicable };
+            yield return new object[] { "Standards", SolutionSectionRequirement.Optional, 0, TaskProgress.Completed };
+            yield return new object[] { "Standards", SolutionSectionRequirement.Optional, 1, TaskProgress.InProgress };
+            yield return new object[] { "Standards", SolutionSectionRequirement.Optional, 2, TaskProgress.Completed };
+            yield return new object[] { "Standards", SolutionSectionRequirement.Mandatory, 0, TaskProgress.Completed };
+            yield return new object[] { "Standards", SolutionSectionRequirement.Mandatory, 1, TaskProgress.InProgress };
+            yield return new object[] { "Standards", SolutionSectionRequirement.Mandatory, 2, TaskProgress.Completed };
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(GetSolutionLoadingStatusesTestData))]
+        public static async Task GetSolutionLoadingStatuses_ReturnsExpectedStatusForEverySectionPermutation(
+            string section,
+            SolutionSectionRequirement requirement,
+            int state,
+            TaskProgress expected,
+            [Frozen] BuyingCatalogueDbContext context,
+            Solution solution,
+            List<Standard> standards,
+            SolutionsService service)
+        {
+            context.ChangeTracker.Clear();
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+
+            var sections = new SolutionSections();
+            SetRequirement(sections, section, requirement);
+            solution = ConfigureSolution(solution, section, state, standards);
+
+            context.Solutions.Add(solution);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var actual = await service.GetSolutionLoadingStatuses(solution.CatalogueItemId, sections);
+
+            GetStatus(actual, section).Should().Be(expected, $"section={section}, requirement={requirement}, state={state}");
         }
 
         [Theory]
@@ -771,6 +913,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
+        [MockInMemoryDbInlineAutoData(SolutionType.GPIT)]
+        [MockInMemoryDbInlineAutoData(SolutionType.CommunityPharmacy)]
+        public static async Task AddCatalogueSolution_SetsSolutionTypeFromSelectedFramework(
+            SolutionType solutionType,
+            [Frozen] BuyingCatalogueDbContext context,
+            EntityFramework.Catalogue.Models.Framework framework,
+            CreateSolutionModel model,
+            SolutionsService service)
+        {
+            framework.SolutionType = solutionType;
+            context.Frameworks.Add(framework);
+            model.Frameworks = new List<FrameworkModel>
+            {
+                new() { FrameworkId = framework.Id, Selected = true },
+            };
+            await context.SaveChangesAsync();
+
+            var catalogueItemId = await service.AddCatalogueSolution(model);
+            context.ChangeTracker.Clear();
+
+            var solution = await context.Solutions.SingleAsync(x => x.CatalogueItemId == catalogueItemId);
+            solution.SolutionType.Should().Be(solutionType);
+        }
+
+        [Theory]
         [MockInMemoryDbAutoData]
         public static async Task AddCatalogueSolution_StandardsDefaultedAsMet_SetsInProgressSolutionStandards(
             CreateSolutionModel model,
@@ -1072,7 +1239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             SolutionsService systemUnderTest)
         {
             FluentActions
-                .Awaiting(() => systemUnderTest.GetAllSolutionsForSearchTerm(searchTerm))
+                .Awaiting(() => systemUnderTest.GetAllSolutionsForSearchTerm(SolutionType.GPIT, searchTerm))
                 .Should()
                 .ThrowAsync<ArgumentNullException>();
         }
@@ -1099,13 +1266,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 solutions[i].CatalogueItemType = CatalogueItemType.Solution;
                 solutions[i].Id = new CatalogueItemId(supplier.Id, $"{i}");
                 solutions[i].SupplierId = supplier.Id;
+                solutions[i].Solution.SolutionType = SolutionType.GPIT;
+                solutions[i].Solution.CatalogueItem = solutions[i];
             }
 
             context.CatalogueItems.AddRange(solutions);
 
             await context.SaveChangesAsync();
 
-            var results = await systemUnderTest.GetAllSolutionsForSearchTerm(searchTerm);
+            var results = await systemUnderTest.GetAllSolutionsForSearchTerm(SolutionType.GPIT, searchTerm);
 
             results.Should().BeEquivalentTo(solutions.Except(new[] { noMatch }));
         }
@@ -1380,16 +1549,167 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             return new List<CatalogueItem>
             {
-                new() { Name = SolutionName, Supplier = new Supplier { Name = SupplierName } },
-                new() { Name = $"{searchTerm}", Supplier = new Supplier { Name = SupplierName } },
-                new() { Name = $"{searchTerm}{Junk}", Supplier = new Supplier { Name = SupplierName } },
-                new() { Name = $"{Junk}{searchTerm}", Supplier = new Supplier { Name = SupplierName } },
-                new() { Name = $"{Junk}{searchTerm}{Junk}", Supplier = new Supplier { Name = SupplierName } },
-                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{searchTerm}" } },
-                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{searchTerm}{Junk}" } },
-                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{Junk}{searchTerm}" } },
-                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{Junk}{searchTerm}{Junk}" } },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = SupplierName }, Solution = new Solution() },
+                new() { Name = $"{searchTerm}", Supplier = new Supplier { Name = SupplierName }, Solution = new Solution() },
+                new() { Name = $"{searchTerm}{Junk}", Supplier = new Supplier { Name = SupplierName }, Solution = new Solution() },
+                new() { Name = $"{Junk}{searchTerm}", Supplier = new Supplier { Name = SupplierName }, Solution = new Solution() },
+                new() { Name = $"{Junk}{searchTerm}{Junk}", Supplier = new Supplier { Name = SupplierName }, Solution = new Solution() },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{searchTerm}" }, Solution = new Solution() },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{searchTerm}{Junk}" }, Solution = new Solution() },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{Junk}{searchTerm}" }, Solution = new Solution() },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{Junk}{searchTerm}{Junk}" }, Solution = new Solution() },
             };
+        }
+
+        private static void SetRequirement(SolutionSections sections, string section, SolutionSectionRequirement requirement)
+        {
+            var property = section == "DataProcessing"
+                ? nameof(SolutionSections.DataProcessingInformation)
+                : section == "Interoperability"
+                    ? nameof(SolutionSections.Integrations)
+                : section;
+
+            typeof(SolutionSections).GetProperty(property).SetValue(sections, requirement);
+        }
+
+        private static TaskProgress GetStatus(SolutionLoadingStatusesModel statuses, string section)
+        {
+            var property = section == "Interoperability"
+                ? nameof(SolutionLoadingStatusesModel.Interoperability)
+                : section;
+
+            return (TaskProgress)typeof(SolutionLoadingStatusesModel).GetProperty(property).GetValue(statuses);
+        }
+
+        private static Solution ConfigureSolution(Solution source, string section, int state, List<Standard> standards)
+        {
+            var solution = new Solution
+            {
+                CatalogueItemId = source.CatalogueItemId,
+                ServiceLevelAgreement = new NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.ServiceLevelAgreements
+                {
+                    SolutionId = source.CatalogueItemId,
+                    Contacts = new HashSet<SlaContact>(),
+                    ServiceHours = new HashSet<ServiceAvailabilityTimes>(),
+                    ServiceLevels = new HashSet<SlaServiceLevel>(),
+                },
+            };
+
+            solution.ServiceLevelAgreement.Solution = solution;
+
+            solution.CatalogueItem = new CatalogueItem
+            {
+                Id = solution.CatalogueItemId,
+                Name = "Solution",
+                CatalogueItemType = CatalogueItemType.Solution,
+                Solution = solution,
+            };
+
+            solution.Summary = state == 1 ? "Summary" : null;
+            solution.Features = state == 1 ? "Features" : null;
+            solution.ImplementationDetail = state == 1 ? "Implementation" : null;
+            solution.ApplicationTypeDetail = section == "ApplicationType" && state == 1 ? new ApplicationTypeDetail() : null;
+            solution.Hosting = section == "HostingType" && state == 1 ? new Hosting { PublicCloud = new PublicCloud { Summary = "Hosting" } } : null;
+
+            solution.AdditionalServices = [];
+            solution.CatalogueItem.SupplierServiceAssociations = [];
+            solution.WorkOffPlans = [];
+            solution.CatalogueItem.CatalogueItemCapabilities = [];
+            solution.CatalogueItem.CatalogueItemContacts = [];
+            solution.CatalogueItem.CataloguePrices = [];
+            solution.SolutionStandards = [];
+            solution.Integrations = [];
+
+            if (state > 0)
+            {
+                switch (section)
+                {
+                    case "AssociatedServices":
+                        solution.CatalogueItem.SupplierServiceAssociations.Add(new SupplierServiceAssociation
+                        {
+                            CatalogueItemId = solution.CatalogueItemId,
+                            AssociatedServiceId = new CatalogueItemId(999997, "997"),
+                        }); break;
+                    case "Interoperability": solution.Integrations.Add(new SolutionIntegration { CatalogueItemId = solution.CatalogueItemId }); break;
+                    case "DevelopmentPlans": solution.WorkOffPlans.Add(new WorkOffPlan { SolutionId = solution.CatalogueItemId, StandardId = standards[0].Id, Standard = standards[0], Details = "Details" }); break;
+                    case "CapabilitiesAndEpics":
+                        solution.CatalogueItem.CatalogueItemCapabilities.Add(new CatalogueItemCapability
+                        {
+                            CatalogueItemId = solution.CatalogueItemId,
+                            CapabilityId = 1,
+                        }); break;
+                    case "SupplierDetails": solution.CatalogueItem.CatalogueItemContacts.Add(new SupplierContact()); break;
+                    case "AdditionalServices":
+                        solution.AdditionalServices.Add(new AdditionalService
+                        {
+                            SolutionId = solution.CatalogueItemId,
+                            CatalogueItemId = new CatalogueItemId(999998, "998"),
+                            CatalogueItem = new CatalogueItem
+                            {
+                                Id = new CatalogueItemId(999998, "998"),
+                                Name = "Additional service",
+                                CatalogueItemType = CatalogueItemType.AdditionalService,
+                                PublishedStatus = state == 2 ? PublicationStatus.Published : PublicationStatus.Unpublished,
+                            },
+                        }); break;
+                    case "ListPrice":
+                        solution.CatalogueItem.CataloguePrices.Add(new CataloguePrice
+                        {
+                            CatalogueItemId = solution.CatalogueItemId,
+                            CurrencyCode = "GBP",
+                            PublishedStatus = state == 2 ? PublicationStatus.Published : PublicationStatus.Unpublished,
+                        }); break;
+                    case "Standards": solution.SolutionStandards.Add(new SolutionStandard { Standard = standards[0], Status = state == 1 ? StandardCompliance.InProgress : StandardCompliance.FullyMet }); break;
+                    case "DataProcessing":
+                        solution.DataProcessingInformation = new DataProcessingInformation
+                        {
+                            SolutionId = solution.CatalogueItemId,
+                            DataProcessingDetailsId = 1,
+                            Details = new DataProcessingDetails
+                            {
+                                Subject = "Subject",
+                                Duration = "Duration",
+                                ProcessingNature = "Processing nature",
+                                PersonalDataTypes = "Personal data types",
+                                DataSubjectCategories = "Data subject categories",
+                            },
+                            Location = state == 2 ? new DataProcessingLocation { DataProcessingInfoId = 1, ProcessingLocation = "Location" } : null,
+                            Officer = state == 2 ? new DataProtectionOfficer { DataProcessingInfoId = 1, Name = "Name", EmailAddress = "email@example.com", PhoneNumber = "0123456789" } : null,
+                        }; break;
+                }
+            }
+
+            if (section == "AdditionalServices" && state > 0)
+            {
+                var additionalService = solution.AdditionalServices.Single();
+                additionalService.Solution = solution;
+                additionalService.CatalogueItem.AdditionalService = additionalService;
+            }
+
+            if (section == "ServiceLevelAgreement" && state > 0)
+            {
+                solution.ServiceLevelAgreement.Contacts.Add(new SlaContact
+                {
+                    SolutionId = solution.CatalogueItemId,
+                    ServiceLevelAgreement = solution.ServiceLevelAgreement,
+                });
+            }
+
+            if (section == "ServiceLevelAgreement" && state == 2)
+            {
+                solution.ServiceLevelAgreement.ServiceHours.Add(new ServiceAvailabilityTimes
+                {
+                    SolutionId = solution.CatalogueItemId,
+                    ServiceLevelAgreement = solution.ServiceLevelAgreement,
+                });
+                solution.ServiceLevelAgreement.ServiceLevels.Add(new SlaServiceLevel
+                {
+                    SolutionId = solution.CatalogueItemId,
+                    ServiceLevelAgreement = solution.ServiceLevelAgreement,
+                });
+            }
+
+            return solution;
         }
     }
 }

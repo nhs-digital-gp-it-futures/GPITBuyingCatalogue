@@ -1,6 +1,7 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels.CatalogueSolutionsModel
+﻿@using EnumsNET
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels.CatalogueSolutionsModel
 @{
-    ViewBag.Title = "Manage catalogue solutions";
+    ViewBag.Title = $"Manage {Model.SolutionType.AsString(EnumFormat.DisplayName)} solutions";
 
     ViewBag.HeadingTitles = new[] { "Solution ID", "Solution name", "Supplier", "Last updated", "Status", "Action", };
 }
@@ -22,7 +23,7 @@
         <nhs-page-title title="@ViewBag.Title"
                         advice="Add a new solution or edit one that's already been created." />
 
-        <vc:nhs-action-link text="Add a solution"
+        <vc:nhs-action-link text="@($"Add a {Model.SolutionType.AsString(EnumFormat.DisplayName)} solution")"
                             url="@Url.Action(
                                      nameof(AddCatalogueSolutionController.Index),
                                      typeof(AddCatalogueSolutionController).ControllerName(),
@@ -31,13 +32,14 @@
         <vc:nhs-suggestion-search id="solutions-search"
                                   ajax-url="@Url.Action(
                                                 nameof(CatalogueSolutionsController.SearchResults),
-                                                typeof(CatalogueSolutionsController).ControllerName())"
+                                                typeof(CatalogueSolutionsController).ControllerName(),
+                                                new { Model.SolutionType })"
                                   title-text="Search by supplier or solution name"
                                   query-parameter-name="search"/>
 
         <form method="post">
             <input type="hidden" asp-for="SearchTerm"/>
-            <nhs-expander label-text="Filter catalogue solutions">
+            <nhs-expander label-text="@($"Filter {Model.SolutionType.AsString(EnumFormat.DisplayName)} solutions")">
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-hint="Select one option.">
                     <nhs-radio-buttons asp-for="SelectedPublicationStatus"
@@ -48,7 +50,8 @@
                 <nhs-submit-button text="Apply filter"/>
                 <br/>
                 <a asp-action="@nameof(CatalogueSolutionsController.Index)"
-                   asp-controller="@typeof(CatalogueSolutionsController).ControllerName()">
+                   asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                   asp-route-solutionType="@Model.SolutionType">
                     Clear filter
                 </a>
             </nhs-expander>
@@ -89,6 +92,7 @@
                         <nhs-table-cell>
                             <a asp-action="@nameof(CatalogueSolutionsController.ManageCatalogueSolution)"
                                asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@item.CatalogueItemId"
                                style="white-space: nowrap;">Edit</a>
                         </nhs-table-cell>
@@ -99,13 +103,14 @@
         else
         {
             <div id="search-error-message" class="nhsuk-u-margin-top-9">
-                <h3>No results found for "@(Model.SearchTerm)"</h3>
+                <h3>No results found"</h3>
                 <p>
-                    Try entering a different search term, or
+                    Try entering a different search term, filter, or
                     <a id="reset-search-link"
                        asp-area="@typeof(CatalogueSolutionsController).AreaName()"
                        asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                       asp-action="@nameof(CatalogueSolutionsController.Index)">select a solution from the complete list</a>.
+                       asp-action="@nameof(CatalogueSolutionsController.Index)"
+                       asp-route-solutionType="@Model.SolutionType">select a solution from the complete list</a>.
                 </p>
             </div>
         }

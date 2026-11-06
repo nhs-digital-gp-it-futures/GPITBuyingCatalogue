@@ -1,4 +1,6 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+﻿@using EnumsNET
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels.ManageCatalogueSolutionModel;
 @{
     ViewBag.Title = Model.SolutionName;
@@ -16,7 +18,8 @@
                 <li class="nhsuk-breadcrumb__item">
                     <a asp-action="@nameof(CatalogueSolutionsController.Index)"
                        asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                       class="nhsuk-breadcrumb__link">Manage catalogue solutions</a>
+                       asp-route-solutionType="@Model.SolutionType"
+                       class="nhsuk-breadcrumb__link">@($"Manage {Model.SolutionType.AsString(EnumFormat.DisplayName)} solutions")</a>
                 </li>
             </ol>
         </div>
@@ -58,193 +61,258 @@
                 <nhs-table-column>Mandatory</nhs-table-column>
                 <nhs-table-column>Status</nhs-table-column>
                 <nhs-table-column>Action</nhs-table-column>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Details</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-action="@nameof(CatalogueSolutionsController.Details)"
-                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Description</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.DescriptionStatus" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-action="@nameof(CatalogueSolutionsController.Description)"
-                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Features</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.FeaturesStatus" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-action="@nameof(CatalogueSolutionsController.Features)"
-                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Interoperability</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.InteroperabilityStatus" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-action="@nameof(InteroperabilityController.Interoperability)"
-                           asp-controller="@typeof(InteroperabilityController).ControllerName()"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Implementation</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.ImplementationStatus" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-action="@nameof(CatalogueSolutionsController.Implementation)"
-                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Application type</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.ApplicationTypeStatus" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-action="@nameof(CatalogueSolutionsController.ApplicationType)"
-                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Hosting type</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.HostingTypeStatus" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-controller="@typeof(HostingTypesController).ControllerName()"
-                           asp-action="@nameof(HostingTypesController.HostingType)"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Data processing information</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.DataProcessingStatus" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-action="@nameof(DataProcessingInformationController.Index)"
-                           asp-controller="@(typeof(DataProcessingInformationController).ControllerName())"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>List price</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.ListPriceStatus" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-controller="@typeof(CatalogueSolutionListPriceController).ControllerName()"
-                           asp-action="@nameof(CatalogueSolutionListPriceController.Index)"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Capabilities and Epics</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.CapabilitiesStatus" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                           asp-action="@nameof(CatalogueSolutionsController.EditCapabilities)"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Additional services</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="Model.AdditionalServicesStatus" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
-                           asp-action="@nameof(AdditionalServicesController.Index)"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Associated Services</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.AssociatedServicesStatus" /></nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                           asp-action="@nameof(CatalogueSolutionsController.AssociatedServices)"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Standards</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.StandardsStatus" /></nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-controller="@typeof(CatalogueSolutionStandardsController).ControllerName()"
-                           asp-action="@nameof(CatalogueSolutionStandardsController.Index)"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Development plans</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.RoadmapStatus" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-action="@nameof(DevelopmentPlansController.DevelopmentPlans)"
-                           asp-controller="@typeof(DevelopmentPlansController).ControllerName()"
-                           asp-area="@typeof(DevelopmentPlansController).AreaName()"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Supplier details</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.SupplierDetailsStatus" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-action="@nameof(CatalogueSolutionsController.EditSupplierDetails)"
-                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-                <nhs-table-row-container>
-                    <nhs-table-cell>Service Level Agreement</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.SlaStatus" />
-                    </nhs-table-cell>
-                    <nhs-table-cell>
-                        <a asp-action="@nameof(ServiceLevelAgreementsController.Index)"
-                           asp-controller="@typeof(ServiceLevelAgreementsController).ControllerName()"
-                           asp-route-solutionId="@Model.SolutionId">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
+
+                @if (Model.SolutionSections.Details != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Details</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.Details == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@nameof(CatalogueSolutionsController.Details)"
+                               asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                
+                @if (Model.SolutionSections.Description != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Description</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.Description == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@Model.DescriptionStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@nameof(CatalogueSolutionsController.Description)"
+                               asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                
+                @if (Model.SolutionSections.Features != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Features</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.Features == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@Model.FeaturesStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@nameof(CatalogueSolutionsController.Features)"
+                               asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                
+                @if (Model.SolutionSections.Integrations != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Interoperability</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.Integrations == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@Model.InteroperabilityStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@nameof(InteroperabilityController.Interoperability)"
+                               asp-controller="@typeof(InteroperabilityController).ControllerName()"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                
+                @if (Model.SolutionSections.Implementation != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Implementation</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.Implementation == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@Model.ImplementationStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@nameof(CatalogueSolutionsController.Implementation)"
+                               asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                
+                @if (Model.SolutionSections.ApplicationType != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Application type</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.ApplicationType == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@Model.ApplicationTypeStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@nameof(CatalogueSolutionsController.ApplicationType)"
+                               asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                
+                @if (Model.SolutionSections.HostingType != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Hosting type</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.HostingType == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@Model.HostingTypeStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-controller="@typeof(HostingTypesController).ControllerName()"
+                               asp-action="@nameof(HostingTypesController.HostingType)"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                
+                @if (Model.SolutionSections.DataProcessingInformation != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Data processing information</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.DataProcessingInformation == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@Model.DataProcessingStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@nameof(DataProcessingInformationController.Index)"
+                               asp-controller="@(typeof(DataProcessingInformationController).ControllerName())"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                
+                @if (Model.SolutionSections.ListPrice != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>List price</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.ListPrice == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@Model.ListPriceStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-controller="@typeof(CatalogueSolutionListPriceController).ControllerName()"
+                               asp-action="@nameof(CatalogueSolutionListPriceController.Index)"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                
+                @if (Model.SolutionSections.CapabilitiesAndEpics != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Capabilities and Epics</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.CapabilitiesAndEpics == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@Model.CapabilitiesStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-action="@nameof(CatalogueSolutionsController.EditCapabilities)"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                
+                @if (Model.SolutionSections.AdditionalServices != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Additional services</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.AdditionalServices == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="Model.AdditionalServicesStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
+                               asp-action="@nameof(AdditionalServicesController.Index)"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                
+                @if (Model.SolutionSections.AssociatedServices != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Associated Services</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.AssociatedServices == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell><nhs-tag status-enum="@Model.AssociatedServicesStatus" /></nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-action="@nameof(CatalogueSolutionsController.AssociatedServices)"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                
+                @if (Model.SolutionSections.Standards != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Standards</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.Standards == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell><nhs-tag status-enum="@Model.StandardsStatus" /></nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-controller="@typeof(CatalogueSolutionStandardsController).ControllerName()"
+                               asp-action="@nameof(CatalogueSolutionStandardsController.Index)"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                
+                @if (Model.SolutionSections.DevelopmentPlans != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Development plans</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.DevelopmentPlans == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@Model.RoadmapStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@nameof(DevelopmentPlansController.DevelopmentPlans)"
+                               asp-controller="@typeof(DevelopmentPlansController).ControllerName()"
+                               asp-area="@typeof(DevelopmentPlansController).AreaName()"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                                
+                @if (Model.SolutionSections.SupplierDetails != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Supplier details</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.SupplierDetails == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@Model.SupplierDetailsStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@nameof(CatalogueSolutionsController.EditSupplierDetails)"
+                               asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+                                
+                @if (Model.SolutionSections.ServiceLevelAgreement != SolutionSectionRequirement.NotApplicable)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>Service Level Agreement</nhs-table-cell>
+                        <nhs-table-cell>@(Model.SolutionSections.ServiceLevelAgreement == SolutionSectionRequirement.Mandatory ? "Yes" : "No")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@Model.SlaStatus" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@nameof(ServiceLevelAgreementsController.Index)"
+                                asp-controller="@typeof(ServiceLevelAgreementsController).ControllerName()"
+                                asp-route-solutionId="@Model.SolutionId">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+
             </nhs-table>
         </nhs-fieldset-form-container>
 
@@ -272,6 +340,23 @@
             <input type="hidden" asp-for="SupplierDetailsStatus" />
             <input type="hidden" asp-for="SlaStatus" />
             <input type="hidden" asp-for="CapabilitiesStatus" />
+            <input type="hidden" asp-for="SolutionSections.SolutionType" />
+            <input type="hidden" asp-for="SolutionSections.Details" />
+            <input type="hidden" asp-for="SolutionSections.Description" />
+            <input type="hidden" asp-for="SolutionSections.Features" />
+            <input type="hidden" asp-for="SolutionSections.Integrations" />
+            <input type="hidden" asp-for="SolutionSections.Implementation" />
+            <input type="hidden" asp-for="SolutionSections.ApplicationType" />
+            <input type="hidden" asp-for="SolutionSections.HostingType" />
+            <input type="hidden" asp-for="SolutionSections.DataProcessingInformation" />
+            <input type="hidden" asp-for="SolutionSections.ListPrice" />
+            <input type="hidden" asp-for="SolutionSections.CapabilitiesAndEpics" />
+            <input type="hidden" asp-for="SolutionSections.AdditionalServices" />
+            <input type="hidden" asp-for="SolutionSections.AssociatedServices" />
+            <input type="hidden" asp-for="SolutionSections.Standards" />
+            <input type="hidden" asp-for="SolutionSections.DevelopmentPlans" />
+            <input type="hidden" asp-for="SolutionSections.SupplierDetails" />
+            <input type="hidden" asp-for="SolutionSections.ServiceLevelAgreement" />
             <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="Catalogue solution status"
                                      label-hint="Select one option."

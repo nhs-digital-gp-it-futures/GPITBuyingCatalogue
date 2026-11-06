@@ -17,6 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         public const string TitleName = "title";
         public const string UrlName = "url";
         public const string HorizontalAlignName = "horizontal-align";
+        public const string ShowChevronIconName = "show-chevron-icon";
+        public const string OpenInNewTabName = "open-in-new-tab";
+
         private const string SizeName = "size";
 
         [HtmlAttributeName(TextName)]
@@ -31,6 +34,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         [HtmlAttributeName(HorizontalAlignName)]
         public bool HorizontalAlign { get; set; }
 
+        [HtmlAttributeName(ShowChevronIconName)]
+        public bool ShowChevronIcon { get; set; }
+
+        [HtmlAttributeName(OpenInNewTabName)]
+        public bool OpenInNewTab { get; set; }
+
         [HtmlAttributeName(SizeName)]
         public HeadingSize HeadingSize { get; set; } = HeadingSize.Small;
 
@@ -41,12 +50,23 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 
             output.AddClass(CardStyles.CardClass, HtmlEncoder.Default);
 
+            if (HorizontalAlign)
+            {
+                output.AddClass(
+                    CardStyles.CardHorizontalAlignClass,
+                    HtmlEncoder.Default);
+            }
+
+            if (ShowChevronIcon)
+            {
+                output.AddClass(
+                    CardStyles.CardChevronClass,
+                    HtmlEncoder.Default);
+            }
+
             if (!string.IsNullOrWhiteSpace(Url))
             {
                 output.AddClass(CardStyles.CardClickableClass, HtmlEncoder.Default);
-
-                if (HorizontalAlign)
-                    output.AddClass(CardStyles.CardMinHeightClass, HtmlEncoder.Default);
             }
 
             var content = await BuildContentAsync(output);
@@ -58,6 +78,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
             var content = new TagBuilder(TagHelperConstants.Div);
 
             content.AddCssClass(CardStyles.CardContentClass);
+            content.AddCssClass("nhsuk-card__description");
+            content.AddCssClass("nhsuk-card__description--with-chevron");
 
             if (!string.IsNullOrWhiteSpace(Title))
             {
@@ -99,6 +121,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 
             link.AddCssClass(CardStyles.CardLinkClass);
             link.Attributes.Add("href", Url);
+
+            if (OpenInNewTab)
+            {
+                link.Attributes.Add("target", "_blank");
+                link.Attributes.Add("rel", "noopener noreferrer");
+            }
+
             link.InnerHtml.Append(Title);
 
             return link;
@@ -106,14 +135,19 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 
         private async Task<IHtmlContent> BuildCardTextAsync(TagHelperOutput output)
         {
-            var hasText = !string.IsNullOrWhiteSpace(Text);
-
-            if (!hasText)
+            if (string.IsNullOrWhiteSpace(Text))
+            {
                 return await output.GetChildContentAsync();
+            }
 
-            var cardText = new TagBuilder(TagHelperConstants.Paragraph);
-            cardText.AddCssClass(CardStyles.CardDescriptionClass);
+            var cardText = new TagBuilder(
+                TagHelperConstants.Paragraph);
+
+            cardText.AddCssClass(
+                CardStyles.CardDescriptionClass);
+
             cardText.InnerHtml.Append(Text);
+
             return cardText;
         }
     }
