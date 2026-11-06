@@ -196,4 +196,21 @@ public class OrderTests : BaseTest
         await OrderPages.StepFourReviewAndCompleteOrderAsync();
         await OrderPages.ReviewOrder.AssertOrderCompletedAsync();
     }
+
+    [Fact]
+    [Trait("Category", Categories.OrderJourney)]
+    public async Task CatalogueSolutionWithAdditionalServicePerRecipientDeliveryDates()
+    {
+        await OrderPages.LoginAsync();
+        await OrderPages.CreateNewOrderAsync();
+        await OrderPages.StepOnePrepareOrderAsync();
+        await OrderPages.StepTwoAddSolutionsAndServicesAsync(
+            solutionName: SolutionName,
+            additionalService: AdditionalService);
+        await OrderPages.StepTwoDeliveryAndFundingAsync(
+            additionalService: AdditionalService,
+            perRecipientDeliveryDates: true);
+        await OrderPages.StepThreeCompleteContractAsync();
+        await OrderPages.StepFourReviewAndCompleteOrderAsync();
+    }
 }
