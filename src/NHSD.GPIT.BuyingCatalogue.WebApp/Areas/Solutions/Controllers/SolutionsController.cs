@@ -16,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
@@ -220,7 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            return View("ListPrice", new ListPriceModel(item, associatedService, contentStatus)
+            return View("~/Views/Solutions/ListPrice.cshtml", new ListPriceModel(item, associatedService, contentStatus)
             {
                 BackLink = Url.Action(
                     nameof(AssociatedServices),
@@ -263,7 +264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            return View("ListPrice", new ListPriceModel(item, additionalService, contentStatus)
+            return View("~/Views/Solutions/ListPrice.cshtml", new ListPriceModel(item, additionalService, contentStatus)
             {
                 BackLink = Url.Action(
                     nameof(AdditionalServices),
@@ -325,7 +326,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
             var associatedService = await listPriceService.GetCatalogueItemWithListPrices(associatedServiceId);
 
-            return View("ListPrice", new ListPriceModel(item, associatedService, contentStatus)
+            return View("~/Views/Solutions/ListPrice.cshtml", new ListPriceModel(item, associatedService, contentStatus)
             {
                 BackLink = Url.Action(
                     nameof(AssociatedServices),
@@ -357,7 +358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     new { solutionId }),
             };
 
-            return View(model);
+            return View("~/Views/Solutions/Capabilities.cshtml", model);
         }
 
         [HttpGet("{solutionId}/additional-services/{additionalServiceId}/capabilities")]
@@ -412,7 +413,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     new { solutionId }),
             };
 
-            return View(model);
+            return View("~/Views/Solutions/CheckEpics.cshtml", model);
         }
 
         [HttpGet("{solutionId}/additional-services/{additionalServiceId}/capability/{capabilityId}")]
@@ -453,7 +454,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     new { solutionId, additionalServiceId }),
             };
 
-            return View("CheckEpics", model);
+            return View("~/Views/Solutions/CheckEpics.cshtml", model);
         }
 
         [HttpGet("{solutionId}/application-types")]
@@ -471,7 +472,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var model = new ApplicationTypesModel(item, contentStatus);
 
-            return View(model);
+            return View("~/Views/Solutions/ApplicationTypes.cshtml", model);
         }
 
         [HttpGet("{solutionId}")]
@@ -513,7 +514,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            return View(new HostingTypesModel(item, contentStatus));
+            return View("~/Views/Solutions/HostingType.cshtml", new HostingTypesModel(item, contentStatus));
         }
 
         [HttpGet("{solutionId}/data-processing-information")]
@@ -558,7 +559,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            return View(new InteroperabilityModel(item, contentStatus));
+            return View("~/Views/Solutions/Integrations.cshtml", new InteroperabilityModel(item, contentStatus));
         }
 
         [HttpGet("{solutionId}/list-price")]
@@ -573,7 +574,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            return View(new ListPriceModel(item, contentStatus));
+            return View("~/Views/Solutions/ListPrice.cshtml", new ListPriceModel(item, contentStatus));
         }
 
         [HttpGet("{solutionId}/service-level-agreements")]
@@ -605,7 +606,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            return View(new SolutionSupplierDetailsModel(item, contentStatus));
+            return View("~/Views/Solutions/SupplierDetails.cshtml", new SolutionSupplierDetailsModel(item, contentStatus));
         }
 
         [HttpGet("{solutionId}/standards")]
@@ -625,7 +626,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            return View(new SolutionStandardsModel(item, standards, standardsWithWorkOffPlans, contentStatus));
+            return View("~/Views/Solutions/Standards.cshtml", new SolutionStandardsModel(item, standards, standardsWithWorkOffPlans, contentStatus));
         }
 
         [HttpGet("{solutionId}/development-plans")]
@@ -642,7 +643,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var workOffPlans = await solutionsService.GetWorkOffPlans(solutionId);
 
-            return View(new DevelopmentPlansModel(item, workOffPlans, contentStatus));
+            return View("~/Views/Solutions/DevelopmentPlans.cshtml", new DevelopmentPlansModel(item, workOffPlans, contentStatus));
         }
 
         [HttpGet("about-pilot-solutions")]

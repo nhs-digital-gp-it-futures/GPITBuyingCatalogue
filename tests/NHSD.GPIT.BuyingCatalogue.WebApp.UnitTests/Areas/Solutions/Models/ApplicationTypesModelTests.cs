@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
@@ -66,6 +67,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 .GetCustomAttribute<UIHintAttribute>()
                 .UIHint.Should()
                 .Be("DescriptionList");
+        }
+
+        [Theory]
+        [InlineData(nameof(IApplicationTypesDisplayModel.ApplicationTypes))]
+        [InlineData(nameof(IApplicationTypesDisplayModel.BrowserBasedApplication))]
+        [InlineData(nameof(IApplicationTypesDisplayModel.NativeDesktopApplication))]
+        [InlineData(nameof(IApplicationTypesDisplayModel.NativeMobileApplication))]
+        public static void SharedDisplayProperties_HaveDescriptionListHint(string propertyName)
+        {
+            typeof(IApplicationTypesDisplayModel).GetProperty(propertyName)
+                .GetCustomAttribute<UIHintAttribute>().UIHint.Should().Be("DescriptionList");
         }
 
         [Theory]
@@ -262,6 +274,67 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                     "Desktop application",
                     "Mobile or tablet application");
             model.ApplicationTypes.Items.Values.Should().OnlyContain(x => x.Text == "Yes");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Construct_NoApplicationTypeDetail_ReturnsNoApplicationDetails(
+            Solution solution,
+            CatalogueItemContentStatus contentStatus)
+        {
+            solution.ApplicationTypeDetail = null;
+
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
+
+            model.ApplicationTypeDetail.Should().NotBeNull();
+            model.BrowserBasedApplication.Should().BeNull();
+            model.NativeDesktopApplication.Should().BeNull();
+            model.NativeMobileApplication.Should().BeNull();
+            model.ApplicationTypes.Items.Should().BeEmpty();
+            model.HasApplicationType(ApplicationType.BrowserBased).Should().BeFalse();
+        }
+
+        [Theory]
+        [MockInlineAutoData(ApplicationType.BrowserBased)]
+        [MockInlineAutoData(ApplicationType.Desktop)]
+        [MockInlineAutoData(ApplicationType.MobileTablet)]
+        public static void HasApplicationType_MatchesWithoutCaseSensitivity(
+            ApplicationType applicationType,
+            Solution solution,
+            CatalogueItemContentStatus contentStatus)
+        {
+            var detail = new ApplicationTypeDetail
+            {
+                ApplicationTypes = new HashSet<string> { applicationType.EnumMemberName().ToUpperInvariant() },
+            };
+            solution.ApplicationTypeDetail = detail;
+
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
+
+            model.ApplicationTypeDetail.Should().BeSameAs(detail);
+            model.HasApplicationType(applicationType).Should().BeTrue();
+        }
+
+        [Theory]
+        [MockInlineAutoData(null, "Chrome")]
+        [MockInlineAutoData("", "Chrome")]
+        [MockInlineAutoData(" ", "Chrome")]
+        [MockInlineAutoData("100", "Chrome (Version 100)")]
+        public static void Construct_SupportedBrowser_FormatsOptionalMinimumVersion(
+            string version,
+            string expected,
+            Solution solution,
+            CatalogueItemContentStatus contentStatus)
+        {
+            solution.ApplicationTypeDetail = new ApplicationTypeDetail
+            {
+                ApplicationTypes = new() { ApplicationType.BrowserBased.EnumMemberName() },
+                BrowsersSupported = new() { new() { BrowserName = "Chrome", MinimumBrowserVersion = version } },
+            };
+
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
+
+            model.BrowserBasedApplication.Items["Supported browser types"].List.Should().Equal(expected);
         }
     }
 }

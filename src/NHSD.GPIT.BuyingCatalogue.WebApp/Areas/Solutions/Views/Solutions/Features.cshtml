@@ -1,10 +1,10 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionFeaturesModel;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionFeaturesModel;
 <div class="nhsuk-width-container">
     <main id="maincontent" role="main">
         <article>
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-full">
-                    <partial name="_solutionSummary" model="Model"/>
+                    <partial name="~/Views/Solutions/_SolutionSummary.cshtml" model="Model"/>
 
                     <nhs-card title="@Model.SolutionName features" >
                         <ul>

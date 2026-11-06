@@ -3,7 +3,7 @@
 <article>
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-full">
-            <partial name="_solutionSummary" model="Model"/>
+            <partial name="~/Views/Solutions/_SolutionSummary.cshtml" model="Model"/>
 
             @if (Model.Information?.Details is null || Model.Information?.Officer is null)
             {

@@ -1,4 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
@@ -7,7 +7,7 @@
     ViewBag.Title = "Solution additional services";
 }
 <div>
-    <partial name="_solutionSummary" model="Model"/>
+    <partial name="~/Views/Solutions/_SolutionSummary.cshtml" model="Model"/>
     <p>Additional services are add-ons that provide additional functionality to a catalogue solution for an extra cost. For example, enabling a catalogue solution to be used on a mobile device.</p>
     <p><strong>These are the additional services offered with this catalogue solution:</strong></p>
 

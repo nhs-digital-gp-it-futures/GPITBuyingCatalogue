@@ -1,12 +1,13 @@
-﻿@using System.Linq;
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.DevelopmentPlansModel;
-@{ 
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.IDevelopmentPlans
+
+<partial name="~/Views/Solutions/_SolutionSummary.cshtml" model="Model" />
+
+@{
     var roadmapTitle = string.IsNullOrWhiteSpace(Model.RoadmapLink) ? "Roadmap" : "Roadmaps";
 
     var standardsInOrder = Model.WorkOffPlans.Select(wp => wp.Standard).Distinct().OrderBy(s => s.Name);
 }
 
-<partial name="_solutionSummary" model="Model" />
 <p>These are the development plans for this catalogue solution:</p>
 <nhs-expander label-text="@roadmapTitle" open="false">
     @if (!string.IsNullOrWhiteSpace(Model.RoadmapLink))
@@ -18,8 +19,8 @@
     <p><a href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133519/Roadmap" target="_blank">View GP IT Futures Capabilities and Standards roadmap (opens in a new tab)</a></p>
 </nhs-expander>
 <hr/>
-@if (Model.WorkOffPlans.Any()) 
-{ 
+@if (Model.WorkOffPlans.Any())
+{
     <h2 data-test-id="work-off-plans-section">Work-off Plans</h2>
     <p>This catalogue solution is subject to a Compliance Work-off Plan. It means the supplier has agreed to complete any outstanding work to meet a Standard within an agreed timeframe.</p>
     <p><a href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134310/Introduction+to+Capabilities+and+Standards" target="_blank">More information about these requirements (opens in a new tab)</a></p>

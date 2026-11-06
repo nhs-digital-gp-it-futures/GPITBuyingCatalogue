@@ -1,10 +1,10 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ServiceLevelAgreementDetailsModel
 @{
     var showContactsApplicableDays = Model.SlaContacts.Any(c => !string.IsNullOrWhiteSpace(c.ApplicableDays));
 }
 
-<partial name="_solutionSummary" model="Model"/>
+<partial name="~/Views/Solutions/_SolutionSummary.cshtml" model="Model"/>
 <p>These are the levels of service the supplier has committed to for this catalogue solution:</p>
 
 <h2 class="nhsuk-heading-m">Contact details</h2>

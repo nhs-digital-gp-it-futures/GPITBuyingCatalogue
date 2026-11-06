@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -405,7 +405,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actual = (await controller.Capabilities(catalogueItem.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
+            actual.ViewName.Should().Be("~/Views/Solutions/Capabilities.cshtml");
             actual.Model.Should().BeEquivalentTo(capabilitiesViewModel, opt => opt.Excluding(cvm => cvm.BackLink).Excluding(cvm => cvm.BackLinkText));
         }
 
@@ -618,7 +618,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actual = (await controller.Standards(solution.CatalogueItemId)).As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
+            actual.ViewName.Should().Be("~/Views/Solutions/Standards.cshtml");
             actual.Model.Should().BeEquivalentTo(solutionStandardsModel);
         }
 
@@ -676,7 +676,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actual = (await controller.ApplicationTypes(id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
+            actual.ViewName.Should().Be("~/Views/Solutions/ApplicationTypes.cshtml");
             actual.Model.Should().BeEquivalentTo(expectedModel);
         }
 
@@ -699,7 +699,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actual = (await controller.CheckEpics(catalogueItemId, capabilityId)).As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
+            actual.ViewName.Should().Be("~/Views/Solutions/CheckEpics.cshtml");
             actual.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(em => em.BackLinkText).Excluding(em => em.BackLink));
         }
 
@@ -746,7 +746,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.ViewName.Should().Be("CheckEpics");
+            actual.ViewName.Should().Be("~/Views/Solutions/CheckEpics.cshtml");
             actual.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(em => em.BackLink).Excluding(em => em.BackLinkText));
         }
 
@@ -952,7 +952,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actual = (await controller.HostingType(solution.CatalogueItemId)).As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
+            actual.ViewName.Should().Be("~/Views/Solutions/HostingType.cshtml");
             actual.Model.Should().BeEquivalentTo(expectedModel);
         }
 
@@ -1140,7 +1140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actual = (await controller.ListPrice(catalogueItem.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
+            actual.ViewName.Should().Be("~/Views/Solutions/ListPrice.cshtml");
             actual.Model.Should().BeEquivalentTo(mockSolutionListPriceModel);
         }
 
@@ -1170,7 +1170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actual = (await controller.AdditionalServicePrice(catalogueItem.Id, service.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.ViewName.Should().Be("ListPrice");
+            actual.ViewName.Should().Be("~/Views/Solutions/ListPrice.cshtml");
             actual.Model.Should().BeEquivalentTo(mockSolutionListPriceModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.IndexValue).Excluding(m => m.Caption));
         }
 
@@ -1481,7 +1481,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actual = (await controller.AssociatedServicePrice(catalogueItem.Id, service.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.ViewName.Should().Be("ListPrice");
+            actual.ViewName.Should().Be("~/Views/Solutions/ListPrice.cshtml");
             actual.Model.Should().BeEquivalentTo(mockSolutionListPriceModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.IndexValue).Excluding(m => m.Caption));
         }
 
@@ -1587,7 +1587,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actual = (await controller.Interoperability(catalogueItem.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
+            actual.ViewName.Should().Be("~/Views/Solutions/Integrations.cshtml");
             actual.Model.Should().BeEquivalentTo(expectedViewData);
         }
 
@@ -1646,7 +1646,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actual = (await controller.SupplierDetails(id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
+            actual.ViewName.Should().Be("~/Views/Solutions/SupplierDetails.cshtml");
 
             actual.Model.Should().BeEquivalentTo(expectedSolutionSupplierDetailsModel);
         }
@@ -1808,7 +1808,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actual = (await controller.DevelopmentPlans(solution.CatalogueItemId)).As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
+            actual.ViewName.Should().Be("~/Views/Solutions/DevelopmentPlans.cshtml");
 
             actual.Model.Should().BeEquivalentTo(expectedModel);
         }

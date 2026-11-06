@@ -2,10 +2,11 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public sealed class SolutionSupplierDetailsModel : SolutionDisplayBaseModel
+    public sealed class SolutionSupplierDetailsModel : SolutionDisplayBaseModel, ISupplierDetailsModel
     {
         public SolutionSupplierDetailsModel(CatalogueItem catalogueItem, CatalogueItemContentStatus contentStatus)
             : base(catalogueItem, contentStatus)

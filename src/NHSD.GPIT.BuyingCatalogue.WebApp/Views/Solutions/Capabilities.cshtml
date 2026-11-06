@@ -1,5 +1,7 @@
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.CapabilitiesViewModel;
-<partial name="_solutionSummary" model="Model" />
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.ICapabilitiesModel
+
+<partial name="~/Views/Solutions/_SolutionSummary.cshtml" model="Model" />
+
 <nhs-details label-text="What are Capabilities?">
     <p>
         Capabilities are how you can match a catalogue solution to a business need. For example,
@@ -18,6 +20,6 @@
     <p>
         This catalogue solution has demonstrated that it can help meet the following business needs:
     </p>
-    <partial name="_CapabilitiesList" model="Model"/>
+    <partial name="~/Views/Solutions/_CapabilitiesList.cshtml" model="Model"/>
 </article>
 </nhs-card>

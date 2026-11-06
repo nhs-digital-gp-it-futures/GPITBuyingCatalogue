@@ -1,6 +1,8 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionStandardsModel
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Solutions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.IStandardsModel
+
+<partial name="~/Views/Solutions/_SolutionSummary.cshtml" model="Model" />
 
 @{
     var overarchingStandards = Model.Standards.Where(s => s.Type == StandardType.Overarching).OrderBy(s => s.Name).ToList();
@@ -29,7 +31,6 @@
         "other-table",
         otherStandards, Model.StandardsWithWorkOffPlans, Model.SolutionId, shouldShowOtherStandardsAction);
 }
-<partial name="_solutionSummary" model="Model" />
 
 <h2>Standards and solution categories</h2>
 <p>
@@ -42,7 +43,7 @@
     <a href="https://nhse-dsic.atlassian.net/wiki/spaces/DCSDCS/pages/14217478177/Baseline+Assurance+Standard+and+Solution+Categories+for+Assurance+in+DSIC+-+Guidance" target="_blank">More information about solution categories (opens in a new tab)</a>
 </p>
 <p>
-     This is how @Model.SolutionName has performed against the relevant Standards:
+    This is how @Model.SolutionName has performed against the relevant Standards:
 </p>
 
 <nhs-details label-text="Standards not fully met">
@@ -51,13 +52,13 @@
     <p>Use the ‘view details’ link to find more information about any outstanding Work-off Plans.</p>
 </nhs-details>
 
-<partial name="_StandardsExpander" model="overarchingStandardsExpanderModel"/>
+<partial name="~/Views/Solutions/_StandardsExpander.cshtml" model="overarchingStandardsExpanderModel"/>
 
 @if (supplementaryCareStandards.Count > 0)
 {
-    <partial name="_StandardsExpander" model="supplementaryCareStandardsExpanderModel" />
+    <partial name="~/Views/Solutions/_StandardsExpander.cshtml" model="supplementaryCareStandardsExpanderModel" />
 }
 @if (otherStandards.Count > 0)
 {
-    <partial name="_StandardsExpander" model="otherStandardsExpanderModel"/>
+    <partial name="~/Views/Solutions/_StandardsExpander.cshtml" model="otherStandardsExpanderModel"/>
 }

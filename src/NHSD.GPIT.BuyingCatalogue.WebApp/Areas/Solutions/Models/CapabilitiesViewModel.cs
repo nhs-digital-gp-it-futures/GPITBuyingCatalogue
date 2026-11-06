@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public class CapabilitiesViewModel : SolutionDisplayBaseModel, INoNavModel
+    public class CapabilitiesViewModel : SolutionDisplayBaseModel, INoNavModel, ICapabilitiesModel
     {
         public CapabilitiesViewModel(CatalogueItem solution, CatalogueItemContentStatus contentStatus)
             : base(solution, contentStatus)
