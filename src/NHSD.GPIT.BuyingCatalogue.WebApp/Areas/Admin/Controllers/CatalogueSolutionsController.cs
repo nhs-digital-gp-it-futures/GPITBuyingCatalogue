@@ -13,7 +13,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
-using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
@@ -45,7 +44,7 @@ public sealed class CatalogueSolutionsController(
     [HttpGet("{solutionType}")]
     public async Task<IActionResult> Index([FromRoute] SolutionType solutionType, [FromQuery] string search = null)
    {
-        var solutions = await GetFilteredItems(search);
+        var solutions = await GetFilteredItems(search, solutionType);
 
         var solutionModel = new CatalogueSolutionsModel(solutions)
         {
@@ -63,23 +62,23 @@ public sealed class CatalogueSolutionsController(
             ? (PublicationStatus?)null
             : Enum.Parse<PublicationStatus>(model.SelectedPublicationStatus, ignoreCase: true);
 
-        var solutions = await solutionsService.GetAllSolutions(status);
-        var filteredSolutions = await GetFilteredItems(model.SearchTerm);
+        var solutions = await solutionsService.GetAllSolutions(solutionType, status);
+        var filteredSolutions = await GetFilteredItems(model.SearchTerm, solutionType);
 
         model.SetSolutions(solutions.Intersect(filteredSolutions));
 
         return View(model);
     }
 
-    [HttpGet("search-results")]
-    public async Task<IActionResult> SearchResults([FromQuery] string search)
+    [HttpGet("{solutionType}/search-results")]
+    public async Task<IActionResult> SearchResults([FromRoute] SolutionType solutionType, [FromQuery] string search)
     {
-        var results = await GetFilteredItems(search);
+        var results = await GetFilteredItems(search, solutionType);
 
         return Json(results.Take(15).Select(x => new HtmlEncodedSuggestionSearchResult(
             x.Name,
             x.Supplier.Name,
-            Url.Action(nameof(ManageCatalogueSolution), new { solutionId = $"{x.Id}" }))));
+            Url.Action(nameof(ManageCatalogueSolution), new { solutionType, solutionId = $"{x.Id}" }))));
     }
 
     [HttpGet("manage/{solutionId}/features")]
@@ -433,10 +432,10 @@ public sealed class CatalogueSolutionsController(
             new { solutionId });
     }
 
-    private async Task<IEnumerable<CatalogueItem>> GetFilteredItems(string search)
+    private async Task<IEnumerable<CatalogueItem>> GetFilteredItems(string search, SolutionType solutionType)
     {
         return string.IsNullOrWhiteSpace(search)
-            ? await solutionsService.GetAllSolutions()
-            : await solutionsService.GetAllSolutionsForSearchTerm(search);
+            ? await solutionsService.GetAllSolutions(solutionType)
+            : await solutionsService.GetAllSolutionsForSearchTerm(solutionType, search);
     }
 }

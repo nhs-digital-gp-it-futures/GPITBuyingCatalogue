@@ -93,7 +93,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 ShowImplementation = true,
                 ShowHosting = true,
             };
-
             dbContext.Solutions.Add(solution);
             await dbContext.SaveChangesAsync();
             dbContext.ChangeTracker.Clear();
@@ -127,7 +126,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 ShowImplementation = false,
                 ShowHosting = false,
             };
-
             dbContext.Solutions.Add(solution);
             await dbContext.SaveChangesAsync();
             dbContext.AdditionalServices.RemoveRange(dbContext.AdditionalServices);
@@ -175,6 +173,60 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var result = await service.GetContentStatusForCatalogueItem(solution.CatalogueItemId);
 
             result.ShowInteroperability.Should().BeTrue();
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData(SolutionType.GPIT)]
+        [MockInMemoryDbInlineAutoData(SolutionType.CommunityPharmacy)]
+        public static async Task GetAllSolutions_ReturnsSolutionsForRequestedSolutionType(
+            SolutionType solutionType,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            var matchingId = new CatalogueItemId(1, "1");
+            var nonMatchingId = new CatalogueItemId(1, "2");
+            var supplier = new Supplier { Id = 1, Name = "Test supplier", LegalName = "Test supplier legal name" };
+            var matchingCatalogueItem = new CatalogueItem { Id = matchingId, Name = "Matching solution", SupplierId = supplier.Id, Supplier = supplier, CatalogueItemType = CatalogueItemType.Solution };
+            var nonMatchingCatalogueItem = new CatalogueItem { Id = nonMatchingId, Name = "Non-matching solution", SupplierId = supplier.Id, Supplier = supplier, CatalogueItemType = CatalogueItemType.Solution };
+            matchingCatalogueItem.Solution = new Solution { CatalogueItemId = matchingId, CatalogueItem = matchingCatalogueItem, SolutionType = solutionType };
+            nonMatchingCatalogueItem.Solution = new Solution { CatalogueItemId = nonMatchingId, CatalogueItem = nonMatchingCatalogueItem, SolutionType = solutionType == SolutionType.GPIT ? SolutionType.CommunityPharmacy : SolutionType.GPIT };
+
+            context.CatalogueItems.AddRange(matchingCatalogueItem, nonMatchingCatalogueItem);
+            context.Solutions.AddRange(matchingCatalogueItem.Solution, nonMatchingCatalogueItem.Solution);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var actual = await service.GetAllSolutions(solutionType);
+
+            actual.Should().ContainSingle();
+            actual.Single().Id.Should().Be(matchingCatalogueItem.Id);
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData(SolutionType.GPIT)]
+        [MockInMemoryDbInlineAutoData(SolutionType.CommunityPharmacy)]
+        public static async Task GetAllSolutionsForSearchTerm_ReturnsMatchingSolutionsForRequestedSolutionType(
+            SolutionType solutionType,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            var matchingId = new CatalogueItemId(1, "1");
+            var nonMatchingId = new CatalogueItemId(1, "2");
+            var supplier = new Supplier { Id = 1, Name = "Test supplier", LegalName = "Test supplier legal name" };
+            var matchingCatalogueItem = new CatalogueItem { Id = matchingId, Name = "Searchable solution", SupplierId = supplier.Id, Supplier = supplier, CatalogueItemType = CatalogueItemType.Solution };
+            var nonMatchingCatalogueItem = new CatalogueItem { Id = nonMatchingId, Name = "Searchable solution in another type", SupplierId = supplier.Id, Supplier = supplier, CatalogueItemType = CatalogueItemType.Solution };
+            matchingCatalogueItem.Solution = new Solution { CatalogueItemId = matchingId, CatalogueItem = matchingCatalogueItem, SolutionType = solutionType };
+            nonMatchingCatalogueItem.Solution = new Solution { CatalogueItemId = nonMatchingId, CatalogueItem = nonMatchingCatalogueItem, SolutionType = solutionType == SolutionType.GPIT ? SolutionType.CommunityPharmacy : SolutionType.GPIT };
+
+            context.CatalogueItems.AddRange(matchingCatalogueItem, nonMatchingCatalogueItem);
+            context.Solutions.AddRange(matchingCatalogueItem.Solution, nonMatchingCatalogueItem.Solution);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var actual = await service.GetAllSolutionsForSearchTerm(solutionType, "Searchable");
+
+            actual.Should().ContainSingle();
+            actual.Single().Id.Should().Be(matchingCatalogueItem.Id);
         }
 
         [Theory]
@@ -1187,7 +1239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             SolutionsService systemUnderTest)
         {
             FluentActions
-                .Awaiting(() => systemUnderTest.GetAllSolutionsForSearchTerm(searchTerm))
+                .Awaiting(() => systemUnderTest.GetAllSolutionsForSearchTerm(SolutionType.GPIT, searchTerm))
                 .Should()
                 .ThrowAsync<ArgumentNullException>();
         }
@@ -1214,13 +1266,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 solutions[i].CatalogueItemType = CatalogueItemType.Solution;
                 solutions[i].Id = new CatalogueItemId(supplier.Id, $"{i}");
                 solutions[i].SupplierId = supplier.Id;
+                solutions[i].Solution.SolutionType = SolutionType.GPIT;
+                solutions[i].Solution.CatalogueItem = solutions[i];
             }
 
             context.CatalogueItems.AddRange(solutions);
 
             await context.SaveChangesAsync();
 
-            var results = await systemUnderTest.GetAllSolutionsForSearchTerm(searchTerm);
+            var results = await systemUnderTest.GetAllSolutionsForSearchTerm(SolutionType.GPIT, searchTerm);
 
             results.Should().BeEquivalentTo(solutions.Except(new[] { noMatch }));
         }
@@ -1495,15 +1549,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             return new List<CatalogueItem>
             {
-                new() { Name = SolutionName, Supplier = new Supplier { Name = SupplierName } },
-                new() { Name = $"{searchTerm}", Supplier = new Supplier { Name = SupplierName } },
-                new() { Name = $"{searchTerm}{Junk}", Supplier = new Supplier { Name = SupplierName } },
-                new() { Name = $"{Junk}{searchTerm}", Supplier = new Supplier { Name = SupplierName } },
-                new() { Name = $"{Junk}{searchTerm}{Junk}", Supplier = new Supplier { Name = SupplierName } },
-                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{searchTerm}" } },
-                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{searchTerm}{Junk}" } },
-                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{Junk}{searchTerm}" } },
-                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{Junk}{searchTerm}{Junk}" } },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = SupplierName }, Solution = new Solution() },
+                new() { Name = $"{searchTerm}", Supplier = new Supplier { Name = SupplierName }, Solution = new Solution() },
+                new() { Name = $"{searchTerm}{Junk}", Supplier = new Supplier { Name = SupplierName }, Solution = new Solution() },
+                new() { Name = $"{Junk}{searchTerm}", Supplier = new Supplier { Name = SupplierName }, Solution = new Solution() },
+                new() { Name = $"{Junk}{searchTerm}{Junk}", Supplier = new Supplier { Name = SupplierName }, Solution = new Solution() },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{searchTerm}" }, Solution = new Solution() },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{searchTerm}{Junk}" }, Solution = new Solution() },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{Junk}{searchTerm}" }, Solution = new Solution() },
+                new() { Name = SolutionName, Supplier = new Supplier { Name = $"{Junk}{searchTerm}{Junk}" }, Solution = new Solution() },
             };
         }
 

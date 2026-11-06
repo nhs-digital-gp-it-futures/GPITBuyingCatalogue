@@ -467,13 +467,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         }
 
         public async Task<IList<CatalogueItem>> GetAllSolutions(
+            SolutionType solutionType,
             PublicationStatus? publicationStatus = null)
         {
             var query = dbContext.CatalogueItems
                 .Include(i => i.Solution)
                 .Include(i => i.Supplier)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution);
+                .Where(i => i.Solution.SolutionType == solutionType
+                    && i.CatalogueItemType == CatalogueItemType.Solution);
 
             if (publicationStatus is not null)
                 query = query.Where(i => i.PublishedStatus == publicationStatus.Value);
@@ -483,7 +485,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
-        public async Task<IList<CatalogueItem>> GetAllSolutionsForSearchTerm(string searchTerm)
+        public async Task<IList<CatalogueItem>> GetAllSolutionsForSearchTerm(
+            SolutionType solutionType,
+            string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 throw new ArgumentNullException(nameof(searchTerm));
@@ -492,7 +496,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution)
                 .Include(i => i.Supplier)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
+                .Where(i => i.Solution.SolutionType == solutionType
+                    && i.CatalogueItemType == CatalogueItemType.Solution
                     && (EF.Functions.Like(i.Name, $"%{searchTerm}%")
                         || EF.Functions.Like(i.Supplier.Name, $"%{searchTerm}%")))
                 .OrderBy(i => i.Name)
