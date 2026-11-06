@@ -5,7 +5,6 @@ using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Flurl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -18,7 +17,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
-using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
@@ -97,20 +95,21 @@ public static class CatalogueSolutionsControllerTests
     [Theory]
     [MockAutoData]
     public static async Task Get_SearchResults_ValidSearchTerm_ReturnsExpectedResult(
+        SolutionType solutionType,
         string searchTerm,
         List<CatalogueItem> solutions,
         [Frozen] ISolutionsService mockSolutionsService,
         CatalogueSolutionsController controller)
     {
         mockSolutionsService
-            .GetAllSolutionsForSearchTerm(searchTerm)
+            .GetAllSolutionsForSearchTerm(solutionType, searchTerm)
             .Returns(solutions);
 
-        var result = await controller.SearchResults(searchTerm);
+        var result = await controller.SearchResults(solutionType, searchTerm);
 
         await mockSolutionsService
             .Received()
-            .GetAllSolutionsForSearchTerm(searchTerm);
+            .GetAllSolutionsForSearchTerm(solutionType, searchTerm);
 
         var actualResult = result.As<JsonResult>()
             .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
@@ -125,19 +124,20 @@ public static class CatalogueSolutionsControllerTests
     [Theory]
     [MockAutoData]
     public static async Task Get_SearchResults_ValidSearchTerm_NoMatches_ReturnsExpectedResult(
+        SolutionType solutionType,
         string searchTerm,
         [Frozen] ISolutionsService mockSolutionsService,
         CatalogueSolutionsController controller)
     {
         mockSolutionsService
-            .GetAllSolutionsForSearchTerm(searchTerm)
+            .GetAllSolutionsForSearchTerm(solutionType, searchTerm)
             .Returns(new List<CatalogueItem>());
 
-        var result = await controller.SearchResults(searchTerm);
+        var result = await controller.SearchResults(solutionType, searchTerm);
 
         await mockSolutionsService
             .Received()
-            .GetAllSolutionsForSearchTerm(searchTerm);
+            .GetAllSolutionsForSearchTerm(solutionType, searchTerm);
 
         var actualResult = result.As<JsonResult>()
             .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
@@ -152,9 +152,10 @@ public static class CatalogueSolutionsControllerTests
     [MockInlineAutoData(" ")]
     public static async Task Get_SearchResults_InvalidSearchTerm_ReturnsExpectedResult(
         string searchTerm,
+        SolutionType solutionType,
         CatalogueSolutionsController controller)
     {
-        var result = await controller.SearchResults(searchTerm);
+        var result = await controller.SearchResults(solutionType, searchTerm);
 
         var actualResult = result.As<JsonResult>()
             .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
@@ -286,14 +287,14 @@ public static class CatalogueSolutionsControllerTests
         var expected = solutions.Select(s => new CatalogueModel(s)).ToList();
 
         mockService
-            .GetAllSolutions(null)
+            .GetAllSolutions(SolutionType.GPIT, null)
             .Returns(solutions);
 
         var actual = (await controller.Index(SolutionType.GPIT)).As<ViewResult>();
 
         await mockService
             .Received()
-            .GetAllSolutions(null);
+            .GetAllSolutions(SolutionType.GPIT, null);
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -316,14 +317,14 @@ public static class CatalogueSolutionsControllerTests
         var expected = solutions.Select(x => new CatalogueModel(x));
 
         mockService
-            .GetAllSolutionsForSearchTerm(searchTerm)
+            .GetAllSolutionsForSearchTerm(SolutionType.GPIT, searchTerm)
             .Returns(solutions);
 
         var actual = (await controller.Index(SolutionType.GPIT, searchTerm)).As<ViewResult>();
 
         await mockService
             .Received()
-            .GetAllSolutionsForSearchTerm(searchTerm);
+            .GetAllSolutionsForSearchTerm(SolutionType.GPIT, searchTerm);
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -346,8 +347,9 @@ public static class CatalogueSolutionsControllerTests
         var model = new CatalogueSolutionsModel { SelectedPublicationStatus = status.ToString(), SolutionType = SolutionType.GPIT };
 
         mockService
-            .GetAllSolutions(status)
+            .GetAllSolutions(SolutionType.GPIT, status)
             .Returns(solutions);
+        mockService.GetAllSolutions(SolutionType.GPIT).Returns(solutions);
 
         var actual = (await controller.Index(SolutionType.GPIT, model)).As<ViewResult>();
 
@@ -379,8 +381,9 @@ public static class CatalogueSolutionsControllerTests
         model.SetSolutions(new[] { expected });
 
         mockService
-            .GetAllSolutions(status)
+            .GetAllSolutions(SolutionType.GPIT, status)
             .Returns(solutions);
+        mockService.GetAllSolutionsForSearchTerm(SolutionType.GPIT, searchTerm).Returns(solutions);
 
         var actual = (await controller.Index(SolutionType.GPIT, model)).As<ViewResult>();
 
