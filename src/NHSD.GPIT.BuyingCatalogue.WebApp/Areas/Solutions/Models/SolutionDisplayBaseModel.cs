@@ -5,7 +5,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -38,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             SolutionId = catalogueItem.Id;
             SolutionName = catalogueItem.Name;
+            SolutionType = catalogueItem.Solution.SolutionType;
             PublicationStatus = catalogueItem.PublishedStatus;
             SolutionStandardCategory = catalogueItem.Solution.Category;
 
@@ -74,6 +74,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public CatalogueItemId SolutionId { get; set; }
 
         public string SolutionName { get; set; }
+
+        public SolutionType SolutionType { get; set; }
 
         public SolutionCategory? SolutionStandardCategory { get; set; }
 
@@ -149,11 +151,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 });
                 breadcrumbItems.Add(new()
                 {
-                    Action = nameof(CommunityPharmacyController.Solutions),
-                    Controller = typeof(CommunityPharmacyController).ControllerName(),
+                    Action = nameof(SolutionsController.Index),
+                    Controller = typeof(SolutionsController).ControllerName(),
                     Name = "Catalogue solutions",
                     Show = true,
-                    RouteData = new Dictionary<string, string> { { "area", typeof(CommunityPharmacyController).AreaName() } },
+                    RouteData = new Dictionary<string, string> { { "area", typeof(SolutionsController).AreaName() }, { "solutionType", nameof(SolutionType.CommunityPharmacy) } },
                 });
             }
             else

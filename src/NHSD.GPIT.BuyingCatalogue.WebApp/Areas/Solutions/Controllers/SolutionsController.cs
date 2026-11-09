@@ -73,6 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             };
 
             var solutionTypeEnum = Enum.Parse<SolutionType>(solutionType, ignoreCase: true);
+            ViewData["HideLogin"] = solutionTypeEnum == SolutionType.CommunityPharmacy;
 
             var solutionsFilters = new SolutionsFilters
             {
@@ -433,6 +434,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var model = new SolutionCheckEpicsModel(solutionCapability, item)
             {
+                SolutionType = item.Solution.SolutionType,
                 BackLink = Url.Action(
                     nameof(Capabilities),
                     typeof(SolutionsController).ControllerName(),
@@ -474,6 +476,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var model = new SolutionCheckEpicsModel(solutionCapability, item, additionalServiceId)
             {
+                SolutionType = solution.Solution.SolutionType,
                 BackLink = Url.Action(
                     nameof(CapabilitiesAdditionalServices),
                     typeof(SolutionsController).ControllerName(),
