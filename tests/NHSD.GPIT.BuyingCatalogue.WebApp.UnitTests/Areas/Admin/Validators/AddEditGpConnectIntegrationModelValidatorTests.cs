@@ -1,4 +1,5 @@
 ﻿using FluentValidation.TestHelper;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.InteroperabilityValidators;
 using Xunit;
@@ -13,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             var model = new AddEditGpConnectIntegrationModel
             {
+                SolutionType = SolutionType.GPIT,
                 AdditionalInformation = "Additional Information text",
                 IsConsumer = false,
                 SelectedIntegrationType = 0,
@@ -29,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             var model = new AddEditGpConnectIntegrationModel
             {
+                SolutionType = SolutionType.GPIT,
                 AdditionalInformation = "Additional Information text",
                 IsConsumer = false,
             };
@@ -45,6 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             var model = new AddEditGpConnectIntegrationModel
             {
+                SolutionType = SolutionType.GPIT,
                 AdditionalInformation = "Additional Information text",
                 SelectedIntegrationType = 1,
             };
@@ -61,6 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             var model = new AddEditGpConnectIntegrationModel
             {
+                SolutionType = SolutionType.GPIT,
                 SelectedIntegrationType = 2,
                 IsConsumer = false,
             };

@@ -17,23 +17,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
         public ApplicationTypeSectionModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
+            ArgumentNullException.ThrowIfNull(catalogueItem);
 
             var applicationType = catalogueItem.Solution?.EnsureAndGetApplicationType();
 
             SolutionName = catalogueItem.Name;
-            ExistingApplicationTypes = applicationType!.ExistingApplicationTypes ?? Array.Empty<ApplicationType>();
-            ApplicationTypesToAdd = Enum.GetValues<ApplicationType>().Except(ExistingApplicationTypes).ToList();
+            ExistingApplicationTypes = applicationType!.ExistingApplicationTypes ?? [];
+            ApplicationTypesToAdd = [.. Enum.GetValues<ApplicationType>().Except(ExistingApplicationTypes)];
             ApplicationTypesToAddRadioItems = ApplicationTypesToAdd.Select(t => new { Text = t.AsString(EnumFormat.DisplayName), Value = t.ToString() });
             ExistingApplicationTypesCount = ExistingApplicationTypes.Count;
         }
 
-        public IReadOnlyList<ApplicationType> ExistingApplicationTypes { get; } = Array.Empty<ApplicationType>();
+        public IReadOnlyList<ApplicationType> ExistingApplicationTypes { get; } = [];
 
         public int? ExistingApplicationTypesCount { get; set; }
 
         public string SolutionName { get; set; }
+
+        public required SolutionType SolutionType { get; set; }
 
         public List<ApplicationType> ApplicationTypesToAdd { get; set; }
 

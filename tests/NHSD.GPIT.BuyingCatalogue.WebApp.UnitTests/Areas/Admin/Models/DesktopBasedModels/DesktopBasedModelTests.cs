@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
         public static void FromCatalogueItem_ValidCatalogueItem_ApplicationTypeSetCorrectly(
             CatalogueItem catalogueItem)
         {
-            var actual = new DesktopBasedModel(catalogueItem);
+            var actual = new DesktopBasedModel(catalogueItem) { SolutionType = SolutionType.GPIT };
 
             actual.ApplicationType.Should().Be(ApplicationType.Desktop);
         }
@@ -21,7 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new DesktopBasedModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new DesktopBasedModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

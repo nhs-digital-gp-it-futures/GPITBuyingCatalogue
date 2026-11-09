@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
             Solution solution)
         {
             var catalogueItem = solution.CatalogueItem;
-            var actual = new HardwareRequirementsModel(catalogueItem);
+            var actual = new HardwareRequirementsModel(catalogueItem) { SolutionType = SolutionType.GPIT };
 
             actual.Description.Should().Be(solution.ApplicationTypeDetail.NativeMobileHardwareRequirements);
         }
@@ -22,7 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new HardwareRequirementsModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new HardwareRequirementsModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

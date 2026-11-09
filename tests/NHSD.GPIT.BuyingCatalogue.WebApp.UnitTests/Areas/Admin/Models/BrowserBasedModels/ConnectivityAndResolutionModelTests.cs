@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.BrowserB
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
             Solution solution)
         {
-            var actual = new ConnectivityAndResolutionModel(solution.CatalogueItem);
+            var actual = new ConnectivityAndResolutionModel(solution.CatalogueItem) { SolutionType = SolutionType.GPIT };
 
             actual.SelectedConnectionSpeed.Should().Be(solution.ApplicationTypeDetail.MinimumConnectionSpeed);
             actual.SelectedScreenResolution.Should().Be(solution.ApplicationTypeDetail.MinimumDesktopResolution);
@@ -25,7 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.BrowserB
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new ConnectivityAndResolutionModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new ConnectivityAndResolutionModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

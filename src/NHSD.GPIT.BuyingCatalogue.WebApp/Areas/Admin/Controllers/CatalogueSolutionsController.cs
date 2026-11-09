@@ -249,8 +249,8 @@ public sealed class CatalogueSolutionsController(
         return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
-    [HttpGet("manage/{solutionId}/application-type")]
-    public async Task<IActionResult> ApplicationType(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/application-type")]
+    public async Task<IActionResult> ApplicationType(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -259,14 +259,15 @@ public sealed class CatalogueSolutionsController(
 
         var model = new ApplicationTypeSectionModel(solution)
         {
-            BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionId }),
+            SolutionType = solutionType,
+            BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
-    [HttpGet("manage/{solutionId}/application-type/add-application-type")]
-    public async Task<IActionResult> AddApplicationType(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/application-type/add-application-type")]
+    public async Task<IActionResult> AddApplicationType(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -275,21 +276,23 @@ public sealed class CatalogueSolutionsController(
 
         var model = new ApplicationTypeSelectionModel(solution)
         {
-            BackLink = Url.Action(nameof(ApplicationType), new { solutionId }),
+            SolutionType = solutionType,
+            BackLink = Url.Action(nameof(ApplicationType), new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}/application-type/add-application-type")]
-    public async Task<IActionResult> AddApplicationType(CatalogueItemId solutionId, ApplicationTypeSelectionModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/application-type/add-application-type")]
+    public async Task<IActionResult> AddApplicationType(SolutionType solutionType, CatalogueItemId solutionId, ApplicationTypeSelectionModel model)
     {
         if (!ModelState.IsValid)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
             var erroredModel = new ApplicationTypeSelectionModel(solution)
             {
-                BackLink = Url.Action(nameof(ApplicationType), new { solutionId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(ApplicationType), new { solutionType, solutionId }),
             };
             return View(erroredModel);
         }
@@ -299,16 +302,16 @@ public sealed class CatalogueSolutionsController(
             EntityFramework.Catalogue.Models.ApplicationType.BrowserBased => RedirectToAction(
                 nameof(BrowserBasedController.BrowserBased),
                 typeof(BrowserBasedController).ControllerName(),
-                new { solutionId }),
+                new { solutionType, solutionId }),
             EntityFramework.Catalogue.Models.ApplicationType.MobileTablet => RedirectToAction(
                 nameof(MobileTabletBasedController.MobileTablet),
                 typeof(MobileTabletBasedController).ControllerName(),
-                new { solutionId }),
+                new { solutionType, solutionId }),
             EntityFramework.Catalogue.Models.ApplicationType.Desktop => RedirectToAction(
                 nameof(DesktopBasedController.Desktop),
                 typeof(DesktopBasedController).ControllerName(),
-                new { solutionId }),
-            _ => RedirectToAction(nameof(ApplicationType), new { solutionId }),
+                new { solutionType, solutionId }),
+            _ => RedirectToAction(nameof(ApplicationType), new { solutionType, solutionId }),
         };
     }
 

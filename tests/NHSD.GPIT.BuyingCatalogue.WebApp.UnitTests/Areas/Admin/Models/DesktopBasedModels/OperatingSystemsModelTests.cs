@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
             Solution solution)
         {
             var catalogueItem = solution.CatalogueItem;
-            var actual = new OperatingSystemsModel(catalogueItem);
+            var actual = new OperatingSystemsModel(catalogueItem) { SolutionType = SolutionType.GPIT };
 
             actual.Description.Should().Be(solution.ApplicationTypeDetail.NativeDesktopOperatingSystemsDescription);
         }
@@ -22,7 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new OperatingSystemsModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new OperatingSystemsModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

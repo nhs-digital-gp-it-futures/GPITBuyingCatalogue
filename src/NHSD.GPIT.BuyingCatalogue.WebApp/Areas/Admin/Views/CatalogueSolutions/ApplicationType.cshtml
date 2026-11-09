@@ -16,9 +16,9 @@
                             advice="Let buyers know which platforms are compatible with your catalogue solution." />
 
             <vc:nhs-action-link url="@Url.Action(
-            nameof(CatalogueSolutionsController.AddApplicationType),
-            typeof(CatalogueSolutionsController).ControllerName(),
-            new { Model.SolutionId })" text="Add an application type" />
+                nameof(CatalogueSolutionsController.AddApplicationType),
+                typeof(CatalogueSolutionsController).ControllerName(),
+                new { Model.SolutionType, Model.SolutionId })" text="Add an application type" />
 
             <p>
                 Use the link to add information on which platforms your catalogue solution is compatible with.
@@ -48,6 +48,7 @@
                                     {
                                         <a asp-action="@nameof(MobileTabletBasedController.MobileTablet)"
                                            asp-controller="@typeof(MobileTabletBasedController).ControllerName()"
+                                           asp-route-solutionType="@Model.SolutionType"
                                            asp-route-solutionId="@Model.SolutionId"
                                            class="nhsuk-breadcrumb__link">Edit</a>
                                     }
@@ -55,6 +56,7 @@
                                     {
                                         <a asp-action="@nameof(DesktopBasedController.Desktop)"
                                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
+                                           asp-route-solutionType="@Model.SolutionType"
                                            asp-route-solutionId="@Model.SolutionId"
                                            class="nhsuk-breadcrumb__link">Edit</a>
                                     }
@@ -62,6 +64,7 @@
                                     {
                                         <a asp-action="@nameof(BrowserBasedController.BrowserBased)"
                                            asp-controller="@typeof(BrowserBasedController).ControllerName()"
+                                           asp-route-solutionType="@Model.SolutionType"
                                            asp-route-solutionId="@Model.SolutionId"
                                            class="nhsuk-breadcrumb__link">Edit</a>
                                     }
@@ -70,13 +73,15 @@
                         }
                     </nhs-table>
                 }
+
                 <br/>
+
                 <vc:nhs-anchor-button text="Save and continue"
-                                         type="Primary"
-                                         url="@Url.Action(
-                                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
-                                     typeof(CatalogueSolutionsController).ControllerName(),
-                                     new { Model.SolutionId })" />
+                    type="Primary"
+                    url="@Url.Action(
+                        nameof(CatalogueSolutionsController.ManageCatalogueSolution),
+                        typeof(CatalogueSolutionsController).ControllerName(),
+                        new { Model.SolutionType, Model.SolutionId })" />
 
             </form>
         </div>
