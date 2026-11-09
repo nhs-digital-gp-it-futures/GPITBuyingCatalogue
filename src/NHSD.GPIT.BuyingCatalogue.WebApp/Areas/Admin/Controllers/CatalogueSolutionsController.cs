@@ -146,8 +146,8 @@ public sealed class CatalogueSolutionsController(
         return RedirectToAction(nameof(Index), new { solutionType });
     }
 
-    [HttpGet("manage/{solutionId}/details")]
-    public async Task<IActionResult> Details(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/details")]
+    public async Task<IActionResult> Details(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionWithBasicInformation(solutionId);
 
@@ -156,7 +156,10 @@ public sealed class CatalogueSolutionsController(
 
         var suppliers = await suppliersService.GetAllSuppliers();
 
-        var model = new SolutionModel(solution).WithSelectListItems(suppliers);
+        var model = new SolutionModel(solution)
+        {
+            SolutionType = solutionType,
+        }.WithSelectListItems(suppliers);
 
         model.Frameworks = (await solutionsService.GetAllFrameworks())
             .Select(
@@ -174,8 +177,8 @@ public sealed class CatalogueSolutionsController(
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}/details")]
-    public async Task<IActionResult> Details(CatalogueItemId solutionId, SolutionModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/details")]
+    public async Task<IActionResult> Details(SolutionType solutionType, CatalogueItemId solutionId, SolutionModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -196,7 +199,7 @@ public sealed class CatalogueSolutionsController(
             model.SelectedCategory,
             model.Frameworks);
 
-        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
     [HttpGet("manage/{solutionId}/description")]

@@ -478,7 +478,7 @@ public static class CatalogueSolutionsControllerTests
         mockSolutionService.GetSolutionWithBasicInformation(solutionId)
             .Returns((CatalogueItem)null);
 
-        var actual = (await controller.Details(solutionId)).As<BadRequestObjectResult>();
+        var actual = (await controller.Details(SolutionType.GPIT, solutionId)).As<BadRequestObjectResult>();
 
         actual.Should().NotBeNull();
     }
@@ -516,7 +516,7 @@ public static class CatalogueSolutionsControllerTests
         mockSolutionService.GetAllFrameworks()
             .Returns(new List<EntityFramework.Catalogue.Models.Framework> { framework });
 
-        var actual = (await controller.Details(solutionId)).As<ViewResult>();
+        var actual = (await controller.Details(SolutionType.GPIT, solutionId)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -561,7 +561,7 @@ public static class CatalogueSolutionsControllerTests
         mockSolutionService.GetAllFrameworks()
             .Returns(new List<EntityFramework.Catalogue.Models.Framework> { framework });
 
-        var actual = (await controller.Details(solutionId)).As<ViewResult>();
+        var actual = (await controller.Details(SolutionType.GPIT, solutionId)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -577,7 +577,7 @@ public static class CatalogueSolutionsControllerTests
     {
         mockService.GetSolutionByName(Arg.Any<string>()).Returns(Task.FromResult(new CatalogueItem { Id = catalogueItemId }));
 
-        var actual = (await controller.Details(catalogueItemId, model)).As<RedirectToActionResult>();
+        var actual = (await controller.Details(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
         actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
         actual.ControllerName.Should().BeNull();
@@ -590,10 +590,13 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] CatalogueItemId id,
         CatalogueSolutionsController controller)
     {
-        var solutionModel = new SolutionModel();
+        var solutionModel = new SolutionModel()
+        {
+            SolutionType = SolutionType.GPIT,
+        };
         controller.ModelState.AddModelError("some-property", "some-error");
 
-        var actual = (await controller.Details(id, solutionModel)).As<ViewResult>();
+        var actual = (await controller.Details(SolutionType.GPIT, id, solutionModel)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -608,7 +611,7 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] ISolutionsService mockSolutionService,
         CatalogueSolutionsController controller)
     {
-        await controller.Details(id, model);
+        await controller.Details(SolutionType.GPIT, id, model);
 
         await mockSolutionService
             .Received()
@@ -625,7 +628,7 @@ public static class CatalogueSolutionsControllerTests
     {
         mockSolutionService.GetSolutionByName(Arg.Any<string>()).Returns(Task.FromResult(new CatalogueItem { Id = id }));
 
-        var actual = (await controller.Details(id, model)).As<RedirectToActionResult>();
+        var actual = (await controller.Details(SolutionType.GPIT, id, model)).As<RedirectToActionResult>();
 
         actual.Should().NotBeNull();
         actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));

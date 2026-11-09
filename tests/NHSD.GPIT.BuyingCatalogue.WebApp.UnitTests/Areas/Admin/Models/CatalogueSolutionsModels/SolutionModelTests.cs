@@ -12,7 +12,10 @@ public static class SolutionModelTests
     public static void Construct_SetsPropertiesAsExpected(
         Solution solution)
     {
-        var model = new SolutionModel(solution.CatalogueItem);
+        var model = new SolutionModel(solution.CatalogueItem)
+        {
+            SolutionType = SolutionType.GPIT,
+        };
 
         model.SolutionId.Should().Be(solution.CatalogueItemId);
         model.SupplierId.Should().Be(solution.CatalogueItem.SupplierId);
@@ -25,7 +28,10 @@ public static class SolutionModelTests
     [Fact]
     public static void Adding_SetsHeadingAndDescription()
     {
-        var model = new SolutionModel();
+        var model = new SolutionModel()
+        {
+            SolutionType = SolutionType.GPIT,
+        };
 
         model.Heading.Should().Be(SolutionModel.AddHeading);
         model.Description.Should().Be(SolutionModel.AddDescription);
@@ -36,7 +42,10 @@ public static class SolutionModelTests
     public static void Editing_SetsHeadingAndDescription(
         Solution solution)
     {
-        var model = new SolutionModel(solution.CatalogueItem);
+        var model = new SolutionModel(solution.CatalogueItem)
+        {
+            SolutionType = SolutionType.GPIT,
+        };
 
         model.Heading.Should().Be(SolutionModel.EditHeading);
         model.Description.Should().Be(SolutionModel.EditDescription);
