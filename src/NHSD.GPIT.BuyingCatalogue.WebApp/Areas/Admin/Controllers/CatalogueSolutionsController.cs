@@ -161,7 +161,7 @@ public sealed class CatalogueSolutionsController(
             SolutionType = solutionType,
         }.WithSelectListItems(suppliers);
 
-        model.Frameworks = (await solutionsService.GetAllFrameworks())
+        model.Frameworks = [.. (await solutionsService.GetAllFrameworks())
             .Select(
                 f =>
                 {
@@ -171,8 +171,7 @@ public sealed class CatalogueSolutionsController(
                     {
                         Name = $"{f.ShortName} Framework", FrameworkId = f.Id, Selected = sol is not null,
                     };
-                })
-            .ToList();
+                })];
 
         return View(model);
     }
@@ -184,9 +183,7 @@ public sealed class CatalogueSolutionsController(
         {
             var suppliers = await suppliersService.GetAllSuppliers();
 
-            model.Frameworks = (await solutionsService.GetAllFrameworks())
-                .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id })
-                .ToList();
+            model.Frameworks = [.. (await solutionsService.GetAllFrameworks()).Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id })];
 
             return View(model.WithSelectListItems(suppliers));
         }
@@ -228,19 +225,19 @@ public sealed class CatalogueSolutionsController(
         return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
-    [HttpGet("manage/{solutionId}/implementation")]
-    public async Task<IActionResult> Implementation(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/implementation")]
+    public async Task<IActionResult> Implementation(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
         if (solution is null)
-            return BadRequest($"No Solution found for Id: {solutionId}");
+            return BadRequest($"No Solution found for Id: {solutionId}, solution type: {solutionType}");
 
         return View(new ImplementationTimescaleModel(solution));
     }
 
-    [HttpPost("manage/{solutionId}/implementation")]
-    public async Task<IActionResult> Implementation(CatalogueItemId solutionId, ImplementationTimescaleModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/implementation")]
+    public async Task<IActionResult> Implementation(SolutionType solutionType, CatalogueItemId solutionId, ImplementationTimescaleModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -249,7 +246,7 @@ public sealed class CatalogueSolutionsController(
             solutionId,
             model.Description);
 
-        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
     [HttpGet("manage/{solutionId}/application-type")]

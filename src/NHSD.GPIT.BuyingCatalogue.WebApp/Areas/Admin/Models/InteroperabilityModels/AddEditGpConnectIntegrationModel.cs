@@ -47,11 +47,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
 
         public bool? IsConsumer { get; set; }
 
-        public List<SelectOption<string>> ProviderConsumerTypes => new()
-        {
+        public List<SelectOption<string>> ProviderConsumerTypes =>
+        [
             new(Interoperability.Provider, false.ToString()),
             new(Interoperability.Consumer, true.ToString()),
-        };
+        ];
 
         [StringLength(1000)]
         public string AdditionalInformation { get; set; }
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
 
         public AddEditGpConnectIntegrationModel WithIntegrationTypes(IEnumerable<IntegrationType> integrationTypes)
         {
-            IntegrationTypes = integrationTypes.Select(x => new SelectOption<string>(x.Name, x.Id.ToString())).ToList();
+            IntegrationTypes = [.. integrationTypes.Select(x => new SelectOption<string>(x.Name, x.Id.ToString()))];
 
             return this;
         }
