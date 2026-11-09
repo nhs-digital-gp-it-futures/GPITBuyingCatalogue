@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             SetUp(solution, solutionItem, out CatalogueItemCapability firstCapabilityItem, out CatalogueItemCapability secondCapabilityItem);
 
-            var model = new CapabilitiesViewModel(solution, contentStatus);
+            var model = new CapabilitiesViewModel(solution, contentStatus, new SolutionSections());
 
             model.RowViewModels.Should().HaveCount(1);
             model.RowViewModels.ElementAt(0).Should().BeEquivalentTo(new RowViewModel(firstCapabilityItem));
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             SetUp(additionalService, solutionItem, out CatalogueItemCapability firstCapabilityItem, out CatalogueItemCapability secondCapabilityItem);
 
-            var model = new CapabilitiesViewModel(solution, additionalService, contentStatus);
+            var model = new CapabilitiesViewModel(solution, additionalService, contentStatus, new SolutionSections());
 
             model.RowViewModels.Should().HaveCount(1);
             model.RowViewModels.ElementAt(0).Should().BeEquivalentTo(new RowViewModel(firstCapabilityItem));

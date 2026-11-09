@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void SolutionDescriptionModel_NullCatalogueItem_ThrowsException()
         {
             var actual = Assert.Throws<ArgumentNullException>(
-                () => new SolutionDescriptionModel(null, new CatalogueItemContentStatus()));
+                () => new SolutionDescriptionModel(null, new CatalogueItemContentStatus(), new SolutionSections()));
             actual.ParamName.Should().Be("catalogueItem");
         }
 
@@ -34,7 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var actual = Assert.Throws<ArgumentNullException>(
                 () => new SolutionDescriptionModel(
                     new CatalogueItem() { Solution = null },
-                    new CatalogueItemContentStatus()));
+                    new CatalogueItemContentStatus(),
+                    new SolutionSections()));
             actual.ParamName.Should().Be("catalogueItem");
         }
 
@@ -148,6 +149,56 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var actual = model.HasAboutUrl();
 
             actual.Should().BeFalse();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Construct_MapsSummaryAndSupplierContactDetails(
+            Solution solution,
+            CatalogueItemContentStatus contentStatus,
+            SolutionSections sections)
+        {
+            var model = new SolutionDescriptionModel(solution.CatalogueItem, contentStatus, sections);
+
+            model.Summary.Should().Be(solution.Summary);
+            model.Description.Should().Be(solution.FullDescription);
+            model.AboutUrl.Should().Be(solution.AboutUrl);
+            model.Contacts.Should().BeEquivalentTo(solution.CatalogueItem.Supplier.SupplierContacts);
+            model.SupplierUrl.Should().Be(solution.CatalogueItem.Supplier.SupplierUrl);
+        }
+
+        [Fact]
+        public static void HasContactDetails_NullContacts_ReturnsFalse()
+        {
+            new SolutionDescriptionModel { Contacts = null }.HasContactDetails().Should().BeFalse();
+        }
+
+        [Fact]
+        public static void HasContactDetails_EmptyContacts_ReturnsFalse()
+        {
+            new SolutionDescriptionModel { Contacts = new List<SupplierContact>() }.HasContactDetails().Should().BeFalse();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void HasContactDetails_WithContact_ReturnsTrue(SupplierContact contact)
+        {
+            new SolutionDescriptionModel { Contacts = new List<SupplierContact> { contact } }
+                .HasContactDetails().Should().BeTrue();
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
+        public static void HasSupplierUrl_InvalidUrl_ReturnsFalse(string invalid)
+        {
+            new SolutionDescriptionModel { SupplierUrl = invalid }.HasSupplierUrl().Should().BeFalse();
+        }
+
+        [Fact]
+        public static void HasSupplierUrl_ValidUrl_ReturnsTrue()
+        {
+            new SolutionDescriptionModel { SupplierUrl = "https://supplier.example.com" }
+                .HasSupplierUrl().Should().BeTrue();
         }
     }
 }

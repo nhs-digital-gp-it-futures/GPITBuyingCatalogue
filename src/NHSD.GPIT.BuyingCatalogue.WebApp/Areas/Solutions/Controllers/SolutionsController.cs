@@ -72,7 +72,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 PageSize = 10,
             };
 
-            var solutionTypeEnum = Enum.Parse<SolutionType>(solutionType, ignoreCase: true);
+            var solutionTypeEnum = string.IsNullOrWhiteSpace(solutionType)
+                ? SolutionType.GPIT
+                : Enum.Parse<SolutionType>(solutionType, ignoreCase: true);
             ViewData["HideLogin"] = solutionTypeEnum == SolutionType.CommunityPharmacy;
 
             var solutionsFilters = new SolutionsFilters
@@ -404,7 +406,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return BadRequest($"No Catalogue Item found for Id: {additionalServiceId}");
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
-            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(solution.Solution.SolutionType);
 
             return View(
                 new CapabilitiesViewModel(solution, item, contentStatus, sections)

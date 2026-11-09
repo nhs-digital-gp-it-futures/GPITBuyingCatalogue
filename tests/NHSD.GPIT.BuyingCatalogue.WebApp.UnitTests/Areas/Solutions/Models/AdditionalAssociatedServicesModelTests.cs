@@ -24,7 +24,7 @@ public static class AdditionalAssociatedServicesModelTests
     {
         var associatedServiceCatalogueItems = associatedServices.Select(x => x.CatalogueItem).ToList();
 
-        var model = new AdditionalAssociatedServicesModel(solution.CatalogueItem, additionalService.CatalogueItem, associatedServiceCatalogueItems, contentStatus);
+        var model = new AdditionalAssociatedServicesModel(solution.CatalogueItem, additionalService.CatalogueItem, associatedServiceCatalogueItems, contentStatus, new SolutionSections());
 
         model.Title.Should().Be("Associated services");
         model.Caption.Should().Be(additionalService.CatalogueItem.Name);
@@ -44,7 +44,7 @@ public static class AdditionalAssociatedServicesModelTests
         var associatedServiceCatalogueItems = associatedServices.Select(x => x.CatalogueItem).ToList();
         var associatedService = associatedServiceCatalogueItems.First();
 
-        var model = new AdditionalAssociatedServicesModel(solution.CatalogueItem, additionalService.CatalogueItem, associatedServiceCatalogueItems, contentStatus);
+        var model = new AdditionalAssociatedServicesModel(solution.CatalogueItem, additionalService.CatalogueItem, associatedServiceCatalogueItems, contentStatus, new SolutionSections());
 
         _ = model.GetPricePageUrl(urlHelper, associatedService.Id);
 

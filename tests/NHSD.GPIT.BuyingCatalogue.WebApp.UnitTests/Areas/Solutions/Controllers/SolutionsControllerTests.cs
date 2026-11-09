@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     Arg.Any<PageOptions>())
                 .Returns((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
 
-            var result = await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null);
+            var result = await controller.Index(nameof(SolutionType.GPIT), options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null);
             result.Should().BeOfType<ViewResult>();
 
             await mockService.Received()
@@ -244,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] ISolutionsFilterService mockService,
             SolutionsController controller)
         {
-            mockService.GetSolutionsBySearchTerm(search, Arg.Any<int>(), false).Returns(searchResults);
+            mockService.GetSolutionsBySearchTerm(search, Arg.Any<int>(), SolutionType.GPIT).Returns(searchResults);
 
             var context = new DefaultHttpContext();
             context.HttpContext.Request.Headers.Referer = uri.ToString();
@@ -263,7 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var result = await controller.FilterSearchSuggestions(search);
 
-            await mockService.Received().GetSolutionsBySearchTerm(search, Arg.Any<int>(), false);
+            await mockService.Received().GetSolutionsBySearchTerm(search, Arg.Any<int>(), SolutionType.GPIT);
             var actualResult = result.Should().BeOfType<JsonResult>().Subject;
             actualResult.Value.Should().BeEquivalentTo(expectedResults);
         }
@@ -273,9 +273,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_AssociatedServices_ValidId_GetsSolutionFromService(
             Solution solution,
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var id = solution.CatalogueItemId;
 
             var associatedServices = solution.CatalogueItem.SupplierServiceAssociations.Select(ssa => ssa.CatalogueItem).ToList();
@@ -313,12 +317,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_AssociatedServices_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] ISolutionsService solutionsServiceMock,
             Solution solution,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = solution.CatalogueItem;
             var associatedServices = solution.CatalogueItem.SupplierServiceAssociations.Select(ssa => ssa.CatalogueItem).ToList();
-            var associatedServicesModel = new AssociatedServicesModel(catalogueItem, associatedServices, contentStatus);
+            var associatedServicesModel = new AssociatedServicesModel(catalogueItem, associatedServices, contentStatus, sections);
 
             solutionsServiceMock.GetSolutionWithBasicInformation(catalogueItem.Id).Returns(catalogueItem);
 
@@ -356,9 +364,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_Capabilities_ValidId_GetsSolutionFromService(
             Solution solution,
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var id = solution.CatalogueItemId;
 
             mockService.GetSolutionWithCapabilities(id).Returns(solution.CatalogueItem);
@@ -390,13 +402,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [MockAutoData]
         public static async Task Get_Capabilities_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Published;
-            var capabilitiesViewModel = new CapabilitiesViewModel(catalogueItem, contentStatus);
+            var capabilitiesViewModel = new CapabilitiesViewModel(catalogueItem, contentStatus, sections);
 
             mockService.GetSolutionWithCapabilities(catalogueItem.Id).Returns(catalogueItem);
 
@@ -516,6 +532,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_CapabilitiesAdditionalServices_ReturnsDefaultView(
             [Frozen] ISolutionsService mockService,
             [Frozen] IAdditionalServicesService mockAdditionalServices,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemId catalogueItemId,
             CatalogueItemId additionalServiceId,
@@ -524,6 +542,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             AdditionalService additionalService,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = new CatalogueItem { Solution = solution, PublishedStatus = PublicationStatus.Published, Supplier = supplier };
 
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
@@ -533,7 +553,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var additionalCatalogueItem = new CatalogueItem() { AdditionalService = additionalService };
             mockAdditionalServices.GetAdditionalServiceWithCapabilities(additionalServiceId).Returns(additionalCatalogueItem);
 
-            var expectedModel = new CapabilitiesViewModel(catalogueItem, additionalCatalogueItem, contentStatus)
+            var expectedModel = new CapabilitiesViewModel(catalogueItem, additionalCatalogueItem, contentStatus, sections)
             { Name = additionalCatalogueItem.Name, Description = additionalService.FullDescription, };
 
             var actual = (await controller.CapabilitiesAdditionalServices(catalogueItemId, additionalServiceId)).As<ViewResult>();
@@ -553,9 +573,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             List<StandardComplianceModel> standards,
             [Frozen] ISolutionsService mockService,
             [Frozen] ISolutionStandardsService solutionStandardsService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
 
             mockService.GetSolutionWithBasicInformation(solution.CatalogueItemId).Returns(solution.CatalogueItem);
@@ -596,16 +620,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             List<StandardComplianceModel> standards,
             [Frozen] ISolutionsService mockService,
             [Frozen] ISolutionStandardsService solutionStandardsService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
 
             var solutionStandardsModel = new SolutionStandardsModel(
                 solution.CatalogueItem,
                 standards,
                 new List<string>(),
-                contentStatus);
+                contentStatus,
+                sections);
 
             mockService.GetSolutionWithBasicInformation(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
@@ -627,9 +656,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_ApplicationTypes_ValidId_GetsSolutionFromService(
             Solution solution,
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var id = solution.CatalogueItemId;
 
             mockService.GetSolutionWithBasicInformation(id).Returns(solution.CatalogueItem);
@@ -663,12 +696,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             CatalogueItemId id,
             Solution solution,
             [Frozen] ISolutionsService solutionsService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = solution.CatalogueItem;
 
-            var expectedModel = new ApplicationTypesModel(catalogueItem, contentStatus);
+            var expectedModel = new ApplicationTypesModel(catalogueItem, contentStatus, sections);
             solutionsService.GetSolutionWithBasicInformation(id).Returns(catalogueItem);
 
             solutionsService.GetContentStatusForCatalogueItem(id).Returns(contentStatus);
@@ -681,18 +718,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
 
         [Theory]
-        [MockAutoData]
+        [MockInlineAutoData(SolutionType.GPIT)]
+        [MockInlineAutoData(SolutionType.CommunityPharmacy)]
         public static async Task Get_CheckEpics_ValidId_ResultAsExpected(
+            SolutionType solutionType,
             CatalogueItem solution,
             [Frozen] ISolutionsService mockSolutionsService,
             SolutionsController controller)
         {
+            solution.Solution = new Solution { SolutionType = solutionType };
             var catalogueItemId = solution.Id;
             var capabilityItem = solution.CatalogueItemCapabilities.First();
             var capabilityId = capabilityItem.Capability.Id;
             var capability = solution.CatalogueItemCapabilities.First();
 
-            var expectedModel = new SolutionCheckEpicsModel(capability, solution);
+            var expectedModel = new SolutionCheckEpicsModel(capability, solution)
+            {
+                SolutionType = solution.Solution.SolutionType,
+            };
 
             mockSolutionsService.GetSolutionCapability(catalogueItemId, capabilityId).Returns(solution);
 
@@ -721,19 +764,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
 
         [Theory]
-        [MockAutoData]
+        [MockInlineAutoData(SolutionType.GPIT)]
+        [MockInlineAutoData(SolutionType.CommunityPharmacy)]
         public static async Task Get_CheckEpicsAdditionalServices_ValidIds_ResultAsExpected(
+            SolutionType solutionType,
             AdditionalService additionalSolution,
             Solution solution,
             [Frozen] ISolutionsService mockSolutionsService,
             SolutionsController controller)
         {
+            solution.SolutionType = solutionType;
             var catalogueItemIdAdditional = additionalSolution.CatalogueItemId;
             var capabilityItem = additionalSolution.CatalogueItem.CatalogueItemCapabilities.First();
             var capabilityId = capabilityItem.Capability.Id;
             var capability = additionalSolution.CatalogueItem.CatalogueItemCapabilities.First();
 
-            var expectedModel = new SolutionCheckEpicsModel(capability, additionalSolution.CatalogueItem, additionalSolution.CatalogueItemId);
+            var expectedModel = new SolutionCheckEpicsModel(capability, additionalSolution.CatalogueItem, additionalSolution.CatalogueItemId)
+            {
+                SolutionType = solution.SolutionType,
+            };
 
             mockSolutionsService.GetSolutionCapability(additionalSolution.CatalogueItemId, capabilityId).Returns(additionalSolution.CatalogueItem);
 
@@ -794,10 +843,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [MockAutoData]
         public static async Task Get_Description_ValidId_GetsSolutionFromService(
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             mockService.GetSolutionWithBasicInformation(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             mockService.GetContentStatusForCatalogueItem(solution.CatalogueItemId).Returns(contentStatus);
@@ -827,12 +880,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [MockAutoData]
         public static async Task Get_Description_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = solution.CatalogueItem;
-            var solutionDescriptionModel = new SolutionDescriptionModel(catalogueItem, contentStatus);
+            var solutionDescriptionModel = new SolutionDescriptionModel(catalogueItem, contentStatus, sections);
 
             mockService.GetSolutionWithBasicInformation(catalogueItem.Id).Returns(catalogueItem);
 
@@ -841,7 +898,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actual = (await controller.Description(catalogueItem.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
+            actual.ViewName.Should().Be(solution.SolutionType == SolutionType.CommunityPharmacy ? "Summary" : "Description");
             actual.Model.Should().BeEquivalentTo(solutionDescriptionModel);
         }
 
@@ -850,9 +907,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_Features_ValidId_InvokesGetSolutionOverview(
             Solution solution,
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var id = solution.CatalogueItemId;
 
             mockService.GetSolutionWithBasicInformation(id).Returns(solution.CatalogueItem);
@@ -885,9 +946,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_Features_ValidSolutionForId_ReturnsExpectedViewResult(
             Solution solution,
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = solution.CatalogueItem;
             mockService.GetSolutionWithBasicInformation(catalogueItem.Id).Returns(catalogueItem);
 
@@ -897,7 +962,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().BeEquivalentTo(new SolutionFeaturesModel(catalogueItem, contentStatus));
+            actual.Model.Should().BeEquivalentTo(new SolutionFeaturesModel(catalogueItem, contentStatus, sections));
         }
 
         [Theory]
@@ -905,9 +970,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_HostingType_ValidId_GetsSolutionFromService(
             Solution solution,
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var id = solution.CatalogueItemId;
 
             mockService.GetSolutionWithBasicInformation(id).Returns(solution.CatalogueItem);
@@ -940,11 +1009,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_HostingType_ValidSolutionForId_ReturnsExpectedViewResult(
             Solution solution,
             [Frozen] ISolutionsService solutionsServiceMock,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = solution.CatalogueItem;
-            var expectedModel = new HostingTypesModel(catalogueItem, contentStatus);
+            var expectedModel = new HostingTypesModel(catalogueItem, contentStatus, sections);
             solutionsServiceMock.GetSolutionWithBasicInformation(solution.CatalogueItemId).Returns(catalogueItem);
 
             solutionsServiceMock.GetContentStatusForCatalogueItem(solution.CatalogueItemId).Returns(contentStatus);
@@ -961,9 +1034,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_DataProcessingInformation_ValidId_GetsSolutionFromService(
             Solution solution,
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var id = solution.CatalogueItemId;
 
             mockService.GetSolutionWithDataProcessingInformation(id).Returns(solution.CatalogueItem);
@@ -1014,11 +1091,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_DataProcessingInformation_ValidSolutionForId_ReturnsExpectedViewResult(
             Solution solution,
             [Frozen] ISolutionsService solutionsServiceMock,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = solution.CatalogueItem;
-            var expectedModel = new DataProcessingInformationModel(catalogueItem, contentStatus);
+            var expectedModel = new DataProcessingInformationModel(catalogueItem, contentStatus, sections);
             solutionsServiceMock.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId).Returns(catalogueItem);
 
             solutionsServiceMock.GetContentStatusForCatalogueItem(solution.CatalogueItemId).Returns(contentStatus);
@@ -1035,9 +1116,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_ImplementationTimescales_ValidId_GetsSolutionFromService(
             [Frozen] Solution solution,
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var id = solution.CatalogueItemId;
 
             mockService.GetSolutionWithBasicInformation(id).Returns(solution.CatalogueItem);
@@ -1070,11 +1155,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_ImplementationTimescales_ValidSolutionForId_ReturnsExpectedViewResult(
             Solution solution,
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = solution.CatalogueItem;
-            var implementationTimescalesModel = new ImplementationTimescalesModel(catalogueItem, contentStatus);
+            var implementationTimescalesModel = new ImplementationTimescalesModel(catalogueItem, contentStatus, sections);
 
             mockService.GetSolutionWithBasicInformation(catalogueItem.Id).Returns(catalogueItem);
 
@@ -1091,10 +1180,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [MockAutoData]
         public static async Task Get_ListPrice_ValidId_GetsSolutionFromService(
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = solution.CatalogueItem;
             mockService.GetSolutionWithCataloguePrice(Arg.Any<CatalogueItemId>()).Returns(catalogueItem);
 
@@ -1125,13 +1218,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [MockAutoData]
         public static async Task Get_ListPrice_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Published;
-            var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, contentStatus);
+            var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, contentStatus, sections);
 
             mockService.GetSolutionWithCataloguePrice(catalogueItem.Id).Returns(catalogueItem);
 
@@ -1149,17 +1246,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_AdditionalServicePricePage_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] ISolutionsService mockSolutionsService,
             [Frozen] IListPriceService mockListPriceService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             Solution solution,
             AdditionalService additionalService,
             CatalogueItemContentStatus contentStatus,
             CatalogueItem service)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Published;
             catalogueItem.AdditionalService = additionalService;
             service = catalogueItem.AdditionalService.CatalogueItem;
-            var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, service, contentStatus) { IndexValue = 4, };
+            var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, service, contentStatus, sections) { IndexValue = 4, };
 
             mockListPriceService.GetCatalogueItemWithListPrices(service.Id).Returns(service);
 
@@ -1288,8 +1389,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] ISolutionsService solutionsService,
             [Frozen] IAdditionalServicesService additionalServicesService,
             [Frozen] IAssociatedServicesService associatedServicesService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
 
             var associatedServiceCatalogueItems = associatedServices.Select(x => x.CatalogueItem).ToList();
@@ -1313,7 +1418,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                         solution.CatalogueItem,
                         additionalService.CatalogueItem,
                         associatedServiceCatalogueItems,
-                        contentStatus),
+                        contentStatus,
+                        sections),
                     opt => opt.Excluding(m => m.BackLink));
         }
 
@@ -1418,8 +1524,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] ISolutionsService solutionsService,
             [Frozen] IAdditionalServicesService additionalServicesService,
             [Frozen] IListPriceService listPriceService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
             associatedService.CatalogueItem.CataloguePrices = cataloguePrices;
             additionalService.CatalogueItem.SupplierServiceAssociations = new List<SupplierServiceAssociation>
@@ -1431,7 +1541,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             };
 
             var expectedModel =
-                new ListPriceModel(solution.CatalogueItem, associatedService.CatalogueItem, contentStatus)
+                new ListPriceModel(solution.CatalogueItem, associatedService.CatalogueItem, contentStatus, sections)
                 {
                     IndexValue = 4, Caption = associatedService.CatalogueItem.Name,
                 };
@@ -1460,17 +1570,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_AssociatedServicePricePage_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] ISolutionsService mockSolutionsService,
             [Frozen] IListPriceService mockListPriceService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             Solution solution,
             AssociatedService associatedService,
             CatalogueItemContentStatus contentStatus,
             CatalogueItem service)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Published;
             catalogueItem.AssociatedService = associatedService;
             service = catalogueItem.AssociatedService.CatalogueItem;
-            var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, service, contentStatus) { IndexValue = 5, };
+            var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, service, contentStatus, sections) { IndexValue = 5, };
 
             mockListPriceService.GetCatalogueItemWithListPrices(service.Id).Returns(service);
 
@@ -1533,9 +1647,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_Interoperability_ValidId_GetsSolutionFromService(
             Solution solution,
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var id = solution.CatalogueItemId;
 
             mockService.GetSolutionWithBasicInformation(id).Returns(solution.CatalogueItem);
@@ -1571,14 +1689,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             List<IntegrationType> integrationTypes,
             Solution solution,
             [Frozen] ISolutionsService mockSolutionService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             solutionIntegrations.Zip(integrationTypes).ToList().ForEach(x => x.First.IntegrationType = x.Second);
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Published;
             solution.Integrations = solutionIntegrations;
 
-            var expectedViewData = new InteroperabilityModel(catalogueItem, contentStatus);
+            var expectedViewData = new InteroperabilityModel(catalogueItem, contentStatus, sections);
 
             mockSolutionService.GetSolutionWithBasicInformation(catalogueItem.Id).Returns(catalogueItem);
 
@@ -1596,9 +1718,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_SupplierDetails_ValidId_GetsSolutionFromService(
             Solution solution,
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var id = solution.CatalogueItemId;
 
             mockService.GetSolutionWithSupplierDetails(id).Returns(solution.CatalogueItem);
@@ -1630,14 +1756,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [MockAutoData]
         public static async Task Get_SupplierDetails_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemId id,
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Published;
-            var expectedSolutionSupplierDetailsModel = new SolutionSupplierDetailsModel(catalogueItem, contentStatus);
+            var expectedSolutionSupplierDetailsModel = new SolutionSupplierDetailsModel(catalogueItem, contentStatus, sections);
 
             mockService.GetSolutionWithSupplierDetails(id).Returns(catalogueItem);
 
@@ -1656,9 +1786,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_AdditionalServices_ValidId_InvokesGetSolution(
             Solution solution,
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var id = solution.CatalogueItemId;
 
             var additionalServices = solution.AdditionalServices.Select(add => add.CatalogueItem).ToList();
@@ -1695,15 +1829,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [MockAutoData]
         public static async Task Get_AdditionalServices_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
             var id = solution.CatalogueItemId;
 
             var additionalServices = solution.AdditionalServices.Select(add => add.CatalogueItem).ToList();
             var expectedAdditionalServicesModel =
-                new AdditionalServicesModel(solution.CatalogueItem, additionalServices, contentStatus);
+                new AdditionalServicesModel(solution.CatalogueItem, additionalServices, contentStatus, sections);
 
             mockService.GetSolutionWithBasicInformation(id).Returns(solution.CatalogueItem);
 
@@ -1756,11 +1894,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [MockAutoData]
         public static async Task Get_ServiceLevelAgreement_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var expectedModel = new ServiceLevelAgreementDetailsModel(solution.CatalogueItem, contentStatus);
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
+            var expectedModel = new ServiceLevelAgreementDetailsModel(solution.CatalogueItem, contentStatus, sections);
 
             mockService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
@@ -1793,11 +1935,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [MockAutoData]
         public static async Task Get_DevelopmentPlans_ValidSolutionForId_ReturnsExpectViewResult(
             [Frozen] ISolutionsService mockService,
+            SolutionSections sections,
+            [Frozen] ISolutionSectionsService solutionSectionsService,
             SolutionsController controller,
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var expectedModel = new DevelopmentPlansModel(solution.CatalogueItem, new List<WorkOffPlan>(), contentStatus);
+            solutionSectionsService.GetSolutionSectionsAsync(Arg.Any<SolutionType>()).Returns(sections);
+
+            var expectedModel = new DevelopmentPlansModel(solution.CatalogueItem, new List<WorkOffPlan>(), contentStatus, sections);
 
             mockService.GetSolutionWithBasicInformation(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 

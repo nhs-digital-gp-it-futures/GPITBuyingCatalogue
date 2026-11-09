@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void Constructor_PopulatesAllProperties(Solution solution)
         {
             var catalogueItem = solution.CatalogueItem;
-            var model = new SolutionSupplierDetailsModel(catalogueItem, new CatalogueItemContentStatus());
+            var model = new SolutionSupplierDetailsModel(catalogueItem, new CatalogueItemContentStatus(), new SolutionSections());
 
             model.Name.Should().Be(catalogueItem.Supplier.Name);
             model.Url.Should().Be(catalogueItem.Supplier.SupplierUrl);
