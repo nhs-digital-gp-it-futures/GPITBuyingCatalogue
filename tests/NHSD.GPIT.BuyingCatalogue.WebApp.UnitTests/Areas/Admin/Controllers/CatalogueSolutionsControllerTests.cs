@@ -457,7 +457,7 @@ public static class CatalogueSolutionsControllerTests
         mockSolutionService.GetSolutionThin(Arg.Any<CatalogueItemId>())
             .Returns(expected);
 
-        var actual = (await controller.Description(expected.Id)).As<ViewResult>();
+        var actual = (await controller.Description(SolutionType.GPIT, expected.Id)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -642,7 +642,7 @@ public static class CatalogueSolutionsControllerTests
         DescriptionModel model,
         CatalogueSolutionsController controller)
     {
-        var actual = (await controller.Description(catalogueItemId, model)).As<RedirectToActionResult>();
+        var actual = (await controller.Description(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
         actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
         actual.ControllerName.Should().BeNull();
@@ -658,7 +658,7 @@ public static class CatalogueSolutionsControllerTests
     {
         controller.ModelState.AddModelError("some-property", "some-error");
 
-        await controller.Description(id, new DescriptionModel());
+        await controller.Description(SolutionType.GPIT, id, new DescriptionModel());
 
         await mockSolutionService
             .Received(0)
@@ -674,7 +674,7 @@ public static class CatalogueSolutionsControllerTests
     {
         controller.ModelState.AddModelError("some-property", "some-error");
 
-        var actual = (await controller.Description(id, editDescriptionModel)).As<ViewResult>();
+        var actual = (await controller.Description(SolutionType.GPIT, id, editDescriptionModel)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -689,7 +689,7 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] ISolutionsService mockSolutionService,
         CatalogueSolutionsController controller)
     {
-        await controller.Description(id, model);
+        await controller.Description(SolutionType.GPIT, id, model);
 
         await mockSolutionService
             .Received()
@@ -702,7 +702,7 @@ public static class CatalogueSolutionsControllerTests
         DescriptionModel model,
         CatalogueSolutionsController controller)
     {
-        var actual = (await controller.Description(model.SolutionId!.Value, model)).As<RedirectToActionResult>();
+        var actual = (await controller.Description(SolutionType.GPIT, model.SolutionId!.Value, model)).As<RedirectToActionResult>();
 
         actual.Should().NotBeNull();
         actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));

@@ -202,19 +202,19 @@ public sealed class CatalogueSolutionsController(
         return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
-    [HttpGet("manage/{solutionId}/description")]
-    public async Task<IActionResult> Description(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/description")]
+    public async Task<IActionResult> Description(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
         if (solution is null)
-            return BadRequest($"No Solution found for Id: {solutionId}");
+            return BadRequest($"No Solution found for Id: {solutionId}, solution type: {solutionType}");
 
         return View(new DescriptionModel(solution));
     }
 
-    [HttpPost("manage/{solutionId}/description")]
-    public async Task<IActionResult> Description(CatalogueItemId solutionId, DescriptionModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/description")]
+    public async Task<IActionResult> Description(SolutionType solutionType, CatalogueItemId solutionId, DescriptionModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -225,7 +225,7 @@ public sealed class CatalogueSolutionsController(
             model.Description,
             model.Link);
 
-        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
     [HttpGet("manage/{solutionId}/implementation")]

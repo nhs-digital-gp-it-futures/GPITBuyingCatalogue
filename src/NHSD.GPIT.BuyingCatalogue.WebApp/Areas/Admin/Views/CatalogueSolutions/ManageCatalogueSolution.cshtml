@@ -88,6 +88,7 @@
                         <nhs-table-cell>
                             <a asp-action="@nameof(CatalogueSolutionsController.Description)"
                                asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
