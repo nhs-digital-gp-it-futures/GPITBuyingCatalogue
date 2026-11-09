@@ -72,10 +72,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
             {
                 Id = 100001,
                 Name = "Bravo Supplier",
+                LegalName = "Bravo Supplier",
                 CatalogueItems = new List<CatalogueItem>
                 {
-                    new()
+                     new()
                     {
+                        Name = "Bravo Solution",
                         CatalogueItemType = CatalogueItemType.Solution,
                         Solution = new Solution { SolutionType = matchingSolutionType },
                     },
@@ -86,10 +88,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
             {
                 Id = 100002,
                 Name = "Alpha Supplier",
+                LegalName = "Alpha Supplier",
                 CatalogueItems = new List<CatalogueItem>
                 {
                     new()
                     {
+                        Name = "Alpha Supplier",
                         CatalogueItemType = CatalogueItemType.Solution,
                         Solution = new Solution { SolutionType = matchingSolutionType },
                     },
@@ -100,10 +104,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
             {
                 Id = 100003,
                 Name = "Zulu Supplier",
+                LegalName = "Zulu Supplier",
                 CatalogueItems = new List<CatalogueItem>
                 {
                     new()
                     {
+                        Name = "Zulu Solution",
                         CatalogueItemType = CatalogueItemType.Solution,
                         Solution = new Solution { SolutionType = SolutionType.GPIT },
                     },
