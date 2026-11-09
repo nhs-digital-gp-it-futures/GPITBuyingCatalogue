@@ -207,7 +207,7 @@ public sealed class CatalogueSolutionsController(
         if (solution is null)
             return BadRequest($"No Solution found for Id: {solutionId}, solution type: {solutionType}");
 
-        return View(new DescriptionModel(solution));
+        return View(new DescriptionModel(solution) { SolutionType = solutionType });
     }
 
     [HttpPost("manage/{solutionType}/{solutionId}/description")]
@@ -233,7 +233,7 @@ public sealed class CatalogueSolutionsController(
         if (solution is null)
             return BadRequest($"No Solution found for Id: {solutionId}, solution type: {solutionType}");
 
-        return View(new ImplementationTimescaleModel(solution));
+        return View(new ImplementationTimescaleModel(solution) { SolutionType = solutionType });
     }
 
     [HttpPost("manage/{solutionType}/{solutionId}/implementation")]

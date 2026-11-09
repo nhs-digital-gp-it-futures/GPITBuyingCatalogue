@@ -22,6 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
 
         public string SolutionName { get; }
 
+        public required SolutionType SolutionType { get; init; }
+
         [StringLength(1000)]
         public string Link { get; set; }
 

@@ -173,6 +173,7 @@
                         <nhs-table-cell>
                             <a asp-controller="@typeof(HostingTypesController).ControllerName()"
                                asp-action="@nameof(HostingTypesController.HostingType)"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>

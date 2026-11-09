@@ -658,7 +658,7 @@ public static class CatalogueSolutionsControllerTests
     {
         controller.ModelState.AddModelError("some-property", "some-error");
 
-        await controller.Description(SolutionType.GPIT, id, new DescriptionModel());
+        await controller.Description(SolutionType.GPIT, id, new DescriptionModel() { SolutionType = SolutionType.GPIT });
 
         await mockSolutionService
             .Received(0)
@@ -744,7 +744,7 @@ public static class CatalogueSolutionsControllerTests
             .GetSolutionThin(catalogueItemId);
 
         actual.ViewName.Should().BeNull();
-        actual.Model.Should().BeEquivalentTo(new ImplementationTimescaleModel(catalogueItem));
+        actual.Model.Should().BeEquivalentTo(new ImplementationTimescaleModel(catalogueItem) { SolutionType = SolutionType.GPIT });
     }
 
     [Theory]
@@ -809,7 +809,7 @@ public static class CatalogueSolutionsControllerTests
             .GetSolutionThin(catalogueItemId);
 
         actual.ViewName.Should().BeNull();
-        actual.Model.Should().BeEquivalentTo(new ImplementationTimescaleModel(catalogueItem));
+        actual.Model.Should().BeEquivalentTo(new ImplementationTimescaleModel(catalogueItem) { SolutionType = SolutionType.GPIT });
     }
 
     [Theory]

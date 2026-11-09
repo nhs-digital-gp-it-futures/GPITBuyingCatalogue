@@ -21,7 +21,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             expected.Link = solution.AboutUrl;
             expected.SolutionName = catalogueItem.Name;
 
-            var actual = new DescriptionModel(catalogueItem);
+            var actual = new DescriptionModel(catalogueItem)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             actual.Summary.Should().BeEquivalentTo(expected.Summary);
             actual.Description.Should().BeEquivalentTo(expected.Description);
@@ -32,7 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new DescriptionModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new DescriptionModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

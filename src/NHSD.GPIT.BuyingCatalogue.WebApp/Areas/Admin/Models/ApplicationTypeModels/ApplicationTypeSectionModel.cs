@@ -34,8 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
 
         public string SolutionName { get; set; }
 
-        public required SolutionType SolutionType { get; set; }
-
         public List<ApplicationType> ApplicationTypesToAdd { get; set; }
 
         public IEnumerable<object> ApplicationTypesToAddRadioItems { get; }

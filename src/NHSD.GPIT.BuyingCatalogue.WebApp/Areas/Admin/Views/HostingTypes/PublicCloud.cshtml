@@ -47,10 +47,12 @@
 
             @if (!Model.IsNewHostingType)
             {
-                <vc:nhs-delete-button url="@Url.Action(
+                <vc:nhs-delete-button 
+                    text="Delete hosting type"
+                    url="@Url.Action(
                         nameof(HostingTypesController.DeleteHostingType),
                         typeof(HostingTypesController).ControllerName(),
-                        new { solutionId = Model.SolutionId, hostingType = HostingType.PublicCloud })" text="Delete hosting type" />
+                        new { solutionType = Model.SolutionType, solutionId = Model.SolutionId, hostingType = HostingType.PublicCloud })" />
             }
         </div>
     </div>
