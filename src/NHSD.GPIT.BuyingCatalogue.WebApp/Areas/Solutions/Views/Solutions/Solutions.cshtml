@@ -2,9 +2,10 @@
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Models.CommunityPharmacySolutionsModel;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
 @{
     var pageTitle = CommunityPharmacySolutionsModel.PageTitle;
     ViewBag.Title = pageTitle;
@@ -55,7 +56,7 @@
         <nhs-hint-text>View assured solutions for community pharmacy services</nhs-hint-text>
         <div id="search-by">
             <vc:nhs-suggestion-search id="marketing-suggestion-search"
-                                      ajax-url="@Url.Action(nameof(CommunityPharmacyController.FilterSearchSuggestions), typeof(CommunityPharmacyController).ControllerName())"
+                                      ajax-url="@Url.Action(nameof(SolutionsController.FilterSearchSuggestions), typeof(SolutionsController).ControllerName())"
                                       title-text="Search"
                                       hide-label="true"
                                       placeholder-text="Search by service, solution or supplier"
@@ -78,7 +79,7 @@
         
         @foreach (var item in Model.ResultsModel.CatalogueItems)
         {
-            <partial name="_CommunityPharmacySolutionSearchResult" model="@(new SolutionSearchResultModel(item, false))"/>
+            <partial name="_SolutionSearchResult" model="@(new SolutionSearchResultModel(item, false))"/>
         }
         
         <govuk-pagination

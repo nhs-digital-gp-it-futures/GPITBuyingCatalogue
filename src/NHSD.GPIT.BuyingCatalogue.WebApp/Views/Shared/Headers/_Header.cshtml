@@ -20,7 +20,7 @@
                         <vc:nhs-login-icon/>
                     </a>
                 }
-                else if (area != typeof(CommunityPharmacyController).AreaName() && !(controller == typeof(HomeController).ControllerName() && action == nameof(HomeController.Index)))
+                else if (!(controller == typeof(HomeController).ControllerName() && action == nameof(HomeController.Index)))
                 {
                     <a class="nhsuk-account__login--link" href="@Url.Action(nameof(AccountController.Login), typeof(AccountController).ControllerName(), new { area = typeof(AccountController).AreaName() })">
                         Log in

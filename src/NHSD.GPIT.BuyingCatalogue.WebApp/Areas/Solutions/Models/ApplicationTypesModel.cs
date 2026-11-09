@@ -12,8 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     {
         public ApplicationTypesModel(
             CatalogueItem catalogueItem,
-            CatalogueItemContentStatus contentStatus)
-            : base(catalogueItem, contentStatus)
+            CatalogueItemContentStatus contentStatus,
+            SolutionSections sections)
+            : base(catalogueItem, contentStatus, sections)
         {
             ApplicationTypeDetail = catalogueItem.Solution.EnsureAndGetApplicationType();
 

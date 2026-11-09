@@ -3,8 +3,8 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
-public class DataProcessingInformationModel(CatalogueItem item, CatalogueItemContentStatus contentStatus)
-    : SolutionDisplayBaseModel(item, contentStatus)
+public class DataProcessingInformationModel(CatalogueItem item, CatalogueItemContentStatus contentStatus, SolutionSections sections)
+    : SolutionDisplayBaseModel(item, contentStatus, sections)
 {
     public override int Index => 11;
 

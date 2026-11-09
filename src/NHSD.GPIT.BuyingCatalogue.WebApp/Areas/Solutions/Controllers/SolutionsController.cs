@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Flurl.Util;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -30,7 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         IFrameworkService frameworkService,
         IIntegrationsService integrationsService,
         ISolutionStandardsService solutionStandardsService,
-        IAssociatedServicesService associatedServicesService)
+        IAssociatedServicesService associatedServicesService,
+        ISolutionSectionsService solutionSectionsService)
         : Controller
     {
         private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
@@ -41,9 +44,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         private readonly IIntegrationsService integrationsService = integrationsService ?? throw new ArgumentNullException(nameof(integrationsService));
         private readonly ISolutionStandardsService solutionStandardsService = solutionStandardsService ?? throw new ArgumentNullException(nameof(solutionStandardsService));
         private readonly IAssociatedServicesService associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
+        private readonly ISolutionSectionsService solutionSectionsService = solutionSectionsService ?? throw new ArgumentNullException(nameof(solutionSectionsService));
 
         [HttpGet]
         public async Task<IActionResult> Index(
+            [FromQuery] string solutionType,
             [FromQuery] string page,
             [FromQuery] string sortBy,
             [FromQuery] string selected,
@@ -67,6 +72,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 PageSize = 10,
             };
 
+            var solutionTypeEnum = Enum.Parse<SolutionType>(solutionType, ignoreCase: true);
+
             var solutionsFilters = new SolutionsFilters
             {
                 CapabilitiesAndEpics = filters.GetCapabilityAndEpicIds(),
@@ -75,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 SelectedApplicationTypeIds = selectedApplicationTypeIds,
                 SelectedHostingTypeIds = selectedHostingTypeIds,
                 SelectedIntegrationsAndTypes = filters.GetIntegrationsAndTypes(),
-                SolutionType = SolutionType.GPIT,
+                SolutionType = solutionTypeEnum,
             };
 
             (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
@@ -88,7 +95,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var additionalFilters = new AdditionalFiltersModel(frameworks, filters, integrations);
 
+            var viewName = solutionTypeEnum switch
+            {
+                SolutionType.CommunityPharmacy => "Solutions",
+                _ => "Index",
+            };
+
             return View(
+                viewName,
                 new SolutionsModel
                 {
                     AdditionalFilters = additionalFilters,
@@ -134,8 +148,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> FilterSearchSuggestions([FromQuery] string search)
         {
             var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
+            var query = QueryHelpers.ParseQuery(currentPageUrl.Query);
 
-            var results = await solutionsFilterService.GetSolutionsBySearchTerm(search, isCommunityPharmacy: false);
+            var solutionType = query.TryGetValue("solutionType", out var value)
+                ? Enum.Parse<SolutionType>(value.ToString(), ignoreCase: true)
+                : SolutionType.GPIT;
+
+            var results = await solutionsFilterService.GetSolutionsBySearchTerm(search, solutionType: solutionType);
 
             return Json(
                 results.Select(
@@ -203,8 +222,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
             var associatedServices = await solutionsService.GetPublishedAssociatedServicesForSolution(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(solution.Solution.SolutionType);
 
-            return View(new AssociatedServicesModel(solution, associatedServices, contentStatus));
+            return View(new AssociatedServicesModel(solution, associatedServices, contentStatus, sections));
         }
 
         [HttpGet("{solutionId}/associated-services/{serviceId}/price")]
@@ -219,8 +239,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { serviceId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            return View("ListPrice", new ListPriceModel(item, associatedService, contentStatus)
+            return View("ListPrice", new ListPriceModel(item, associatedService, contentStatus, sections)
             {
                 BackLink = Url.Action(
                     nameof(AssociatedServices),
@@ -243,11 +264,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(solution.Solution.SolutionType);
 
             var additionalServices =
                 await solutionsService.GetPublishedAdditionalServicesForSolution(solutionId);
 
-            return View(new AdditionalServicesModel(solution, additionalServices, contentStatus));
+            return View(new AdditionalServicesModel(solution, additionalServices, contentStatus, sections));
         }
 
         [HttpGet("{solutionId}/additional-services/{serviceId}/price")]
@@ -262,8 +284,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { serviceId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            return View("ListPrice", new ListPriceModel(item, additionalService, contentStatus)
+            return View("ListPrice", new ListPriceModel(item, additionalService, contentStatus, sections)
             {
                 BackLink = Url.Action(
                     nameof(AdditionalServices),
@@ -289,12 +312,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return BadRequest($"No additional service found for Id: {additionalServiceId}");
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
             var associatedServices =
                 await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(additionalServiceId);
 
             var model =
-                new AdditionalAssociatedServicesModel(item, additionalService, associatedServices, contentStatus)
+                new AdditionalAssociatedServicesModel(item, additionalService, associatedServices, contentStatus, sections)
                 {
                     BackLink = Url.Action(nameof(AdditionalServices), new { solutionId, additionalServiceId }),
                 };
@@ -323,9 +347,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return BadRequest($"No associated service found for Id: {associatedServiceId}");
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
             var associatedService = await listPriceService.GetCatalogueItemWithListPrices(associatedServiceId);
 
-            return View("ListPrice", new ListPriceModel(item, associatedService, contentStatus)
+            return View("ListPrice", new ListPriceModel(item, associatedService, contentStatus, sections)
             {
                 BackLink = Url.Action(
                     nameof(AssociatedServices),
@@ -347,8 +372,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            var model = new CapabilitiesViewModel(item, contentStatus)
+            var model = new CapabilitiesViewModel(item, contentStatus, sections)
             {
                 BackLinkText = NavBaseModel.BackLinkTextDefault,
                 BackLink = Url.Action(
@@ -377,9 +403,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return BadRequest($"No Catalogue Item found for Id: {additionalServiceId}");
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
             return View(
-                new CapabilitiesViewModel(solution, item, contentStatus)
+                new CapabilitiesViewModel(solution, item, contentStatus, sections)
                 {
                     BackLink = Url.Action(
                         nameof(AdditionalServices),
@@ -468,8 +495,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            var model = new ApplicationTypesModel(item, contentStatus);
+            var model = new ApplicationTypesModel(item, contentStatus, sections);
 
             return View(model);
         }
@@ -482,8 +510,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            return View(new SolutionDescriptionModel(item, contentStatus));
+            var viewName = item.Solution.SolutionType switch
+            {
+                SolutionType.CommunityPharmacy => "Summary",
+                _ => "Description",
+            };
+
+            return View(viewName, new SolutionDescriptionModel(item, contentStatus, sections));
         }
 
         [HttpGet("{solutionId}/features")]
@@ -497,8 +532,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            return View(new SolutionFeaturesModel(item, contentStatus));
+            return View(new SolutionFeaturesModel(item, contentStatus, sections));
         }
 
         [HttpGet("{solutionId}/hosting-type")]
@@ -512,8 +548,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            return View(new HostingTypesModel(item, contentStatus));
+            return View(new HostingTypesModel(item, contentStatus, sections));
         }
 
         [HttpGet("{solutionId}/data-processing-information")]
@@ -527,8 +564,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            return View(new DataProcessingInformationModel(item, contentStatus));
+            return View(new DataProcessingInformationModel(item, contentStatus, sections));
         }
 
         [HttpGet("{solutionId}/implementation")]
@@ -542,8 +580,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            return View(new ImplementationTimescalesModel(item, contentStatus));
+            return View(new ImplementationTimescalesModel(item, contentStatus, sections));
         }
 
         [HttpGet("{solutionId}/interoperability")]
@@ -557,8 +596,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            return View(new InteroperabilityModel(item, contentStatus));
+            return View(new InteroperabilityModel(item, contentStatus, sections));
         }
 
         [HttpGet("{solutionId}/list-price")]
@@ -572,8 +612,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            return View(new ListPriceModel(item, contentStatus));
+            return View(new ListPriceModel(item, contentStatus, sections));
         }
 
         [HttpGet("{solutionId}/service-level-agreements")]
@@ -587,8 +628,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            var model = new ServiceLevelAgreementDetailsModel(item, contentStatus);
+            var model = new ServiceLevelAgreementDetailsModel(item, contentStatus, sections);
 
             return View(model);
         }
@@ -604,8 +646,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            return View(new SolutionSupplierDetailsModel(item, contentStatus));
+            return View(new SolutionSupplierDetailsModel(item, contentStatus, sections));
         }
 
         [HttpGet("{solutionId}/standards")]
@@ -624,8 +667,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 (await solutionsService.GetWorkOffPlans(solutionId)).Select(wp => wp.StandardId);
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
-            return View(new SolutionStandardsModel(item, standards, standardsWithWorkOffPlans, contentStatus));
+            return View(new SolutionStandardsModel(item, standards, standardsWithWorkOffPlans, contentStatus, sections));
         }
 
         [HttpGet("{solutionId}/development-plans")]
@@ -639,10 +683,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var sections = await solutionSectionsService.GetSolutionSectionsAsync(item.Solution.SolutionType);
 
             var workOffPlans = await solutionsService.GetWorkOffPlans(solutionId);
 
-            return View(new DevelopmentPlansModel(item, workOffPlans, contentStatus));
+            return View(new DevelopmentPlansModel(item, workOffPlans, contentStatus, sections));
         }
 
         [HttpGet("about-pilot-solutions")]

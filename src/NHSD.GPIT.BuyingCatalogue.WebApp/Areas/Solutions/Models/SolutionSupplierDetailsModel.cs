@@ -7,8 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public sealed class SolutionSupplierDetailsModel : SolutionDisplayBaseModel
     {
-        public SolutionSupplierDetailsModel(CatalogueItem catalogueItem, CatalogueItemContentStatus contentStatus)
-            : base(catalogueItem, contentStatus)
+        public SolutionSupplierDetailsModel(CatalogueItem catalogueItem, CatalogueItemContentStatus contentStatus, SolutionSections sections)
+            : base(catalogueItem, contentStatus, sections)
         {
             Summary = catalogueItem.Supplier?.Summary;
             Name = catalogueItem.Supplier?.Name;

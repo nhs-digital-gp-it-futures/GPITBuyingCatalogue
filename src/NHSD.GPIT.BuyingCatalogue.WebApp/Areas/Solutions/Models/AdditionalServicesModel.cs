@@ -7,8 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     public sealed class AdditionalServicesModel(
         CatalogueItem catalogueItem,
         List<CatalogueItem> additionalServices,
-        CatalogueItemContentStatus contentStatus)
-        : SolutionDisplayBaseModel(catalogueItem, contentStatus)
+        CatalogueItemContentStatus contentStatus,
+        SolutionSections sections)
+        : SolutionDisplayBaseModel(catalogueItem, contentStatus, sections)
     {
         public override int Index => 4;
 

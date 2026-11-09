@@ -8,16 +8,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class CapabilitiesViewModel : SolutionDisplayBaseModel, INoNavModel
     {
-        public CapabilitiesViewModel(CatalogueItem solution, CatalogueItemContentStatus contentStatus)
-            : base(solution, contentStatus)
+        public CapabilitiesViewModel(CatalogueItem solution, CatalogueItemContentStatus contentStatus, SolutionSections sections)
+            : base(solution, contentStatus, sections)
         {
             RowViewModels = solution.CatalogueItemCapabilities
                 .Where(cic => cic.Capability.Status != CapabilityStatus.Expired)
                 .Select(cic => new RowViewModel(cic)).ToList();
         }
 
-        public CapabilitiesViewModel(CatalogueItem solution, CatalogueItem additionalService, CatalogueItemContentStatus contentStatus)
-            : base(solution, contentStatus)
+        public CapabilitiesViewModel(CatalogueItem solution, CatalogueItem additionalService, CatalogueItemContentStatus contentStatus, SolutionSections sections)
+            : base(solution, contentStatus, sections)
         {
             RowViewModels = additionalService.CatalogueItemCapabilities
                 .Where(cic => cic.Capability.Status != CapabilityStatus.Expired)

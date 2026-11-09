@@ -1,4 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
@@ -31,7 +32,7 @@
                             Find clinical solutions for general practice.
                         </p>
 
-                        <a href="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })"
+                        <a href="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName(), solutionType = SolutionType.GPIT })"
                            class="nhsuk-u-padding-2 nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-0"
                            style="display:inline-block; border:2px solid #ffffff; border-radius:4px; color:#ffffff; text-decoration:none;">
                             Discover primary care solutions

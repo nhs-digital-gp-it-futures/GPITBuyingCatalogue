@@ -14,8 +14,9 @@ public sealed class AdditionalAssociatedServicesModel : AssociatedServicesModel
         CatalogueItem catalogueItem,
         CatalogueItem additionalService,
         List<CatalogueItem> associatedServices,
-        CatalogueItemContentStatus contentStatus)
-        : base(catalogueItem, associatedServices, contentStatus, isSubPage: true)
+        CatalogueItemContentStatus contentStatus,
+        SolutionSections sections)
+        : base(catalogueItem, associatedServices, contentStatus, sections, isSubPage: true)
     {
         Title = "Associated services";
         Caption = additionalService.Name;
