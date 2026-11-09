@@ -43,4 +43,39 @@ public class PlannedDeliveryDatesPage : BasePage
 
         await ClickSaveAndContinueLinkAsync();
     }
+
+    // Planned delivery date alternate route
+    public async Task EnterDeliveryDatePerRecipientAsync(
+        string day, string month, string year,
+        string[] practices, string perRecipientDay)
+    {
+        await AssertHeadingAsync("Planned delivery date");
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Day" }).FillAsync(day);
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Month" }).FillAsync(month);
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Year" }).FillAsync(year);
+
+        await Page.GetByRole(AriaRole.Radio, new() { Name = "No" }).CheckAsync();
+        await ClickSaveAndContinueAsync();
+
+        await AssertHeadingAsync("Which organisations do you want to change dates for?");
+        foreach (var practice in practices)
+            await Page.GetByRole(AriaRole.Checkbox, new() { Name = practice }).CheckAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Continue" }).ClickAsync();
+
+        await AssertHeadingAsync("Change delivery dates");
+        for (var i = 0; i < practices.Length; i++)
+        {
+            await Page.GetByRole(AriaRole.Link, new() { Name = "Change" }).Nth(i).ClickAsync();
+            await AssertHeadingAsync($"Change delivery dates for {practices[i]}");
+
+            await Page.GetByLabel("Day").First.FillAsync(perRecipientDay);
+
+            await ClickSaveAndContinueAsync();
+            await AssertHeadingAsync("Change delivery dates");
+        }
+
+        await ClickSaveAndContinueAsync();
+        await AssertHeadingAsync("Review planned delivery dates");
+        await ClickSaveAndContinueLinkAsync();
+    }
 }

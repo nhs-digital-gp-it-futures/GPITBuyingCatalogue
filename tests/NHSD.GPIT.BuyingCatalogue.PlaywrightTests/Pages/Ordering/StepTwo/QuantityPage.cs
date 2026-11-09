@@ -46,7 +46,7 @@ public class QuantityPage : BasePage
         if (completeEdit)
         {
             await AssertHeadingAsync("Edit solutions and services");
-            await ClickSaveAndContinueLinkAsync();
+            await ClickSaveAndContinueAsync();
         }
     }
 
@@ -76,7 +76,7 @@ public class QuantityPage : BasePage
         if (completeEdit)
         {
             await AssertHeadingAsync("Edit solutions and services");
-            await ClickSaveAndContinueLinkAsync();
+            await ClickSaveAndContinueAsync();
         }
     }
 
@@ -100,6 +100,6 @@ public class QuantityPage : BasePage
         await AssertHeadingAsync("Confirm quantities");
         await ClickContinueLinkAsync();
         await AssertHeadingAsync("Edit solutions and services");
-        await ClickSaveAndContinueLinkAsync();
+        await ClickSaveAndContinueAsync();
     }
 }
