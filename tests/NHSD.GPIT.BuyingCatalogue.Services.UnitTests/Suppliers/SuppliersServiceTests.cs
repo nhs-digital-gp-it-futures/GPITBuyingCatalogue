@@ -62,6 +62,66 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
 
         [Theory]
         [MockInMemoryDbAutoData]
+        public static async Task GetAllSuppliersBySolutionType_FiltersAndOrdersSuppliers(
+            [Frozen] BuyingCatalogueDbContext context,
+            SuppliersService service)
+        {
+            var matchingSolutionType = SolutionType.CommunityPharmacy;
+
+            var matchingSupplierB = new Supplier
+            {
+                Id = 100001,
+                Name = "Bravo Supplier",
+                CatalogueItems = new List<CatalogueItem>
+                {
+                    new()
+                    {
+                        CatalogueItemType = CatalogueItemType.Solution,
+                        Solution = new Solution { SolutionType = matchingSolutionType },
+                    },
+                },
+            };
+
+            var matchingSupplierA = new Supplier
+            {
+                Id = 100002,
+                Name = "Alpha Supplier",
+                CatalogueItems = new List<CatalogueItem>
+                {
+                    new()
+                    {
+                        CatalogueItemType = CatalogueItemType.Solution,
+                        Solution = new Solution { SolutionType = matchingSolutionType },
+                    },
+                },
+            };
+
+            var nonMatchingSupplier = new Supplier
+            {
+                Id = 100003,
+                Name = "Zulu Supplier",
+                CatalogueItems = new List<CatalogueItem>
+                {
+                    new()
+                    {
+                        CatalogueItemType = CatalogueItemType.Solution,
+                        Solution = new Solution { SolutionType = SolutionType.GPIT },
+                    },
+                },
+            };
+
+            context.Suppliers.AddRange(matchingSupplierB, matchingSupplierA, nonMatchingSupplier);
+            await context.SaveChangesAsync();
+
+            var actual = await service.GetAllSuppliersBySolutionType(matchingSolutionType);
+
+            actual.Should().HaveCount(2);
+            actual.Select(s => s.Name).Should().ContainInOrder("Alpha Supplier", "Bravo Supplier");
+            actual.Select(s => s.Name).Should().NotContain("Zulu Supplier");
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
         public static async Task GetAllSupplier_WithSearchTerm_ReturnsSupplier(
             List<Supplier> suppliers,
             [Frozen] BuyingCatalogueDbContext context,

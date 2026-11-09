@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers
 {
@@ -21,6 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers
         Task<List<CatalogueItem>> GetAllSolutionsForSupplier(int supplierId);
 
         Task<IList<Supplier>> GetAllSuppliers(string searchTerm = null);
+
+        Task<IList<Supplier>> GetAllSuppliersBySolutionType(SolutionType solutionType);
 
         Task<IList<Supplier>> GetSuppliersBySearchTerm(string searchTerm);
 

@@ -30,14 +30,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{solutionType}")]
         public async Task<IActionResult> Index(SolutionType solutionType)
         {
-            var suppliers = await suppliersService.GetAllSuppliers();
+            var suppliers = await suppliersService.GetAllSuppliersBySolutionType(solutionType);
 
             var model = new SolutionModel()
             {
                 BackLink = Url.Action(nameof(CatalogueSolutionsController.Index), typeof(CatalogueSolutionsController).ControllerName(), new { solutionType }),
             }.WithSelectListItems(suppliers);
 
-            model.Frameworks = await GetFrameworks();
+            model.Frameworks = await GetFrameworks(solutionType);
 
             return View("Details", model);
         }
@@ -47,9 +47,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var suppliers = await suppliersService.GetAllSuppliers();
+                var suppliers = await suppliersService.GetAllSuppliersBySolutionType(solutionType);
 
-                model.Frameworks = await GetFrameworks();
+                model.Frameworks = await GetFrameworks(solutionType);
 
                 return View("Details", model.WithSelectListItems(suppliers));
             }
@@ -69,7 +69,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 new { solutionType, solutionId = catalogueItemId });
         }
 
-        private async Task<IList<FrameworkModel>> GetFrameworks() => (await solutionsService.GetAllFrameworks())
-                .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id }).ToList();
+        private async Task<IList<FrameworkModel>> GetFrameworks(SolutionType solutionType) => (await solutionsService.GetAllFrameworks())
+            .Where(f => f.SolutionType == solutionType)
+            .Select(f => new FrameworkModel
+            {
+                Name = $"{f.ShortName} Framework",
+                FrameworkId = f.Id,
+            }).ToList();
     }
 }

@@ -27,7 +27,7 @@
                             url="@Url.Action(
                                      nameof(AddCatalogueSolutionController.Index),
                                      typeof(AddCatalogueSolutionController).ControllerName(),
-                                     null)" />
+                                             new { Model.SolutionType })" />
 
         <vc:nhs-suggestion-search id="solutions-search"
                                   ajax-url="@Url.Action(

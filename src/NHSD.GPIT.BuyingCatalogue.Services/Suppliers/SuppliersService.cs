@@ -28,6 +28,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
             return await dbContext.Suppliers.OrderBy(s => s.Name).ToListAsync();
         }
 
+        public async Task<IList<Supplier>> GetAllSuppliersBySolutionType(SolutionType solutionType) =>
+            await dbContext.Suppliers
+            .Where(s => s.CatalogueItems.Any(ci =>
+            ci.CatalogueItemType == CatalogueItemType.Solution &&
+            ci.Solution.SolutionType == solutionType))
+            .OrderBy(s => s.Name)
+            .ToListAsync();
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "Formatting used in LINQ-to-SQL Queries which does not support format providers")]
         public async Task<IList<Supplier>> GetSuppliersBySearchTerm(string searchTerm)
             => await dbContext.Suppliers.Where(s => s.Id.ToString().Contains(searchTerm) || s.Name.Contains(searchTerm)).OrderBy(s => s.Name).ToListAsync();
