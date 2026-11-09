@@ -174,7 +174,7 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(new CatalogueItem());
 
-        await controller.Features(catalogueItemId);
+        await controller.Features(SolutionType.GPIT, catalogueItemId);
 
         await mockService
             .Received()
@@ -197,7 +197,7 @@ public static class CatalogueSolutionsControllerTests
             BackLink = "testUrl",
         };
 
-        var actual = (await controller.Features(catalogueItemId)).As<ViewResult>();
+        var actual = (await controller.Features(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
         await mockService
             .Received()
@@ -217,7 +217,7 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(default(CatalogueItem));
 
-        var actual = (await controller.Features(catalogueItemId)).As<BadRequestObjectResult>();
+        var actual = (await controller.Features(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
         actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
     }
@@ -230,7 +230,7 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] ISolutionsService mockService,
         CatalogueSolutionsController controller)
     {
-        await controller.Features(catalogueItemId, model);
+        await controller.Features(SolutionType.GPIT, catalogueItemId, model);
 
         await mockService
             .Received()
@@ -244,7 +244,7 @@ public static class CatalogueSolutionsControllerTests
         FeaturesModel model,
         CatalogueSolutionsController controller)
     {
-        var actual = (await controller.Features(catalogueItemId, model)).As<RedirectToActionResult>();
+        var actual = (await controller.Features(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
         actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
         actual.ControllerName.Should().BeNull();
@@ -267,7 +267,7 @@ public static class CatalogueSolutionsControllerTests
             BackLink = "testUrl",
         };
 
-        var actual = (await controller.Features(catalogueItemId)).As<ViewResult>();
+        var actual = (await controller.Features(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
         await mockService
             .Received()

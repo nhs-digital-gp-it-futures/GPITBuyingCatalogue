@@ -81,8 +81,8 @@ public sealed class CatalogueSolutionsController(
             Url.Action(nameof(ManageCatalogueSolution), new { solutionType, solutionId = $"{x.Id}" }))));
     }
 
-    [HttpGet("manage/{solutionId}/features")]
-    public async Task<IActionResult> Features(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/features")]
+    public async Task<IActionResult> Features(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
         if (solution is null)
@@ -93,21 +93,21 @@ public sealed class CatalogueSolutionsController(
             BackLink = Url.Action(
                 nameof(ManageCatalogueSolution),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { solutionId }),
+                new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}/features")]
-    public async Task<IActionResult> Features(CatalogueItemId solutionId, FeaturesModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/features")]
+    public async Task<IActionResult> Features(SolutionType solutionType, CatalogueItemId solutionId, FeaturesModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
 
         await solutionsService.SaveSolutionFeatures(solutionId, model.AllFeatures);
 
-        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
     [HttpGet("manage/{solutionType}/{solutionId}")]
