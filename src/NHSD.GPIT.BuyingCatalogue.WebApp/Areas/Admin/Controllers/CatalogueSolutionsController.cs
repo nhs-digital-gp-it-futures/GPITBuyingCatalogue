@@ -315,21 +315,21 @@ public sealed class CatalogueSolutionsController(
         };
     }
 
-    [HttpGet("manage/{solutionId}/supplier-details")]
-    public async Task<IActionResult> EditSupplierDetails(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/supplier-details")]
+    public async Task<IActionResult> EditSupplierDetails(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var catalogueItem = await solutionsService.GetSolutionWithSupplierDetails(solutionId);
 
         var model = new EditSolutionContactsModel(catalogueItem)
         {
-            BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionId }),
+            BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}/supplier-details")]
-    public async Task<IActionResult> EditSupplierDetails(CatalogueItemId solutionId, EditSolutionContactsModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/supplier-details")]
+    public async Task<IActionResult> EditSupplierDetails(SolutionType solutionType, CatalogueItemId solutionId, EditSolutionContactsModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -347,7 +347,7 @@ public sealed class CatalogueSolutionsController(
 
         await solutionsService.SaveContacts(solutionId, selectedContacts);
 
-        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
     [HttpGet("manage/{solutionId}/edit-capabilities")]

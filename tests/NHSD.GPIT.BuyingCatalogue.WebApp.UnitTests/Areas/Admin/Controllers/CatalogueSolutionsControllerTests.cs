@@ -1081,7 +1081,7 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionWithSupplierDetails(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        var result = (await controller.EditSupplierDetails(catalogueItem.Id)).As<ViewResult>();
+        var result = (await controller.EditSupplierDetails(SolutionType.GPIT, catalogueItem.Id)).As<ViewResult>();
         var model = result.Model.As<EditSolutionContactsModel>();
 
         result.Should().NotBeNull();
@@ -1103,7 +1103,7 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionWithSupplierDetails(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        var result = (await controller.EditSupplierDetails(catalogueItem.Id, model)).As<ViewResult>();
+        var result = (await controller.EditSupplierDetails(SolutionType.GPIT, catalogueItem.Id, model)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(model);
@@ -1120,7 +1120,7 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionWithSupplierDetails(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        var result = (await controller.EditSupplierDetails(catalogueItem.Id, model)).As<RedirectToActionResult>();
+        var result = (await controller.EditSupplierDetails(SolutionType.GPIT, catalogueItem.Id, model)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
@@ -1145,7 +1145,7 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionWithSupplierDetails(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        _ = await controller.EditSupplierDetails(catalogueItem.Id, model);
+        _ = await controller.EditSupplierDetails(SolutionType.GPIT, catalogueItem.Id, model);
 
         await solutionsService
             .Received()
