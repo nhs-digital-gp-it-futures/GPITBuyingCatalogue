@@ -308,7 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             };
         }
 
-        private bool ShouldShowSection(SolutionSectionRequirement sectionRequirement, bool catalogueItemContentStatus)
+        private static bool ShouldShowSection(SolutionSectionRequirement sectionRequirement, bool catalogueItemContentStatus)
         {
             return sectionRequirement switch
             {

@@ -188,7 +188,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData(null)]
         public static void HasSupplierUrl_InvalidUrl_ReturnsFalse(string invalid)
         {
             new SolutionDescriptionModel { SupplierUrl = invalid }.HasSupplierUrl().Should().BeFalse();
