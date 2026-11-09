@@ -39,6 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
 
         public string SolutionName { get; set; }
 
+        public required SolutionType SolutionType { get; set; }
+
         public List<SelectOption<string>> IntegrationTypes { get; set; }
 
         public int? SelectedIntegrationType { get; set; }

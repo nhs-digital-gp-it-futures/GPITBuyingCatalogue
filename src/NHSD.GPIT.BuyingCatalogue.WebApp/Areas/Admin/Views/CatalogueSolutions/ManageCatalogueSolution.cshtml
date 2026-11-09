@@ -122,6 +122,7 @@
                         <nhs-table-cell>
                             <a asp-action="@nameof(InteroperabilityController.Interoperability)"
                                asp-controller="@typeof(InteroperabilityController).ControllerName()"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>

@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
@@ -16,7 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             [Frozen] IUrlValidator urlValidator,
             InteroperabilityModelValidator validator)
         {
-            var model = new InteroperabilityModel();
+            var model = new InteroperabilityModel()
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             var result = validator.TestValidate(model);
 
@@ -44,7 +48,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             [Frozen] IUrlValidator urlValidator,
             InteroperabilityModelValidator validator)
         {
-            var model = new InteroperabilityModel { Link = "http://wiothaoih" };
+            var model = new InteroperabilityModel
+            {
+                SolutionType = SolutionType.GPIT,
+                Link = "http://wiothaoih",
+            };
 
             urlValidator.IsValidUrl(model.Link).Returns(false);
 
@@ -61,7 +69,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             [Frozen] IUrlValidator urlValidator,
             InteroperabilityModelValidator validator)
         {
-            var model = new InteroperabilityModel { Link = uri.ToString() };
+            var model = new InteroperabilityModel
+            {
+                SolutionType = SolutionType.GPIT,
+                Link = uri.ToString(),
+            };
             urlValidator.IsValidUrl(model.Link).Returns(true);
 
             var result = validator.TestValidate(model);

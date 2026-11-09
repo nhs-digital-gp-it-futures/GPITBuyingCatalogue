@@ -27,7 +27,7 @@
             </nhs-details>
 
             <h3>IM1 integrations</h3>
-            <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddIm1Integration), typeof(InteroperabilityController).ControllerName(), new { solutionId = @Model.CatalogueItemId })" text="Add an IM1 integration" />
+            <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddIm1Integration), typeof(InteroperabilityController).ControllerName(), new { solutionType = @Model.SolutionType, solutionId = @Model.CatalogueItemId })" text="Add an IM1 integration" />
             <p>
                 Use the link to add information on each of the IM1 integrations your catalogue solution works with.
             </p>
@@ -64,10 +64,11 @@
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     <a asp-action="@nameof(InteroperabilityController.EditIm1Integration)"
-                                       asp-controller="@typeof(InteroperabilityController).ControllerName()"
-                                       asp-route-solutionId="@Model.CatalogueItemId"
-                                       asp-route-integrationId="@integration.Id">
-                                        Edit
+                                        asp-controller="@typeof(InteroperabilityController).ControllerName()"
+                                        asp-route-solutionType="@Model.SolutionType"
+                                        asp-route-solutionId="@Model.CatalogueItemId"
+                                        asp-route-integrationId="@integration.Id">
+                                            Edit
                                     </a>
                                 </nhs-table-cell>
                             </nhs-table-row-container>
@@ -79,7 +80,7 @@
 
             <h3>GP Connect integrations</h3>
 
-            <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddGpConnectIntegration), typeof(InteroperabilityController).ControllerName(), new { solutionId = @Model.CatalogueItemId })" text="Add a GP Connect integration" />
+            <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddGpConnectIntegration), typeof(InteroperabilityController).ControllerName(), new { solutionType = @Model.SolutionType, solutionId = @Model.CatalogueItemId })" text="Add a GP Connect integration" />
 
             <p>
                 Use the link to add information on each of the GP Connect integrations your catalogue solution works with.
@@ -111,10 +112,11 @@
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     <a asp-action="@nameof(InteroperabilityController.EditGpConnectIntegration)"
-                                       asp-controller="@typeof(InteroperabilityController).ControllerName()"
-                                       asp-route-solutionId="@Model.CatalogueItemId"
-                                       asp-route-integrationId="@integration.Id">
-                                        Edit
+                                        asp-controller="@typeof(InteroperabilityController).ControllerName()"
+                                        asp-route-solutionType="@Model.SolutionType"
+                                        asp-route-solutionId="@Model.CatalogueItemId"
+                                        asp-route-integrationId="@integration.Id">
+                                            Edit
                                     </a>
                                 </nhs-table-cell>
                             </nhs-table-row-container>
@@ -126,7 +128,7 @@
 
             <h3>NHS App integrations</h3>
 
-            <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddNhsAppIntegration), typeof(InteroperabilityController).ControllerName(), new { solutionId = @Model.CatalogueItemId})" text="Add NHS App integrations" />
+            <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddNhsAppIntegration), typeof(InteroperabilityController).ControllerName(), new { solutionType = @Model.SolutionType, solutionId = @Model.CatalogueItemId })" text="Add NHS App integrations" />
 
             <p>
                 Use the link to add all the NHS App integrations your catalogue solution works with.
@@ -149,9 +151,10 @@
                             </nhs-table-cell>
                             <nhs-table-cell class="no-bottom-border">
                                 <a asp-action="@nameof(InteroperabilityController.AddNhsAppIntegration)"
-                                   asp-controller="@typeof(InteroperabilityController).ControllerName()"
-                                   asp-route-solutionId="@Model.CatalogueItemId">
-                                    Edit
+                                    asp-controller="@typeof(InteroperabilityController).ControllerName()"
+                                    asp-route-solutionType="@Model.SolutionType"
+                                    asp-route-solutionId="@Model.CatalogueItemId">
+                                        Edit
                                 </a>
                             </nhs-table-cell>
                         </nhs-table-row-container>
