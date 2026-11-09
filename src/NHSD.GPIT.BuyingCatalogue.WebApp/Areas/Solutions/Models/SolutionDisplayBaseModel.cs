@@ -125,6 +125,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public bool IsSuspended() => PublicationStatus == PublicationStatus.Suspended;
 
+        private static bool ShouldShowSection(SolutionSectionRequirement sectionRequirement, bool catalogueItemContentStatus)
+        {
+            return sectionRequirement switch
+            {
+                SolutionSectionRequirement.Mandatory => true,
+                SolutionSectionRequirement.Optional => catalogueItemContentStatus,
+                _ => false,
+            };
+        }
+
         private void SetBreadcrumb(SolutionType solutionType)
         {
             var breadcrumbItems = new List<SectionModel>
@@ -305,16 +315,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Show = ShouldShowSection(sections.DevelopmentPlans, CatalogueItemContentStatus.ShowDevelopmentPlans),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
-            };
-        }
-
-        private static bool ShouldShowSection(SolutionSectionRequirement sectionRequirement, bool catalogueItemContentStatus)
-        {
-            return sectionRequirement switch
-            {
-                SolutionSectionRequirement.Mandatory => true,
-                SolutionSectionRequirement.Optional => catalogueItemContentStatus,
-                _ => false,
             };
         }
     }
