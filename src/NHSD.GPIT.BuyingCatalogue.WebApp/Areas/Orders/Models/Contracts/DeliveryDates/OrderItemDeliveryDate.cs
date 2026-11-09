@@ -24,7 +24,7 @@ public class OrderItemDeliveryDate : DateInputModel
         SetDateFields(deliveryDate);
 
         if (orderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService &&
-            orderItem.Parent.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService)
+            orderItem.Parent?.CatalogueItem?.CatalogueItemType == CatalogueItemType.AdditionalService)
         {
             CatalogueItemName = $"{orderItem.Parent.CatalogueItem.Name} - {orderItem.CatalogueItem.Name}";
         }
