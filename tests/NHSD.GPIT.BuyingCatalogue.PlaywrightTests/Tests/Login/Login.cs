@@ -334,15 +334,15 @@ public class LoginTests : BaseTest
         await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
         await Page.GetByRole(AriaRole.Heading, new() { Name = "Confirm quantities" }).IsVisibleAsync();
         await Page.GetByRole(AriaRole.Link, new() { Name = "Continue" }).ClickAsync();
-        await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
-        await Page.GetByRole(AriaRole.Link, new() { Name = "Save and continue" }).ClickAsync();
+   await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
 
         //Planned delivery date
         await Page.GetByRole(AriaRole.Link, new() { Name = "Planned delivery dates" }).ClickAsync();
         await Page.GetByRole(AriaRole.Heading, new() { Name = "Planned delivery date" }).IsVisibleAsync();
         await Page.GetByRole(AriaRole.Textbox, new() { Name = "Day" }).FillAsync("20");
         await Page.GetByRole(AriaRole.Textbox, new() { Name = "Month" }).FillAsync("10");
-        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Year" }).FillAsync("2026");
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Year" }).FillAsync("2027");
         await Page.GetByRole(AriaRole.Radio, new() { Name = "Yes" }).CheckAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
         await Page.GetByRole(AriaRole.Heading, new() { Name = "Review planned delivery dates" }).IsVisibleAsync();
@@ -499,7 +499,7 @@ public class LoginTests : BaseTest
         await Page.GetByRole(AriaRole.Heading, new() { Name = "Confirm quantities" }).IsVisibleAsync();
         await Page.GetByRole(AriaRole.Link, new() { Name = "Continue" }).ClickAsync();
         await Page.GetByRole(AriaRole.Heading, new() { Name = "Amend items from the previous order" }).IsVisibleAsync();
-        await Page.GetByRole(AriaRole.Link, new() { Name = "Save and continue" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
 
 
         //Planned delivery date
@@ -507,7 +507,7 @@ public class LoginTests : BaseTest
         await Page.GetByRole(AriaRole.Heading, new() { Name = "Planned delivery date" }).IsVisibleAsync();
         await Page.GetByRole(AriaRole.Textbox, new() { Name = "Day" }).FillAsync("01");
         await Page.GetByRole(AriaRole.Textbox, new() { Name = "Month" }).FillAsync("11");
-        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Year" }).FillAsync("2026");
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Year" }).FillAsync("2027");
         await Page.GetByRole(AriaRole.Radio, new() { Name = "Yes" }).CheckAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Save and continue" }).ClickAsync();
         await Page.GetByRole(AriaRole.Heading, new() { Name = "Review planned delivery dates" }).IsVisibleAsync();
