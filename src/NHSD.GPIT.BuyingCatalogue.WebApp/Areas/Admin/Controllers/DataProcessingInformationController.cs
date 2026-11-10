@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.DataProcessingInformationModels;
@@ -13,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
 [Authorize(Policy = "AdminOnly")]
 [Area("Admin")]
-[Route("admin/catalogue-solutions/{solutionId}/data-processing")]
+[Route("admin/catalogue-solutions/{solutionType}/{solutionId}/data-processing")]
 public class DataProcessingInformationController(IDataProcessingInformationService dataProcessingInformationService)
     : Controller
 {
@@ -23,16 +24,17 @@ public class DataProcessingInformationController(IDataProcessingInformationServi
         dataProcessingInformationService ?? throw new ArgumentNullException(nameof(dataProcessingInformationService));
 
     [HttpGet]
-    public async Task<IActionResult> Index(CatalogueItemId solutionId)
+    public async Task<IActionResult> Index(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solutionId);
 
         var model = new DataProcessingInformationModel(solution)
         {
+            SolutionType = solutionType,
             BackLink = Url.Action(
                 nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { solutionId }),
+                new { solutionType, solutionId }),
         };
 
         return View(model);
@@ -40,13 +42,14 @@ public class DataProcessingInformationController(IDataProcessingInformationServi
 
     [HttpGet("information")]
     public async Task<IActionResult> AddOrEditDataProcessingInformation(
+        SolutionType solutionType,
         CatalogueItemId solutionId)
     {
         var solution = await dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solutionId);
 
         var model = new AddEditDataProcessingInformationModel(solution)
         {
-            BackLink = Url.Action(nameof(Index), new { solutionId }),
+            BackLink = Url.Action(nameof(Index), new { solutionType, solutionId }),
         };
 
         return View(model);
@@ -54,6 +57,7 @@ public class DataProcessingInformationController(IDataProcessingInformationServi
 
     [HttpPost("information")]
     public async Task<IActionResult> AddOrEditDataProcessingInformation(
+        SolutionType solutionType,
         CatalogueItemId solutionId,
         AddEditDataProcessingInformationModel model)
     {
@@ -71,18 +75,19 @@ public class DataProcessingInformationController(IDataProcessingInformationServi
                 model.ProcessingLocation,
                 model.AdditionalJurisdiction));
 
-        return RedirectToAction(nameof(Index), new { solutionId });
+        return RedirectToAction(nameof(Index), new { solutionType, solutionId });
     }
 
     [HttpGet("data-protection-officer")]
     public async Task<IActionResult> AddOrEditDataProtectionOfficer(
+        SolutionType solutionType,
         CatalogueItemId solutionId)
     {
         var solution = await dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solutionId);
 
         var model = new AddEditDataProtectionOfficerModel(solution)
         {
-            BackLink = Url.Action(nameof(Index), new { solutionId }),
+            BackLink = Url.Action(nameof(Index), new { solutionType, solutionId }),
         };
 
         return View(model);
@@ -90,6 +95,7 @@ public class DataProcessingInformationController(IDataProcessingInformationServi
 
     [HttpPost("data-protection-officer")]
     public async Task<IActionResult> AddOrEditDataProtectionOfficer(
+        SolutionType solutionType,
         CatalogueItemId solutionId,
         AddEditDataProtectionOfficerModel model)
     {
@@ -103,22 +109,29 @@ public class DataProcessingInformationController(IDataProcessingInformationServi
                 model.EmailAddress,
                 model.PhoneNumber));
 
-        return RedirectToAction(nameof(Index), new { solutionId });
+        return RedirectToAction(nameof(Index), new { solutionType, solutionId });
     }
 
     [HttpGet("sub-processors/add")]
     public async Task<IActionResult> AddSubProcessor(
+        SolutionType solutionType,
         CatalogueItemId solutionId)
     {
         var solution = await dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solutionId);
 
-        var model = new AddEditSubProcessorModel(solution) { BackLink = Url.Action(nameof(Index), new { solutionId }) };
+        var model = new AddEditSubProcessorModel(solution)
+        {
+            BackLink = Url.Action(
+                nameof(Index),
+                new { solutionType, solutionId }),
+        };
 
         return View(AddOrEditSubProcessorView, model);
     }
 
     [HttpPost("sub-processors/add")]
     public async Task<IActionResult> AddSubProcessor(
+        SolutionType solutionType,
         CatalogueItemId solutionId,
         AddEditSubProcessorModel model)
     {
@@ -136,11 +149,12 @@ public class DataProcessingInformationController(IDataProcessingInformationServi
                 model.DataSubjectCategories,
                 model.PostProcessingPlan));
 
-        return RedirectToAction(nameof(Index), new { solutionId });
+        return RedirectToAction(nameof(Index), new { solutionType, solutionId });
     }
 
     [HttpGet("sub-processors/{subProcessorId:int}")]
     public async Task<IActionResult> EditSubProcessor(
+        SolutionType solutionType,
         CatalogueItemId solutionId,
         int subProcessorId)
     {
@@ -151,13 +165,19 @@ public class DataProcessingInformationController(IDataProcessingInformationServi
         if (subProcessor is null)
             return RedirectToAction(nameof(Index), new { solutionId });
 
-        var model = new AddEditSubProcessorModel(solution, subProcessor) { BackLink = Url.Action(nameof(Index), new { solutionId }) };
+        var model = new AddEditSubProcessorModel(solution, subProcessor)
+        {
+            BackLink = Url.Action(
+                nameof(Index),
+                new { solutionType, solutionId }),
+        };
 
         return View(AddOrEditSubProcessorView, model);
     }
 
     [HttpPost("sub-processors/{subProcessorId:int}")]
     public async Task<IActionResult> EditSubProcessor(
+        SolutionType solutionType,
         CatalogueItemId solutionId,
         int subProcessorId,
         AddEditSubProcessorModel model)
@@ -177,11 +197,12 @@ public class DataProcessingInformationController(IDataProcessingInformationServi
                 model.PostProcessingPlan,
                 subProcessorId));
 
-        return RedirectToAction(nameof(Index), new { solutionId });
+        return RedirectToAction(nameof(Index), new { solutionType, solutionId });
     }
 
     [HttpGet("sub-processors/{subProcessorId:int}/delete")]
     public async Task<IActionResult> DeleteSubProcessor(
+        SolutionType solutionType,
         CatalogueItemId solutionId,
         int subProcessorId)
     {
@@ -194,7 +215,9 @@ public class DataProcessingInformationController(IDataProcessingInformationServi
 
         var model = new DeleteSubProcessorModel(subProcessor)
         {
-            BackLink = Url.Action(nameof(EditSubProcessor), new { solutionId, subProcessorId }),
+            BackLink = Url.Action(
+                nameof(EditSubProcessor),
+                new { solutionType, solutionId, subProcessorId }),
         };
 
         return View(model);
@@ -202,6 +225,7 @@ public class DataProcessingInformationController(IDataProcessingInformationServi
 
     [HttpPost("sub-processors/{subProcessorId:int}/delete")]
     public async Task<IActionResult> DeleteSubProcessor(
+        SolutionType solutionType,
         CatalogueItemId solutionId,
         int subProcessorId,
         DeleteSubProcessorModel model)
@@ -210,6 +234,6 @@ public class DataProcessingInformationController(IDataProcessingInformationServi
 
         await dataProcessingInformationService.DeleteSubProcessor(solutionId, subProcessorId);
 
-        return RedirectToAction(nameof(Index), new { solutionId });
+        return RedirectToAction(nameof(Index), new { solutionType, solutionId });
     }
 }

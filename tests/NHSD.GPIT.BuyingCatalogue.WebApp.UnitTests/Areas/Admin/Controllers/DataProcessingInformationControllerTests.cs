@@ -44,9 +44,12 @@ public static class DataProcessingInformationControllerTests
         dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId)
             .Returns(solution);
 
-        var expectedModel = new DataProcessingInformationModel(solution);
+        var expectedModel = new DataProcessingInformationModel(solution)
+        {
+            SolutionType = SolutionType.GPIT,
+        };
 
-        var result = (await controller.Index(solution.CatalogueItemId)).As<ViewResult>();
+        var result = (await controller.Index(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -64,7 +67,7 @@ public static class DataProcessingInformationControllerTests
 
         var expectedModel = new AddEditDataProcessingInformationModel(solution);
 
-        var result = (await controller.AddOrEditDataProcessingInformation(solution.CatalogueItemId)).As<ViewResult>();
+        var result = (await controller.AddOrEditDataProcessingInformation(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -79,7 +82,7 @@ public static class DataProcessingInformationControllerTests
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        var result = (await controller.AddOrEditDataProcessingInformation(catalogueItemId, model)).As<ViewResult>();
+        var result = (await controller.AddOrEditDataProcessingInformation(SolutionType.GPIT, catalogueItemId, model)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().Be(model);
@@ -92,7 +95,7 @@ public static class DataProcessingInformationControllerTests
         AddEditDataProcessingInformationModel model,
         DataProcessingInformationController controller)
     {
-        var result = (await controller.AddOrEditDataProcessingInformation(catalogueItemId, model)).As<RedirectToActionResult>();
+        var result = (await controller.AddOrEditDataProcessingInformation(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
@@ -110,7 +113,7 @@ public static class DataProcessingInformationControllerTests
 
         var expectedModel = new AddEditDataProtectionOfficerModel(solution);
 
-        var result = (await controller.AddOrEditDataProtectionOfficer(solution.CatalogueItemId)).As<ViewResult>();
+        var result = (await controller.AddOrEditDataProtectionOfficer(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -125,7 +128,7 @@ public static class DataProcessingInformationControllerTests
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        var result = (await controller.AddOrEditDataProtectionOfficer(catalogueItemId, model)).As<ViewResult>();
+        var result = (await controller.AddOrEditDataProtectionOfficer(SolutionType.GPIT, catalogueItemId, model)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().Be(model);
@@ -138,7 +141,7 @@ public static class DataProcessingInformationControllerTests
         AddEditDataProtectionOfficerModel model,
         DataProcessingInformationController controller)
     {
-        var result = (await controller.AddOrEditDataProtectionOfficer(catalogueItemId, model)).As<RedirectToActionResult>();
+        var result = (await controller.AddOrEditDataProtectionOfficer(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
@@ -156,7 +159,7 @@ public static class DataProcessingInformationControllerTests
 
         var expectedModel = new AddEditSubProcessorModel(solution);
 
-        var result = (await controller.AddSubProcessor(solution.CatalogueItemId)).As<ViewResult>();
+        var result = (await controller.AddSubProcessor(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -171,7 +174,7 @@ public static class DataProcessingInformationControllerTests
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        var result = (await controller.AddSubProcessor(catalogueItemId, model)).As<ViewResult>();
+        var result = (await controller.AddSubProcessor(SolutionType.GPIT, catalogueItemId, model)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().Be(model);
@@ -184,7 +187,7 @@ public static class DataProcessingInformationControllerTests
         AddEditSubProcessorModel model,
         DataProcessingInformationController controller)
     {
-        var result = (await controller.AddSubProcessor(catalogueItemId, model)).As<RedirectToActionResult>();
+        var result = (await controller.AddSubProcessor(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
@@ -200,7 +203,7 @@ public static class DataProcessingInformationControllerTests
     {
         solution.DataProcessingInformation = new DataProcessingInformation()
         {
-            SubProcessors = new List<DataProtectionSubProcessor> { subProcessor },
+            SubProcessors = [subProcessor],
         };
 
         dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId)
@@ -208,7 +211,7 @@ public static class DataProcessingInformationControllerTests
 
         var expectedModel = new AddEditSubProcessorModel(solution, subProcessor);
 
-        var result = (await controller.EditSubProcessor(solution.CatalogueItemId, subProcessor.Id)).As<ViewResult>();
+        var result = (await controller.EditSubProcessor(SolutionType.GPIT, solution.CatalogueItemId, subProcessor.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -224,7 +227,7 @@ public static class DataProcessingInformationControllerTests
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        var result = (await controller.EditSubProcessor(catalogueItemId, subProcessorId, model)).As<ViewResult>();
+        var result = (await controller.EditSubProcessor(SolutionType.GPIT, catalogueItemId, subProcessorId, model)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().Be(model);
@@ -238,7 +241,7 @@ public static class DataProcessingInformationControllerTests
         AddEditSubProcessorModel model,
         DataProcessingInformationController controller)
     {
-        var result = (await controller.EditSubProcessor(catalogueItemId, subProcessorId, model)).As<RedirectToActionResult>();
+        var result = (await controller.EditSubProcessor(SolutionType.GPIT, catalogueItemId, subProcessorId, model)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
@@ -255,7 +258,7 @@ public static class DataProcessingInformationControllerTests
         dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId)
             .Returns(solution);
 
-        var result = (await controller.DeleteSubProcessor(solution.CatalogueItemId, subProcessorId)).As<RedirectToActionResult>();
+        var result = (await controller.DeleteSubProcessor(SolutionType.GPIT, solution.CatalogueItemId, subProcessorId)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
@@ -271,7 +274,7 @@ public static class DataProcessingInformationControllerTests
     {
         solution.DataProcessingInformation = new DataProcessingInformation()
         {
-            SubProcessors = new List<DataProtectionSubProcessor> { subProcessor },
+            SubProcessors = [subProcessor],
         };
 
         dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId)
@@ -279,7 +282,7 @@ public static class DataProcessingInformationControllerTests
 
         var expectedModel = new DeleteSubProcessorModel(subProcessor);
 
-        var result = (await controller.DeleteSubProcessor(solution.CatalogueItemId, subProcessor.Id)).As<ViewResult>();
+        var result = (await controller.DeleteSubProcessor(SolutionType.GPIT, solution.CatalogueItemId, subProcessor.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -294,7 +297,7 @@ public static class DataProcessingInformationControllerTests
         DataProcessingInformationController controller)
     {
         var result =
-            (await controller.DeleteSubProcessor(solutionId, subProcessorId, model)).As<RedirectToActionResult>();
+            (await controller.DeleteSubProcessor(SolutionType.GPIT, solutionId, subProcessorId, model)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
