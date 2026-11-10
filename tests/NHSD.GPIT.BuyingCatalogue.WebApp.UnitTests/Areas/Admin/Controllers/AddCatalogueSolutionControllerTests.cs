@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] ISuppliersService mockService,
             AddCatalogueSolutionController controller)
         {
-            mockService.GetAllSuppliersBySolutionType(SolutionType.GPIT).Returns(suppliers);
+            mockService.GetAllSuppliers().Returns(suppliers);
 
             var actual = (await controller.Index(SolutionType.GPIT)).As<ViewResult>();
 
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             AddCatalogueSolutionController controller,
             List<Supplier> suppliers)
         {
-            mockSuppliersService.GetAllSuppliersBySolutionType(SolutionType.GPIT).Returns(suppliers);
+            mockSuppliersService.GetAllSuppliers().Returns(suppliers);
 
             mockService.GetSolutionByName(Arg.Any<string>()).Returns((CatalogueItem)null);
 

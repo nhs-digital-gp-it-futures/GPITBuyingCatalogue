@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{solutionType}")]
         public async Task<IActionResult> Index(SolutionType solutionType)
         {
-            var suppliers = await suppliersService.GetAllSuppliersBySolutionType(solutionType);
+            var suppliers = await suppliersService.GetAllSuppliers();
 
             var model = new SolutionModel()
             {
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var suppliers = await suppliersService.GetAllSuppliersBySolutionType(solutionType);
+                var suppliers = await suppliersService.GetAllSuppliers();
 
                 model.Frameworks = await GetFrameworks(solutionType);
 
