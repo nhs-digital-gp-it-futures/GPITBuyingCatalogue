@@ -395,8 +395,8 @@ public sealed class CatalogueSolutionsController(
         return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
-    [HttpGet("manage/{solutionId}/associated-services")]
-    public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/associated-services")]
+    public async Task<IActionResult> AssociatedServices(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var catalogueItem = await solutionsService.GetCatalogueItemWithSupplierServiceAssociations(solutionId);
         if (catalogueItem is null)
@@ -409,13 +409,17 @@ public sealed class CatalogueSolutionsController(
             BackLink = Url.Action(
                 nameof(ManageCatalogueSolution),
                 new { solutionId }),
+            SolutionType = solutionType,
         };
 
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}/associated-services")]
-    public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, CatalogueItemAssociatedServicesModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/associated-services")]
+    public async Task<IActionResult> AssociatedServices(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        CatalogueItemAssociatedServicesModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -432,7 +436,7 @@ public sealed class CatalogueSolutionsController(
 
         return RedirectToAction(
             nameof(ManageCatalogueSolution),
-            new { solutionId });
+            new { solutionType, solutionId });
     }
 
     private async Task<IEnumerable<CatalogueItem>> GetFilteredItems(string search, SolutionType solutionType)

@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(
                     nameof(SupplierServicesController.EditAssociatedService),
                     typeof(SupplierServicesController).ControllerName(),
-                    new { supplierId, associatedServiceId }),
+                    new { supplierId, solutionType, associatedServiceId }),
                 AddListPriceUrl = (service.AssociatedService.PracticeReorganisationType == PracticeReorganisationTypeEnum.None) ?
                     Url.Action(nameof(ListPriceType), new { supplierId, solutionType, associatedServiceId }) :
                     Url.Action(nameof(AddFlatListPrice), new { supplierId, solutionType, associatedServiceId }),
@@ -223,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 var associatedService = await associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId);
                 var price = associatedService.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
 
-                model.Tiers = price.CataloguePriceTiers.ToList();
+                model.Tiers = [.. price.CataloguePriceTiers];
 
                 model.MaximumNumberOfTiers = priceTiersCapSettings.MaximumNumberOfPriceTiers;
 

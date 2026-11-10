@@ -14,8 +14,10 @@ public static class AssociatedServicesModelTests
         Supplier supplier,
         List<AssociatedService> associatedServices)
     {
-        var model = new AssociatedServicesModel(supplier, associatedServices);
-
+        var model = new AssociatedServicesModel(supplier, associatedServices)
+        {
+            SolutionType = SolutionType.GPIT,
+        };
         model.SupplierId.Should().Be(supplier.Id);
         model.SupplierName.Should().Be(supplier.Name);
         model.AssociatedServices.Should().BeEquivalentTo(associatedServices);

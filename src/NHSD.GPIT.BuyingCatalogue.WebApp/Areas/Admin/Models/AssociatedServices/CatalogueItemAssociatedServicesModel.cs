@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
             CatalogueItemName = catalogueItem.Name;
             CatalogueItemType = catalogueItem.CatalogueItemType;
 
-            SelectableAssociatedServices = associatedServices
+            SelectableAssociatedServices = [.. associatedServices
                 .Select(s => new SelectableAssociatedService
                 {
                     Name = s.CatalogueItem.Name,
@@ -31,9 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
                     CatalogueItemId = s.CatalogueItemId,
                     Selected = catalogueItem.SupplierServiceAssociations.Any(ssa => ssa.AssociatedServiceId == s.CatalogueItemId),
                     PracticeReorganisation = s.PracticeReorganisationType,
-                })
-                .ToList();
+                })];
         }
+
+        public required SolutionType SolutionType { get; set; }
 
         public CatalogueItemId CatalogueItemId { get; set; }
 

@@ -2,7 +2,6 @@
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices;
 using Xunit;
 
@@ -16,8 +15,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
             Supplier supplier,
             AssociatedService associatedService)
         {
-            var actual = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem);
-
+            var actual = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             actual.SupplierId.Should().Be(supplier.Id);
             actual.SupplierName.Should().Be(supplier.Name);
             actual.AssociatedServiceId.Should().Be(associatedService.CatalogueItemId);
@@ -47,8 +48,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
             var actual = new EditAssociatedServiceModel(
                 supplier,
                 associatedService.CatalogueItem,
-                relatedCatalogueItems);
-
+                relatedCatalogueItems)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             actual.RelatedSolutions.Should().BeEquivalentTo(solutions.Select(x => x.Solution));
             actual.RelatedAdditionalServices.Should().BeEquivalentTo(additionalServices.Select(x => x.AdditionalService));
         }

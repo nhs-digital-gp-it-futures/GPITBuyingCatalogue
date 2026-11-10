@@ -49,6 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
 
         public CatalogueItemId SolutionId { get; init; }
 
+        public required SolutionType SolutionType { get; init; }
+
         public CatalogueItemId AdditionalServiceId { get; init; }
 
         public string SolutionName { get; init; }
@@ -59,10 +61,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
 
         public PublicationStatus SelectedPublicationStatus { get; set; }
 
-        public IReadOnlyList<SelectOption<string>> PublicationStatuses => AdditionalServicePublicationStatus
+        public IReadOnlyList<SelectOption<string>> PublicationStatuses => [.. AdditionalServicePublicationStatus
             .GetAvailablePublicationStatuses(CatalogueItemType.AdditionalService)
-            .Select(p => new SelectOption<string>(p.Description(), p.EnumMemberName()))
-            .ToList();
+            .Select(p => new SelectOption<string>(p.Description(), p.EnumMemberName()))];
 
         public TaskProgress DetailsStatus { get; init; }
 

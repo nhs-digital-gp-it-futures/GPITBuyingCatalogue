@@ -241,6 +241,7 @@
                         <nhs-table-cell>
                             <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
                                asp-action="@nameof(AdditionalServicesController.Index)"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -332,6 +333,7 @@
             <input type="hidden" asp-for="BackLinkText" />
 
             <input type="hidden" asp-for="SolutionId" />
+            <input type="hidden" asp-for="SolutionType" />
             <input type="hidden" asp-for="SolutionName" />
             <input type="hidden" asp-for="SolutionPublicationStatus" />
             <input type="hidden" asp-for="SupplierName" />

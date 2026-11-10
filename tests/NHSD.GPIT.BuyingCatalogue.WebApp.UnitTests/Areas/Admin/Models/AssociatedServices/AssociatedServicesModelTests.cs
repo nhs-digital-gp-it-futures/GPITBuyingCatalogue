@@ -28,8 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
 
             var actual = new CatalogueItemAssociatedServicesModel(
                 catalogueItem,
-                associatedServices);
-
+                associatedServices)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             actual.SelectableAssociatedServices.Should().BeEquivalentTo(expected);
             actual.SolutionMergerAndSplits.Should().BeEquivalentTo(new SolutionMergerAndSplitTypesModel(catalogueItem.Name, []));
             actual.CatalogueItemName.Should().Be(catalogueItem.Name);
@@ -43,11 +45,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
            List<AssociatedService> associatedServices)
         {
             catalogueItem.SupplierServiceAssociations.Clear();
-            catalogueItem.SupplierServiceAssociations = associatedServices.Select(s => new SupplierServiceAssociation
+            catalogueItem.SupplierServiceAssociations = [.. associatedServices.Select(s => new SupplierServiceAssociation
             {
                 CatalogueItemId = catalogueItem.Id,
                 AssociatedServiceId = s.CatalogueItem.Id,
-            }).ToList();
+            })];
 
             var expected = associatedServices.Select(s => new SelectableAssociatedService
             {
@@ -61,8 +63,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
 
             var actual = new CatalogueItemAssociatedServicesModel(
                 catalogueItem,
-                associatedServices);
-
+                associatedServices)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             actual.SelectableAssociatedServices.Should().BeEquivalentTo(expected);
             actual.SolutionMergerAndSplits.Should().BeEquivalentTo(new SolutionMergerAndSplitTypesModel(catalogueItem.Name, associatedServices.Select(s => s.PracticeReorganisationType)));
             actual.CatalogueItemName.Should().Be(catalogueItem.Name);
