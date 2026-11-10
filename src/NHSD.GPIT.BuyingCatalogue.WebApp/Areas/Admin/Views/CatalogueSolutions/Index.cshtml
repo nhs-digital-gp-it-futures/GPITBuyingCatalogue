@@ -32,7 +32,8 @@
         <vc:nhs-suggestion-search id="solutions-search"
                                   ajax-url="@Url.Action(
                                                 nameof(CatalogueSolutionsController.SearchResults),
-                                                typeof(CatalogueSolutionsController).ControllerName())"
+                                                typeof(CatalogueSolutionsController).ControllerName(),
+                                                new { Model.SolutionType })"
                                   title-text="Search by supplier or solution name"
                                   query-parameter-name="search"/>
 
@@ -102,9 +103,9 @@
         else
         {
             <div id="search-error-message" class="nhsuk-u-margin-top-9">
-                <h3>No results found for "@(Model.SearchTerm)"</h3>
+                <h3>No results found"</h3>
                 <p>
-                    Try entering a different search term, or
+                    Try entering a different search term, filter, or
                     <a id="reset-search-link"
                        asp-area="@typeof(CatalogueSolutionsController).AreaName()"
                        asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
