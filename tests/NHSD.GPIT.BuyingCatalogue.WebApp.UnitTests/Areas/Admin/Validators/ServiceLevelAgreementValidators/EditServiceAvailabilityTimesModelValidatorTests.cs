@@ -24,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             {
                 From = DateTime.UtcNow,
                 Until = DateTime.UtcNow.AddMinutes(5),
+                SolutionType = SolutionType.GPIT,
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
@@ -45,6 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             {
                 SupportType = "Service hours",
                 Until = DateTime.UtcNow,
+                SolutionType = SolutionType.GPIT,
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
@@ -66,6 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             {
                 SupportType = "Service hours",
                 From = DateTime.UtcNow,
+                SolutionType = SolutionType.GPIT,
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
@@ -89,6 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 From = DateTime.UtcNow,
                 Until = DateTime.UtcNow.AddHours(3),
                 IncludesBankHolidays = null,
+                SolutionType = SolutionType.GPIT,
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
@@ -125,6 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 Until = serviceAvailabilityTimes.TimeUntil,
                 IncludesBankHolidays = serviceAvailabilityTimes.IncludesBankHolidays,
                 AdditionalInformation = serviceAvailabilityTimes.AdditionalInformation,
+                SolutionType = SolutionType.GPIT,
             };
 
             model.ApplicableDays.ForEach(x => x.Selected = serviceAvailabilityTimes.IncludedDays.Contains(x.Value));
@@ -158,6 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 SupportType = serviceAvailabilityTimes.Category,
                 From = serviceAvailabilityTimes.TimeFrom,
                 Until = serviceAvailabilityTimes.TimeUntil,
+                SolutionType = SolutionType.GPIT,
             };
 
             model.ApplicableDays.ForEach(x => x.Selected = serviceAvailabilityTimes.IncludedDays.Contains(x.Value));

@@ -23,6 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
 
         public CatalogueItem CatalogueItem { get; init; }
 
+        public required SolutionType SolutionType { get; init; }
+
         public EntityFramework.Catalogue.Models.ServiceLevelAgreements ServiceLevelAgreements { get; init; }
     }
 }

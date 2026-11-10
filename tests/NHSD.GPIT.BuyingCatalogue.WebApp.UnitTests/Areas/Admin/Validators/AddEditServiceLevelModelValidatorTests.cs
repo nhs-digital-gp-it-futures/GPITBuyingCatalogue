@@ -22,6 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 ServiceLevel = "Service Level",
                 HowMeasured = "How Measured",
                 CreditsApplied = true,
+                SolutionType = SolutionType.GPIT,
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
@@ -44,6 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 ServiceType = "Service Type",
                 HowMeasured = "How Measured",
                 CreditsApplied = true,
+                SolutionType = SolutionType.GPIT,
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
@@ -66,6 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 ServiceType = "Service Type",
                 ServiceLevel = "Service Level",
                 CreditsApplied = true,
+                SolutionType = SolutionType.GPIT,
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
@@ -86,6 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 ServiceType = "Service Type",
                 ServiceLevel = "Service Level",
                 HowMeasured = "How Measured",
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -113,6 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 ServiceLevel = serviceLevel.ServiceLevel,
                 HowMeasured = serviceLevel.HowMeasured,
                 CreditsApplied = serviceLevel.ServiceCredits,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
