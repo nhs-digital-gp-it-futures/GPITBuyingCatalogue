@@ -167,6 +167,7 @@
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.SolutionType" />
                 <nhs-input asp-for="Link"
                            label-hint="Provide a URL to a page that gives information about your own integrations that fully or partially integrate with other systems. " />
                 <nhs-inset-text>
