@@ -329,6 +329,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "supplierId", supplierId },
+                { "solutionType", SolutionType.GPIT },
                 { "associatedServiceId", associatedService.CatalogueItemId },
             });
         }
@@ -463,6 +464,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "supplierId", supplierId },
+                { "solutionType", SolutionType.GPIT },
                 { "cataloguePriceId", price.CataloguePriceId },
                 { "associatedServiceId", associatedService.CatalogueItemId },
             });

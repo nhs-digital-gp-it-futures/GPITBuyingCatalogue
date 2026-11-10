@@ -350,8 +350,8 @@ public sealed class CatalogueSolutionsController(
         return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
-    [HttpGet("manage/{solutionId}/edit-capabilities")]
-    public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/edit-capabilities")]
+    public async Task<IActionResult> EditCapabilities(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionWithCapabilities(solutionId);
         if (solution is null)
@@ -361,15 +361,15 @@ public sealed class CatalogueSolutionsController(
 
         var model = new EditCapabilitiesModel(solution, capabilities)
         {
-            BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionId }),
+            BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionType, solutionId }),
             SolutionName = solution.Name,
         };
 
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}/edit-capabilities")]
-    public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId, EditCapabilitiesModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/edit-capabilities")]
+    public async Task<IActionResult> EditCapabilities(SolutionType solutionType, CatalogueItemId solutionId, EditCapabilitiesModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -392,7 +392,7 @@ public sealed class CatalogueSolutionsController(
 
         await capabilitiesService.AddCapabilitiesToCatalogueItem(solutionId, saveRequestModel);
 
-        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
     [HttpGet("manage/{solutionId}/associated-services")]

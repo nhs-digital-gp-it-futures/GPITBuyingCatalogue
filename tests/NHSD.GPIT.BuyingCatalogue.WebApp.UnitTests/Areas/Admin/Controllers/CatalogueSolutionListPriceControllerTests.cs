@@ -311,6 +311,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             result.ActionName.Should().Be(nameof(controller.Index));
             result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
+                { "solutionType", SolutionType.GPIT },
                 { "solutionId", solution.CatalogueItemId },
             });
         }
@@ -437,6 +438,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             result.ActionName.Should().Be(nameof(controller.TieredPriceTiers));
             result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
+                { "solutionType", SolutionType.GPIT },
                 { "solutionId", solution.CatalogueItemId },
                 { "cataloguePriceId", price.CataloguePriceId },
             });

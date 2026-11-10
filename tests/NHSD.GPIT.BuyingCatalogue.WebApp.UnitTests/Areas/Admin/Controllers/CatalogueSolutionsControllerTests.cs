@@ -1164,7 +1164,7 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionWithCapabilities(catalogueItemId)
             .Returns(default(CatalogueItem));
 
-        var result = await controller.EditCapabilities(catalogueItemId);
+        var result = await controller.EditCapabilities(SolutionType.GPIT, catalogueItemId);
 
         result.As<BadRequestObjectResult>().Should().NotBeNull();
         result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
@@ -1190,7 +1190,7 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionWithCapabilities(solution.CatalogueItemId)
             .Returns(solution.CatalogueItem);
 
-        var result = await controller.EditCapabilities(solution.CatalogueItemId);
+        var result = await controller.EditCapabilities(SolutionType.GPIT, solution.CatalogueItemId);
 
         result.As<ViewResult>().Should().NotBeNull();
         result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -1213,7 +1213,7 @@ public static class CatalogueSolutionsControllerTests
         controller.ModelState.AddModelError("some-key", "some-error");
 
         var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
-        var result = await controller.EditCapabilities(catalogueItem.Id, postedModel);
+        var result = await controller.EditCapabilities(SolutionType.GPIT, catalogueItem.Id, postedModel);
 
         result.As<ViewResult>().Should().NotBeNull();
         result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -1251,6 +1251,7 @@ public static class CatalogueSolutionsControllerTests
             "some-error");
 
         var result = await controller.EditCapabilities(
+            SolutionType.GPIT,
             catalogueItem.Id,
             postedModel);
 
@@ -1276,7 +1277,7 @@ public static class CatalogueSolutionsControllerTests
             .Returns(default(CatalogueItem));
 
         var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
-        var result = await controller.EditCapabilities(solution.CatalogueItemId, postedModel);
+        var result = await controller.EditCapabilities(SolutionType.GPIT, solution.CatalogueItemId, postedModel);
 
         result.As<BadRequestObjectResult>().Should().NotBeNull();
         result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solution.CatalogueItemId}");
@@ -1295,7 +1296,7 @@ public static class CatalogueSolutionsControllerTests
             .Returns(solution.CatalogueItem);
 
         var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
-        _ = await controller.EditCapabilities(solution.CatalogueItemId, postedModel);
+        _ = await controller.EditCapabilities(SolutionType.GPIT, solution.CatalogueItemId, postedModel);
 
         await capabilitiesService
             .Received()
@@ -1314,7 +1315,7 @@ public static class CatalogueSolutionsControllerTests
             .Returns(solution.CatalogueItem);
 
         var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
-        var result = await controller.EditCapabilities(solution.CatalogueItemId, postedModel);
+        var result = await controller.EditCapabilities(SolutionType.GPIT, solution.CatalogueItemId, postedModel);
 
         result.As<RedirectToActionResult>().Should().NotBeNull();
         result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
