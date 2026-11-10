@@ -12,6 +12,8 @@ public static class CataloguePermissions
     public const string ManageBuyerOrganisations = "buyer-organisations.manage";
     public const string ManageSupplierOrganisations = "supplier-organisations.manage";
     public const string ManageUsers = "users.manage";
+    public const string ManageCapabilities = "capabilities.manage";
+    public const string ManageEpics = "epics.manage";
     public const string ManageAllowedEmailDomains = "allowed-email-domains.manage";
     public const string ManageAccountCreationRequests = "account-creation-requests.manage";
     public const string ManageAllOrders = "orders.manage";

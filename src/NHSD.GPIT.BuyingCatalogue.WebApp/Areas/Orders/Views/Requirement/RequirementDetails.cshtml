@@ -1,10 +1,8 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
-@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement.RequirementDetailsModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement.RequirementDetailsModel
 @{
-    ViewBag.Title = "Associated service requirement";
+    ViewBag.Title = Model.IsEdit
+            ? "Edit associated service requirement"
+            : "Add associated service requirement";
 }
 <partial name="Partials/_BackLink" model="Model"/>
 
@@ -13,19 +11,17 @@
         <nhs-validation-summary RadioId="@(nameof(Model.RequiresExplanation))"/>
 
         <nhs-page-title title="@ViewBag.Title"
-                        caption="Order @Model.CallOffId"
-                        advice="@Model.Advice"/>
+                        caption="Order @Model.CallOffId"/>
 
         <form method="post">
             <input type="hidden" asp-for="BackLink"/>
 
             <nhs-select asp-for="SelectedOrderItemId"
                         asp-items="@Model.OrderItemOptions"
-                        label-text="Associated service name"
-                        label-hint="Select the associated service this requirement will apply to."/>
+                        label-text="Select associated service"/>
 
             <nhs-textarea asp-for="Details"
-                          label-text="What specific requirements do you have for this associated service"/>
+                          label-text="Describe your specific requirements for this associated service" />
 
 
             <nhs-fieldset-form-label asp-for="@Model" label-text="Do you want the supplier to explain how their service meets your needs?" size="Small">

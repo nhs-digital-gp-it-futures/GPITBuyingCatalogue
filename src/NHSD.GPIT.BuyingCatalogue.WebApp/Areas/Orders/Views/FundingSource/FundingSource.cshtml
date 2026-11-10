@@ -8,8 +8,7 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary RadioId="@nameof(Model.SelectedFundingType)"/>
-        <nhs-page-title title="@ViewBag.Title"
-                        advice="Confirm how you'll be paying for this solution or service."
+        <nhs-page-title title="@ViewBag.Title"                     
                         caption="@Model.Caption"/>
 
         <nhs-summary-list>
@@ -25,13 +24,13 @@
             <input type="hidden" asp-for="CatalogueItemName"/>
 
             <nhs-fieldset-form-label asp-for="SelectedFundingType"
-                                     label-text="How would you like to pay?"
-                                     label-hint="Select one option">
+                                     label-text="Choose a funding source for this solution or service"
+                                     label-hint="Select 1 option">
                 <nhs-radio-buttons asp-for="SelectedFundingType"
                                    values="@Model.AvailableFundingTypes.Cast<object>()"
                                    value-name="Value"
                                    display-name="Text"
-                                   hint-name="Advice"/>
+                                   />
             </nhs-fieldset-form-label>
             <nhs-submit-button/>
         </form>

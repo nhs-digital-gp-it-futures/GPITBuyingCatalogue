@@ -1,20 +1,17 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
-@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared
+
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.ReviewModel
 @{
     ViewBag.Title = "Review planned delivery dates";
     var mergerSplit = Model.OrderType.MergerOrSplit && Model.AssociatedServiceIds.Count == 1;
 
     var caption = mergerSplit
-        ? Model.OrderItemName(Model.AssociatedServiceIds[0])
+        ? $"{Model.OrderItemName(Model.AssociatedServiceIds[0])} - Order {Model.CallOffId}"
         : $"Order {Model.CallOffId}";
 
-    var advice = mergerSplit
-        ? "Make sure the correct planned delivery dates have been applied for each of your service recipients."
-        : "Make sure the correct dates are applied to the items you're ordering.";
+    var advice = "Check you’ve entered the correct planned delivery dates for each organisation";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -54,102 +51,65 @@
             new { Model.InternalOrgId, Model.CallOffId });
 
             <p>
-                <strong>Planned delivery date for the majority of service recipients:</strong>
+                <strong>Planned delivery date for most organisations:</strong>
                 @GetFormattedDate(Model.DeliveryDate)
                 <span>&nbsp;</span>
                 <a id="change-delivery-date-link"
                    href="@Url.Action(
                              nameof(DeliveryDatesController.SelectDate),
                              typeof(DeliveryDatesController).ControllerName(),
-                             new { Model.InternalOrgId, Model.CallOffId, returnUrl })">Change</a>
+                             new { Model.InternalOrgId, Model.CallOffId, returnUrl })">Change all dates</a>
             </p>
             <hr />
         }
 
-        @if (Model.SolutionId != null && Model.OrderItemDates(Model.SolutionId.Value).Any())
+        @foreach (var locationGroup in Model.Recipients)
         {
-            var solutionItemId = Model.SolutionId.Value;
-            var itemName = Model.OrderItemName(solutionItemId);
-            var orderItemId = Model.OrderWrapper.Order.OrderItem(solutionItemId).Id;
-
-            <h2>Catalogue solution</h2>
-            
-            var url = Url.Action(nameof(DeliveryDatesController.EditDates), typeof(DeliveryDatesController).ControllerName(),
-                new { Model.InternalOrgId, Model.CallOffId, orderItemId, source = RoutingSource.TaskList });
-            
-            <partial name="DeliveryDatesReviewItemTable"
-                     model="new DeliveryDatesReviewItemTableModel(itemName, url, Model.OrderItemRecipients(solutionItemId))" />
-        }
-
-        @if (Model.AdditionalServiceIds.Any())
-        {
-            <h2>Additional services</h2>
-
-            @foreach (var itemId in Model.AdditionalServiceIds.Where(x => Model.OrderItemDates(x).Any()))
-            {
-                var itemName = Model.OrderItemName(itemId);
-
-                var url = Url.Action(nameof(DeliveryDatesController.EditDates),
-                    typeof(DeliveryDatesController).ControllerName(),
-                    new { Model.InternalOrgId, Model.CallOffId, orderItemId = itemId, source = RoutingSource.TaskList });
-                
-                <partial name="DeliveryDatesReviewItemTable"
-                         model="new DeliveryDatesReviewItemTableModel(itemName, url, Model.OrderItemRecipients(itemId))" />
-            }
-        }
-        
-        @if (Model.AssociatedServiceIdsForAdditionalServices.Values.Any(associatedServices => associatedServices.Count > 0))
-        {
-            <h2>Associated Services for your Additional Services</h2>
-            <nhs-card>
-                @foreach (var additionalServiceItemId in Model.AssociatedServiceIdsForAdditionalServices.Keys.Where(additionalService => Model.AssociatedServiceIdsForAdditionalServices[additionalService].Any()))
-                {
-                    var additionalService = Model.OrderWrapper.Order.OrderItem(additionalServiceItemId);
-                    var additionalServiceName = Model.OrderItemName(additionalService.Id);
-                
-                    @foreach (var associatedServiceId in Model.AssociatedServiceIdsForAdditionalServices[additionalServiceItemId])
-                    {
-                        var itemName = $"{additionalServiceName} - {Model.OrderItemName(associatedServiceId)}";
-                        var url = Url.Action(nameof(DeliveryDatesController.EditDates),
-                            typeof(DeliveryDatesController).ControllerName(),
-                            new { Model.InternalOrgId, Model.CallOffId, orderItemId = associatedServiceId, source = RoutingSource.TaskList });
-                    
-                        <partial name="DeliveryDatesReviewItemTable"
-                                 model="new DeliveryDatesReviewItemTableModel(itemName, url, Model.OrderItemRecipients(associatedServiceId))" />
-                    }
-                }
-            </nhs-card>
-        }
-
-        @if (Model.AssociatedServiceIds.Any())
-        {
-            if (!mergerSplit)
-            {
-                <h2>Associated services</h2>
-            }
-
-            @foreach (var orderItemId in Model.AssociatedServiceIds)
-            {
-                var itemName = Model.OrderItemName(orderItemId);
-                var url = Url.Action(nameof(DeliveryDatesController.EditDates),
-                    typeof(DeliveryDatesController).ControllerName(),
-                    new { Model.InternalOrgId, Model.CallOffId, orderItemId, source = RoutingSource.TaskList });
-                
-                var label = mergerSplit
-                    ? $"Planned delivery date: {GetFormattedDate(Model.OrderItemDates(orderItemId).FirstOrDefault())}"
-                    : itemName;
-
-                <partial name="DeliveryDatesReviewItemTable"
-                         model="new DeliveryDatesReviewItemTableModel(label, url, Model.OrderItemRecipients(orderItemId), !mergerSplit)" />
-            }
+            <nhs-expander-v2 open="true">
+                <nhs-expander-summary label-text="@locationGroup.Key" bold-title="true">
+                </nhs-expander-summary>
+                <nhs-expander-content>
+                    <nhs-table>
+                        <nhs-table-column>Organisation</nhs-table-column>
+                        <nhs-table-column>ODS code</nhs-table-column>
+                        <nhs-table-column>Status</nhs-table-column>
+                        <nhs-table-column></nhs-table-column>
+                        @foreach (var recipient in locationGroup.Value)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>@recipient.RecipientOdsOrganisation.Name</nhs-table-cell>
+                                <nhs-table-cell>@recipient.RecipientOdsCode</nhs-table-cell>
+                                <nhs-table-cell>
+                                    @if (@Model.HasUpdatedDeliveryDates(recipient))
+                                    {
+                                        <nhs-tag colour="Blue" text="Updated" />
+                                    }
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    <span>
+                                        <a asp-action="@nameof(DeliveryDatesController.SetOrganisationDeliveryDates)"
+                                           asp-controller="@typeof(DeliveryDatesController).ControllerName()"
+                                           asp-route-internalOrgId="@Model.InternalOrgId"
+                                           asp-route-callOffId="@Model.CallOffId"
+                                           asp-route-orderItemId="@Model.OrderItemId"
+                                           asp-route-recipientOrganisationId="@recipient.RecipientOdsOrganisation.Id"
+                                           asp-route-area="@typeof(DeliveryDatesController).AreaName()"
+                                           style="white-space: nowrap;">Change</a>
+                                    </span>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+                </nhs-expander-content>
+            </nhs-expander-v2>
         }
 
         <vc:nhs-anchor-button text="Save and continue"
-                                 type="Primary"
-                                 url="@Url.Action(
-                                          nameof(OrderController.Order),
-                                          typeof(OrderController).ControllerName(),
-                                          new { Model.InternalOrgId, Model.CallOffId })" />
+            type="Primary"
+            url="@Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { Model.InternalOrgId, Model.CallOffId })" />
     </div>
 </div>
 

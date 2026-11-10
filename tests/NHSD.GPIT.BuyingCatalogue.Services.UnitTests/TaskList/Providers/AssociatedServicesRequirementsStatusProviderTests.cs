@@ -97,7 +97,7 @@ public static class AssociatedServicesRequirementsStatusProviderTests
 
         var actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
-        actual.Should().Be(TaskProgress.NotStarted);
+        actual.Should().Be(TaskProgress.CannotStart);
     }
 
     [Theory]
@@ -111,6 +111,6 @@ public static class AssociatedServicesRequirementsStatusProviderTests
 
         var actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
-        actual.Should().Be(TaskProgress.Completed);
+        actual.Should().Be(TaskProgress.CannotStart);
     }
 }

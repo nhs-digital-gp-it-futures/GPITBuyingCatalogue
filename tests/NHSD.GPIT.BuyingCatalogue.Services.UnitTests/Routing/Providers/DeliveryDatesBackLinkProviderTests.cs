@@ -41,17 +41,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
         [Theory]
         [MockAutoData]
-        public void Process_RouteValuesCatalogueItemIdIsNull_ThrowsException(
+        public void Process_RouteValuesCatalogueItemIdIsNull_ReturnsReviewDeliveryDates(
+            string internalOrgId,
+            CallOffId callOffId,
             Order order,
-            RouteValues routeValues,
             DeliveryDatesBackLinkProvider provider)
         {
-            routeValues.OrderItemId = null;
+            var result = provider.Process(
+                new OrderWrapper(order),
+                new RouteValues(internalOrgId, callOffId));
 
-            FluentActions
-                .Invoking(() => provider.Process(new OrderWrapper(order), routeValues))
-                .Should().Throw<ArgumentNullException>()
-                .WithParameterName("routeValues");
+            result.ActionName.Should().Be(Constants.Actions.ReviewDeliveryDates);
+            result.ControllerName.Should().Be(Constants.Controllers.DeliveryDates);
+            result.RouteValues.Should().BeEquivalentTo(new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            });
         }
 
         [Theory]
@@ -83,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
         [Theory]
         [MockAutoData]
-        public void Process_NoPreviousOrderItem_ExpectedResult(
+        public void Process_SolutionDatesDoNotMatchPrimaryDeliveryDate_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             Order order,
@@ -100,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 CallOffId = callOffId,
             };
 
-            result.ActionName.Should().Be(Constants.Actions.SelectDeliveryDate);
+            result.ActionName.Should().Be(Constants.Actions.MatchDeliveryDates);
             result.ControllerName.Should().Be(Constants.Controllers.DeliveryDates);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
@@ -126,7 +132,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
-                orderItemId = order.OrderItems.ElementAt(0).Id,
             };
 
             result.ActionName.Should().Be(Constants.Actions.EditDeliveryDates);
@@ -162,7 +167,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
-                orderItemId = solution.Id,
             };
 
             result.ActionName.Should().Be(Constants.Actions.EditDeliveryDates);
@@ -196,7 +200,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
-                orderItemId = orderItem.Id,
             };
 
             result.ActionName.Should().Be(Constants.Actions.MatchDeliveryDates);

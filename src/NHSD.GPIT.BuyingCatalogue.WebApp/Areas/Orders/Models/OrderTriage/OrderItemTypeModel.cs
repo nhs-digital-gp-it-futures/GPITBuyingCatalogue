@@ -24,11 +24,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage
         {
             new(
                 "Catalogue solution and other services",
-                "Order clinical IT systems and their related services.",
+                "Order clinical IT systems and their related services",
                 CatalogueItemType.Solution),
             new(
                 "Associated service only",
-                "Order products to support the implementation of a solution. For example, training or data migration or arranging the merging or splitting of existing practices.",
+                "Order services to support the implementation of a solution, like training, data migration or arranging the merging of existing practices",
                 CatalogueItemType.AssociatedService),
         };
     }

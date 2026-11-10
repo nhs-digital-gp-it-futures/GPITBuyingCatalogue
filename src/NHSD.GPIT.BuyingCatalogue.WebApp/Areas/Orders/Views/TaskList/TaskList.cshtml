@@ -20,7 +20,7 @@
 
 <partial name="Partials/_BackLink" model="Model" />
 
-<div class="nhsuk-grid-row">
+<div class="nhsuk-grid-row"> 
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
         <nhs-page-title model="Model" />
@@ -173,8 +173,10 @@
                 }
             }
 
-        <vc:nhs-anchor-button text="Save and continue"
-                                 url="@Model.OnwardLink"
-                                 type="Primary" /> 
+        <form method="post">
+            <input type="hidden" asp-for="@Model.OnwardLink" />
+            <nhs-submit-button text="Save and continue" />
+        </form>
+
     </div>
 </div>

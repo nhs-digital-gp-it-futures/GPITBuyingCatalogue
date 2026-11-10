@@ -129,6 +129,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             return Order.DetermineOrderRecipients(Previous, orderItem.Id);
         }
 
+        public ICollection<OrderSublocationRecipient> DetermineOrderRecipientsWithNewServices(OrderItem orderItem)
+        {
+            return Order.DetermineOrderRecipientsWithNewServices(Previous, orderItem.Id);
+        }
+
         public bool CanComplete()
         {
             return Order.CanComplete(RolledUp.GetOrderRecipients().ToList(), OrderItems, Previous);

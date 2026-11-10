@@ -154,6 +154,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                         .Excluding(m => m.AdditionalServices));
         }
 
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_TaskList_NoRecipientCountDiscrepancy_RedirectsWithoutSettingDisplayNumbers(
+            string internalOrgId,
+            CallOffId callOffId,
+            string onwardLink,
+            [Frozen] IOrderItemRecipientDisplayNumberService displayNumberService,
+            TaskListController controller)
+        {
+            displayNumberService.HasItemRecipientCountDiscrepancy(callOffId, internalOrgId).Returns(false);
+
+            var result = await controller.TaskList(internalOrgId, callOffId, onwardLink);
+
+            result.Should().BeOfType<LocalRedirectResult>();
+            await displayNumberService.DidNotReceive()
+                .SetOrderItemRecipientDisplayNumbers(Arg.Any<CallOffId>(), Arg.Any<string>());
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task PostTaskList_RecipientCountDiscrepancy_SetsDisplayNumbersAndRedirects(
+            string internalOrgId,
+            CallOffId callOffId,
+            string onwardLink,
+            [Frozen] IOrderItemRecipientDisplayNumberService displayNumberService,
+            TaskListController controller)
+        {
+            displayNumberService.HasItemRecipientCountDiscrepancy(callOffId, internalOrgId).Returns(true);
+
+            var result = await controller.TaskList(internalOrgId, callOffId, onwardLink);
+
+            result.Should().BeOfType<LocalRedirectResult>();
+            await displayNumberService.Received(1)
+                .SetOrderItemRecipientDisplayNumbers(callOffId, internalOrgId);
+        }
+
         private static Dictionary<CatalogueItemId, int> AssociatedServicesForAdditionalServices(
             EntityFramework.Ordering.Models.Order order)
         {
