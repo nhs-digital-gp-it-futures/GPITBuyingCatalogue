@@ -207,6 +207,7 @@
                         <nhs-table-cell>
                             <a asp-controller="@typeof(CatalogueSolutionListPriceController).ControllerName()"
                                asp-action="@nameof(CatalogueSolutionListPriceController.Index)"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>

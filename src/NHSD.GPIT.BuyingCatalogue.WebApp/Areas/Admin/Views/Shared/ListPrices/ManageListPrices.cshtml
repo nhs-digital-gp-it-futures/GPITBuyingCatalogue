@@ -1,10 +1,4 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAnchorButton
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 @model ManageListPricesModel
 
@@ -122,15 +116,15 @@
         CatalogueItemType.Solution => Url.Action(
             nameof(CatalogueSolutionListPriceController.EditTieredListPrice),
             typeof(CatalogueSolutionListPriceController).ControllerName(),
-            new { solutionId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
+            new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
         CatalogueItemType.AdditionalService => Url.Action(
             nameof(AdditionalServiceListPriceController.EditTieredListPrice),
             typeof(AdditionalServiceListPriceController).ControllerName(),
-            new { solutionId = Model.CatalogueItemId, AdditionalServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
+            new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, AdditionalServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
         CatalogueItemType.AssociatedService => Url.Action(
             nameof(AssociatedServiceListPriceController.EditTieredListPrice),
             typeof(AssociatedServiceListPriceController).ControllerName(),
-            new { supplierId = Model.SupplierId, associatedServiceId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
+            new { solutionType = Model.SolutionType, supplierId = Model.SupplierId, associatedServiceId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
         _ => string.Empty,
     };
 
@@ -139,15 +133,15 @@
         CatalogueItemType.Solution => Url.Action(
             nameof(CatalogueSolutionListPriceController.EditFlatListPrice),
             typeof(CatalogueSolutionListPriceController).ControllerName(),
-            new { solutionId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
+            new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
         CatalogueItemType.AdditionalService => Url.Action(
             nameof(AdditionalServiceListPriceController.EditFlatListPrice),
             typeof(AdditionalServiceListPriceController).ControllerName(),
-            new { solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
+            new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
         CatalogueItemType.AssociatedService => Url.Action(
             nameof(AssociatedServiceListPriceController.EditFlatListPrice),
             typeof(AssociatedServiceListPriceController).ControllerName(),
-            new { supplierId = Model.SupplierId, associatedServiceId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
+            new { solutionType = Model.SolutionType, supplierId = Model.SupplierId, associatedServiceId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
         _ => string.Empty,
     };
 }

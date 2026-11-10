@@ -1,11 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 @model TieredPriceTiersModel
 
 @{
@@ -97,15 +91,15 @@
         CatalogueItemType.Solution => Url.Action(
             nameof(CatalogueSolutionListPriceController.EditTieredPriceTier),
             typeof(CatalogueSolutionListPriceController).ControllerName(),
-            new { solutionId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id }),
+            new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id }),
         CatalogueItemType.AdditionalService => Url.Action(
             nameof(AdditionalServiceListPriceController.EditTieredPriceTier),
             typeof(AdditionalServiceListPriceController).ControllerName(),
-            new { solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id }),
+            new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id }),
         CatalogueItemType.AssociatedService => Url.Action(
             nameof(AssociatedServiceListPriceController.EditTieredPriceTier),
             typeof(AssociatedServiceListPriceController).ControllerName(),
-            new { supplierId = Model.SupplierId, associatedServiceId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id }),
+            new { supplierId = Model.SupplierId, solutionType = Model.SolutionType, associatedServiceId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id }),
         _ => string.Empty,
         };
 }

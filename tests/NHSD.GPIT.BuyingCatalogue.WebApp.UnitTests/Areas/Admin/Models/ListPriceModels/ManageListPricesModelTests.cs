@@ -18,7 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
             var flatPrices = prices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
             var tieredPrices = prices.Where(p => p.CataloguePriceType == CataloguePriceType.Tiered).ToList();
 
-            var model = new ManageListPricesModel(catalogueItem, prices);
+            var model = new ManageListPricesModel(catalogueItem, prices)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             model.CatalogueItemId.Should().Be(catalogueItem.Id);
             model.CatalogueItemName.Should().Be(catalogueItem.Name);

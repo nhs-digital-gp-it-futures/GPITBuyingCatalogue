@@ -37,6 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             SupplierId = supplierId;
         }
 
+        public required SolutionType SolutionType { get; set; }
+
         public IList<CataloguePriceTier> Tiers { get; set; }
 
         public int MaximumNumberOfTiers { get; set; }

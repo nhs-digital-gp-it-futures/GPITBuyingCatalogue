@@ -195,11 +195,11 @@
             ? Url.Action(
                 nameof(CatalogueSolutionListPriceController.EditTierPrice),
                 typeof(CatalogueSolutionListPriceController).ControllerName(),
-                new { solutionId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, tierIndex = index })
+                new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, tierIndex = index })
             : Url.Action(
                 nameof(CatalogueSolutionListPriceController.EditTieredPriceTier),
                 typeof(CatalogueSolutionListPriceController).ControllerName(),
-                new { solutionId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
+                new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
     }
 
     string GetAdditionalServiceTierEditLink(CataloguePriceTier tier, int index)
@@ -208,11 +208,11 @@
             ? Url.Action(
                 nameof(AdditionalServiceListPriceController.EditTierPrice),
                 typeof(AdditionalServiceListPriceController).ControllerName(),
-                new { solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, tierIndex = index })
+                new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, tierIndex = index })
             : Url.Action(
                 nameof(AdditionalServiceListPriceController.EditTieredPriceTier),
                 typeof(AdditionalServiceListPriceController).ControllerName(),
-                new { solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
+                new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
     }
 
     string GetAssociatedServiceTierEditLink(CataloguePriceTier tier, int index)
@@ -221,10 +221,10 @@
             ? Url.Action(
                 nameof(AssociatedServiceListPriceController.EditTierPrice),
                 typeof(AssociatedServiceListPriceController).ControllerName(),
-                new { supplierId = Model.SupplierId, associatedServiceId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, tierIndex = index })
+                new { supplierId = Model.SupplierId, solutionType = Model.SolutionType, associatedServiceId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, tierIndex = index })
             : Url.Action(
                 nameof(AssociatedServiceListPriceController.EditTieredPriceTier),
                 typeof(AssociatedServiceListPriceController).ControllerName(),
-                new { supplierId = Model.SupplierId, associatedServiceId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
+                new { supplierId = Model.SupplierId, solutionType = Model.SolutionType, associatedServiceId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
     }
 }
