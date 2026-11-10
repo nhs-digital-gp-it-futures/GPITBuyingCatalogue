@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
-            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Supplier found for Id: {supplierId}");
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Supplier found for Id: {supplierId}, and solution type {SolutionType.GPIT}");
         }
 
         [Theory]

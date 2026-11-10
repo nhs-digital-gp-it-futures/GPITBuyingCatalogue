@@ -24,6 +24,8 @@ public class CatalogueSolutionStandardsModel : NavBaseModel
         SupplementaryCareStandards = groupedStandards.Where(x => x.Key == StandardType.SupplementaryCare).SelectMany(x => x).ToList();
     }
 
+    public required SolutionType SolutionType { get; init; }
+
     public CatalogueItemId SolutionId { get; }
 
     public string SolutionName { get; }

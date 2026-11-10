@@ -37,13 +37,16 @@ public static class CatalogueSolutionStandardsControllerTests
         solutionsService.GetSolutionName(solution.CatalogueItemId).Returns(solution.CatalogueItem.Name);
         solutionStandardsService.GetSolutionStandards(solution.CatalogueItemId).Returns(standards);
 
-        var result = (await controller.Index(solution.CatalogueItemId)).As<ViewResult>();
+        var result = (await controller.Index(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
         result.Should().NotBeNull();
 
         result.Model.Should()
             .BeEquivalentTo(
-                new CatalogueSolutionStandardsModel(solution.CatalogueItemId, solution.CatalogueItem.Name, standards),
+                new CatalogueSolutionStandardsModel(solution.CatalogueItemId, solution.CatalogueItem.Name, standards)
+                {
+                    SolutionType = SolutionType.GPIT,
+                },
                 opt => opt.Excluding(m => m.BackLink));
     }
 
@@ -59,7 +62,7 @@ public static class CatalogueSolutionStandardsControllerTests
         solutionsService.GetSolutionName(solution.CatalogueItemId).Returns(solution.CatalogueItem.Name);
         solutionStandardsService.GetSolutionStandard(solution.CatalogueItemId, standard.Id).Returns(standard);
 
-        var result = (await controller.Edit(solution.CatalogueItemId, standard.Id)).As<ViewResult>();
+        var result = (await controller.Edit(SolutionType.GPIT, solution.CatalogueItemId, standard.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should()
@@ -78,7 +81,7 @@ public static class CatalogueSolutionStandardsControllerTests
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        var result = (await controller.Edit(solutionId, standardId, model)).As<ViewResult>();
+        var result = (await controller.Edit(SolutionType.GPIT, solutionId, standardId, model)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().Be(model);
@@ -92,7 +95,7 @@ public static class CatalogueSolutionStandardsControllerTests
         CatalogueSolutionStandardModel model,
         CatalogueSolutionStandardsController controller)
     {
-        var result = (await controller.Edit(solutionId, standardId, model)).As<RedirectToActionResult>();
+        var result = (await controller.Edit(SolutionType.GPIT, solutionId, standardId, model)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
@@ -100,7 +103,9 @@ public static class CatalogueSolutionStandardsControllerTests
             .BeEquivalentTo(
                 new RouteValueDictionary
                 {
-                    ["area"] = controller.GetType().AreaName(), [nameof(solutionId)] = solutionId,
+                    ["area"] = controller.GetType().AreaName(),
+                    ["solutionType"] = SolutionType.GPIT,
+                    [nameof(solutionId)] = solutionId,
                 });
     }
 }
