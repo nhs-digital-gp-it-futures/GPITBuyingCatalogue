@@ -289,6 +289,7 @@
                             <a asp-action="@nameof(DevelopmentPlansController.DevelopmentPlans)"
                                asp-controller="@typeof(DevelopmentPlansController).ControllerName()"
                                asp-area="@typeof(DevelopmentPlansController).AreaName()"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
