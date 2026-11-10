@@ -408,7 +408,7 @@ public sealed class CatalogueSolutionsController(
         {
             BackLink = Url.Action(
                 nameof(ManageCatalogueSolution),
-                new { solutionId }),
+                new { solutionType, solutionId }),
             SolutionType = solutionType,
         };
 
@@ -428,7 +428,7 @@ public sealed class CatalogueSolutionsController(
         {
             return RedirectToAction(
                 nameof(ManageCatalogueSolution),
-                new { solutionId });
+                new { solutionType, solutionId });
         }
 
         var associatedServices = model.SelectableAssociatedServices.Where(a => a.Selected).Select(a => a.CatalogueItemId);
