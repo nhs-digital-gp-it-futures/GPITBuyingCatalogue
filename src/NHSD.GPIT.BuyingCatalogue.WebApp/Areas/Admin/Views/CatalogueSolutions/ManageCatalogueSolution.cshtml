@@ -316,7 +316,10 @@
             </nhs-table>
         </nhs-fieldset-form-container>
 
-        <form method="post" asp-action="SetPublicationStatus" asp-route-solutionId="@Model.SolutionId">
+        <form method="post"
+              asp-action="SetPublicationStatus"
+              asp-route-solutionId="@Model.SolutionId"
+              asp-route-solutionType="@Model.SolutionType">
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="BackLinkText" />
 
