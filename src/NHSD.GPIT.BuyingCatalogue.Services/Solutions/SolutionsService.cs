@@ -514,8 +514,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Select(framework => new FrameworkSolution { FrameworkId = framework.FrameworkId })
                 .ToList();
 
-            var selectedFrameworkIds = frameworkSolutions.Select(f => f.FrameworkId).ToList();
-
             var catalogueItem = new CatalogueItem
             {
                 CatalogueItemType = CatalogueItemType.Solution,
