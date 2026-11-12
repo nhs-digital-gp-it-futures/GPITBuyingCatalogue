@@ -198,3 +198,17 @@
     padding-right: 0;
   }
 }
+
+
+.nhsuk-header__navigation-list.not-authenticated {
+    justify-content: normal;
+
+    .nhsuk-header__navigation-item {
+        padding-left: 16px;
+        padding-right: 16px;
+
+        &:first-child {
+            padding-left: 0;
+        }
+    }
+}

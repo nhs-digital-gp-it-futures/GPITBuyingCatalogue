@@ -1,8 +1,12 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsNavigationPanel.NhsNavigationPanelModel
 
+@{
+    var authClass = !(User.Identity?.IsAuthenticated ?? false) ? "not-authenticated" : "";
+}
+
 <div class="nhsuk-navigation-container">
     <nav class="nhsuk-navigation" id="header-navigation" role="navigation" aria-label="Primary navigation">
-        <ul class="nhsuk-header__navigation-list">
+        <ul class="nhsuk-header__navigation-list @authClass">
             @foreach (var item in Model.Items)
             {
                 <li class="nhsuk-header__navigation-item">

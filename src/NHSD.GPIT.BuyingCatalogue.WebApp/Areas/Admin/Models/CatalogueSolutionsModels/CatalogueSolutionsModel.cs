@@ -3,36 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
+
+public sealed class CatalogueSolutionsModel
 {
-    public sealed class CatalogueSolutionsModel
+    public CatalogueSolutionsModel()
     {
-        public CatalogueSolutionsModel()
-        {
-        }
+    }
 
-        public CatalogueSolutionsModel(IEnumerable<CatalogueItem> solutions)
-        {
-            SetSolutions(solutions);
-        }
+    public CatalogueSolutionsModel(IEnumerable<CatalogueItem> solutions)
+    {
+        SetSolutions(solutions);
+    }
 
-        public IList<PublicationStatus> PublicationStatuses { get; } = Enum.GetValues<PublicationStatus>().ToList().AsReadOnly();
+    public IList<PublicationStatus> PublicationStatuses { get; } = Enum.GetValues<PublicationStatus>().ToList().AsReadOnly();
 
-        public IList<CatalogueModel> Solutions { get; } = new List<CatalogueModel>();
+    public IList<CatalogueModel> Solutions { get; } = [];
 
-        public string SearchTerm { get; set; }
+    public string SearchTerm { get; set; }
 
-        public string SelectedPublicationStatus { get; set; }
+    public string SelectedPublicationStatus { get; set; }
 
-        public void SetSolutions(IEnumerable<CatalogueItem> solutions)
-        {
-            if (solutions is null)
-                return;
+    public required SolutionType SolutionType { get; set; }
 
-            Solutions.Clear();
+    public void SetSolutions(IEnumerable<CatalogueItem> solutions)
+    {
+        if (solutions is null)
+            return;
 
-            foreach (var item in solutions.Select(s => new CatalogueModel(s)).ToList())
-                Solutions.Add(item);
-        }
+        Solutions.Clear();
+
+        foreach (var item in solutions.Select(s => new CatalogueModel(s)).ToList())
+            Solutions.Add(item);
     }
 }

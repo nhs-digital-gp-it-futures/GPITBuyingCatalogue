@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
@@ -25,12 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public IActionResult PrivacyPolicy()
             => View();
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("contact-us")]
         public IActionResult ContactUs()
             => View(new ContactUsModel());
 
-        [Authorize]
+        [AllowAnonymous]
         [ValidateRecaptcha]
         [HttpPost("contact-us")]
         public async Task<IActionResult> ContactUs(ContactUsModel model)
@@ -84,5 +85,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
             return View(new ErrorModel(error));
         }
+
+        [ExcludeFromCodeCoverage]
+        public IActionResult GPIT()
+            => View();
+
+        [ExcludeFromCodeCoverage]
+        public IActionResult CommunityPharmacy()
+           => View();
     }
 }

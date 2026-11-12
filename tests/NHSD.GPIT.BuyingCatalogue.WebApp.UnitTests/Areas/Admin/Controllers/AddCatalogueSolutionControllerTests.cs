@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetAllSuppliers().Returns(suppliers);
 
-            var actual = (await controller.Index()).As<ViewResult>();
+            var actual = (await controller.Index(SolutionType.GPIT)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().Be("Details");
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var controller = GetController(mockService, mockSuppliersService, userId);
 
-            await controller.Index(model);
+            await controller.Index(SolutionType.GPIT, model);
 
             await mockService.Received().AddCatalogueSolution(
                     Arg.Is<CreateSolutionModel>(
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var controller = GetController(mockService, mockSuppliersService, 17);
 
-            var actual = (await controller.Index(model)).As<RedirectToActionResult>();
+            var actual = (await controller.Index(SolutionType.GPIT, model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             controller.ModelState.AddModelError("some-property", "some-error");
 
-            var actual = (await controller.Index(model)).As<ViewResult>();
+            var actual = (await controller.Index(SolutionType.GPIT, model)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().Be("Details");

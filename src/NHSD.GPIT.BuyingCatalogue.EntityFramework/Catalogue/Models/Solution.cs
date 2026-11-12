@@ -40,6 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public CatalogueItem CatalogueItem { get; set; }
 
+        public SolutionType SolutionType { get; set; }
+
         public ServiceLevelAgreements ServiceLevelAgreement { get; set; }
 
         public DataProcessingInformation DataProcessingInformation { get; set; }

@@ -5,7 +5,6 @@ using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Flurl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -18,7 +17,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
-using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
@@ -97,20 +95,21 @@ public static class CatalogueSolutionsControllerTests
     [Theory]
     [MockAutoData]
     public static async Task Get_SearchResults_ValidSearchTerm_ReturnsExpectedResult(
+        SolutionType solutionType,
         string searchTerm,
         List<CatalogueItem> solutions,
         [Frozen] ISolutionsService mockSolutionsService,
         CatalogueSolutionsController controller)
     {
         mockSolutionsService
-            .GetAllSolutionsForSearchTerm(searchTerm)
+            .GetAllSolutionsForSearchTerm(solutionType, searchTerm)
             .Returns(solutions);
 
-        var result = await controller.SearchResults(searchTerm);
+        var result = await controller.SearchResults(solutionType, searchTerm);
 
         await mockSolutionsService
             .Received()
-            .GetAllSolutionsForSearchTerm(searchTerm);
+            .GetAllSolutionsForSearchTerm(solutionType, searchTerm);
 
         var actualResult = result.As<JsonResult>()
             .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
@@ -125,19 +124,20 @@ public static class CatalogueSolutionsControllerTests
     [Theory]
     [MockAutoData]
     public static async Task Get_SearchResults_ValidSearchTerm_NoMatches_ReturnsExpectedResult(
+        SolutionType solutionType,
         string searchTerm,
         [Frozen] ISolutionsService mockSolutionsService,
         CatalogueSolutionsController controller)
     {
         mockSolutionsService
-            .GetAllSolutionsForSearchTerm(searchTerm)
+            .GetAllSolutionsForSearchTerm(solutionType, searchTerm)
             .Returns(new List<CatalogueItem>());
 
-        var result = await controller.SearchResults(searchTerm);
+        var result = await controller.SearchResults(solutionType, searchTerm);
 
         await mockSolutionsService
             .Received()
-            .GetAllSolutionsForSearchTerm(searchTerm);
+            .GetAllSolutionsForSearchTerm(solutionType, searchTerm);
 
         var actualResult = result.As<JsonResult>()
             .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
@@ -152,9 +152,10 @@ public static class CatalogueSolutionsControllerTests
     [MockInlineAutoData(" ")]
     public static async Task Get_SearchResults_InvalidSearchTerm_ReturnsExpectedResult(
         string searchTerm,
+        SolutionType solutionType,
         CatalogueSolutionsController controller)
     {
-        var result = await controller.SearchResults(searchTerm);
+        var result = await controller.SearchResults(solutionType, searchTerm);
 
         var actualResult = result.As<JsonResult>()
             .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
@@ -286,14 +287,14 @@ public static class CatalogueSolutionsControllerTests
         var expected = solutions.Select(s => new CatalogueModel(s)).ToList();
 
         mockService
-            .GetAllSolutions(null)
+            .GetAllSolutions(SolutionType.GPIT, null)
             .Returns(solutions);
 
-        var actual = (await controller.Index()).As<ViewResult>();
+        var actual = (await controller.Index(SolutionType.GPIT)).As<ViewResult>();
 
         await mockService
             .Received()
-            .GetAllSolutions(null);
+            .GetAllSolutions(SolutionType.GPIT, null);
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -316,14 +317,14 @@ public static class CatalogueSolutionsControllerTests
         var expected = solutions.Select(x => new CatalogueModel(x));
 
         mockService
-            .GetAllSolutionsForSearchTerm(searchTerm)
+            .GetAllSolutionsForSearchTerm(SolutionType.GPIT, searchTerm)
             .Returns(solutions);
 
-        var actual = (await controller.Index(searchTerm)).As<ViewResult>();
+        var actual = (await controller.Index(SolutionType.GPIT, searchTerm)).As<ViewResult>();
 
         await mockService
             .Received()
-            .GetAllSolutionsForSearchTerm(searchTerm);
+            .GetAllSolutionsForSearchTerm(SolutionType.GPIT, searchTerm);
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -343,13 +344,14 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] ISolutionsService mockService,
         CatalogueSolutionsController controller)
     {
-        var model = new CatalogueSolutionsModel { SelectedPublicationStatus = status.ToString() };
+        var model = new CatalogueSolutionsModel { SelectedPublicationStatus = status.ToString(), SolutionType = SolutionType.GPIT };
 
         mockService
-            .GetAllSolutions(status)
+            .GetAllSolutions(SolutionType.GPIT, status)
             .Returns(solutions);
+        mockService.GetAllSolutions(SolutionType.GPIT).Returns(solutions);
 
-        var actual = (await controller.Index(model)).As<ViewResult>();
+        var actual = (await controller.Index(SolutionType.GPIT, model)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -373,15 +375,17 @@ public static class CatalogueSolutionsControllerTests
         {
             SearchTerm = searchTerm,
             SelectedPublicationStatus = status.ToString(),
+            SolutionType = SolutionType.GPIT,
         };
 
         model.SetSolutions(new[] { expected });
 
         mockService
-            .GetAllSolutions(status)
+            .GetAllSolutions(SolutionType.GPIT, status)
             .Returns(solutions);
+        mockService.GetAllSolutionsForSearchTerm(SolutionType.GPIT, searchTerm).Returns(solutions);
 
-        var actual = (await controller.Index(model)).As<ViewResult>();
+        var actual = (await controller.Index(SolutionType.GPIT, model)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -397,23 +401,31 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] AspNetUser aspNetUser,
         Solution solution,
         SolutionLoadingStatusesModel solutionLoadingStatuses,
+        SolutionSections solutionSections,
         int userId,
         [Frozen] ISolutionsService mockSolutionService,
+        [Frozen] ISolutionSectionsService mockSolutionSectionsService,
         CatalogueSolutionsController controller)
     {
         solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
         solution.LastUpdatedBy = userId;
         solution.LastUpdatedByUser = aspNetUser;
         aspNetUser.Id = userId;
-        var expectedModel = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem);
+        var expectedModel = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, solutionSections)
+        {
+            SolutionType = SolutionType.GPIT,
+        };
 
         mockSolutionService.GetSolutionThin(solution.CatalogueItemId)
             .Returns(solution.CatalogueItem);
 
-        mockSolutionService.GetSolutionLoadingStatuses(solution.CatalogueItemId)
+        mockSolutionSectionsService.GetSolutionSectionsAsync(SolutionType.GPIT)
+            .Returns(solutionSections);
+
+        mockSolutionService.GetSolutionLoadingStatuses(solution.CatalogueItemId, solutionSections)
             .Returns(solutionLoadingStatuses);
 
-        var actual = (await controller.ManageCatalogueSolution(solution.CatalogueItemId)).As<ViewResult>();
+        var actual = (await controller.ManageCatalogueSolution(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
         await mockSolutionService
             .Received()
@@ -940,12 +952,17 @@ public static class CatalogueSolutionsControllerTests
         var catalogueItem = solution.CatalogueItem;
         catalogueItem.PublishedStatus = PublicationStatus.Draft;
 
-        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = catalogueItem.PublishedStatus };
+        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel
+        {
+            SelectedPublicationStatus = catalogueItem.PublishedStatus,
+            SolutionPublicationStatus = catalogueItem.PublishedStatus,
+            SolutionType = SolutionType.GPIT,
+        };
 
         solutionsService.GetSolutionThin(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        var actual = (await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel)).As<RedirectToActionResult>();
+        var actual = (await controller.SetPublicationStatus(SolutionType.GPIT, catalogueItem.Id, manageCatalogueSolutionModel)).As<RedirectToActionResult>();
 
         await publicationStatusService
             .Received(0)
@@ -966,12 +983,17 @@ public static class CatalogueSolutionsControllerTests
         var catalogueItem = solution.CatalogueItem;
         catalogueItem.PublishedStatus = PublicationStatus.Draft;
 
-        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = PublicationStatus.Published };
+        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel
+        {
+            SelectedPublicationStatus = PublicationStatus.Published,
+            SolutionPublicationStatus = catalogueItem.PublishedStatus,
+            SolutionType = SolutionType.GPIT,
+        };
 
         mockSolutionService.GetSolutionThin(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel);
+        await controller.SetPublicationStatus(SolutionType.GPIT, catalogueItem.Id, manageCatalogueSolutionModel);
 
         await mockPublicationStatusService
             .Received()
@@ -988,12 +1010,17 @@ public static class CatalogueSolutionsControllerTests
         var catalogueItem = solution.CatalogueItem;
         catalogueItem.PublishedStatus = PublicationStatus.Draft;
 
-        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = PublicationStatus.Published };
+        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel
+        {
+            SelectedPublicationStatus = PublicationStatus.Published,
+            SolutionPublicationStatus = catalogueItem.PublishedStatus,
+            SolutionType = SolutionType.GPIT,
+        };
 
         mockSolutionService.GetSolutionThin(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        var actual = (await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel)).As<RedirectToActionResult>();
+        var actual = (await controller.SetPublicationStatus(SolutionType.GPIT, catalogueItem.Id, manageCatalogueSolutionModel)).As<RedirectToActionResult>();
 
         actual.Should().NotBeNull();
         actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.Index));
@@ -1009,12 +1036,17 @@ public static class CatalogueSolutionsControllerTests
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = publicationStatus };
+        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel
+        {
+            SelectedPublicationStatus = publicationStatus,
+            SolutionPublicationStatus = publicationStatus,
+            SolutionType = SolutionType.GPIT,
+        };
 
         mockSolutionService.GetSolutionThin(solution.Id)
             .Returns(solution);
 
-        var actual = (await controller.SetPublicationStatus(solution.Id, manageCatalogueSolutionModel)).As<ViewResult>();
+        var actual = (await controller.SetPublicationStatus(SolutionType.GPIT, solution.Id, manageCatalogueSolutionModel)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));

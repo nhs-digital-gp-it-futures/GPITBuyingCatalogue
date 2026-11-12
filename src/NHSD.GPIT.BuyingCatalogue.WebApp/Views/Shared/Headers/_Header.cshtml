@@ -1,10 +1,12 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsLoginIcon
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers
 
 @{
     var navMenuModel = new NavigationMenuModel(User, Url, Context.Request.RouteValues);
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var area = ViewContext.RouteData.Values["area"]?.ToString();
 }
 <header class="nhsuk-header" role="banner">
     <div class="nhsuk-width-container nhsuk-header__container">
@@ -18,7 +20,7 @@
                         <vc:nhs-login-icon/>
                     </a>
                 }
-                else
+                else if (area != typeof(CommunityPharmacyController).AreaName() && !(controller == typeof(HomeController).ControllerName() && action == nameof(HomeController.Index)))
                 {
                     <a class="nhsuk-account__login--link" href="@Url.Action(nameof(AccountController.Login), typeof(AccountController).ControllerName(), new { area = typeof(AccountController).AreaName() })">
                         Log in

@@ -30,7 +30,8 @@ public sealed class CatalogueSolutionsController(
     ISuppliersService suppliersService,
     ICapabilitiesService capabilitiesService,
     IAssociatedServicesService associatedServicesService,
-    ISolutionPublicationStatusService publicationStatusService)
+    ISolutionPublicationStatusService publicationStatusService,
+    ISolutionSectionsService solutionSectionsService)
     : Controller
 {
     private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
@@ -38,44 +39,46 @@ public sealed class CatalogueSolutionsController(
     private readonly ICapabilitiesService capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
     private readonly IAssociatedServicesService associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
     private readonly ISolutionPublicationStatusService publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
+    private readonly ISolutionSectionsService solutionSectionsService = solutionSectionsService ?? throw new ArgumentNullException(nameof(solutionSectionsService));
 
-    [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] string search = null)
-    {
-        var solutions = await GetFilteredItems(search);
+    [HttpGet("{solutionType}")]
+    public async Task<IActionResult> Index([FromRoute] SolutionType solutionType, [FromQuery] string search = null)
+   {
+        var solutions = await GetFilteredItems(search, solutionType);
 
         var solutionModel = new CatalogueSolutionsModel(solutions)
         {
             SearchTerm = search,
+            SolutionType = solutionType,
         };
 
         return View(solutionModel);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Index(CatalogueSolutionsModel model)
+    [HttpPost("{solutionType}")]
+    public async Task<IActionResult> Index([FromRoute] SolutionType solutionType, CatalogueSolutionsModel model)
     {
         var status = string.IsNullOrWhiteSpace(model.SelectedPublicationStatus)
             ? (PublicationStatus?)null
             : Enum.Parse<PublicationStatus>(model.SelectedPublicationStatus, ignoreCase: true);
 
-        var solutions = await solutionsService.GetAllSolutions(status);
-        var filteredSolutions = await GetFilteredItems(model.SearchTerm);
+        var solutions = await solutionsService.GetAllSolutions(solutionType, status);
+        var filteredSolutions = await GetFilteredItems(model.SearchTerm, solutionType);
 
         model.SetSolutions(solutions.Intersect(filteredSolutions));
 
         return View(model);
     }
 
-    [HttpGet("search-results")]
-    public async Task<IActionResult> SearchResults([FromQuery] string search)
+    [HttpGet("{solutionType}/search-results")]
+    public async Task<IActionResult> SearchResults([FromRoute] SolutionType solutionType, [FromQuery] string search)
     {
-        var results = await GetFilteredItems(search);
+        var results = await GetFilteredItems(search, solutionType);
 
         return Json(results.Take(15).Select(x => new HtmlEncodedSuggestionSearchResult(
             x.Name,
             x.Supplier.Name,
-            Url.Action(nameof(ManageCatalogueSolution), new { solutionId = $"{x.Id}" }))));
+            Url.Action(nameof(ManageCatalogueSolution), new { solutionType, solutionId = $"{x.Id}" }))));
     }
 
     [HttpGet("manage/{solutionId}/features")]
@@ -107,33 +110,40 @@ public sealed class CatalogueSolutionsController(
         return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
     }
 
-    [HttpGet("manage/{solutionId}")]
-    public async Task<IActionResult> ManageCatalogueSolution(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}")]
+    public async Task<IActionResult> ManageCatalogueSolution(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
         if (solution is null)
             return BadRequest($"No Solution found for Id: {solutionId}");
 
-        var solutionStatuses = await solutionsService.GetSolutionLoadingStatuses(solutionId);
+        var solutionSections = await solutionSectionsService.GetSolutionSectionsAsync(solutionType);
+        if (solutionSections is null)
+            return BadRequest($"No Solution Sections found for Id: {solutionId}, with Solution Type: {solutionType}");
 
-        var model = new ManageCatalogueSolutionModel(solutionStatuses, solution);
+        var solutionStatuses = await solutionsService.GetSolutionLoadingStatuses(solutionId, solutionSections);
+
+        var model = new ManageCatalogueSolutionModel(solutionStatuses, solution, solutionSections)
+        {
+            SolutionType = solutionType,
+        };
 
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}")]
-    public async Task<IActionResult> SetPublicationStatus(CatalogueItemId solutionId, ManageCatalogueSolutionModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}")]
+    public async Task<IActionResult> SetPublicationStatus(SolutionType solutionType, CatalogueItemId solutionId, ManageCatalogueSolutionModel model)
     {
         if (!ModelState.IsValid)
             return View("ManageCatalogueSolution", model);
 
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
-        if (solution.PublishedStatus == model.SelectedPublicationStatus) return RedirectToAction(nameof(Index));
+        if (solution.PublishedStatus == model.SelectedPublicationStatus) return RedirectToAction(nameof(Index), new { solutionType });
 
         await publicationStatusService.SetPublicationStatus(solutionId, model.SelectedPublicationStatus);
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index), new { solutionType });
     }
 
     [HttpGet("manage/{solutionId}/details")]
@@ -422,10 +432,10 @@ public sealed class CatalogueSolutionsController(
             new { solutionId });
     }
 
-    private async Task<IEnumerable<CatalogueItem>> GetFilteredItems(string search)
+    private async Task<IEnumerable<CatalogueItem>> GetFilteredItems(string search, SolutionType solutionType)
     {
         return string.IsNullOrWhiteSpace(search)
-            ? await solutionsService.GetAllSolutions()
-            : await solutionsService.GetAllSolutionsForSearchTerm(search);
+            ? await solutionsService.GetAllSolutions(solutionType)
+            : await solutionsService.GetAllSolutionsForSearchTerm(solutionType, search);
     }
 }
