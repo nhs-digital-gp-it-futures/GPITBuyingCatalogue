@@ -15,11 +15,11 @@ public static class EmailPreferenceRoleTypeExtensions
         {
             EmailPreferenceRoleType.All => true,
             EmailPreferenceRoleType.Admins =>
-                roles.Any(x => string.Equals(x.Name, OrganisationFunction.Authority.Name)),
-            EmailPreferenceRoleType.Buyers
-                => roles.Any(
-                    x => string.Equals(x.Name, OrganisationFunction.Buyer.Name)
-                        || string.Equals(x.Name, OrganisationFunction.AccountManager.Name)),
+                roles.Any(x =>
+                    string.Equals(x.Name, OrganisationFunction.Authority.Name)
+                    || string.Equals(x.Name, OrganisationFunction.Onboarding.Name)
+                    || string.Equals(x.Name, OrganisationFunction.ReadOnly.Name)),
+            EmailPreferenceRoleType.Buyers => roles.Any(x => string.Equals(x.Name, OrganisationFunction.Buyer.Name)),
             _ => throw new ArgumentOutOfRangeException(nameof(type)),
         };
     }

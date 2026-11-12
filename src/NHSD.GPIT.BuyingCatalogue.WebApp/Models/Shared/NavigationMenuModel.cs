@@ -85,7 +85,7 @@ public readonly struct NavigationMenuModel
                         CatalogueSolutions(urlHelper),
                     ]),
                 (
-                    user => user.IsBuyer() || user.IsAccountManager(), (user, urlHelper, routeValues) =>
+                    user => user.IsBuyer(), (user, urlHelper, routeValues) =>
                     [
                         Home(urlHelper),
 

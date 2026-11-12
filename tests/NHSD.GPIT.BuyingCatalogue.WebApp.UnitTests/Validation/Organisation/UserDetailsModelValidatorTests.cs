@@ -182,67 +182,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
         }
 
         [Theory]
-        [MockInlineAutoData(false, "AccountManager", null)]
-        [MockInlineAutoData(false, "AccountManager", true)]
-        [MockInlineAutoData(false, "AccountManager", false)]
-        [MockInlineAutoData(false, "Buyer", null)]
-        [MockInlineAutoData(false, "Buyer", true)]
-        [MockInlineAutoData(false, "Buyer", false)]
-        [MockInlineAutoData(true, "AccountManager", null)]
-        [MockInlineAutoData(true, "AccountManager", false)]
-        [MockInlineAutoData(true, "Buyer", null)]
-        [MockInlineAutoData(true, "Buyer", true)]
-        [MockInlineAutoData(true, "Buyer", false)]
-        public static void Validate_AccountType_MaxLimit_NoModelError(
-            bool isAccountManagerLimit,
-            string accountType,
-            bool? isActive,
-            int organisationId,
-            int userId,
-            [Frozen] IUsersService mockUsersService,
-            UserDetailsModelValidator validator)
-        {
-            var model = new UserDetailsModel
-            {
-                OrganisationId = organisationId,
-                UserId = userId,
-                SelectedAccountType = accountType,
-                IsActive = isActive,
-            };
-
-            mockUsersService.IsAccountManagerLimit(organisationId, userId).Returns(isAccountManagerLimit);
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldNotHaveValidationErrorFor(m => m.SelectedAccountType);
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void Validate_ActiveAccountManager_MaxLimitTrue_ModelError(
-            int organisationId,
-            int userId,
-            [Frozen] IUsersService mockUsersService,
-            [Frozen] AccountManagementSettings accountManagementSettings,
-            UserDetailsModelValidator validator)
-        {
-            var model = new UserDetailsModel
-            {
-                OrganisationId = organisationId,
-                UserId = userId,
-                SelectedAccountType = OrganisationFunction.AccountManager.Name,
-                IsActive = true,
-            };
-
-            mockUsersService.IsAccountManagerLimit(organisationId, userId).Returns(true);
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.SelectedAccountType)
-                .WithErrorMessage($"There are already {accountManagementSettings.MaximumNumberOfAccountManagers} active account managers for this organisation which is the maximum allowed");
-        }
-
-        [Theory]
         [MockAutoData]
         public static void Validate_Valid_NoModelError(
             string firstName,

@@ -535,7 +535,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [MockInlineAutoData(true, "Buyer")]
-        [MockInlineAutoData(false, "AccountManager")]
         public static async Task Post_AddUser_ValidModel_ReturnsExpectedResult(
             bool isDefaultAccountType,
             string accountType,

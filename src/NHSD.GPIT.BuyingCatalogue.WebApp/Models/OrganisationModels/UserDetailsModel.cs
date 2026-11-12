@@ -12,9 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 
 public sealed class UserDetailsModel : NavBaseModel
 {
-    public const string AddMaximumAccountManagerMessage = "You can only add buyers for this organisation. This is because there are already {0} active account managers which is the maximum allowed.";
-    public const string EditMaximumAccountManagerMessage = "You cannot make this user an account manager. This is because there are already {0} active account managers for this organisation, which is the maximum allowed.";
-
     private string selectedAccountType;
     private string firstName;
     private string lastName;
@@ -61,17 +58,6 @@ public sealed class UserDetailsModel : NavBaseModel
     public int OrganisationId { get; set; }
 
     public int UserId { get; set; }
-
-    public int MaxNumberOfAccountManagers { get; set; }
-
-    public string MaximumAccountManagerMessage
-    {
-        get
-        {
-            var message = UserId == 0 ? AddMaximumAccountManagerMessage : EditMaximumAccountManagerMessage;
-            return string.Format(message, MaxNumberOfAccountManagers);
-        }
-    }
 
     public string OrganisationName { get; set; }
 
@@ -140,7 +126,6 @@ public sealed class UserDetailsModel : NavBaseModel
     public IEnumerable<SelectOption<string>> AccountTypeOptions => new List<SelectOption<string>>
     {
         new(OrganisationFunction.Buyer.DisplayName, OrganisationFunction.Buyer.Advice, OrganisationFunction.Buyer.Name),
-        new(OrganisationFunction.AccountManager.DisplayName, OrganisationFunction.AccountManager.Advice, OrganisationFunction.AccountManager.Name),
     };
 
     public bool? IsActive { get; set; }

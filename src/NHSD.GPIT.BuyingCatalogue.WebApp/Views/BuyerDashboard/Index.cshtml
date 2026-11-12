@@ -6,7 +6,6 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Models
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels
 @model BuyerDashboardModel
 @{
@@ -19,18 +18,6 @@
         <partial name="Partials/_BuyersGuideInset"/>
     </div>
 </div>
-
-@if (User.IsAccountManager())
-{
-    <div class="nhsuk-grid-row">
-        <div class="nhsuk-grid-column-full">
-            <h2 class="nhsuk-heading-m">Organisation management</h2>
-            <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
-                <partial name="_DashboardOverview" model="@(new DashboardCardModel("Manage organisation", "Add or edit user accounts and manage organisations that can act on your behalf.", Url.Action(nameof(ManageAccountController.Index), typeof(ManageAccountController).ControllerName(), new { area = typeof(ManageAccountController).AreaName() }), "Manage organisation", HeadingSize.Small, ColumnWidth.Half))"/>
-            </ul>
-        </div>
-    </div>
-}
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
@@ -64,14 +51,11 @@
     </div>
 </div>
 
-@if (!User.IsAccountManager())
-{
-    <div class="nhsuk-grid-row">
-        <div class="nhsuk-grid-column-full">
-            <h2 class="nhsuk-heading-m">Organisation management</h2>
-            <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
-                <partial name="_DashboardOverview" model="@(new DashboardCardModel("Nominate organisation", "Allow other organisations to create orders on your behalf.", Url.Action(nameof(NominateOrganisationController.Index), typeof(NominateOrganisationController).ControllerName(), new { area = typeof(NominateOrganisationController).AreaName() }), "Nominate organisation", HeadingSize.Medium, ColumnWidth.Half))"/>
-            </ul>
-        </div>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <h2 class="nhsuk-heading-m">Organisation management</h2>
+        <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
+            <partial name="_DashboardOverview" model="@(new DashboardCardModel("Nominate organisation", "Allow other organisations to create orders on your behalf.", Url.Action(nameof(NominateOrganisationController.Index), typeof(NominateOrganisationController).ControllerName(), new { area = typeof(NominateOrganisationController).AreaName() }), "Nominate organisation", HeadingSize.Medium, ColumnWidth.Half))"/>
+        </ul>
     </div>
-}
+</div>

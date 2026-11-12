@@ -22,7 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
         [Theory]
         [MockInlineAutoData("Buyer")]
         [MockInlineAutoData("Authority")]
-        [MockInlineAutoData("AccountManager")]
         public static async Task GenerateClaimsAsync_ClaimsSetBasedOnAuthorityAndFirstLastName(
             string organisationFunction,
             [Frozen] IOrganisationsService orgService,

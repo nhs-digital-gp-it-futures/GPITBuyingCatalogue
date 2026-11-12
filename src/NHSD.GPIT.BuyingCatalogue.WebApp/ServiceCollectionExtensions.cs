@@ -65,11 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                             OrganisationFunction.Authority.Name))
                     .AddPolicy("Buyer", policy => policy.RequireClaim(
                             ClaimTypes.Role,
-                            OrganisationFunction.Buyer.Name,
-                            OrganisationFunction.AccountManager.Name))
-                    .AddPolicy("AccountManager", policy => policy.RequireClaim(
-                            ClaimTypes.Role,
-                            OrganisationFunction.AccountManager.Name))
+                            OrganisationFunction.Buyer.Name))
                     .AddPolicy("ManageCatalogueSolutions", policy => policy.RequireClaim(
                         CataloguePermissions.ClaimType,
                         CataloguePermissions.ManageCatalogueSolutions))
@@ -223,14 +219,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             {
                 var priceTiersCapSettings = configuration.GetSection("priceTiersCap").Get<PriceTiersCapSettings>();
                 services.AddSingleton(priceTiersCapSettings);
-
-                return services;
-            }
-
-            public IServiceCollection ConfigureAccountManagement(IConfiguration configuration)
-            {
-                var accountManagementSettings = configuration.GetSection("accountManagement").Get<AccountManagementSettings>();
-                services.AddSingleton(accountManagementSettings);
 
                 return services;
             }
