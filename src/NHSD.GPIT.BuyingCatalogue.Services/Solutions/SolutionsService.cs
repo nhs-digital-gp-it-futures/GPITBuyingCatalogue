@@ -514,12 +514,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Select(framework => new FrameworkSolution { FrameworkId = framework.FrameworkId })
                 .ToList();
 
-            var selectedFrameworkIds = frameworkSolutions.Select(f => f.FrameworkId).ToList();
-            var solutionType = await dbContext.Frameworks.AnyAsync(f =>
-                selectedFrameworkIds.Contains(f.Id) && f.SolutionType == SolutionType.CommunityPharmacy)
-                ? SolutionType.CommunityPharmacy
-                : SolutionType.GPIT;
-
             var catalogueItem = new CatalogueItem
             {
                 CatalogueItemType = CatalogueItemType.Solution,
@@ -528,7 +522,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         {
                             FrameworkSolutions = frameworkSolutions,
                             IsPilotSolution = model.IsPilotSolution,
-                            SolutionType = solutionType,
+                            SolutionType = model.SolutionType,
                         },
                 Name = model.Name,
                 PublishedStatus = PublicationStatus.Draft,

@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(nameof(CatalogueSolutionsController.Index), typeof(CatalogueSolutionsController).ControllerName(), new { solutionType }),
             }.WithSelectListItems(suppliers);
 
-            model.Frameworks = await GetFrameworks();
+            model.Frameworks = await GetFrameworks(solutionType);
 
             return View("Details", model);
         }
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 var suppliers = await suppliersService.GetAllSuppliers();
 
-                model.Frameworks = await GetFrameworks();
+                model.Frameworks = await GetFrameworks(solutionType);
 
                 return View("Details", model.WithSelectListItems(suppliers));
             }
@@ -60,6 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 Name = model.SolutionName,
                 SupplierId = model.SupplierId!.Value,
                 IsPilotSolution = model.IsPilotSolution,
+                SolutionType = solutionType,
                 UserId = User.UserId(),
             });
 
@@ -69,7 +70,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 new { solutionType, solutionId = catalogueItemId });
         }
 
-        private async Task<IList<FrameworkModel>> GetFrameworks() => (await solutionsService.GetAllFrameworks())
-                .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id }).ToList();
+        private async Task<IList<FrameworkModel>> GetFrameworks(SolutionType solutionType) => (await solutionsService.GetAllFrameworks())
+            .Where(f => f.SolutionType == solutionType)
+            .Select(f => new FrameworkModel
+            {
+                Name = $"{f.ShortName} Framework",
+                FrameworkId = f.Id,
+            }).ToList();
     }
 }
