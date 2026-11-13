@@ -1,7 +1,6 @@
 ﻿DECLARE @aliceEmail AS nvarchar(50) = N'AliceSmith@email.com';
 DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
 DECLARE @sueEmail AS nvarchar(50) = N'SueSmith@email.com';
-DECLARE @daveEmail AS nvarchar(50) = N'DaveSmith@email.com';
 DECLARE @johnEmail AS nvarchar(50) = N'JohnSmith@email.com';
 DECLARE @kimEmail AS nvarchar(50) = N'KimSmith@email.com';
 
@@ -9,7 +8,7 @@ IF '$(INSERT_TEST_DATA)' = 'True'
 AND NOT EXISTS (
   SELECT *
   FROM users.AspNetUsers
-  WHERE UserName IN (@aliceEmail, @bobEmail, @sueEmail, @daveEmail, @johnEmail, @kimEmail))
+  WHERE UserName IN (@aliceEmail, @bobEmail, @sueEmail, @johnEmail, @kimEmail))
 BEGIN
     DECLARE @icbRoleId AS nchar(5) = 'RO261';
     DECLARE @executiveAgencyRoleId AS nchar(5) = 'RO116';
@@ -25,9 +24,6 @@ BEGIN
     DECLARE @sueOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
     DECLARE @sueOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
 
-    DECLARE @daveOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
-    DECLARE @daveOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
-
     DECLARE @johnOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
     DECLARE @johnOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
 
@@ -39,14 +35,12 @@ BEGIN
     DECLARE @bobId AS int = 2;
     DECLARE @sueId AS int = 3;
     DECLARE @aliceId AS int = 4;
-    DECLARE @daveId AS int = 5;
     DECLARE @johnId AS int = 6;
     DECLARE @kimId AS int = 7;
 
     DECLARE @aliceNormalizedEmail AS nvarchar(50) = UPPER(@aliceEmail);
     DECLARE @bobNormalizedEmail AS nvarchar(50) = UPPER(@bobEmail);
     DECLARE @sueNormalizedEmail AS nvarchar(50) = UPPER(@sueEmail);
-    DECLARE @daveNormalizedEmail AS nvarchar(50) = UPPER(@daveEmail);
     DECLARE @johnNormalizedEmail AS nvarchar(50) = UPPER(@johnEmail);
     DECLARE @kimNormalizedEmail AS nvarchar(50) = UPPER(@kimEmail);
 
@@ -60,9 +54,6 @@ BEGIN
 
     -- 'Pass123$'
     DECLARE @suePassword AS nvarchar(200) =  N'AQAAAAEAACcQAAAAEBRpg4kCDtF5H4UEgv209hSD0TmaRx9JOYorAzNHxzfyZisIDse2AlTA0oF28HlBhQ==';
-
-    -- 'Pass123$'
-    DECLARE @davePassword AS nvarchar(200) =  N'AQAAAAEAACcQAAAAEBRpg4kCDtF5H4UEgv209hSD0TmaRx9JOYorAzNHxzfyZisIDse2AlTA0oF28HlBhQ==';
 
     -- 'Pass123$'
     DECLARE @johnPassword AS nvarchar(200) =  N'AQAAAAEAACcQAAAAEBRpg4kCDtF5H4UEgv209hSD0TmaRx9JOYorAzNHxzfyZisIDse2AlTA0oF28HlBhQ==';
@@ -82,19 +73,16 @@ BEGIN
     (@aliceId, @aliceEmail, @aliceNormalizedEmail, @aliceEmail, @aliceNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @alicePassword, 0, 'NNJ4SLBPCVUDKXAQXJHCBKQTFEYUAPBC', 0, 'Alice', 'Smith', @aliceOrganisationId, 0, 1, GETUTCDATE()),
     (@bobId, @bobEmail, @bobNormalizedEmail, @bobEmail, @bobNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @bobPassword, 0, 'OBDOPOU5YQ5WQXCR3DITKL6L5IDPYHHJ', 0, 'Bob', 'Smith', @bobOrganisationId, 0, 1, GETUTCDATE()),
     (@sueId, @sueEmail, @sueNormalizedEmail, @sueEmail, @sueNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @suePassword, 0, 'NNJ4SLBPCVUDKXAQXJHCBKQTFEYUAPBC', 0, 'Sue', 'Smith', @sueOrganisationId, 0, 1, GETUTCDATE()),
-    (@daveId, @daveEmail, @daveNormalizedEmail, @daveEmail, @daveNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @davePassword, 0, 'NNJ4SLBPCVUDKXAQXJHCBKQTFEYUAPBC', 0, 'Dave', 'Smith', @daveOrganisationId, 0, 1, GETUTCDATE()),
     (@johnId, @johnEmail, @johnNormalizedEmail, @johnEmail, @johnNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @johnPassword, 0, 'NNJ4SLBPCVUDKXAQXJHCBKQTFEYUAPBC', 0, 'John', 'Smith', @johnOrganisationId, 0, 1, GETUTCDATE()),
     (@kimId, @kimEmail, @kimNormalizedEmail, @kimEmail, @kimNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @kimPassword, 0, 'NNJ4SLBPCVUDKXAQXJHCBKQTFEYUAPBC', 0, 'Kim', 'Smith', @kimOrganisationId, 0, 1, GETUTCDATE());
 
     DECLARE @BuyerRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'Buyer');
     DECLARE @AdminRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'Authority');
-    DECLARE @AccountManagerRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'AccountManager');
     DECLARE @OnboardingRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'Onboarding');
     DECLARE @ViewRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'ReadOnly');
 
     INSERT INTO users.AspNetUserRoles(RoleId, UserId) VALUES (@BuyerRoleId, @aliceId), (@BuyerRoleId, @sueId);
     INSERT INTO users.AspNetUserRoles(RoleId, UserId) VALUES (@AdminRoleId, @bobId);
-    INSERT INTO users.AspNetUserRoles(RoleId, UserId) VALUES (@AccountManagerRoleId, @daveId);
     INSERT INTO users.AspNetUserRoles(RoleId, UserId) VALUES (@OnboardingRoleId, @johnId);
     INSERT INTO users.AspNetUserRoles(RoleId, UserId) VALUES (@ViewRoleId, @kimId);
 
@@ -116,11 +104,6 @@ BEGIN
     (N'website', N'http://sue.com/', @sueId),
     (N'address', @address, @sueId),
     (N'primaryOrganisationName', @sueOrganisationName, @sueId),
-    (N'email_verified', N'true', @daveId),
-    (N'location', N'somewhere', @daveId),
-    (N'website', N'http://dave.com/', @daveId),
-    (N'address', @address, @daveId),
-    (N'primaryOrganisationName', @daveOrganisationName, @daveId),
     (N'email_verified', N'true', @johnId),
     (N'location', N'somewhere', @johnId),
     (N'website', N'http://john.com/', @johnId),

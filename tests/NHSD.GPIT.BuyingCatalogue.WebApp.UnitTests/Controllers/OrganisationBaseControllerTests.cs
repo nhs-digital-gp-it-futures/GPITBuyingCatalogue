@@ -95,15 +95,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [MockAutoData]
         public static async Task Get_AddUser_ReturnsExpectedResult(
             Organisation organisation,
-            bool isAccountManagerLimit,
             [Frozen] IOrganisationsService mockOrganisationsService,
-            [Frozen] IUsersService mockUsersService,
             [Frozen] IUrlHelper mockUrlHelper,
             OrganisationControllerStub controller)
         {
             mockOrganisationsService.GetOrganisation(organisation.Id).Returns(organisation);
-
-            mockUsersService.IsAccountManagerLimit(organisation.Id, 0).Returns(isAccountManagerLimit);
 
             controller.Url = mockUrlHelper;
 
@@ -115,7 +111,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             var model = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
 
             model.OrganisationName.Should().Be(organisation.Name);
-            model.IsDefaultAccountType.Should().Be(isAccountManagerLimit);
         }
 
         [Theory]
@@ -139,7 +134,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
         [Theory]
         [MockInlineAutoData(true, "Buyer")]
-        [MockInlineAutoData(false, "AccountManager")]
         public static async Task Post_AddUser_ValidModel_ReturnsExpectedResult(
             bool isDefaultAccountType,
             string accountType,
@@ -149,7 +143,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             OrganisationControllerStub controller)
         {
             model.EmailAddress = "a@b.com";
-            model.SelectedAccountType = "AccountManager";
             model.IsDefaultAccountType = isDefaultAccountType;
             model.IsActive = true;
 
@@ -681,14 +674,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             IOrganisationsService organisationsService,
             IOdsService odsService,
             ICreateUserService createBuyerService,
-            IUsersService userService,
-            AccountManagementSettings accountManagementSettings)
+            IUsersService userService)
             : OrganisationBaseController(
                 organisationsService,
                 odsService,
                 createBuyerService,
-                userService,
-                accountManagementSettings)
+                userService)
         {
             protected override string ControllerName => nameof(OrganisationControllerStub);
 

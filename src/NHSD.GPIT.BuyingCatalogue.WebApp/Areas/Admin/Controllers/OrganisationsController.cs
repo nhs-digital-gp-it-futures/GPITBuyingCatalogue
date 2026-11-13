@@ -23,9 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             IOrganisationsService organisationsService,
             IOdsService odsService,
             ICreateUserService createBuyerService,
-            IUsersService userService,
-            AccountManagementSettings accountManagementSettings)
-            : base(organisationsService, odsService, createBuyerService, userService, accountManagementSettings)
+            IUsersService userService)
+            : base(organisationsService, odsService, createBuyerService, userService)
         {
         }
 
