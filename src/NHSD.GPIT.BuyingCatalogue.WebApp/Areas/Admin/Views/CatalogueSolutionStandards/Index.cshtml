@@ -17,18 +17,18 @@
 
 
         <partial name="_StandardsTablePartial"
-                 model="new StandardPartialModel(Model.SolutionId, StandardType.Overarching, Model.OverarchingStandards)"/>
+                 model="new StandardPartialModel(Model.SolutionId, Model.SolutionType, StandardType.Overarching, Model.OverarchingStandards)" />
 
         @if (Model.SupplementaryCareStandards.Count > 0)
         {
             <partial name="_StandardsTablePartial"
-                     model="new StandardPartialModel(Model.SolutionId, StandardType.SupplementaryCare, Model.SupplementaryCareStandards)"/>
+                     model="new StandardPartialModel(Model.SolutionId, Model.SolutionType, StandardType.SupplementaryCare, Model.SupplementaryCareStandards)" />
         }
 
         @if (Model.OtherStandards.Count > 0)
         {
             <partial name="_StandardsTablePartial"
-                     model="new StandardPartialModel(Model.SolutionId, StandardType.Other, Model.OtherStandards)"/>
+                     model="new StandardPartialModel(Model.SolutionId, Model.SolutionType, StandardType.Other, Model.OtherStandards)" />
         }
 
         <vc:nhs-anchor-button type="Primary" text="Save and continue" url="@Model.BackLink"/>

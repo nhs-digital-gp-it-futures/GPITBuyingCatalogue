@@ -71,6 +71,7 @@
                         <nhs-table-cell>
                             <a asp-action="@nameof(CatalogueSolutionsController.Details)"
                                asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -87,6 +88,7 @@
                         <nhs-table-cell>
                             <a asp-action="@nameof(CatalogueSolutionsController.Description)"
                                asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -103,6 +105,7 @@
                         <nhs-table-cell>
                             <a asp-action="@nameof(CatalogueSolutionsController.Features)"
                                asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -119,6 +122,7 @@
                         <nhs-table-cell>
                             <a asp-action="@nameof(InteroperabilityController.Interoperability)"
                                asp-controller="@typeof(InteroperabilityController).ControllerName()"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -135,6 +139,7 @@
                         <nhs-table-cell>
                             <a asp-action="@nameof(CatalogueSolutionsController.Implementation)"
                                asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -151,6 +156,7 @@
                         <nhs-table-cell>
                             <a asp-action="@nameof(CatalogueSolutionsController.ApplicationType)"
                                asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -167,6 +173,7 @@
                         <nhs-table-cell>
                             <a asp-controller="@typeof(HostingTypesController).ControllerName()"
                                asp-action="@nameof(HostingTypesController.HostingType)"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -183,6 +190,7 @@
                         <nhs-table-cell>
                             <a asp-action="@nameof(DataProcessingInformationController.Index)"
                                asp-controller="@(typeof(DataProcessingInformationController).ControllerName())"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -199,6 +207,7 @@
                         <nhs-table-cell>
                             <a asp-controller="@typeof(CatalogueSolutionListPriceController).ControllerName()"
                                asp-action="@nameof(CatalogueSolutionListPriceController.Index)"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -215,6 +224,7 @@
                         <nhs-table-cell>
                             <a asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
                                asp-action="@nameof(CatalogueSolutionsController.EditCapabilities)"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -231,6 +241,7 @@
                         <nhs-table-cell>
                             <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
                                asp-action="@nameof(AdditionalServicesController.Index)"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -245,6 +256,7 @@
                         <nhs-table-cell>
                             <a asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
                                asp-action="@nameof(CatalogueSolutionsController.AssociatedServices)"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -259,6 +271,7 @@
                         <nhs-table-cell>
                             <a asp-controller="@typeof(CatalogueSolutionStandardsController).ControllerName()"
                                asp-action="@nameof(CatalogueSolutionStandardsController.Index)"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -276,6 +289,7 @@
                             <a asp-action="@nameof(DevelopmentPlansController.DevelopmentPlans)"
                                asp-controller="@typeof(DevelopmentPlansController).ControllerName()"
                                asp-area="@typeof(DevelopmentPlansController).AreaName()"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -292,6 +306,7 @@
                         <nhs-table-cell>
                             <a asp-action="@nameof(CatalogueSolutionsController.EditSupplierDetails)"
                                asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -307,8 +322,9 @@
                         </nhs-table-cell>
                         <nhs-table-cell>
                             <a asp-action="@nameof(ServiceLevelAgreementsController.Index)"
-                                asp-controller="@typeof(ServiceLevelAgreementsController).ControllerName()"
-                                asp-route-solutionId="@Model.SolutionId">Edit</a>
+                               asp-controller="@typeof(ServiceLevelAgreementsController).ControllerName()"
+                               asp-route-solutionType="@Model.SolutionType"
+                               asp-route-solutionId="@Model.SolutionId">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }
@@ -324,6 +340,7 @@
             <input type="hidden" asp-for="BackLinkText" />
 
             <input type="hidden" asp-for="SolutionId" />
+            <input type="hidden" asp-for="SolutionType" />
             <input type="hidden" asp-for="SolutionName" />
             <input type="hidden" asp-for="SolutionPublicationStatus" />
             <input type="hidden" asp-for="SupplierName" />

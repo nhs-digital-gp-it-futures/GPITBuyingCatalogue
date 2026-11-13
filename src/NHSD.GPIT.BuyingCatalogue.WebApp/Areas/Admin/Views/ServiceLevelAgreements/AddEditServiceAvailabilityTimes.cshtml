@@ -18,6 +18,7 @@
             <input type="hidden" asp-for="CanDelete" />
             <input type="hidden" asp-for="SolutionId" />
             <input type="hidden" asp-for="SolutionName" />
+            <input type="hidden" asp-for="SolutionType" />
             <input type="hidden" asp-for="ServiceAvailabilityTimesId" />
 
             <nhs-input asp-for="SupportType"
@@ -66,11 +67,12 @@
         </form>
         @if (Model.CanDelete)
         {
-            <vc:nhs-delete-button url="@Url.Action(
-                                          nameof(ServiceLevelAgreementsController.DeleteServiceAvailabilityTimes),
-                                          typeof(ServiceLevelAgreementsController).ControllerName(),
-                                          new { solutionId = Model.SolutionId, serviceAvailabilityTimesId = Model.ServiceAvailabilityTimesId })"
-                                  text="Delete service availability times" />
+            <vc:nhs-delete-button
+                text="Delete service availability times" 
+                url="@Url.Action(
+                    nameof(ServiceLevelAgreementsController.DeleteServiceAvailabilityTimes),
+                    typeof(ServiceLevelAgreementsController).ControllerName(),
+                    new { solutionType = Model.SolutionType, solutionId = Model.SolutionId, serviceAvailabilityTimesId = Model.ServiceAvailabilityTimesId })"/>
         }
         </div>
     </div>

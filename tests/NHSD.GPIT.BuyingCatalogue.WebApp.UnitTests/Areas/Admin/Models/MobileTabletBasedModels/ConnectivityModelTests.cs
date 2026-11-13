@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
             Solution solution)
         {
             var catalogueItem = solution.CatalogueItem;
-            var actual = new ConnectivityModel(catalogueItem);
+            var actual = new ConnectivityModel(catalogueItem) { SolutionType = SolutionType.GPIT };
 
             actual.ConnectionSpeeds.Should().BeEquivalentTo(Framework.Constants.SelectLists.ConnectionSpeeds);
 
@@ -40,7 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new ConnectivityModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new ConnectivityModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

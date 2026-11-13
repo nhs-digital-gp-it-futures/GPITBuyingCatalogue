@@ -21,13 +21,16 @@
                 <nhs-table-cell>
                     <nhs-tag status-enum="@Model.DetailsStatus"/>
                 </nhs-table-cell>
-                <nhs-table-cell><a asp-action="@nameof(SupplierServicesController.EditAssociatedServiceDetails)"
-                                   asp-controller="@typeof(SupplierServicesController).ControllerName()"
-                                   asp-route-supplierId="@Model.SupplierId"
-                                   asp-route-associatedServiceId="@Model.AssociatedServiceId"
-                                   style="white-space: nowrap;">
-                        Edit
-                    </a></nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-action="@nameof(SupplierServicesController.EditAssociatedServiceDetails)"
+                       asp-controller="@typeof(SupplierServicesController).ControllerName()"
+                       asp-route-supplierId="@Model.SupplierId"
+                       asp-route-associatedServiceId="@Model.AssociatedServiceId"
+                       asp-route-solutionType="@Model.SolutionType"
+                       asp-route-solutionId="@Model.SolutionId"
+                       asp-route-additionalServiceId="@Model.AdditionalServiceId"
+                       style="white-space: nowrap;">Edit</a>
+                </nhs-table-cell>
             </nhs-table-row-container>
             <nhs-table-row-container>
                 <nhs-table-cell>Price</nhs-table-cell>
@@ -39,9 +42,10 @@
                     <a asp-controller="@(typeof(AssociatedServiceListPriceController).ControllerName())"
                        asp-action="@nameof(AssociatedServiceListPriceController.Index)"
                        asp-route-supplierId="@Model.SupplierId"
-                       asp-route-associatedServiceId="@Model.AssociatedServiceId">
-                        Edit
-                    </a>
+                       asp-route-associatedServiceId="@Model.AssociatedServiceId"
+                       asp-route-solutionType="@Model.SolutionType"
+                       asp-route-solutionId="@Model.SolutionId"
+                       asp-route-additionalServiceId="@Model.AdditionalServiceId">Edit</a>
                 </nhs-table-cell>
             </nhs-table-row-container>
         </nhs-table>
@@ -61,6 +65,7 @@
                         <nhs-table-cell>
                             <a asp-action="@nameof(CatalogueSolutionsController.AssociatedServices)"
                                asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                               asp-route-solutionType="@referentialSolution.SolutionType"
                                asp-route-solutionId="@referentialSolution.CatalogueItemId"
                                data-test-id="edit-service-association-@referentialSolution.CatalogueItemId"
                                style="white-space: nowrap;">
@@ -95,12 +100,11 @@
                         <nhs-table-cell>
                             <a asp-action="@nameof(AdditionalServicesController.AssociatedServices)"
                                asp-controller="@typeof(AdditionalServicesController).ControllerName()"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@referentialAdditionalService.SolutionId"
                                asp-route-additionalServiceId="@referentialAdditionalService.CatalogueItemId"
                                data-test-id="edit-service-association-@referentialAdditionalService.CatalogueItemId"
-                               style="white-space: nowrap;">
-                                Edit
-                            </a>
+                               style="white-space: nowrap;">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }
@@ -119,7 +123,10 @@
         <form method="post" asp-action="SetPublicationStatus" asp-route-supplierId="@Model.SupplierId"
               asp-route-associatedServiceId="@Model.AssociatedServiceId">
             <input type="hidden" asp-for="SupplierId"/>
-            <input type="hidden" asp-for="SupplierName"/>
+            <input type="hidden" asp-for="SupplierName" />
+            <input type="hidden" asp-for="SolutionType" />
+            <input type="hidden" asp-for="SolutionId" />
+            <input type="hidden" asp-for="AdditionalServiceId" />
             <input type="hidden" asp-for="AssociatedServiceId"/>
             <input type="hidden" asp-for="AssociatedServiceName"/>
             <input type="hidden" asp-for="BackLink"/>

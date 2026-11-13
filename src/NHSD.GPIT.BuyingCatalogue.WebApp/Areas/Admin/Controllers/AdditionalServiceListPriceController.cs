@@ -16,25 +16,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "ManageCatalogueSolutions")]
     [Area("Admin")]
-    [Route("admin/catalogue-solutions/manage/{solutionId}/additional-services/{additionalServiceId}/list-prices")]
-    public class AdditionalServiceListPriceController : Controller
+    [Route("admin/catalogue-solutions/manage/{solutionType}/{solutionId}/additional-services/{additionalServiceId}/list-prices")]
+    public class AdditionalServiceListPriceController(
+        IAdditionalServicesService additionalServicesService,
+        IListPriceService listPriceService,
+        PriceTiersCapSettings priceTiersCapSettings) : Controller
     {
-        private readonly IAdditionalServicesService additionalServicesService;
-        private readonly IListPriceService listPriceService;
-        private readonly PriceTiersCapSettings priceTiersCapSettings;
-
-        public AdditionalServiceListPriceController(
-            IAdditionalServicesService additionalServicesService,
-            IListPriceService listPriceService,
-            PriceTiersCapSettings priceTiersCapSettings)
-        {
-            this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
-            this.listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
-            this.priceTiersCapSettings = priceTiersCapSettings ?? throw new ArgumentNullException(nameof(priceTiersCapSettings));
-        }
+        private readonly IAdditionalServicesService additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
+        private readonly IListPriceService listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
+        private readonly PriceTiersCapSettings priceTiersCapSettings = priceTiersCapSettings ?? throw new ArgumentNullException(nameof(priceTiersCapSettings));
 
         [HttpGet]
-        public async Task<IActionResult> Index(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
+        public async Task<IActionResult> Index(SolutionType solutionType, CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
         {
             var service = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (service is null)
@@ -42,13 +35,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new ManageListPricesModel(solutionId, service, service.CataloguePrices)
             {
+                SolutionType = solutionType,
+                SolutionId = solutionId,
+                AdditionalServiceId = additionalServiceId,
                 BackLink = Url.Action(
                     nameof(AdditionalServicesController.EditAdditionalService),
                     typeof(AdditionalServicesController).ControllerName(),
-                    new { solutionId, additionalServiceId }),
+                    new { solutionType, solutionId, additionalServiceId }),
                 AddListPriceUrl = Url.Action(
                     nameof(ListPriceType),
-                    new { solutionId, additionalServiceId }),
+                    new { solutionType, solutionId, additionalServiceId }),
             };
 
             return View("ListPrices/ManageListPrices", model);
@@ -56,6 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         [HttpGet("list-price-type")]
         public async Task<IActionResult> ListPriceType(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             CataloguePriceType? selectedPriceType = null)
@@ -67,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new ListPriceTypeModel(additionalService)
             {
-                BackLink = Url.Action(nameof(Index), new { solutionId, additionalServiceId }),
+                BackLink = Url.Action(nameof(Index), new { solutionType, solutionId, additionalServiceId }),
                 SelectedCataloguePriceType = selectedPriceType,
             };
 
@@ -76,6 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         [HttpPost("list-price-type")]
         public IActionResult ListPriceType(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             ListPriceTypeModel model)
@@ -90,11 +88,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 _ => string.Empty,
             };
 
-            return RedirectToAction(redirectAction, new { solutionId, additionalServiceId });
+            return RedirectToAction(redirectAction, new { solutionType, solutionId, additionalServiceId });
         }
 
         [HttpGet("add-tiered-list-price")]
         public async Task<IActionResult> AddTieredListPrice(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId)
         {
@@ -107,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 BackLink = Url.Action(
                     nameof(ListPriceType),
-                    new { solutionId, additionalServiceId }),
+                    new { solutionType, solutionId, additionalServiceId }),
             };
 
             return View("ListPrices/AddTieredListPrice", model);
@@ -115,6 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         [HttpPost("add-tiered-list-price")]
         public async Task<IActionResult> AddTieredListPrice(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             AddTieredListPriceModel model)
@@ -124,11 +124,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var cataloguePrice = await AddOrUpdateCataloguePrice(additionalServiceId, model);
 
-            return RedirectToAction(nameof(TieredPriceTiers), new { solutionId, additionalServiceId, cataloguePriceId = model.CataloguePriceId ?? cataloguePrice.CataloguePriceId });
+            return RedirectToAction(
+                nameof(TieredPriceTiers),
+                new { solutionType, solutionId, additionalServiceId, cataloguePriceId = model.CataloguePriceId ?? cataloguePrice.CataloguePriceId });
         }
 
         [HttpGet("add-flat-list-price")]
         public async Task<IActionResult> AddFlatListPrice(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId)
         {
@@ -138,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditFlatListPriceModel(additionalService)
             {
-                BackLink = Url.Action(nameof(ListPriceType), new { solutionId, additionalServiceId }),
+                BackLink = Url.Action(nameof(ListPriceType), new { solutionType, solutionId, additionalServiceId }),
             };
 
             return View("ListPrices/AddEditFlatListPrice", model);
@@ -146,6 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         [HttpPost("add-flat-list-price")]
         public async Task<IActionResult> AddFlatListPrice(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             AddEditFlatListPriceModel model)
@@ -176,11 +180,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await listPriceService.AddListPrice(additionalServiceId, price);
 
-            return RedirectToAction(nameof(Index), new { solutionId, additionalServiceId });
+            return RedirectToAction(nameof(Index), new { solutionType, solutionId, additionalServiceId });
         }
 
         [HttpGet("{cataloguePriceId}/tiers")]
         public async Task<IActionResult> TieredPriceTiers(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId)
@@ -195,10 +200,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new TieredPriceTiersModel(solutionId, additionalService, price, priceTiersCapSettings.MaximumNumberOfPriceTiers)
             {
-                BackLink = Url.Action(nameof(EditTieredListPrice), new { solutionId, additionalServiceId, cataloguePriceId }),
+                BackLink = Url.Action(nameof(EditTieredListPrice), new { solutionType, solutionId, additionalServiceId, cataloguePriceId }),
+                SolutionType = solutionType,
+                AdditionalServiceId = additionalServiceId,
                 AddTieredPriceTierUrl = Url.Action(
                     nameof(AddTieredPriceTier),
-                    new { solutionId, additionalServiceId, cataloguePriceId }),
+                    new { solutionType, solutionId, additionalServiceId, cataloguePriceId }),
             };
 
             return View("ListPrices/TieredPriceTiers", model);
@@ -206,6 +213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         [HttpPost("{cataloguePriceId}/tiers")]
         public async Task<IActionResult> TieredPriceTiers(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId,
@@ -216,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
                 var price = additionalService.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
 
-                model.Tiers = price.CataloguePriceTiers.ToList();
+                model.Tiers = [.. price.CataloguePriceTiers];
 
                 model.MaximumNumberOfTiers = priceTiersCapSettings.MaximumNumberOfPriceTiers;
 
@@ -225,11 +233,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await listPriceService.SetPublicationStatus(additionalServiceId, cataloguePriceId, model.SelectedPublicationStatus!.Value);
 
-            return RedirectToAction(nameof(Index), new { solutionId, additionalServiceId });
+            return RedirectToAction(nameof(Index), new { solutionType, solutionId, additionalServiceId });
         }
 
         [HttpGet("{cataloguePriceId}/tiers/add")]
         public async Task<IActionResult> AddTieredPriceTier(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId,
@@ -247,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditTieredPriceTierModel(additionalService, price)
             {
-                BackLink = Url.Action(actionName, new { solutionId, additionalServiceId, cataloguePriceId }),
+                BackLink = Url.Action(actionName, new { solutionType, solutionId, additionalServiceId, cataloguePriceId }),
                 IsEditing = isEditing,
             };
 
@@ -256,6 +265,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         [HttpPost("{cataloguePriceId}/tiers/add")]
         public async Task<IActionResult> AddTieredPriceTier(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId,
@@ -275,11 +285,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var actionName = GetAddOrEditBacklink(model.IsEditing);
 
-            return RedirectToAction(actionName, new { solutionId, additionalServiceId, cataloguePriceId });
+            return RedirectToAction(actionName, new { solutionType, solutionId, additionalServiceId, cataloguePriceId });
         }
 
         [HttpGet("tiered/{cataloguePriceId}/edit")]
         public async Task<IActionResult> EditTieredListPrice(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId)
@@ -294,13 +305,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new EditTieredListPriceModel(solutionId, additionalService, price, priceTiersCapSettings.MaximumNumberOfPriceTiers)
             {
-                BackLink = Url.Action(nameof(Index), new { solutionId, additionalServiceId }),
+                BackLink = Url.Action(nameof(Index), new { solutionType, solutionId, additionalServiceId }),
+                SolutionType = solutionType,
+                SolutionId = solutionId,
+                AdditionalServiceId = additionalServiceId,
                 AddPricingTierUrl = Url.Action(
                     nameof(AddTieredPriceTier),
-                    new { solutionId, additionalServiceId, cataloguePriceId, isEditing = true }),
+                    new { solutionType, solutionId, additionalServiceId, cataloguePriceId, isEditing = true }),
                 DeleteListPriceUrl = Url.Action(
                     nameof(DeleteListPrice),
-                    new { solutionId, additionalServiceId, cataloguePriceId }),
+                    new { solutionType, solutionId, additionalServiceId, cataloguePriceId }),
             };
 
             return View("ListPrices/EditTieredListPrice", model);
@@ -308,6 +322,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         [HttpPost("tiered/{cataloguePriceId}/edit")]
         public async Task<IActionResult> EditTieredListPrice(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId,
@@ -341,11 +356,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (model.SelectedPublicationStatus != price.PublishedStatus)
                 await listPriceService.SetPublicationStatus(additionalServiceId, cataloguePriceId, model.SelectedPublicationStatus!.Value);
 
-            return RedirectToAction(nameof(Index), new { solutionId, additionalServiceId });
+            return RedirectToAction(nameof(Index), new { solutionType, solutionId, additionalServiceId });
         }
 
         [HttpGet("flat/{cataloguePriceId}/edit")]
         public async Task<IActionResult> EditFlatListPrice(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId)
@@ -360,10 +376,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditFlatListPriceModel(additionalService, price)
             {
-                BackLink = Url.Action(nameof(Index), new { solutionId, additionalServiceId }),
+                BackLink = Url.Action(nameof(Index), new { solutionType, solutionId, additionalServiceId }),
                 DeleteListPriceUrl = Url.Action(
                     nameof(DeleteListPrice),
-                    new { solutionId, additionalServiceId, cataloguePriceId }),
+                    new { solutionType, solutionId, additionalServiceId, cataloguePriceId }),
             };
 
             return View("ListPrices/AddEditFlatListPrice", model);
@@ -371,6 +387,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         [HttpPost("flat/{cataloguePriceId}/edit")]
         public async Task<IActionResult> EditFlatListPrice(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId,
@@ -400,11 +417,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (model.SelectedPublicationStatus!.Value != price.PublishedStatus)
                 await listPriceService.SetPublicationStatus(additionalServiceId, cataloguePriceId, model.SelectedPublicationStatus!.Value);
 
-            return RedirectToAction(nameof(Index), new { solutionId, additionalServiceId });
+            return RedirectToAction(nameof(Index), new { solutionType, solutionId, additionalServiceId });
         }
 
         [HttpGet("{cataloguePriceId}/tiers/{tierId}/edit")]
         public async Task<IActionResult> EditTieredPriceTier(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId,
@@ -427,11 +445,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditTieredPriceTierModel(additionalService, price, tier)
             {
-                BackLink = Url.Action(actionName, new { solutionId, additionalServiceId, cataloguePriceId }),
+                BackLink = Url.Action(actionName, new { solutionType, solutionId, additionalServiceId, cataloguePriceId }),
                 IsEditing = isEditing,
                 DeleteTieredPriceTierUrl = Url.Action(
                     nameof(DeleteTieredPriceTier),
-                    new { solutionId, additionalServiceId, cataloguePriceId, tierId, isEditing }),
+                    new { solutionType, solutionId, additionalServiceId, cataloguePriceId, tierId, isEditing }),
             };
 
             return View("ListPrices/AddEditTieredPriceTier", model);
@@ -439,6 +457,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         [HttpPost("{cataloguePriceId}/tiers/{tierId}/edit")]
         public async Task<IActionResult> EditTieredPriceTier(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId,
@@ -458,11 +477,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var actionName = GetAddOrEditBacklink(model.IsEditing);
 
-            return RedirectToAction(actionName, new { solutionId, additionalServiceId, cataloguePriceId });
+            return RedirectToAction(actionName, new { solutionType, solutionId, additionalServiceId, cataloguePriceId });
         }
 
         [HttpGet("{cataloguePriceId}/tiers/{tierId}/edit-price")]
         public async Task<IActionResult> EditTierPrice(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId,
@@ -483,7 +503,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new EditTierPriceModel(additionalService, price, tier)
             {
-                BackLink = Url.Action(nameof(EditTieredListPrice), new { solutionId, additionalServiceId, cataloguePriceId }),
+                BackLink = Url.Action(nameof(EditTieredListPrice), new { solutionType, solutionId, additionalServiceId, cataloguePriceId }),
                 TierIndex = tierIndex,
             };
 
@@ -492,6 +512,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         [HttpPost("{cataloguePriceId}/tiers/{tierId}/edit-price")]
         public async Task<IActionResult> EditTierPrice(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId,
@@ -503,11 +524,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await listPriceService.UpdateTierPrice(additionalServiceId, cataloguePriceId, tierId, model.Price!.Value);
 
-            return RedirectToAction(nameof(EditTieredListPrice), new { solutionId, additionalServiceId, cataloguePriceId });
+            return RedirectToAction(nameof(EditTieredListPrice), new { solutionType, solutionId, additionalServiceId, cataloguePriceId });
         }
 
         [HttpGet("{cataloguePriceId}/delete")]
         public async Task<IActionResult> DeleteListPrice(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId)
@@ -531,6 +553,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         [HttpPost("{cataloguePriceId}/delete")]
         public async Task<IActionResult> DeleteListPrice(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId,
@@ -549,11 +572,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (price.PublishedStatus != PublicationStatus.Published)
                 await listPriceService.DeleteListPrice(additionalServiceId, cataloguePriceId);
 
-            return RedirectToAction(nameof(Index), new { solutionId, additionalServiceId });
+            return RedirectToAction(nameof(Index), new { solutionType, solutionId, additionalServiceId });
         }
 
         [HttpGet("{cataloguePriceId}/tiers/{tierId}/delete")]
         public async Task<IActionResult> DeleteTieredPriceTier(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId,
@@ -569,7 +593,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 additionalService.Name,
                 "This pricing tier will be deleted")
             {
-                BackLink = Url.Action(nameof(EditTieredPriceTier), new { solutionId, additionalServiceId, cataloguePriceId, tierId, isEditing }),
+                BackLink = Url.Action(
+                    nameof(EditTieredPriceTier),
+                    new { solutionType, solutionId, additionalServiceId, cataloguePriceId, tierId, isEditing }),
             };
 
             return View("ListPrices/DeleteItem", model);
@@ -577,6 +603,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         [HttpPost("{cataloguePriceId}/tiers/{tierId}/delete")]
         public async Task<IActionResult> DeleteTieredPriceTier(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
             int cataloguePriceId,
@@ -593,12 +620,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return NotFound();
 
             if (price.PublishedStatus == PublicationStatus.Published)
-                return RedirectToAction(nameof(EditTieredListPrice), new { solutionId, additionalServiceId, cataloguePriceId });
+                return RedirectToAction(nameof(EditTieredListPrice), new { solutionType, solutionId, additionalServiceId, cataloguePriceId });
 
             await listPriceService.DeletePriceTier(additionalServiceId, cataloguePriceId, tierId);
 
             var actionName = GetAddOrEditBacklink(isEditing);
-            return RedirectToAction(actionName, new { solutionId, additionalServiceId, cataloguePriceId });
+            return RedirectToAction(actionName, new { solutionType, solutionId, additionalServiceId, cataloguePriceId });
         }
 
         private static string GetAddOrEditBacklink(bool? isEditing)

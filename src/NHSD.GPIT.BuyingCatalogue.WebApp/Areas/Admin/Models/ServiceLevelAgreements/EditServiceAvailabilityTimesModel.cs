@@ -34,18 +34,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
             SupportType = serviceAvailabilityTimes.Category;
             From = serviceAvailabilityTimes.TimeFrom;
             Until = serviceAvailabilityTimes.TimeUntil;
-            ApplicableDays = Enum.GetValues<Iso8601DayOfWeek>()
+            ApplicableDays = [.. Enum.GetValues<Iso8601DayOfWeek>()
                 .Select(
                     x => new SelectOption<Iso8601DayOfWeek>(
                         x.ToString(),
                         x,
-                        serviceAvailabilityTimes.IncludedDays?.Contains(x) ?? false))
-                .ToList();
+                        serviceAvailabilityTimes.IncludedDays?.Contains(x) ?? false))];
             IncludesBankHolidays = serviceAvailabilityTimes.IncludesBankHolidays;
             AdditionalInformation = serviceAvailabilityTimes.AdditionalInformation;
         }
 
         public CatalogueItemId SolutionId { get; init; }
+
+        public required SolutionType SolutionType { get; init; }
 
         public string SolutionName { get; init; }
 

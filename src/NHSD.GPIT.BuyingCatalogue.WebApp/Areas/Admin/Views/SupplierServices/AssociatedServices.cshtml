@@ -10,10 +10,16 @@
                         caption="@Model.SupplierName"
                         advice="If an associated service is not listed, you can add it using the link. It’ll then be available for selection on all your catalogue items."/>
 
-        <vc:nhs-action-link url="@Url.Action(
-                                     nameof(SupplierServicesController.AddAssociatedService),
-                                     typeof(SupplierServicesController).ControllerName(),
-                                     new { supplierId = Model.SupplierId })" text="Add an associated service"/>
+        <vc:nhs-action-link 
+            text="Add an associated service"
+            url="@Url.Action(
+                nameof(SupplierServicesController.AddAssociatedService),
+                typeof(SupplierServicesController).ControllerName(),
+                new { 
+                    supplierId = Model.SupplierId,
+                    solutionType = Model.SolutionType,
+                    solutionId = Model.SolutionId,
+                    additionalServiceId = Model.AdditionalServiceId })" />
 
         @if (Model.AssociatedServices.Any())
         {
@@ -52,6 +58,9 @@
                                    asp-controller="@typeof(SupplierServicesController).ControllerName()"
                                    asp-route-supplierId="@Model.SupplierId"
                                    asp-route-associatedServiceId="@associatedService.CatalogueItemId"
+                                   asp-route-solutionType="@Model.SolutionType"
+                                   asp-route-solutionId="@Model.SolutionId"
+                                   asp-route-additionalServiceId="@Model.AdditionalServiceId"
                                    data-test-id="edit-link" class="nhsuk-breadcrumb__link">Edit</a>
                             </nhs-table-cell>
                         </nhs-table-row-container>

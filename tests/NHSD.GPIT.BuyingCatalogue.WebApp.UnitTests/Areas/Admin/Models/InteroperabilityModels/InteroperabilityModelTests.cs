@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Interope
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new InteroperabilityModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(() => new InteroperabilityModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }
@@ -26,7 +26,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Interope
             expected.SolutionName = catalogueItem.Name;
             expected.Link = solution.IntegrationsUrl;
 
-            var actual = new InteroperabilityModel(catalogueItem);
+            var actual = new InteroperabilityModel(catalogueItem)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             actual.CatalogueItemId.Should().Be(catalogueItem.Id);
             actual.SolutionName.Should().BeEquivalentTo(expected.SolutionName);

@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.BrowserB
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
             Solution solution)
         {
-            var actual = new SupportedBrowsersModel(solution.CatalogueItem);
+            var actual = new SupportedBrowsersModel(solution.CatalogueItem) { SolutionType = SolutionType.GPIT };
 
             actual.Browsers.Should().BeEquivalentTo(ExpectedSupportedBrowsers, config => config
                 .Excluding(m => m.Checked));
@@ -37,7 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.BrowserB
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new SupportedBrowsersModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new SupportedBrowsersModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

@@ -47,7 +47,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices
         {
             WithSolutions(relatedCatalogueItems);
             WithAdditionalServices(relatedCatalogueItems);
+            SolutionType = associatedService.Solution.SolutionType;
         }
+
+        public SolutionType? SolutionType { get; set; }
+
+        public CatalogueItemId? SolutionId { get; set; }
+
+        public CatalogueItemId? AdditionalServiceId { get; set; }
 
         public int SupplierId { get; init; }
 

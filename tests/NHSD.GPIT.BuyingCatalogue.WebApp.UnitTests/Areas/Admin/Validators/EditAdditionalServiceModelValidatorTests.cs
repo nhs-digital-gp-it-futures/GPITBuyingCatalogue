@@ -18,7 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             AdditionalService additionalService,
             EditAdditionalServiceModelValidator validator)
         {
-            var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem, []);
+            var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem, [])
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             var result = validator.TestValidate(model);
 
@@ -39,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem, [])
             {
                 SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -63,6 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem, [])
             {
                 SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);

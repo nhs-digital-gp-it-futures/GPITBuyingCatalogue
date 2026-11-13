@@ -22,8 +22,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             AssociatedService associatedService,
             EditAssociatedServiceModelValidator validator)
         {
-            var model = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem);
-
+            var model = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();
@@ -43,6 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var model = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem)
             {
                 SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);

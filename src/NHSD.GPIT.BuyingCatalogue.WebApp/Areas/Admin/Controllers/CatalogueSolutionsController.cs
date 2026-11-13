@@ -81,8 +81,8 @@ public sealed class CatalogueSolutionsController(
             Url.Action(nameof(ManageCatalogueSolution), new { solutionType, solutionId = $"{x.Id}" }))));
     }
 
-    [HttpGet("manage/{solutionId}/features")]
-    public async Task<IActionResult> Features(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/features")]
+    public async Task<IActionResult> Features(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
         if (solution is null)
@@ -93,21 +93,21 @@ public sealed class CatalogueSolutionsController(
             BackLink = Url.Action(
                 nameof(ManageCatalogueSolution),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { solutionId }),
+                new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}/features")]
-    public async Task<IActionResult> Features(CatalogueItemId solutionId, FeaturesModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/features")]
+    public async Task<IActionResult> Features(SolutionType solutionType, CatalogueItemId solutionId, FeaturesModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
 
         await solutionsService.SaveSolutionFeatures(solutionId, model.AllFeatures);
 
-        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
     [HttpGet("manage/{solutionType}/{solutionId}")]
@@ -146,8 +146,8 @@ public sealed class CatalogueSolutionsController(
         return RedirectToAction(nameof(Index), new { solutionType });
     }
 
-    [HttpGet("manage/{solutionId}/details")]
-    public async Task<IActionResult> Details(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/details")]
+    public async Task<IActionResult> Details(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionWithBasicInformation(solutionId);
 
@@ -156,9 +156,12 @@ public sealed class CatalogueSolutionsController(
 
         var suppliers = await suppliersService.GetAllSuppliers();
 
-        var model = new SolutionModel(solution).WithSelectListItems(suppliers);
+        var model = new SolutionModel(solution)
+        {
+            SolutionType = solutionType,
+        }.WithSelectListItems(suppliers);
 
-        model.Frameworks = (await solutionsService.GetAllFrameworks())
+        model.Frameworks = [.. (await solutionsService.GetAllFrameworks())
             .Select(
                 f =>
                 {
@@ -168,22 +171,19 @@ public sealed class CatalogueSolutionsController(
                     {
                         Name = $"{f.ShortName} Framework", FrameworkId = f.Id, Selected = sol is not null,
                     };
-                })
-            .ToList();
+                })];
 
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}/details")]
-    public async Task<IActionResult> Details(CatalogueItemId solutionId, SolutionModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/details")]
+    public async Task<IActionResult> Details(SolutionType solutionType, CatalogueItemId solutionId, SolutionModel model)
     {
         if (!ModelState.IsValid)
         {
             var suppliers = await suppliersService.GetAllSuppliers();
 
-            model.Frameworks = (await solutionsService.GetAllFrameworks())
-                .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id })
-                .ToList();
+            model.Frameworks = [.. (await solutionsService.GetAllFrameworks()).Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id })];
 
             return View(model.WithSelectListItems(suppliers));
         }
@@ -196,22 +196,22 @@ public sealed class CatalogueSolutionsController(
             model.SelectedCategory,
             model.Frameworks);
 
-        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
-    [HttpGet("manage/{solutionId}/description")]
-    public async Task<IActionResult> Description(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/description")]
+    public async Task<IActionResult> Description(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
         if (solution is null)
-            return BadRequest($"No Solution found for Id: {solutionId}");
+            return BadRequest($"No Solution found for Id: {solutionId}, solution type: {solutionType}");
 
-        return View(new DescriptionModel(solution));
+        return View(new DescriptionModel(solution) { SolutionType = solutionType });
     }
 
-    [HttpPost("manage/{solutionId}/description")]
-    public async Task<IActionResult> Description(CatalogueItemId solutionId, DescriptionModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/description")]
+    public async Task<IActionResult> Description(SolutionType solutionType, CatalogueItemId solutionId, DescriptionModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -222,22 +222,22 @@ public sealed class CatalogueSolutionsController(
             model.Description,
             model.Link);
 
-        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
-    [HttpGet("manage/{solutionId}/implementation")]
-    public async Task<IActionResult> Implementation(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/implementation")]
+    public async Task<IActionResult> Implementation(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
         if (solution is null)
-            return BadRequest($"No Solution found for Id: {solutionId}");
+            return BadRequest($"No Solution found for Id: {solutionId}, solution type: {solutionType}");
 
-        return View(new ImplementationTimescaleModel(solution));
+        return View(new ImplementationTimescaleModel(solution) { SolutionType = solutionType });
     }
 
-    [HttpPost("manage/{solutionId}/implementation")]
-    public async Task<IActionResult> Implementation(CatalogueItemId solutionId, ImplementationTimescaleModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/implementation")]
+    public async Task<IActionResult> Implementation(SolutionType solutionType, CatalogueItemId solutionId, ImplementationTimescaleModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -246,11 +246,11 @@ public sealed class CatalogueSolutionsController(
             solutionId,
             model.Description);
 
-        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
-    [HttpGet("manage/{solutionId}/application-type")]
-    public async Task<IActionResult> ApplicationType(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/application-type")]
+    public async Task<IActionResult> ApplicationType(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -259,14 +259,15 @@ public sealed class CatalogueSolutionsController(
 
         var model = new ApplicationTypeSectionModel(solution)
         {
-            BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionId }),
+            SolutionType = solutionType,
+            BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
-    [HttpGet("manage/{solutionId}/application-type/add-application-type")]
-    public async Task<IActionResult> AddApplicationType(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/application-type/add-application-type")]
+    public async Task<IActionResult> AddApplicationType(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -275,21 +276,23 @@ public sealed class CatalogueSolutionsController(
 
         var model = new ApplicationTypeSelectionModel(solution)
         {
-            BackLink = Url.Action(nameof(ApplicationType), new { solutionId }),
+            SolutionType = solutionType,
+            BackLink = Url.Action(nameof(ApplicationType), new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}/application-type/add-application-type")]
-    public async Task<IActionResult> AddApplicationType(CatalogueItemId solutionId, ApplicationTypeSelectionModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/application-type/add-application-type")]
+    public async Task<IActionResult> AddApplicationType(SolutionType solutionType, CatalogueItemId solutionId, ApplicationTypeSelectionModel model)
     {
         if (!ModelState.IsValid)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
             var erroredModel = new ApplicationTypeSelectionModel(solution)
             {
-                BackLink = Url.Action(nameof(ApplicationType), new { solutionId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(ApplicationType), new { solutionType, solutionId }),
             };
             return View(erroredModel);
         }
@@ -299,34 +302,34 @@ public sealed class CatalogueSolutionsController(
             EntityFramework.Catalogue.Models.ApplicationType.BrowserBased => RedirectToAction(
                 nameof(BrowserBasedController.BrowserBased),
                 typeof(BrowserBasedController).ControllerName(),
-                new { solutionId }),
+                new { solutionType, solutionId }),
             EntityFramework.Catalogue.Models.ApplicationType.MobileTablet => RedirectToAction(
                 nameof(MobileTabletBasedController.MobileTablet),
                 typeof(MobileTabletBasedController).ControllerName(),
-                new { solutionId }),
+                new { solutionType, solutionId }),
             EntityFramework.Catalogue.Models.ApplicationType.Desktop => RedirectToAction(
                 nameof(DesktopBasedController.Desktop),
                 typeof(DesktopBasedController).ControllerName(),
-                new { solutionId }),
-            _ => RedirectToAction(nameof(ApplicationType), new { solutionId }),
+                new { solutionType, solutionId }),
+            _ => RedirectToAction(nameof(ApplicationType), new { solutionType, solutionId }),
         };
     }
 
-    [HttpGet("manage/{solutionId}/supplier-details")]
-    public async Task<IActionResult> EditSupplierDetails(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/supplier-details")]
+    public async Task<IActionResult> EditSupplierDetails(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var catalogueItem = await solutionsService.GetSolutionWithSupplierDetails(solutionId);
 
         var model = new EditSolutionContactsModel(catalogueItem)
         {
-            BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionId }),
+            BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}/supplier-details")]
-    public async Task<IActionResult> EditSupplierDetails(CatalogueItemId solutionId, EditSolutionContactsModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/supplier-details")]
+    public async Task<IActionResult> EditSupplierDetails(SolutionType solutionType, CatalogueItemId solutionId, EditSolutionContactsModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -344,11 +347,11 @@ public sealed class CatalogueSolutionsController(
 
         await solutionsService.SaveContacts(solutionId, selectedContacts);
 
-        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
-    [HttpGet("manage/{solutionId}/edit-capabilities")]
-    public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/edit-capabilities")]
+    public async Task<IActionResult> EditCapabilities(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionWithCapabilities(solutionId);
         if (solution is null)
@@ -358,15 +361,15 @@ public sealed class CatalogueSolutionsController(
 
         var model = new EditCapabilitiesModel(solution, capabilities)
         {
-            BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionId }),
+            BackLink = Url.Action(nameof(ManageCatalogueSolution), new { solutionType, solutionId }),
             SolutionName = solution.Name,
         };
 
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}/edit-capabilities")]
-    public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId, EditCapabilitiesModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/edit-capabilities")]
+    public async Task<IActionResult> EditCapabilities(SolutionType solutionType, CatalogueItemId solutionId, EditCapabilitiesModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -389,11 +392,11 @@ public sealed class CatalogueSolutionsController(
 
         await capabilitiesService.AddCapabilitiesToCatalogueItem(solutionId, saveRequestModel);
 
-        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionType, solutionId });
     }
 
-    [HttpGet("manage/{solutionId}/associated-services")]
-    public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId)
+    [HttpGet("manage/{solutionType}/{solutionId}/associated-services")]
+    public async Task<IActionResult> AssociatedServices(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var catalogueItem = await solutionsService.GetCatalogueItemWithSupplierServiceAssociations(solutionId);
         if (catalogueItem is null)
@@ -405,14 +408,19 @@ public sealed class CatalogueSolutionsController(
         {
             BackLink = Url.Action(
                 nameof(ManageCatalogueSolution),
-                new { solutionId }),
+                new { solutionType, solutionId }),
+            SolutionType = solutionType,
+            SolutionId = solutionId,
         };
 
         return View(model);
     }
 
-    [HttpPost("manage/{solutionId}/associated-services")]
-    public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, CatalogueItemAssociatedServicesModel model)
+    [HttpPost("manage/{solutionType}/{solutionId}/associated-services")]
+    public async Task<IActionResult> AssociatedServices(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        CatalogueItemAssociatedServicesModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -421,7 +429,7 @@ public sealed class CatalogueSolutionsController(
         {
             return RedirectToAction(
                 nameof(ManageCatalogueSolution),
-                new { solutionId });
+                new { solutionType, solutionId });
         }
 
         var associatedServices = model.SelectableAssociatedServices.Where(a => a.Selected).Select(a => a.CatalogueItemId);
@@ -429,7 +437,7 @@ public sealed class CatalogueSolutionsController(
 
         return RedirectToAction(
             nameof(ManageCatalogueSolution),
-            new { solutionId });
+            new { solutionType, solutionId });
     }
 
     private async Task<IEnumerable<CatalogueItem>> GetFilteredItems(string search, SolutionType solutionType)

@@ -17,11 +17,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BaseModels
 
         public CatalogueItemId? SolutionId { get; set; }
 
+        public required SolutionType SolutionType { get; init; }
+
         public int SupplierId { get; set; }
 
         public ApplicationTypeDetail ApplicationTypeDetail { get; set; }
 
-        public ApplicationTypeProgress ApplicationTypeProgress => new ApplicationTypeProgress(ApplicationTypeDetail);
+        public ApplicationTypeProgress ApplicationTypeProgress => new(ApplicationTypeDetail);
 
         protected CatalogueItem CatalogueItem { get; set; }
     }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
@@ -20,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
 [Authorize(Policy = "ManageCatalogueSolutions")]
 [Area("Admin")]
-[Route("admin/catalogue-solutions/manage/{solutionId}/additional-services")]
+[Route("admin/catalogue-solutions/manage/{solutionType}/{solutionId}/additional-services")]
 public sealed class AdditionalServicesController(
     ISolutionsService solutionsService,
     IAdditionalServicesService additionalServicesService,
@@ -36,7 +37,7 @@ public sealed class AdditionalServicesController(
     private readonly IPublicationStatusService publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
 
     [HttpGet]
-    public async Task<IActionResult> Index(CatalogueItemId solutionId)
+    public async Task<IActionResult> Index(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
         if (solution is null)
@@ -44,11 +45,11 @@ public sealed class AdditionalServicesController(
 
         var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId);
 
-        return View(new AdditionalServicesModel(solution, additionalServices));
+        return View(new AdditionalServicesModel(solution, additionalServices) { SolutionType = solutionType });
     }
 
     [HttpGet("{additionalServiceId}/edit-additional-service")]
-    public async Task<IActionResult> EditAdditionalService(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
+    public async Task<IActionResult> EditAdditionalService(SolutionType solutionType, CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
         if (solution is null)
@@ -63,14 +64,19 @@ public sealed class AdditionalServicesController(
 
         var model = new EditAdditionalServiceModel(solution, additionalService, associatedServices)
         {
-            BackLink = Url.Action(nameof(Index), new { solutionId }),
+            BackLink = Url.Action(nameof(Index), new { solutionType, solutionId }),
+            SolutionType = solutionType,
         };
 
         return View(model);
     }
 
     [HttpPost("{additionalServiceId}/edit-additional-service")]
-    public async Task<IActionResult> SetPublicationStatus(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditAdditionalServiceModel model)
+    public async Task<IActionResult> SetPublicationStatus(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        EditAdditionalServiceModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -81,11 +87,13 @@ public sealed class AdditionalServicesController(
 
         await publicationStatusService.SetPublicationStatus(additionalServiceId, model.SelectedPublicationStatus);
 
-        return RedirectToAction(nameof(Index), new { solutionId });
+        return RedirectToAction(nameof(Index), new { solutionType, solutionId });
     }
 
     [HttpGet("add-additional-service")]
-    public async Task<IActionResult> AddAdditionalService(CatalogueItemId solutionId)
+    public async Task<IActionResult> AddAdditionalService(
+        SolutionType solutionType,
+        CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
         if (solution is null)
@@ -93,14 +101,17 @@ public sealed class AdditionalServicesController(
 
         var model = new EditAdditionalServiceDetailsModel(solution)
         {
-            BackLink = Url.Action(nameof(Index), new { solutionId }),
+            BackLink = Url.Action(nameof(Index), new { solutionType, solutionId }),
         };
 
         return View("EditAdditionalServiceDetails", model);
     }
 
     [HttpPost("add-additional-service")]
-    public async Task<IActionResult> AddAdditionalService(CatalogueItemId solutionId, EditAdditionalServiceDetailsModel model)
+    public async Task<IActionResult> AddAdditionalService(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        EditAdditionalServiceDetailsModel model)
     {
         if (!ModelState.IsValid)
             return View("EditAdditionalServiceDetails", model);
@@ -118,11 +129,14 @@ public sealed class AdditionalServicesController(
 
         var additionalServiceId = await additionalServicesService.AddAdditionalService(solution, additionalServiceDetailsModel);
 
-        return RedirectToAction(nameof(EditAdditionalService), new { solutionId, additionalServiceId });
+        return RedirectToAction(nameof(EditAdditionalService), new { solutionType, solutionId, additionalServiceId });
     }
 
     [HttpGet("{additionalServiceId}/edit-additional-service-details")]
-    public async Task<IActionResult> EditAdditionalServiceDetails(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
+    public async Task<IActionResult> EditAdditionalServiceDetails(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
         if (solution is null)
@@ -134,14 +148,18 @@ public sealed class AdditionalServicesController(
 
         var model = new EditAdditionalServiceDetailsModel(solution, additionalService)
         {
-            BackLink = Url.Action(nameof(EditAdditionalService), new { solutionId, additionalServiceId }),
+            BackLink = Url.Action(nameof(EditAdditionalService), new { solutionType, solutionId, additionalServiceId }),
         };
 
         return View(model);
     }
 
     [HttpPost("{additionalServiceId}/edit-additional-service-details")]
-    public async Task<IActionResult> EditAdditionalServiceDetails(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditAdditionalServiceDetailsModel model)
+    public async Task<IActionResult> EditAdditionalServiceDetails(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        EditAdditionalServiceDetailsModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -163,11 +181,11 @@ public sealed class AdditionalServicesController(
 
         await additionalServicesService.EditAdditionalService(solutionId, additionalServiceId, additionalServiceDetailsModel);
 
-        return RedirectToAction(nameof(EditAdditionalService), new { solutionId, additionalServiceId });
+        return RedirectToAction(nameof(EditAdditionalService), new { solutionType, solutionId, additionalServiceId });
     }
 
     [HttpGet("{additionalServiceId}/edit-capabilities")]
-    public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
+    public async Task<IActionResult> EditCapabilities(SolutionType solutionType, CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
         if (solution is null)
@@ -181,7 +199,7 @@ public sealed class AdditionalServicesController(
 
         var model = new EditCapabilitiesModel(additionalService, capabilities)
         {
-            BackLink = Url.Action(nameof(EditAdditionalService), new { solutionId, additionalServiceId }),
+            BackLink = Url.Action(nameof(EditAdditionalService), new { solutionType, solutionId, additionalServiceId }),
             SolutionName = solution.Name,
         };
 
@@ -189,7 +207,11 @@ public sealed class AdditionalServicesController(
     }
 
     [HttpPost("{additionalServiceId}/edit-capabilities")]
-    public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditCapabilitiesModel model)
+    public async Task<IActionResult> EditCapabilities(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        EditCapabilitiesModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -212,11 +234,11 @@ public sealed class AdditionalServicesController(
 
         await capabilitiesService.AddCapabilitiesToCatalogueItem(additionalServiceId, saveRequestModel);
 
-        return RedirectToAction(nameof(EditAdditionalService), new { solutionId, additionalServiceId });
+        return RedirectToAction(nameof(EditAdditionalService), new { solutionType, solutionId, additionalServiceId });
     }
 
     [HttpGet("{additionalServiceId}/associated-services")]
-    public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
+    public async Task<IActionResult> AssociatedServices(SolutionType solutionType, CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
     {
         var catalogueItem = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
         if (catalogueItem is null)
@@ -228,14 +250,20 @@ public sealed class AdditionalServicesController(
         {
             BackLink = Url.Action(
                 nameof(EditAdditionalService),
-                new { solutionId, additionalServiceId }),
+                new { solutionType, solutionId, additionalServiceId }),
+            SolutionId = solutionId,
+            SolutionType = solutionType,
         };
 
         return View(model);
     }
 
     [HttpPost("{additionalServiceId}/associated-services")]
-    public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, CatalogueItemAssociatedServicesModel model)
+    public async Task<IActionResult> AssociatedServices(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId,
+        CatalogueItemAssociatedServicesModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -245,6 +273,6 @@ public sealed class AdditionalServicesController(
 
         return RedirectToAction(
             nameof(EditAdditionalService),
-            new { solutionId, additionalServiceId });
+            new { solutionType, solutionId, additionalServiceId });
     }
 }

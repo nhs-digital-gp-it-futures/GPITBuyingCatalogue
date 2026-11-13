@@ -54,12 +54,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockAssociatedServicesService.GetAllAssociatedServicesForSupplier(supplier.Id).Returns(associatedServices);
 
-            var actual = await controller.AssociatedServices(supplier.Id);
+            var actual = await controller.AssociatedServices(supplier.Id, SolutionType.GPIT, null, null);
 
             actual.Should().BeOfType<ViewResult>();
 
             actual.As<ViewResult>().ViewName.Should().BeNull();
-            actual.As<ViewResult>().Model.Should().BeEquivalentTo(new AssociatedServicesModel(supplier, associatedServices), opt => opt.Excluding(m => m.BackLink));
+            actual.As<ViewResult>().Model.Should().BeEquivalentTo(
+                new AssociatedServicesModel(supplier, associatedServices) { SolutionType = SolutionType.GPIT },
+                opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -71,11 +73,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             suppliersService.GetSupplier(supplierId).Returns((Supplier)null);
 
-            var actual = await controller.AssociatedServices(supplierId);
+            var actual = await controller.AssociatedServices(supplierId, SolutionType.GPIT, null, null);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
-            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Supplier found for Id: {supplierId}");
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Supplier found for Id: {supplierId}, and solution type {SolutionType.GPIT}");
         }
 
         [Theory]
@@ -87,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             supplierService.GetSupplier(supplier.Id).Returns(supplier);
 
-            var actual = await controller.AddAssociatedService(supplier.Id);
+            var actual = await controller.AddAssociatedService(supplier.Id, null, null, null);
 
             actual.Should().BeOfType<ViewResult>();
 
@@ -104,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             supplierService.GetSupplier(supplierId).Returns((Supplier)null);
 
-            var actual = await controller.AddAssociatedService(supplierId);
+            var actual = await controller.AddAssociatedService(supplierId, null, null, null);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
@@ -122,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockAssociatedServicesService.AddAssociatedService(supplierId, Arg.Any<AssociatedServicesDetailsModel>()).Returns(associatedServiceId);
 
-            var actual = await controller.AddAssociatedService(supplierId, model);
+            var actual = await controller.AddAssociatedService(supplierId, null, null, null, model);
 
             actual.Should().BeOfType<RedirectToActionResult>();
             actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(SupplierServicesController.EditAssociatedService));
@@ -140,6 +142,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             associatedService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
             associatedService.CatalogueItem.CataloguePrices.AddRange(listPrices);
+            associatedService.CatalogueItem.Solution = new Solution
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             supplierService.GetSupplier(supplier.Id).Returns(supplier);
 
@@ -147,9 +153,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockAssociatedServicesService.GetAssociatedServiceReferences(associatedService.CatalogueItemId)
                 .Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
-            var expectedModel = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem, []);
-
-            var actual = await controller.EditAssociatedService(supplier.Id, associatedService.CatalogueItemId);
+            var expectedModel = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem, [])
+            {
+                SolutionType = SolutionType.GPIT,
+            };
+            var actual = await controller.EditAssociatedService(supplier.Id, associatedService.CatalogueItemId, SolutionType.GPIT, null, null);
 
             await supplierService.Received().GetSupplier(supplier.Id);
             await mockAssociatedServicesService.Received().GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId);
@@ -170,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             supplierService.GetSupplier(supplierId).Returns((Supplier)null);
 
-            var actual = await controller.EditAssociatedService(supplierId, associatedServiceId);
+            var actual = await controller.EditAssociatedService(supplierId, associatedServiceId, null, null, null);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
@@ -190,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockAssociatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId).Returns(default(CatalogueItem));
 
-            var actual = await controller.EditAssociatedService(supplier.Id, associatedServiceId);
+            var actual = await controller.EditAssociatedService(supplier.Id, associatedServiceId, null, null, null);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
@@ -214,7 +222,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockAssociatedServicesService.GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(catalogueItem.Id).Returns(solutionMergerAndSplitTypes);
 
-            var actual = await controller.EditAssociatedServiceDetails(supplier.Id, catalogueItem.Id);
+            var actual = await controller.EditAssociatedServiceDetails(supplier.Id, catalogueItem.Id, null, null, null);
 
             await suppliersService.Received().GetSupplier(supplier.Id);
             await mockAssociatedServicesService.Received().GetAssociatedServiceWithCataloguePrices(catalogueItem.Id);
@@ -235,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             supplierService.GetSupplier(supplierId).Returns((Supplier)null);
 
-            var actual = await controller.EditAssociatedServiceDetails(supplierId, associatedServiceId);
+            var actual = await controller.EditAssociatedServiceDetails(supplierId, associatedServiceId, null, null, null);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
             actual.As<BadRequestObjectResult>().Value.Should().Be($"No Supplier found for Id: {supplierId}");
@@ -253,7 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             supplierService.GetSupplier(supplier.Id).Returns(supplier);
             mockAssociatedService.GetAssociatedServiceWithCataloguePrices(associatedServiceId).Returns(default(CatalogueItem));
 
-            var actual = await controller.EditAssociatedServiceDetails(supplier.Id, associatedServiceId);
+            var actual = await controller.EditAssociatedServiceDetails(supplier.Id, associatedServiceId, null, null, null);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
@@ -276,7 +284,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var model = new EditAssociatedServiceDetailsModel(supplier, catalogueItem, null);
 
-            var actual = await controller.EditAssociatedServiceDetails(supplier.Id, catalogueItem.Id, model);
+            var actual = await controller.EditAssociatedServiceDetails(supplier.Id, catalogueItem.Id, null, null, null, model);
 
             var result = actual.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -296,7 +304,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetAssociatedService(associatedServiceId).Returns(default(CatalogueItem));
 
-            var actual = await controller.EditAssociatedServiceDetails(supplierId, associatedServiceId, model);
+            var actual = await controller.EditAssociatedServiceDetails(supplierId, associatedServiceId, null, null, null, model);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
@@ -314,11 +322,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             associatedService.PublishedStatus = PublicationStatus.Draft;
 
-            var model = new EditAssociatedServiceModel { SelectedPublicationStatus = PublicationStatus.Published };
+            var model = new EditAssociatedServiceModel
+            {
+                SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
+            };
 
             mockAssociatedServicesService.GetAssociatedService(associatedService.Id).Returns(associatedService);
 
-            await controller.SetPublicationStatus(supplierId, associatedService.Id, model);
+            await controller.SetPublicationStatus(supplierId, associatedService.Id, null, null, null, model);
 
             await mockPublicationStatusService.Received().SetPublicationStatus(associatedService.Id, model.SelectedPublicationStatus);
         }
@@ -333,11 +345,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             associatedService.PublishedStatus = PublicationStatus.Draft;
 
-            var model = new EditAssociatedServiceModel { SelectedPublicationStatus = PublicationStatus.Published };
+            var model = new EditAssociatedServiceModel
+            {
+                SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
+            };
 
             mockAssociatedServicesService.GetAssociatedService(associatedService.Id).Returns(associatedService);
 
-            var actual = (await controller.SetPublicationStatus(supplierId, associatedService.Id, model)).As<RedirectToActionResult>();
+            var actual = (await controller.SetPublicationStatus(supplierId, associatedService.Id, null, null, null, model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(SupplierServicesController.AssociatedServices));
@@ -359,11 +375,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Concat(additionalServices.Select(x => x.CatalogueItem))
                 .ToList();
 
-            var model = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem, referencedItems);
-
+            var model = new EditAssociatedServiceModel
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             mockAssociatedServicesService.GetAssociatedServiceReferences(associatedService.CatalogueItemId).Returns(referencedItems);
 
-            var actual = (await controller.SetPublicationStatus(supplier.Id, associatedService.CatalogueItemId, model)).As<ViewResult>();
+            var actual = (await controller.SetPublicationStatus(supplier.Id, associatedService.CatalogueItemId, null, null, null, model)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().Be(nameof(SupplierServicesController.EditAssociatedService));

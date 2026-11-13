@@ -21,6 +21,7 @@
                     <a asp-action="@(nameof(CatalogueSolutionStandardsController.Edit))"
                        asp-controller="@(typeof(CatalogueSolutionStandardsController).ControllerName())"
                        asp-area="@(typeof(CatalogueSolutionStandardsController).AreaName())"
+                       asp-route-solutionType="@Model.SolutionType"
                        asp-route-solutionId="@Model.SolutionId"
                        asp-route-standardId="@standard.Id">Edit</a>
                 </nhs-table-cell>

@@ -17,8 +17,10 @@ public static class AddEditIm1IntegrationModelTests
     {
         var expectedIntegrationTypes = integrationTypes.Select(x => new SelectOption<string>(x.Name, x.Id.ToString())).ToList();
 
-        var model = new AddEditIm1IntegrationModel(solution.CatalogueItem, integrationTypes);
-
+        var model = new AddEditIm1IntegrationModel(solution.CatalogueItem, integrationTypes)
+        {
+            SolutionType = SolutionType.GPIT,
+        };
         Assert.Equal(solution.CatalogueItemId, model.SolutionId);
         Assert.Equal(solution.CatalogueItem.Name, model.SolutionName);
         Assert.Equivalent(expectedIntegrationTypes, model.IntegrationTypes);
@@ -33,7 +35,10 @@ public static class AddEditIm1IntegrationModelTests
     {
         var expectedIntegrationTypes = integrationTypes.Select(x => new SelectOption<string>(x.Name, x.Id.ToString())).ToList();
 
-        var model = new AddEditIm1IntegrationModel(solution.CatalogueItem, integrationTypes, solutionIntegration);
+        var model = new AddEditIm1IntegrationModel(solution.CatalogueItem, integrationTypes, solutionIntegration)
+        {
+            SolutionType = SolutionType.GPIT,
+        };
 
         Assert.Equal(solution.CatalogueItemId, model.SolutionId);
         Assert.Equal(solution.CatalogueItem.Name, model.SolutionName);

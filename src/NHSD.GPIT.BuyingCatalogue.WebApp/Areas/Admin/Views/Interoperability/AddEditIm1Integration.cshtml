@@ -38,7 +38,7 @@
                 <vc:nhs-delete-button url="@Url.Action(
                                                nameof(InteroperabilityController.DeleteIm1Integration),
                                                typeof(InteroperabilityController).ControllerName(),
-                                               new { Model.SolutionId, integrationId = Model.IntegrationId })"
+                                               new { Model.SolutionType, Model.SolutionId, integrationId = Model.IntegrationId })"
                               text="Delete integration" />
             }
         </div>

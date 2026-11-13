@@ -27,6 +27,7 @@
                     <nhs-table-cell>
                         <a asp-action="@nameof(DesktopBasedController.OperatingSystems)"
                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
+                           asp-route-solutionType="@Model.SolutionType"
                            asp-route-solutionId="@Model.SolutionId"
                            class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
@@ -39,6 +40,7 @@
                     <nhs-table-cell>
                         <a asp-action="@nameof(DesktopBasedController.Connectivity)"
                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
+                           asp-route-solutionType="@Model.SolutionType"
                            asp-route-solutionId="@Model.SolutionId"
                            class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
@@ -51,6 +53,7 @@
                     <nhs-table-cell>
                         <a asp-action="@nameof(DesktopBasedController.MemoryAndStorage)"
                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
+                           asp-route-solutionType="@Model.SolutionType"
                            asp-route-solutionId="@Model.SolutionId"
                            class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
@@ -63,6 +66,7 @@
                     <nhs-table-cell>
                         <a asp-action="@nameof(DesktopBasedController.ThirdPartyComponents)"
                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
+                           asp-route-solutionType="@Model.SolutionType"
                            asp-route-solutionId="@Model.SolutionId"
                            class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
@@ -75,6 +79,7 @@
                     <nhs-table-cell>
                         <a asp-action="@nameof(DesktopBasedController.HardwareRequirements)"
                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
+                           asp-route-solutionType="@Model.SolutionType"
                            asp-route-solutionId="@Model.SolutionId"
                            class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
@@ -87,6 +92,7 @@
                     <nhs-table-cell>
                         <a asp-action="@nameof(DesktopBasedController.AdditionalInformation)"
                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
+                           asp-route-solutionType="@Model.SolutionType"
                            asp-route-solutionId="@Model.SolutionId"
                            class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
@@ -95,17 +101,19 @@
             </nhs-table>
 
             <vc:nhs-anchor-button text="Save and continue"
-                                     type="Primary"
-                                     url="@Url.Action(
-                                     nameof(CatalogueSolutionsController.ApplicationType),
-                                     typeof(CatalogueSolutionsController).ControllerName(),
-                                     new { Model.SolutionId })" /><br />
+                type="Primary"
+                url="@Url.Action(
+                    nameof(CatalogueSolutionsController.ApplicationType),
+                    typeof(CatalogueSolutionsController).ControllerName(),
+                    new { Model.SolutionType, Model.SolutionId })" />
 
-            <vc:nhs-delete-button url="@Url.Action(
-                                               nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation),
-                                               typeof(DeleteApplicationTypeController).ControllerName(),
-                                               new { Model.SolutionId, Model.ApplicationType })"
-                                  text="Delete application type" />
+            <br />
+
+            <vc:nhs-delete-button text="Delete application type" 
+                url="@Url.Action(
+                    nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation),
+                    typeof(DeleteApplicationTypeController).ControllerName(),
+                    new { Model.SolutionType, Model.SolutionId, Model.ApplicationType })" />
         </div>
     </div>
 </div>

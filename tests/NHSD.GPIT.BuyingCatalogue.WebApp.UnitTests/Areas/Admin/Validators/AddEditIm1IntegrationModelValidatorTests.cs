@@ -1,4 +1,5 @@
 ﻿using FluentValidation.TestHelper;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.InteroperabilityValidators;
 using Xunit;
@@ -17,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 IsConsumer = false,
                 SelectedIntegrationType = 0,
                 IntegratesWith = "Integrates With Text",
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -33,6 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 Description = "Description Text",
                 IntegratesWith = "Integrates With Text",
                 IsConsumer = false,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -50,6 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 Description = "Description Text",
                 IntegratesWith = "Integrates With Text",
                 SelectedIntegrationType = 0,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -67,6 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 IntegratesWith = "Integrates With Text",
                 IsConsumer = false,
                 SelectedIntegrationType = 0,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);
@@ -84,6 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 Description = "Description Text",
                 IsConsumer = false,
                 SelectedIntegrationType = 0,
+                SolutionType = SolutionType.GPIT,
             };
 
             var result = validator.TestValidate(model);

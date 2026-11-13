@@ -34,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new SolutionModel()
             {
+                SolutionType = solutionType,
                 BackLink = Url.Action(nameof(CatalogueSolutionsController.Index), typeof(CatalogueSolutionsController).ControllerName(), new { solutionType }),
             }.WithSelectListItems(suppliers);
 

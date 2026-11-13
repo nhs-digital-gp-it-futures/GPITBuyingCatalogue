@@ -12,19 +12,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
-    [Route("admin/catalogue-solutions")]
-    public sealed class DesktopBasedController : Controller
+    [Route("admin/catalogue-solutions/manage/{solutionType}/{solutionId}/application-type/desktop")]
+    public sealed class DesktopBasedController(
+        ISolutionsService solutionsService) : Controller
     {
-        private readonly ISolutionsService solutionsService;
+        private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
 
-        public DesktopBasedController(
-            ISolutionsService solutionsService)
-        {
-            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-        }
-
-        [HttpGet("manage/{solutionId}/application-type/desktop")]
-        public async Task<IActionResult> Desktop(CatalogueItemId solutionId)
+        [HttpGet]
+        public async Task<IActionResult> Desktop(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -34,22 +29,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var applicationType = solution.Solution.EnsureAndGetApplicationType();
             var model = new DesktopBasedModel(solution)
             {
+                SolutionType = solutionType,
                 BackLink = applicationType?.HasApplicationType(ApplicationType.Desktop) ?? false
                            ? Url.Action(
                                nameof(CatalogueSolutionsController.ApplicationType),
                                typeof(CatalogueSolutionsController).ControllerName(),
-                               new { solutionId })
+                               new { solutionType, solutionId })
                            : Url.Action(
                                nameof(CatalogueSolutionsController.AddApplicationType),
                                typeof(CatalogueSolutionsController).ControllerName(),
-                               new { solutionId }),
+                               new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
-        [HttpGet("manage/{solutionId}/application-type/desktop/operating-systems")]
-        public async Task<IActionResult> OperatingSystems(CatalogueItemId solutionId)
+        [HttpGet("operating-systems")]
+        public async Task<IActionResult> OperatingSystems(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -58,14 +54,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new OperatingSystemsModel(solution)
             {
-                BackLink = Url.Action(nameof(Desktop), new { solutionId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(Desktop), new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/application-type/desktop/operating-systems")]
-        public async Task<IActionResult> OperatingSystems(CatalogueItemId solutionId, OperatingSystemsModel model)
+        [HttpPost("operating-systems")]
+        public async Task<IActionResult> OperatingSystems(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            OperatingSystemsModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -81,11 +81,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-            return RedirectToAction(nameof(Desktop), new { solutionId });
+            return RedirectToAction(nameof(Desktop), new { solutionType, solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/application-type/desktop/connectivity")]
-        public async Task<IActionResult> Connectivity(CatalogueItemId solutionId)
+        [HttpGet("connectivity")]
+        public async Task<IActionResult> Connectivity(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -94,14 +94,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new ConnectivityModel(solution)
             {
-                BackLink = Url.Action(nameof(Desktop), new { solutionId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(Desktop), new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/application-type/desktop/connectivity")]
-        public async Task<IActionResult> Connectivity(CatalogueItemId solutionId, ConnectivityModel model)
+        [HttpPost("connectivity")]
+        public async Task<IActionResult> Connectivity(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            ConnectivityModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -117,11 +121,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-            return RedirectToAction(nameof(Desktop), new { solutionId });
+            return RedirectToAction(nameof(Desktop), new { solutionType, solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/application-type/desktop/memory-and-storage")]
-        public async Task<IActionResult> MemoryAndStorage(CatalogueItemId solutionId)
+        [HttpGet("memory-and-storage")]
+        public async Task<IActionResult> MemoryAndStorage(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -130,14 +134,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new MemoryAndStorageModel(solution)
             {
-                BackLink = Url.Action(nameof(Desktop), new { solutionId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(Desktop), new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/application-type/desktop/memory-and-storage")]
-        public async Task<IActionResult> MemoryAndStorage(CatalogueItemId solutionId, MemoryAndStorageModel model)
+        [HttpPost("memory-and-storage")]
+        public async Task<IActionResult> MemoryAndStorage(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            MemoryAndStorageModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -158,11 +166,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-            return RedirectToAction(nameof(Desktop), new { solutionId });
+            return RedirectToAction(nameof(Desktop), new { solutionType, solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/application-type/desktop/third-party-components")]
-        public async Task<IActionResult> ThirdPartyComponents(CatalogueItemId solutionId)
+        [HttpGet("third-party-components")]
+        public async Task<IActionResult> ThirdPartyComponents(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -171,14 +179,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new ThirdPartyComponentsModel(solution)
             {
-                BackLink = Url.Action(nameof(Desktop), new { solutionId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(Desktop), new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/application-type/desktop/third-party-components")]
-        public async Task<IActionResult> ThirdPartyComponents(CatalogueItemId solutionId, ThirdPartyComponentsModel model)
+        [HttpPost("third-party-components")]
+        public async Task<IActionResult> ThirdPartyComponents(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            ThirdPartyComponentsModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -197,11 +209,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-            return RedirectToAction(nameof(Desktop), new { solutionId });
+            return RedirectToAction(nameof(Desktop), new { solutionType, solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/application-type/desktop/hardware-requirements")]
-        public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId)
+        [HttpGet("hardware-requirements")]
+        public async Task<IActionResult> HardwareRequirements(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -210,14 +222,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new HardwareRequirementsModel(solution)
             {
-                BackLink = Url.Action(nameof(Desktop), new { solutionId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(Desktop), new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/application-type/desktop/hardware-requirements")]
-        public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId, HardwareRequirementsModel model)
+        [HttpPost("hardware-requirements")]
+        public async Task<IActionResult> HardwareRequirements(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            HardwareRequirementsModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -233,11 +249,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-            return RedirectToAction(nameof(Desktop), new { solutionId });
+            return RedirectToAction(nameof(Desktop), new { solutionType, solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/application-type/desktop/additional-information")]
-        public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId)
+        [HttpGet("additional-information")]
+        public async Task<IActionResult> AdditionalInformation(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -246,14 +262,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AdditionalInformationModel(solution)
             {
-                BackLink = Url.Action(nameof(Desktop), new { solutionId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(Desktop), new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/application-type/desktop/additional-information")]
-        public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId, AdditionalInformationModel model)
+        [HttpPost("additional-information")]
+        public async Task<IActionResult> AdditionalInformation(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            AdditionalInformationModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -269,7 +289,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-            return RedirectToAction(nameof(Desktop), new { solutionId });
+            return RedirectToAction(nameof(Desktop), new { solutionType, solutionId });
         }
     }
 }

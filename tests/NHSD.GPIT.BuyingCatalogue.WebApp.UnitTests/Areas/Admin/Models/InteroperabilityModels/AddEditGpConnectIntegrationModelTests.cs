@@ -17,7 +17,7 @@ public static class AddEditGpConnectIntegrationModelTests
     {
         var expectedIntegrationTypes = integrationTypes.Select(x => new SelectOption<string>(x.Name, x.Id.ToString())).ToList();
 
-        var model = new AddEditGpConnectIntegrationModel(solution.CatalogueItem, integrationTypes);
+        var model = new AddEditGpConnectIntegrationModel(solution.CatalogueItem, integrationTypes) { SolutionType = SolutionType.GPIT };
 
         Assert.Equal(solution.CatalogueItemId, model.SolutionId);
         Assert.Equal(solution.CatalogueItem.Name, model.SolutionName);
@@ -33,7 +33,10 @@ public static class AddEditGpConnectIntegrationModelTests
     {
         var expectedIntegrationTypes = integrationTypes.Select(x => new SelectOption<string>(x.Name, x.Id.ToString())).ToList();
 
-        var model = new AddEditGpConnectIntegrationModel(solution.CatalogueItem, integrationTypes, solutionIntegration);
+        var model = new AddEditGpConnectIntegrationModel(solution.CatalogueItem, integrationTypes, solutionIntegration)
+        {
+            SolutionType = SolutionType.GPIT,
+        };
 
         Assert.Equal(solution.CatalogueItemId, model.SolutionId);
         Assert.Equal(solution.CatalogueItem.Name, model.SolutionName);

@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "ManageInteroperability")]
     [Area("Admin")]
-    [Route("admin/catalogue-solutions/manage/{solutionId}/interoperability")]
+    [Route("admin/catalogue-solutions/manage/{solutionType}/{solutionId}/interoperability")]
     public sealed class InteroperabilityController(
         ISolutionsService solutionsService,
         IInteroperabilityService interoperabilityService,
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly IIntegrationsService integrationsService = integrationsService ?? throw new ArgumentNullException(nameof(integrationsService));
 
         [HttpGet]
-        public async Task<IActionResult> Interoperability(CatalogueItemId solutionId)
+        public async Task<IActionResult> Interoperability(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -35,17 +35,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new InteroperabilityModel(solution)
             {
+                SolutionType = solutionType,
                 BackLink = Url.Action(
                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
-                    new { solutionId }),
+                    new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Interoperability(CatalogueItemId solutionId, InteroperabilityModel model)
+        public async Task<IActionResult> Interoperability(SolutionType solutionType, CatalogueItemId solutionId, InteroperabilityModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -59,11 +60,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(
                 nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { solutionId });
+                new { solutionType, solutionId });
         }
 
         [HttpGet("add-im1-integration")]
-        public async Task<IActionResult> AddIm1Integration(CatalogueItemId solutionId)
+        public async Task<IActionResult> AddIm1Integration(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -75,14 +76,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditIm1IntegrationModel(solution, integrationTypes)
             {
-                BackLink = Url.Action(nameof(Interoperability), new { solutionId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(Interoperability), new { solutionType, solutionId }),
             };
 
             return View("AddEditIm1Integration", model);
         }
 
         [HttpPost("add-im1-integration")]
-        public async Task<IActionResult> AddIm1Integration(CatalogueItemId solutionId, AddEditIm1IntegrationModel model)
+        public async Task<IActionResult> AddIm1Integration(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            AddEditIm1IntegrationModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -102,11 +107,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await interoperabilityService.AddIntegration(solutionId, integration);
 
-            return RedirectToAction(nameof(Interoperability), new { solutionId });
+            return RedirectToAction(nameof(Interoperability), new { solutionType, solutionId });
         }
 
         [HttpGet("edit-im1-integration/{integrationId}")]
-        public async Task<IActionResult> EditIm1Integration(CatalogueItemId solutionId, int integrationId)
+        public async Task<IActionResult> EditIm1Integration(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int integrationId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -126,14 +134,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditIm1IntegrationModel(solution, integrationTypes, solutionIntegration)
             {
-                BackLink = Url.Action(nameof(Interoperability), new { solutionId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(Interoperability), new { solutionType, solutionId }),
             };
 
             return View("AddEditIm1Integration", model);
         }
 
         [HttpPost("edit-im1-integration/{integrationId}")]
-        public async Task<IActionResult> EditIm1Integration(CatalogueItemId solutionId, int integrationId, AddEditIm1IntegrationModel model)
+        public async Task<IActionResult> EditIm1Integration(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int integrationId,
+            AddEditIm1IntegrationModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -163,11 +176,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await interoperabilityService.EditIntegration(solutionId, integrationId, integration);
 
-            return RedirectToAction(nameof(Interoperability), new { solutionId });
+            return RedirectToAction(nameof(Interoperability), new { solutionType, solutionId });
         }
 
         [HttpGet("delete-im1-integration/{integrationId}")]
-        public async Task<IActionResult> DeleteIm1Integration(CatalogueItemId solutionId, int integrationId)
+        public async Task<IActionResult> DeleteIm1Integration(SolutionType solutionType, CatalogueItemId solutionId, int integrationId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -184,7 +197,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new DeleteIntegrationModel(solution)
             {
-                BackLink = Url.Action(nameof(EditIm1Integration), new { solutionId, integrationId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(EditIm1Integration), typeof(InteroperabilityController).ControllerName(), new { solutionType, solutionId, integrationId }),
                 IntegrationId = integrationId,
                 IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
             };
@@ -193,7 +207,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("delete-im1-integration/{integrationId}")]
-        public async Task<IActionResult> DeleteIm1Integration(CatalogueItemId solutionId, int integrationId, DeleteIntegrationModel model)
+        public async Task<IActionResult> DeleteIm1Integration(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int integrationId,
+            DeleteIntegrationModel model)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -210,11 +228,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await interoperabilityService.DeleteIntegration(solutionId, model.IntegrationId);
 
-            return RedirectToAction(nameof(Interoperability), new { solutionId });
+            return RedirectToAction(nameof(Interoperability), new
+            {
+                solutionType,
+                solutionId,
+            });
         }
 
         [HttpGet("add-gp-connect-integration")]
-        public async Task<IActionResult> AddGpConnectIntegration(CatalogueItemId solutionId)
+        public async Task<IActionResult> AddGpConnectIntegration(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -226,14 +248,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditGpConnectIntegrationModel(solution, integrationTypes)
             {
-                BackLink = Url.Action(nameof(Interoperability), new { solutionId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(Interoperability), new { solutionType, solutionId }),
             };
 
             return View("AddEditGpConnectIntegration", model);
         }
 
         [HttpPost("add-gp-connect-integration")]
-        public async Task<IActionResult> AddGpConnectIntegration(CatalogueItemId solutionId, AddEditGpConnectIntegrationModel model)
+        public async Task<IActionResult> AddGpConnectIntegration(SolutionType solutionType, CatalogueItemId solutionId, AddEditGpConnectIntegrationModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -252,11 +275,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await interoperabilityService.AddIntegration(solutionId, integration);
 
-            return RedirectToAction(nameof(Interoperability), new { solutionId });
+            return RedirectToAction(nameof(Interoperability), new
+            {
+                solutionType,
+                solutionId,
+            });
         }
 
         [HttpGet("edit-gp-connect-integration/{integrationId}")]
-        public async Task<IActionResult> EditGpConnectIntegration(CatalogueItemId solutionId, int integrationId)
+        public async Task<IActionResult> EditGpConnectIntegration(SolutionType solutionType, CatalogueItemId solutionId, int integrationId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -276,14 +303,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditGpConnectIntegrationModel(solution, integrationTypes, integration)
             {
-                BackLink = Url.Action(nameof(Interoperability), new { solutionId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(Interoperability), new { solutionType, solutionId }),
             };
 
             return View("AddEditGpConnectIntegration", model);
         }
 
         [HttpPost("edit-gp-connect-integration/{integrationId}")]
-        public async Task<IActionResult> EditGpConnectIntegration(CatalogueItemId solutionId, int integrationId, AddEditGpConnectIntegrationModel model)
+        public async Task<IActionResult> EditGpConnectIntegration(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int integrationId,
+            AddEditGpConnectIntegrationModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -312,11 +344,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await interoperabilityService.EditIntegration(solutionId, integrationId, integration);
 
-            return RedirectToAction(nameof(Interoperability), new { solutionId });
+            return RedirectToAction(nameof(Interoperability), new
+            {
+                solutionType,
+                solutionId,
+            });
         }
 
         [HttpGet("delete-gp-connect-integration/{integrationId}")]
-        public async Task<IActionResult> DeleteGpConnectIntegration(CatalogueItemId solutionId, int integrationId)
+        public async Task<IActionResult> DeleteGpConnectIntegration(SolutionType solutionType, CatalogueItemId solutionId, int integrationId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -333,7 +369,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new DeleteIntegrationModel(solution)
             {
-                BackLink = Url.Action(nameof(EditIm1Integration), new { solutionId, integrationId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(EditIm1Integration), typeof(InteroperabilityController).ControllerName(), new { solutionType, solutionId, integrationId }),
                 IntegrationId = integrationId,
                 IntegrationType = Framework.Constants.Interoperability.GpConnectIntegrationType,
             };
@@ -342,7 +379,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("delete-gp-connect-integration/{integrationId}")]
-        public async Task<IActionResult> DeleteGpConnectIntegration(CatalogueItemId solutionId, int integrationId, DeleteIntegrationModel model)
+        public async Task<IActionResult> DeleteGpConnectIntegration(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int integrationId,
+            DeleteIntegrationModel model)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -359,11 +400,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await interoperabilityService.DeleteIntegration(solutionId, model.IntegrationId);
 
-            return RedirectToAction(nameof(Interoperability), new { solutionId });
+            return RedirectToAction(nameof(Interoperability), new
+            {
+                solutionType,
+                solutionId,
+            });
         }
 
         [HttpGet("add-nhs-app-integration")]
-        public async Task<IActionResult> AddNhsAppIntegration(CatalogueItemId solutionId)
+        public async Task<IActionResult> AddNhsAppIntegration(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -375,14 +420,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditNhsAppIntegrationModel(solution, integrationTypes)
             {
-                BackLink = Url.Action(nameof(Interoperability), new { solutionId }),
+                BackLink = Url.Action(nameof(Interoperability), new { solutionType, solutionId }),
             };
 
             return View("AddEditNhsAppIntegration", model);
         }
 
         [HttpPost("add-nhs-app-integration")]
-        public async Task<IActionResult> AddNhsAppIntegration(CatalogueItemId solutionId, AddEditNhsAppIntegrationModel model)
+        public async Task<IActionResult> AddNhsAppIntegration(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            AddEditNhsAppIntegrationModel model)
         {
             if (!ModelState.IsValid)
                 return View("AddEditNhsAppIntegration", model);
@@ -391,7 +439,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await interoperabilityService.SetNhsAppIntegrations(solutionId, selectedAppIntegrations);
 
-            return RedirectToAction(nameof(Interoperability), new { solutionId });
+            return RedirectToAction(nameof(Interoperability), new
+            {
+                solutionType,
+                solutionId,
+            });
         }
     }
 }

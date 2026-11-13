@@ -12,7 +12,10 @@ public static class DataProcessingInformationModelTests
     public static void Construct_SetsPropertiesAsExpected(
         Solution solution)
     {
-        var model = new DataProcessingInformationModel(solution);
+        var model = new DataProcessingInformationModel(solution)
+        {
+            SolutionType = SolutionType.GPIT,
+        };
 
         model.Solution.Should().Be(solution);
     }

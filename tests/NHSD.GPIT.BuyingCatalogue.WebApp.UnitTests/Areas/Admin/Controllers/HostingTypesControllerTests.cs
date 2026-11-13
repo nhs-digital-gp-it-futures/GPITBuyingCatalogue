@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            await controller.HostingType(catalogueItemId);
+            await controller.HostingType(SolutionType.GPIT, catalogueItemId);
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
         }
@@ -59,11 +59,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            var actual = (await controller.HostingType(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.HostingType(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HostingTypeSectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+            actual.Model.Should().BeEquivalentTo(new HostingTypeSectionModel(catalogueItem) { SolutionType = SolutionType.GPIT }, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var actual = (await controller.HostingType(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await controller.HostingType(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -88,10 +88,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] ISolutionsService mockService,
             HostingTypesController controller)
         {
-            var model = new HostingTypeSectionModel(catalogueItem);
+            var model = new HostingTypeSectionModel(catalogueItem) { SolutionType = SolutionType.GPIT };
 
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
-            await controller.HostingType(catalogueItemId, model);
+            await controller.HostingType(SolutionType.GPIT, catalogueItemId, model);
 
             await mockService.Received().SaveHosting(catalogueItemId, Arg.Any<Hosting>());
         }
@@ -104,11 +104,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] ISolutionsService mockService,
             HostingTypesController controller)
         {
-            var model = new HostingTypeSectionModel(catalogueItem);
+            var model = new HostingTypeSectionModel(catalogueItem) { SolutionType = SolutionType.GPIT };
 
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            var actual = (await controller.HostingType(catalogueItemId, model)).As<RedirectToActionResult>();
+            var actual = (await controller.HostingType(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
             actual.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
@@ -125,11 +125,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            var actual = (await controller.HostingType(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.HostingType(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HostingTypeSectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+            actual.Model.Should().BeEquivalentTo(new HostingTypeSectionModel(catalogueItem) { SolutionType = SolutionType.GPIT }, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            await controller.AddHostingType(catalogueItemId);
+            await controller.AddHostingType(SolutionType.GPIT, catalogueItemId);
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
         }
@@ -157,11 +157,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            var actual = (await controller.AddHostingType(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.AddHostingType(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HostingTypeSelectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+            actual.Model.Should().BeEquivalentTo(
+                new HostingTypeSelectionModel(catalogueItem) { SolutionType = SolutionType.GPIT },
+                opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -173,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var actual = (await controller.AddHostingType(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await controller.AddHostingType(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -186,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             HostingTypesController controller)
         {
             model.SelectedHostingType = HostingType.PublicCloud;
-            var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
+            var actual = (await controller.AddHostingType(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(HostingTypesController.PublicCloud));
             actual.ControllerName.Should().BeNull();
@@ -201,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             HostingTypesController controller)
         {
             model.SelectedHostingType = HostingType.PrivateCloud;
-            var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
+            var actual = (await controller.AddHostingType(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(HostingTypesController.PrivateCloud));
             actual.ControllerName.Should().BeNull();
@@ -216,7 +218,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             HostingTypesController controller)
         {
             model.SelectedHostingType = HostingType.Hybrid;
-            var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
+            var actual = (await controller.AddHostingType(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(HostingTypesController.Hybrid));
             actual.ControllerName.Should().BeNull();
@@ -231,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             HostingTypesController controller)
         {
             model.SelectedHostingType = HostingType.OnPremise;
-            var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
+            var actual = (await controller.AddHostingType(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(HostingTypesController.OnPremise));
             actual.ControllerName.Should().BeNull();
@@ -248,7 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(solution.CatalogueItem);
 
-            await controller.PublicCloud(catalogueItemId);
+            await controller.PublicCloud(SolutionType.GPIT, catalogueItemId);
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
         }
@@ -264,11 +266,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            var actual = (await controller.PublicCloud(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.PublicCloud(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new PublicCloudModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
+            actual.Model.Should().BeEquivalentTo(
+                new PublicCloudModel(catalogueItem) { SolutionType = SolutionType.GPIT },
+                opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -279,7 +283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             HostingTypesController controller)
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
-            var actual = (await controller.PublicCloud(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await controller.PublicCloud(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -297,7 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            await controller.PublicCloud(catalogueItem.Id, model);
+            await controller.PublicCloud(SolutionType.GPIT, catalogueItem.Id, model);
 
             await mockService.Received().SaveHosting(catalogueItem.Id, solution.Hosting);
         }
@@ -315,7 +319,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            var actual = (await controller.PublicCloud(catalogueItem.Id, model)).As<RedirectToActionResult>();
+            var actual = (await controller.PublicCloud(SolutionType.GPIT, catalogueItem.Id, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(HostingTypesController.HostingType));
             actual.ControllerName.Should().BeNull();
@@ -333,11 +337,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            var actual = (await controller.PublicCloud(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.PublicCloud(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new PublicCloudModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
+            actual.Model.Should().BeEquivalentTo(
+                new PublicCloudModel(catalogueItem) { SolutionType = SolutionType.GPIT },
+                opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -350,7 +356,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(solution.CatalogueItem);
 
-            await controller.PrivateCloud(catalogueItemId);
+            await controller.PrivateCloud(SolutionType.GPIT, catalogueItemId);
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
         }
@@ -366,11 +372,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            var actual = (await controller.PrivateCloud(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.PrivateCloud(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new PrivateCloudModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
+            actual.Model.Should().BeEquivalentTo(
+                new PrivateCloudModel(catalogueItem) { SolutionType = SolutionType.GPIT },
+                opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -382,7 +390,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var actual = (await controller.PrivateCloud(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await controller.PrivateCloud(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -400,7 +408,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            await controller.PrivateCloud(catalogueItem.Id, model);
+            await controller.PrivateCloud(SolutionType.GPIT, catalogueItem.Id, model);
 
             await mockService.Received().SaveHosting(catalogueItem.Id, solution.Hosting);
         }
@@ -418,7 +426,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            var actual = (await controller.PrivateCloud(catalogueItem.Id, model)).As<RedirectToActionResult>();
+            var actual = (await controller.PrivateCloud(SolutionType.GPIT, catalogueItem.Id, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(HostingTypesController.HostingType));
             actual.ControllerName.Should().BeNull();
@@ -436,11 +444,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            var actual = (await controller.PrivateCloud(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.PrivateCloud(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new PrivateCloudModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
+            actual.Model.Should().BeEquivalentTo(
+                new PrivateCloudModel(catalogueItem) { SolutionType = SolutionType.GPIT },
+                opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -453,7 +463,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(solution.CatalogueItem);
 
-            await controller.Hybrid(catalogueItemId);
+            await controller.Hybrid(SolutionType.GPIT, catalogueItemId);
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
         }
@@ -469,11 +479,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            var actual = (await controller.Hybrid(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.Hybrid(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HybridModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
+            actual.Model.Should().BeEquivalentTo(
+                new HybridModel(catalogueItem) { SolutionType = SolutionType.GPIT },
+                opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -485,7 +497,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var actual = (await controller.Hybrid(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await controller.Hybrid(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -502,7 +514,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             catalogueItem.Solution = solution;
 
             mockService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
-            await controller.Hybrid(catalogueItem.Id, model);
+            await controller.Hybrid(SolutionType.GPIT, catalogueItem.Id, model);
 
             await mockService.Received().SaveHosting(catalogueItem.Id, solution.Hosting);
         }
@@ -520,7 +532,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            var actual = (await controller.Hybrid(catalogueItem.Id, model)).As<RedirectToActionResult>();
+            var actual = (await controller.Hybrid(SolutionType.GPIT, catalogueItem.Id, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(HostingTypesController.HostingType));
             actual.ControllerName.Should().BeNull();
@@ -538,11 +550,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            var actual = (await controller.Hybrid(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.Hybrid(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HybridModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
+            actual.Model.Should().BeEquivalentTo(
+                new HybridModel(catalogueItem) { SolutionType = SolutionType.GPIT },
+                opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -555,7 +569,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(solution.CatalogueItem);
 
-            await controller.OnPremise(catalogueItemId);
+            await controller.OnPremise(SolutionType.GPIT, catalogueItemId);
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
         }
@@ -571,11 +585,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            var actual = (await controller.OnPremise(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.OnPremise(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new OnPremiseModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
+            actual.Model.Should().BeEquivalentTo(
+                new OnPremiseModel(catalogueItem) { SolutionType = SolutionType.GPIT },
+                opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -587,7 +603,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var actual = (await controller.OnPremise(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await controller.OnPremise(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -605,7 +621,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            await controller.OnPremise(catalogueItem.Id, model);
+            await controller.OnPremise(SolutionType.GPIT, catalogueItem.Id, model);
 
             await mockService.Received().SaveHosting(catalogueItem.Id, solution.Hosting);
         }
@@ -623,7 +639,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            var actual = (await controller.OnPremise(catalogueItem.Id, model)).As<RedirectToActionResult>();
+            var actual = (await controller.OnPremise(SolutionType.GPIT, catalogueItem.Id, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(HostingTypesController.HostingType));
             actual.ControllerName.Should().BeNull();
@@ -641,11 +657,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var catalogueItem = solution.CatalogueItem;
             mockService.GetSolutionThin(catalogueItemId).Returns(catalogueItem);
 
-            var actual = (await controller.OnPremise(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.OnPremise(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItemId);
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new OnPremiseModel(catalogueItem), opt => opt.Excluding(member => member.BackLink));
+            actual.Model.Should().BeEquivalentTo(
+                new OnPremiseModel(catalogueItem) { SolutionType = SolutionType.GPIT },
+                opt => opt.Excluding(member => member.BackLink));
         }
 
         [Theory]
@@ -668,7 +686,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            var result = await controller.DeleteHostingType(catalogueItem.Id, hostingType);
+            var result = await controller.DeleteHostingType(SolutionType.GPIT, catalogueItem.Id, hostingType);
 
             result.Should().NotBeNull();
             var viewResult = result.As<ViewResult>();
@@ -698,7 +716,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            var result = await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+            var result = await controller.DeleteHostingType(SolutionType.GPIT, catalogueItem.Id, hostingType, model);
 
             result.Should().NotBeNull();
             result.As<ViewResult>().Should().NotBeNull();
@@ -724,7 +742,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+            await controller.DeleteHostingType(SolutionType.GPIT, catalogueItem.Id, hostingType, model);
 
             await solutionsService.Received().SaveHosting(
                 catalogueItem.Id,
@@ -753,7 +771,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+            await controller.DeleteHostingType(SolutionType.GPIT, catalogueItem.Id, hostingType, model);
 
             await solutionsService.Received().SaveHosting(
                 catalogueItem.Id,
@@ -782,7 +800,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+            await controller.DeleteHostingType(SolutionType.GPIT, catalogueItem.Id, hostingType, model);
 
             await solutionsService.Received().SaveHosting(
                 catalogueItem.Id,
@@ -811,7 +829,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            await controller.DeleteHostingType(catalogueItem.Id, hostingType, model);
+            await controller.DeleteHostingType(SolutionType.GPIT, catalogueItem.Id, hostingType, model);
 
             await solutionsService.Received().SaveHosting(
                 catalogueItem.Id,

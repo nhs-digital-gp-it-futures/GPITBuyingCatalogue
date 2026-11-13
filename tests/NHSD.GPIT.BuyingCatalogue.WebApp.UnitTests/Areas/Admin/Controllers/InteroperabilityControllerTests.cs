@@ -54,11 +54,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            var actual = (await controller.Interoperability(catalogueItem.Id)).As<ViewResult>();
+            var actual = (await controller.Interoperability(SolutionType.GPIT, catalogueItem.Id)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItem.Id);
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new InteroperabilityModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+            actual.Model.Should().BeEquivalentTo(
+                new InteroperabilityModel(catalogueItem)
+                {
+                    SolutionType = SolutionType.GPIT,
+                },
+                opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -70,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var actual = (await controller.Interoperability(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await controller.Interoperability(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -83,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] IInteroperabilityService mockInteroperabilityService,
             InteroperabilityController controller)
         {
-            var actual = (await controller.Interoperability(catalogueItemId, model)).As<RedirectToActionResult>();
+            var actual = (await controller.Interoperability(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
             await mockInteroperabilityService.Received().SaveIntegrationLink(catalogueItemId, model.Link);
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
@@ -105,12 +110,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
             integrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.Im1).Returns(integrationTypes);
 
-            var actual = (await controller.AddIm1Integration(catalogueItem.Id)).As<ViewResult>();
+            var actual = (await controller.AddIm1Integration(SolutionType.GPIT, catalogueItem.Id)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItem.Id);
             actual.ViewName.Should().Be("AddEditIm1Integration");
 
-            var expectedModel = new AddEditIm1IntegrationModel(catalogueItem, integrationTypes);
+            var expectedModel = new AddEditIm1IntegrationModel(catalogueItem, integrationTypes)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             actual.Model.Should().BeEquivalentTo(expectedModel, opt =>
                 opt.Excluding(m => m.BackLink));
@@ -125,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var actual = (await controller.AddIm1Integration(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await controller.AddIm1Integration(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -144,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockIntegrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.Im1)
                 .Returns(integrationTypes);
 
-            var actual = (await controller.AddIm1Integration(catalogueItemId, model)).As<ViewResult>();
+            var actual = (await controller.AddIm1Integration(SolutionType.GPIT, catalogueItemId, model)).As<ViewResult>();
             var actualModel = actual?.Model as AddEditIm1IntegrationModel;
 
             Assert.NotNull(actual);
@@ -161,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] IInteroperabilityService mockInteroperabilityService,
             InteroperabilityController controller)
         {
-            var actual = (await controller.AddIm1Integration(catalogueItemId, model)).As<RedirectToActionResult>();
+            var actual = (await controller.AddIm1Integration(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
             await mockInteroperabilityService.Received().AddIntegration(catalogueItemId, Arg.Any<SolutionIntegration>());
             actual.ActionName.Should().Be(nameof(InteroperabilityController.Interoperability));
@@ -181,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.EditIm1Integration(solution.CatalogueItemId, integrations[0].Id);
+            var actual = await controller.EditIm1Integration(SolutionType.GPIT, solution.CatalogueItemId, integrations[0].Id);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -199,7 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns((CatalogueItem)default);
 
-            var actual = await controller.EditIm1Integration(solution.CatalogueItemId, integrationId);
+            var actual = await controller.EditIm1Integration(SolutionType.GPIT, solution.CatalogueItemId, integrationId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -216,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.EditIm1Integration(solution.CatalogueItemId, integrationId);
+            var actual = await controller.EditIm1Integration(SolutionType.GPIT, solution.CatalogueItemId, integrationId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -236,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.EditIm1Integration(solution.CatalogueItemId, integrations[0].Id, model);
+            var actual = await controller.EditIm1Integration(SolutionType.GPIT, solution.CatalogueItemId, integrations[0].Id, model);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
@@ -257,7 +265,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns((CatalogueItem)default);
 
-            var actual = await controller.EditIm1Integration(solution.CatalogueItemId, integrationId, model);
+            var actual = await controller.EditIm1Integration(SolutionType.GPIT, solution.CatalogueItemId, integrationId, model);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -275,7 +283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.EditIm1Integration(solution.CatalogueItemId, integrationId, model);
+            var actual = await controller.EditIm1Integration(SolutionType.GPIT, solution.CatalogueItemId, integrationId, model);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -297,7 +305,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockIntegrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.Im1)
                 .Returns(integrationTypes);
 
-            var actual = (await controller.EditIm1Integration(catalogueItemId, integrationId, model)).As<ViewResult>();
+            var actual = (await controller.EditIm1Integration(SolutionType.GPIT, catalogueItemId, integrationId, model)).As<ViewResult>();
             var actualModel = actual?.Model as AddEditIm1IntegrationModel;
 
             Assert.NotNull(actual);
@@ -318,7 +326,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.DeleteIm1Integration(solution.CatalogueItemId, integrations[0].Id);
+            var actual = await controller.DeleteIm1Integration(SolutionType.GPIT, solution.CatalogueItemId, integrations[0].Id);
 
             actual.Should().NotBeNull()
                 .And.BeOfType<ViewResult>();
@@ -327,6 +335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new DeleteIntegrationModel(solution.CatalogueItem)
             {
+                SolutionType = SolutionType.GPIT,
                 IntegrationId = integrations[0].Id,
                 IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
             };
@@ -344,7 +353,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(itemId).Returns((CatalogueItem)default);
 
-            var actual = await controller.DeleteIm1Integration(itemId, integrationId);
+            var actual = await controller.DeleteIm1Integration(SolutionType.GPIT, itemId, integrationId);
 
             actual.Should().NotBeNull()
                 .And.BeOfType<BadRequestObjectResult>();
@@ -362,7 +371,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.DeleteIm1Integration(solution.CatalogueItemId, integrationId);
+            var actual = await controller.DeleteIm1Integration(SolutionType.GPIT, solution.CatalogueItemId, integrationId);
 
             actual.Should().NotBeNull()
                 .And.BeOfType<BadRequestObjectResult>();
@@ -383,13 +392,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var model = new DeleteIntegrationModel(solution.CatalogueItem)
             {
+                SolutionType = SolutionType.GPIT,
                 IntegrationId = integration.Id,
                 IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
             };
 
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.DeleteIm1Integration(solution.CatalogueItemId, integration.Id, model);
+            var actual = await controller.DeleteIm1Integration(SolutionType.GPIT, solution.CatalogueItemId, integration.Id, model);
 
             actual.Should().NotBeNull()
                 .And.BeOfType<RedirectToActionResult>();
@@ -407,12 +417,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var model = new DeleteIntegrationModel(solution.CatalogueItem)
             {
+                SolutionType = SolutionType.GPIT,
                 IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
             };
 
             mockService.GetSolutionThin(itemId).Returns((CatalogueItem)default);
 
-            var actual = await controller.DeleteIm1Integration(itemId, integrationId, model);
+            var actual = await controller.DeleteIm1Integration(SolutionType.GPIT, itemId, integrationId, model);
 
             actual.Should().NotBeNull()
                 .And.BeOfType<BadRequestObjectResult>();
@@ -430,12 +441,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var model = new DeleteIntegrationModel(solution.CatalogueItem)
             {
+                SolutionType = SolutionType.GPIT,
                 IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
             };
 
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.DeleteIm1Integration(solution.CatalogueItemId, integrationId, model);
+            var actual = await controller.DeleteIm1Integration(SolutionType.GPIT, solution.CatalogueItemId, integrationId, model);
 
             actual.Should().NotBeNull()
                 .And.BeOfType<BadRequestObjectResult>();
@@ -460,12 +472,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             integrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.GpConnect)
                 .Returns(integrationTypes);
 
-            var actual = (await controller.AddGpConnectIntegration(catalogueItem.Id)).As<ViewResult>();
+            var actual = (await controller.AddGpConnectIntegration(SolutionType.GPIT, catalogueItem.Id)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItem.Id);
             actual.ViewName.Should().NotBeNull();
             actual.ViewName.Should().Be("AddEditGpConnectIntegration");
-            actual.Model.Should().BeEquivalentTo(new AddEditGpConnectIntegrationModel(catalogueItem, integrationTypes), opt => opt.Excluding(m => m.BackLink));
+            actual.Model.Should().BeEquivalentTo(
+                new AddEditGpConnectIntegrationModel(catalogueItem, integrationTypes)
+                {
+                    SolutionType = SolutionType.GPIT,
+                },
+                opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -477,7 +494,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var actual = (await controller.AddGpConnectIntegration(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await controller.AddGpConnectIntegration(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -490,7 +507,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] IInteroperabilityService mockInteroperabilityService,
             InteroperabilityController controller)
         {
-            var actual = (await controller.AddGpConnectIntegration(catalogueItemId, model)).As<RedirectToActionResult>();
+            var actual = (await controller.AddGpConnectIntegration(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
             await mockInteroperabilityService.Received().AddIntegration(catalogueItemId, Arg.Any<SolutionIntegration>());
 
@@ -513,7 +530,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockIntegrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.GpConnect)
                 .Returns(integrationTypes);
 
-            var actual = (await controller.AddGpConnectIntegration(catalogueItemId, model)).As<ViewResult>();
+            var actual = (await controller.AddGpConnectIntegration(SolutionType.GPIT, catalogueItemId, model)).As<ViewResult>();
             var actualModel = actual?.Model as AddEditGpConnectIntegrationModel;
 
             Assert.NotNull(actual);
@@ -538,7 +555,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Returns(integrationTypes);
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.EditGpConnectIntegration(solution.CatalogueItemId, integrations[0].Id);
+            var actual = await controller.EditGpConnectIntegration(SolutionType.GPIT, solution.CatalogueItemId, integrations[0].Id);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -556,7 +573,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns((CatalogueItem)default);
 
-            var actual = await controller.EditGpConnectIntegration(solution.CatalogueItemId, integrationId);
+            var actual = await controller.EditGpConnectIntegration(SolutionType.GPIT, solution.CatalogueItemId, integrationId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -573,7 +590,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.EditGpConnectIntegration(solution.CatalogueItemId, integrationId);
+            var actual = await controller.EditGpConnectIntegration(SolutionType.GPIT, solution.CatalogueItemId, integrationId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -593,7 +610,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.EditGpConnectIntegration(solution.CatalogueItemId, integrations[0].Id, model);
+            var actual = await controller.EditGpConnectIntegration(SolutionType.GPIT, solution.CatalogueItemId, integrations[0].Id, model);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
@@ -614,7 +631,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns((CatalogueItem)default);
 
-            var actual = await controller.EditGpConnectIntegration(solution.CatalogueItemId, integrationId, model);
+            var actual = await controller.EditGpConnectIntegration(SolutionType.GPIT, solution.CatalogueItemId, integrationId, model);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -632,7 +649,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.EditGpConnectIntegration(solution.CatalogueItemId, integrationId, model);
+            var actual = await controller.EditGpConnectIntegration(SolutionType.GPIT, solution.CatalogueItemId, integrationId, model);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -654,7 +671,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockIntegrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.GpConnect)
                 .Returns(integrationTypes);
 
-            var actual = (await controller.EditGpConnectIntegration(catalogueItemId, integrationId, model)).As<ViewResult>();
+            var actual = (await controller.EditGpConnectIntegration(SolutionType.GPIT, catalogueItemId, integrationId, model)).As<ViewResult>();
             var actualModel = actual?.Model as AddEditGpConnectIntegrationModel;
 
             Assert.NotNull(actual);
@@ -675,7 +692,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.DeleteGpConnectIntegration(solution.CatalogueItemId, integrations[0].Id);
+            var actual = await controller.DeleteGpConnectIntegration(SolutionType.GPIT, solution.CatalogueItemId, integrations[0].Id);
 
             actual.Should().NotBeNull()
                 .And.BeOfType<ViewResult>();
@@ -684,6 +701,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new DeleteIntegrationModel(solution.CatalogueItem)
             {
+                SolutionType = SolutionType.GPIT,
                 IntegrationId = integrations[0].Id,
                 IntegrationType = Framework.Constants.Interoperability.GpConnectIntegrationType,
             };
@@ -701,7 +719,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(itemId).Returns((CatalogueItem)default);
 
-            var actual = await controller.DeleteGpConnectIntegration(itemId, integrationId);
+            var actual = await controller.DeleteGpConnectIntegration(SolutionType.GPIT, itemId, integrationId);
 
             actual.Should().NotBeNull()
                 .And.BeOfType<BadRequestObjectResult>();
@@ -719,7 +737,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.DeleteGpConnectIntegration(solution.CatalogueItemId, integrationId);
+            var actual = await controller.DeleteGpConnectIntegration(SolutionType.GPIT, solution.CatalogueItemId, integrationId);
 
             actual.Should().NotBeNull()
                 .And.BeOfType<BadRequestObjectResult>();
@@ -740,7 +758,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.DeleteGpConnectIntegration(solution.CatalogueItemId, integrations[0].Id, model);
+            var actual = await controller.DeleteGpConnectIntegration(SolutionType.GPIT, solution.CatalogueItemId, integrations[0].Id, model);
 
             actual.Should().NotBeNull()
                 .And.BeOfType<RedirectToActionResult>();
@@ -757,7 +775,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(itemId).Returns((CatalogueItem)default);
 
-            var actual = await controller.DeleteGpConnectIntegration(itemId, model.IntegrationId, model);
+            var actual = await controller.DeleteGpConnectIntegration(SolutionType.GPIT, itemId, model.IntegrationId, model);
 
             actual.Should().NotBeNull()
                 .And.BeOfType<BadRequestObjectResult>();
@@ -776,7 +794,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.DeleteGpConnectIntegration(solution.CatalogueItemId, integrationId, model);
+            var actual = await controller.DeleteGpConnectIntegration(SolutionType.GPIT, solution.CatalogueItemId, integrationId, model);
 
             actual.Should().NotBeNull()
                 .And.BeOfType<BadRequestObjectResult>();
@@ -801,7 +819,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             integrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.NhsApp)
                 .Returns(integrationTypes);
 
-            var actual = (await controller.AddNhsAppIntegration(catalogueItem.Id)).As<ViewResult>();
+            var actual = (await controller.AddNhsAppIntegration(SolutionType.GPIT, catalogueItem.Id)).As<ViewResult>();
 
             await mockService.Received().GetSolutionThin(catalogueItem.Id);
             actual.ViewName.Should().NotBeNull();
@@ -818,7 +836,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var actual = (await controller.AddNhsAppIntegration(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await controller.AddNhsAppIntegration(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -832,7 +850,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = (await controller.AddNhsAppIntegration(solutionId, model)).As<ViewResult>();
+            var result = (await controller.AddNhsAppIntegration(SolutionType.GPIT, solutionId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.ViewName.Should().Be("AddEditNhsAppIntegration");
@@ -845,7 +863,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         AddEditNhsAppIntegrationModel model,
         InteroperabilityController controller)
         {
-            var result = (await controller.AddNhsAppIntegration(solutionId, model)).As<RedirectToActionResult>();
+            var result = (await controller.AddNhsAppIntegration(SolutionType.GPIT, solutionId, model)).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(InteroperabilityController.Interoperability));

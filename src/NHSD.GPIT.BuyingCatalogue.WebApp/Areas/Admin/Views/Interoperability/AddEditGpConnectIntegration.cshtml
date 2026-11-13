@@ -35,7 +35,7 @@
                 <vc:nhs-delete-button url="@Url.Action(
                                                nameof(InteroperabilityController.DeleteGpConnectIntegration),
                                                typeof(InteroperabilityController).ControllerName(),
-                                               new { Model.SolutionId, integrationId = Model.IntegrationId })"
+                                               new { Model.SolutionType, Model.SolutionId, integrationId = Model.IntegrationId })"
                                       text="Delete integration" />
             }
         </div>

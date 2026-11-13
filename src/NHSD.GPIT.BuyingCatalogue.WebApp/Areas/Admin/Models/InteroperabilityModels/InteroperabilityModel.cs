@@ -20,6 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
 
         public string SolutionName { get; set; }
 
+        public required SolutionType SolutionType { get; set; }
+
         public CatalogueItemId CatalogueItemId { get; set; }
 
         public SolutionIntegration[] IM1Integrations { get; set; }

@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
-            var result = (await controller.MobileTablet(solutionId)).As<BadRequestObjectResult>();
+            var result = (await controller.MobileTablet(SolutionType.GPIT, solutionId)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
         }
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            _ = await controller.MobileTablet(solution.CatalogueItemId);
+            _ = await controller.MobileTablet(SolutionType.GPIT, solution.CatalogueItemId);
 
             urlHelper.Received().Action(
                     Arg.Is<UrlActionContext>(y => y.Action == nameof(CatalogueSolutionsController.ApplicationType)));
@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            _ = await controller.MobileTablet(solution.CatalogueItemId);
+            _ = await controller.MobileTablet(SolutionType.GPIT, solution.CatalogueItemId);
 
             urlHelper.Received().Action(
                     Arg.Is<UrlActionContext>(y => y.Action == nameof(CatalogueSolutionsController.AddApplicationType)));
@@ -99,9 +99,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var expectedModel = new MobileTabletBasedModel(solution.CatalogueItem);
+            var expectedModel = new MobileTabletBasedModel(solution.CatalogueItem) { SolutionType = SolutionType.GPIT };
 
-            var result = (await controller.MobileTablet(solution.CatalogueItemId)).As<ViewResult>();
+            var result = (await controller.MobileTablet(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
-            var result = (await controller.OperatingSystems(solutionId)).As<BadRequestObjectResult>();
+            var result = (await controller.OperatingSystems(SolutionType.GPIT, solutionId)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
         }
@@ -130,9 +130,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var expectedModel = new OperatingSystemsModel(solution.CatalogueItem);
+            var expectedModel = new OperatingSystemsModel(solution.CatalogueItem) { SolutionType = SolutionType.GPIT };
 
-            var result = (await controller.OperatingSystems(solution.CatalogueItemId)).As<ViewResult>();
+            var result = (await controller.OperatingSystems(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-value");
 
-            var result = (await controller.OperatingSystems(solutionId, model)).As<ViewResult>();
+            var result = (await controller.OperatingSystems(SolutionType.GPIT, solutionId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().Be(model);
@@ -165,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns((ApplicationTypeDetail)null);
 
-            var result = (await controller.OperatingSystems(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
+            var result = (await controller.OperatingSystems(SolutionType.GPIT, solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
         }
@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            _ = await controller.OperatingSystems(solution.CatalogueItemId, model);
+            _ = await controller.OperatingSystems(SolutionType.GPIT, solution.CatalogueItemId, model);
 
             applicationTypeDetails.MobileOperatingSystems!.OperatingSystemsDescription.Should().Be(model.Description);
         }
@@ -205,7 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            _ = await controller.OperatingSystems(solution.CatalogueItemId, model);
+            _ = await controller.OperatingSystems(SolutionType.GPIT, solution.CatalogueItemId, model);
 
             applicationTypeDetails.MobileOperatingSystems!.OperatingSystems.Should()
                 .BeEquivalentTo(
@@ -228,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            var result = (await controller.OperatingSystems(solution.CatalogueItemId, model))
+            var result = (await controller.OperatingSystems(SolutionType.GPIT, solution.CatalogueItemId, model))
                 .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
@@ -244,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
-            var result = (await controller.Connectivity(solutionId)).As<BadRequestObjectResult>();
+            var result = (await controller.Connectivity(SolutionType.GPIT, solutionId)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
         }
@@ -258,9 +258,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var expectedModel = new ConnectivityModel(solution.CatalogueItem);
+            var expectedModel = new ConnectivityModel(solution.CatalogueItem) { SolutionType = SolutionType.GPIT };
 
-            var result = (await controller.Connectivity(solution.CatalogueItemId)).As<ViewResult>();
+            var result = (await controller.Connectivity(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -275,7 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-value");
 
-            var result = (await controller.Connectivity(solutionId, model)).As<ViewResult>();
+            var result = (await controller.Connectivity(SolutionType.GPIT, solutionId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().Be(model);
@@ -293,7 +293,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns((ApplicationTypeDetail)null);
 
-            var result = (await controller.Connectivity(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
+            var result = (await controller.Connectivity(SolutionType.GPIT, solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
         }
@@ -313,7 +313,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            _ = await controller.Connectivity(solution.CatalogueItemId, model);
+            _ = await controller.Connectivity(SolutionType.GPIT, solution.CatalogueItemId, model);
 
             applicationTypeDetails.MobileConnectionDetails!.MinimumConnectionSpeed.Should().Be(model.SelectedConnectionSpeed);
             applicationTypeDetails.MobileConnectionDetails!.Description.Should().Be(model.Description);
@@ -334,7 +334,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            _ = await controller.Connectivity(solution.CatalogueItemId, model);
+            _ = await controller.Connectivity(SolutionType.GPIT, solution.CatalogueItemId, model);
 
             applicationTypeDetails.MobileConnectionDetails.ConnectionType.Should()
                 .BeEquivalentTo(
@@ -357,7 +357,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            var result = (await controller.Connectivity(solution.CatalogueItemId, model))
+            var result = (await controller.Connectivity(SolutionType.GPIT, solution.CatalogueItemId, model))
                 .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
@@ -373,7 +373,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
-            var result = (await controller.MemoryAndStorage(solutionId)).As<BadRequestObjectResult>();
+            var result = (await controller.MemoryAndStorage(SolutionType.GPIT, solutionId)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
         }
@@ -387,9 +387,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var expectedModel = new MemoryAndStorageModel(solution.CatalogueItem);
+            var expectedModel = new MemoryAndStorageModel(solution.CatalogueItem) { SolutionType = SolutionType.GPIT };
 
-            var result = (await controller.MemoryAndStorage(solution.CatalogueItemId)).As<ViewResult>();
+            var result = (await controller.MemoryAndStorage(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -404,7 +404,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-value");
 
-            var result = (await controller.MemoryAndStorage(solutionId, model)).As<ViewResult>();
+            var result = (await controller.MemoryAndStorage(SolutionType.GPIT, solutionId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().Be(model);
@@ -422,7 +422,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns((ApplicationTypeDetail)null);
 
-            var result = (await controller.MemoryAndStorage(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
+            var result = (await controller.MemoryAndStorage(SolutionType.GPIT, solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
         }
@@ -442,7 +442,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            _ = await controller.MemoryAndStorage(solution.CatalogueItemId, model);
+            _ = await controller.MemoryAndStorage(SolutionType.GPIT, solution.CatalogueItemId, model);
 
             applicationTypeDetails.MobileMemoryAndStorage!.MinimumMemoryRequirement.Should().Be(model.SelectedMemorySize);
             applicationTypeDetails.MobileMemoryAndStorage!.Description.Should().Be(model.Description);
@@ -461,7 +461,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            var result = (await controller.MemoryAndStorage(solution.CatalogueItemId, model))
+            var result = (await controller.MemoryAndStorage(SolutionType.GPIT, solution.CatalogueItemId, model))
                 .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
@@ -477,7 +477,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
-            var result = (await controller.ThirdPartyComponents(solutionId)).As<BadRequestObjectResult>();
+            var result = (await controller.ThirdPartyComponents(SolutionType.GPIT, solutionId)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
         }
@@ -491,9 +491,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var expectedModel = new ThirdPartyComponentsModel(solution.CatalogueItem);
+            var expectedModel = new ThirdPartyComponentsModel(solution.CatalogueItem) { SolutionType = SolutionType.GPIT };
 
-            var result = (await controller.ThirdPartyComponents(solution.CatalogueItemId)).As<ViewResult>();
+            var result = (await controller.ThirdPartyComponents(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -508,7 +508,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-value");
 
-            var result = (await controller.ThirdPartyComponents(solutionId, model)).As<ViewResult>();
+            var result = (await controller.ThirdPartyComponents(SolutionType.GPIT, solutionId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().Be(model);
@@ -526,7 +526,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns((ApplicationTypeDetail)null);
 
-            var result = (await controller.ThirdPartyComponents(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
+            var result = (await controller.ThirdPartyComponents(SolutionType.GPIT, solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
         }
@@ -546,7 +546,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            _ = await controller.ThirdPartyComponents(solution.CatalogueItemId, model);
+            _ = await controller.ThirdPartyComponents(SolutionType.GPIT, solution.CatalogueItemId, model);
 
             applicationTypeDetails.MobileThirdParty!.ThirdPartyComponents.Should().Be(model.ThirdPartyComponents);
             applicationTypeDetails.MobileThirdParty!.DeviceCapabilities.Should().Be(model.DeviceCapabilities);
@@ -565,7 +565,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            var result = (await controller.ThirdPartyComponents(solution.CatalogueItemId, model))
+            var result = (await controller.ThirdPartyComponents(SolutionType.GPIT, solution.CatalogueItemId, model))
                 .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
@@ -581,7 +581,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
-            var result = (await controller.HardwareRequirements(solutionId)).As<BadRequestObjectResult>();
+            var result = (await controller.HardwareRequirements(SolutionType.GPIT, solutionId)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
         }
@@ -595,9 +595,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var expectedModel = new HardwareRequirementsModel(solution.CatalogueItem);
+            var expectedModel = new HardwareRequirementsModel(solution.CatalogueItem) { SolutionType = SolutionType.GPIT };
 
-            var result = (await controller.HardwareRequirements(solution.CatalogueItemId)).As<ViewResult>();
+            var result = (await controller.HardwareRequirements(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -612,7 +612,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-value");
 
-            var result = (await controller.HardwareRequirements(solutionId, model)).As<ViewResult>();
+            var result = (await controller.HardwareRequirements(SolutionType.GPIT, solutionId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().Be(model);
@@ -630,7 +630,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns((ApplicationTypeDetail)null);
 
-            var result = (await controller.HardwareRequirements(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
+            var result = (await controller.HardwareRequirements(SolutionType.GPIT, solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
         }
@@ -648,7 +648,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            _ = await controller.HardwareRequirements(solution.CatalogueItemId, model);
+            _ = await controller.HardwareRequirements(SolutionType.GPIT, solution.CatalogueItemId, model);
 
             applicationTypeDetails.NativeMobileHardwareRequirements.Should().Be(model.Description);
         }
@@ -666,7 +666,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            var result = (await controller.HardwareRequirements(solution.CatalogueItemId, model))
+            var result = (await controller.HardwareRequirements(SolutionType.GPIT, solution.CatalogueItemId, model))
                 .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
@@ -682,7 +682,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
-            var result = (await controller.AdditionalInformation(solutionId)).As<BadRequestObjectResult>();
+            var result = (await controller.AdditionalInformation(SolutionType.GPIT, solutionId)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
         }
@@ -696,9 +696,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var expectedModel = new AdditionalInformationModel(solution.CatalogueItem);
+            var expectedModel = new AdditionalInformationModel(solution.CatalogueItem) { SolutionType = SolutionType.GPIT };
 
-            var result = (await controller.AdditionalInformation(solution.CatalogueItemId)).As<ViewResult>();
+            var result = (await controller.AdditionalInformation(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -713,7 +713,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-value");
 
-            var result = (await controller.AdditionalInformation(solutionId, model)).As<ViewResult>();
+            var result = (await controller.AdditionalInformation(SolutionType.GPIT, solutionId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().Be(model);
@@ -731,7 +731,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns((ApplicationTypeDetail)null);
 
-            var result = (await controller.AdditionalInformation(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
+            var result = (await controller.AdditionalInformation(SolutionType.GPIT, solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
         }
@@ -749,7 +749,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            _ = await controller.AdditionalInformation(solution.CatalogueItemId, model);
+            _ = await controller.AdditionalInformation(SolutionType.GPIT, solution.CatalogueItemId, model);
 
             applicationTypeDetails.NativeMobileAdditionalInformation.Should().Be(model.AdditionalInformation);
         }
@@ -767,7 +767,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
-            var result = (await controller.AdditionalInformation(solution.CatalogueItemId, model))
+            var result = (await controller.AdditionalInformation(SolutionType.GPIT, solution.CatalogueItemId, model))
                 .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();

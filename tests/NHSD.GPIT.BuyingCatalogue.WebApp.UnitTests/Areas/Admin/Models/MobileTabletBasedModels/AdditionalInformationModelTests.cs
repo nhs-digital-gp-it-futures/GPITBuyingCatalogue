@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
             Solution solution)
         {
             var catalogueItem = solution.CatalogueItem;
-            var actual = new AdditionalInformationModel(catalogueItem);
+            var actual = new AdditionalInformationModel(catalogueItem) { SolutionType = SolutionType.GPIT };
 
             actual.AdditionalInformation.Should().Be(solution.ApplicationTypeDetail.NativeMobileAdditionalInformation);
         }
@@ -22,7 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new AdditionalInformationModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new AdditionalInformationModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

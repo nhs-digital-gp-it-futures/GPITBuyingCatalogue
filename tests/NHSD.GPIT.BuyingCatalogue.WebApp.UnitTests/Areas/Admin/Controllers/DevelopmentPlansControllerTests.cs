@@ -51,9 +51,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var expected = new DevelopmentPlanModel(solution.CatalogueItem)
             {
                 BackLink = "testUrl",
+                SolutionType = SolutionType.GPIT,
             };
 
-            var actual = (await controller.DevelopmentPlans(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.DevelopmentPlans(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
             await mockService.Received().GetSolutionWithWorkOffPlans(catalogueItemId);
             actual.ViewName.Should().BeNull();
@@ -69,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionWithWorkOffPlans(catalogueItemId).Returns(default(CatalogueItem));
 
-            var actual = (await controller.DevelopmentPlans(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await controller.DevelopmentPlans(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -84,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionWithWorkOffPlans(catalogueItemId).Returns(default(CatalogueItem));
 
-            var actual = (await controller.DevelopmentPlans(catalogueItemId, model)).As<BadRequestObjectResult>();
+            var actual = (await controller.DevelopmentPlans(SolutionType.GPIT, catalogueItemId, model)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
@@ -100,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             DevelopmentPlansController controller)
         {
             solutionsService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
-            await controller.DevelopmentPlans(solution.CatalogueItemId, model);
+            await controller.DevelopmentPlans(SolutionType.GPIT, solution.CatalogueItemId, model);
 
             await developmentPlansService.Received().SaveDevelopmentPlans(solution.CatalogueItemId, model.Link);
         }
@@ -115,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = (await controller.DevelopmentPlans(solution.CatalogueItemId, model)).As<RedirectToActionResult>();
+            var actual = (await controller.DevelopmentPlans(SolutionType.GPIT, solution.CatalogueItemId, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
             actual.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
@@ -132,9 +133,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionWithWorkOffPlans(catalogueItemId).Returns(solution.CatalogueItem);
 
-            var expected = new DevelopmentPlanModel(solution.CatalogueItem);
-
-            var actual = (await controller.DevelopmentPlans(catalogueItemId)).As<ViewResult>();
+            var expected = new DevelopmentPlanModel(solution.CatalogueItem)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
+            var actual = (await controller.DevelopmentPlans(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
             await mockService.Received().GetSolutionWithWorkOffPlans(catalogueItemId);
 
@@ -152,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionWithWorkOffPlans(id).Returns(default(CatalogueItem));
 
-            var actual = (await controller.DevelopmentPlans(id)).As<BadRequestObjectResult>();
+            var actual = (await controller.DevelopmentPlans(SolutionType.GPIT, id)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Solution found for Id: {id}");
@@ -167,13 +170,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             List<Standard> standards)
         {
-            var expectedModel = new EditWorkOffPlanModel(solution.CatalogueItem, standards);
-
+            var expectedModel = new EditWorkOffPlanModel(solution.CatalogueItem, standards)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             solutionStandardsService.GetInProgressStandards(solution.CatalogueItemId).Returns(standards);
 
-            var actual = (await controller.AddWorkOffPlan(solution.CatalogueItemId)).As<ViewResult>();
+            var actual = (await controller.AddWorkOffPlan(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().NotBeNull();
@@ -192,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionWithWorkOffPlans(id).Returns(default(CatalogueItem));
 
-            var actual = (await controller.AddWorkOffPlan(id, model)).As<BadRequestObjectResult>();
+            var actual = (await controller.AddWorkOffPlan(SolutionType.GPIT, id, model)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Solution found for Id: {id}");
@@ -211,6 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = new EditWorkOffPlanModel()
             {
                 SolutionId = solution.CatalogueItemId,
+                SolutionType = SolutionType.GPIT,
                 SelectedStandard = "Standard",
                 Details = "Details",
                 Day = "1",
@@ -218,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 Year = "2111",
             };
 
-            await controller.AddWorkOffPlan(solution.CatalogueItemId, model);
+            await controller.AddWorkOffPlan(SolutionType.GPIT, solution.CatalogueItemId, model);
 
             await mockDPService.Received().SaveWorkOffPlan(solution.CatalogueItemId, Arg.Any<SaveWorkOffPlanModel>());
         }
@@ -235,6 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = new EditWorkOffPlanModel()
             {
                 SolutionId = solution.CatalogueItemId,
+                SolutionType = SolutionType.GPIT,
                 SelectedStandard = "Standard",
                 Details = "Details",
                 Day = "1",
@@ -242,7 +249,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 Year = "2111",
             };
 
-            var actual = (await controller.AddWorkOffPlan(solution.CatalogueItemId, model)).As<RedirectToActionResult>();
+            var actual = (await controller.AddWorkOffPlan(SolutionType.GPIT, solution.CatalogueItemId, model))
+                .As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(DevelopmentPlansController.DevelopmentPlans));
@@ -258,7 +266,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionWithWorkOffPlans(id).Returns(default(CatalogueItem));
 
-            var actual = (await controller.EditWorkOffPlan(id, 1)).As<BadRequestObjectResult>();
+            var actual = (await controller.EditWorkOffPlan(SolutionType.GPIT, id, 1))
+                .As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Solution found for Id: {id}");
@@ -274,7 +283,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = (await controller.EditWorkOffPlan(solution.CatalogueItemId, workOffPlanId)).As<BadRequestObjectResult>();
+            var actual = (await controller.EditWorkOffPlan(SolutionType.GPIT, solution.CatalogueItemId, workOffPlanId))
+                .As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Work-off Plan item found for Id: {workOffPlanId}");
@@ -290,13 +300,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var workOffPlan = solution.WorkOffPlans.FirstOrDefault();
 
-            var expectedModel = new EditWorkOffPlanModel(solution.CatalogueItem, standards, workOffPlan);
-
+            var expectedModel = new EditWorkOffPlanModel(solution.CatalogueItem, standards, workOffPlan)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             mockService.GetSolutionStandardsForEditing(solution.CatalogueItemId).Returns(standards);
 
-            var actual = (await controller.EditWorkOffPlan(solution.CatalogueItemId, workOffPlan.Id)).As<ViewResult>();
+            var actual = (await controller.EditWorkOffPlan(SolutionType.GPIT, solution.CatalogueItemId, workOffPlan.Id))
+                .As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
@@ -315,7 +328,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionWithWorkOffPlans(id).Returns(default(CatalogueItem));
 
-            var actual = (await controller.EditWorkOffPlan(id, workOffPlanId, model)).As<BadRequestObjectResult>();
+            var actual = (await controller.EditWorkOffPlan(SolutionType.GPIT, id, workOffPlanId, model))
+                .As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Solution found for Id: {id}");
@@ -332,7 +346,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = (await controller.EditWorkOffPlan(solution.CatalogueItemId, workOffPlanId, model)).As<BadRequestObjectResult>();
+            var actual = (await controller.EditWorkOffPlan(SolutionType.GPIT, solution.CatalogueItemId, workOffPlanId, model))
+                .As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Work-off Plan item found for Id: {workOffPlanId}");
@@ -353,6 +368,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = new EditWorkOffPlanModel()
             {
                 SolutionId = solution.CatalogueItemId,
+                SolutionType = SolutionType.GPIT,
                 SelectedStandard = "Standard",
                 Details = "Details",
                 Day = "1",
@@ -360,7 +376,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 Year = "2111",
             };
 
-            await controller.EditWorkOffPlan(solution.CatalogueItemId, workOffPlan.Id, model);
+            await controller.EditWorkOffPlan(SolutionType.GPIT, solution.CatalogueItemId, workOffPlan.Id, model);
 
             await mockDPService.Received().UpdateWorkOffPlan(workOffPlan.Id, Arg.Any<SaveWorkOffPlanModel>());
         }
@@ -379,6 +395,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = new EditWorkOffPlanModel()
             {
                 SolutionId = solution.CatalogueItemId,
+                SolutionType = SolutionType.GPIT,
                 SelectedStandard = "Standard",
                 Details = "Details",
                 Day = "1",
@@ -386,7 +403,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 Year = "2111",
             };
 
-            var actual = (await controller.EditWorkOffPlan(solution.CatalogueItemId, workOffPlan.Id, model)).As<RedirectToActionResult>();
+            var actual = (await controller.EditWorkOffPlan(SolutionType.GPIT, solution.CatalogueItemId, workOffPlan.Id, model))
+                .As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(DevelopmentPlansController.DevelopmentPlans));
@@ -402,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionWithWorkOffPlans(id).Returns(default(CatalogueItem));
 
-            var actual = (await controller.DeleteWorkOffPlan(id, 1)).As<BadRequestObjectResult>();
+            var actual = (await controller.DeleteWorkOffPlan(SolutionType.GPIT, id, 1)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Solution found for Id: {id}");
@@ -418,7 +436,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = (await controller.DeleteWorkOffPlan(solution.CatalogueItemId, workOffPlanId)).As<BadRequestObjectResult>();
+            var actual = (await controller.DeleteWorkOffPlan(SolutionType.GPIT, solution.CatalogueItemId, workOffPlanId))
+                .As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Work-off Plan item found for Id: {workOffPlanId}");
@@ -433,11 +452,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var workOffPlan = solution.WorkOffPlans.FirstOrDefault();
 
-            var expectedModel = new EditWorkOffPlanModel(solution.CatalogueItem, workOffPlan);
-
+            var expectedModel = new EditWorkOffPlanModel(solution.CatalogueItem, workOffPlan)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = (await controller.DeleteWorkOffPlan(solution.CatalogueItemId, workOffPlan.Id)).As<ViewResult>();
+            var actual = (await controller.DeleteWorkOffPlan(SolutionType.GPIT, solution.CatalogueItemId, workOffPlan.Id))
+                .As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
@@ -456,7 +478,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionWithWorkOffPlans(id).Returns(default(CatalogueItem));
 
-            var actual = (await controller.DeleteWorkOffPlan(id, workOffPlanId, model)).As<BadRequestObjectResult>();
+            var actual = (await controller.DeleteWorkOffPlan(SolutionType.GPIT, id, workOffPlanId, model))
+                .As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Solution found for Id: {id}");
@@ -473,7 +496,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var actual = (await controller.DeleteWorkOffPlan(solution.CatalogueItemId, workOffPlanId, model)).As<BadRequestObjectResult>();
+            var actual = (await controller.DeleteWorkOffPlan(SolutionType.GPIT, solution.CatalogueItemId, workOffPlanId, model))
+                .As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Work-off Plan item found for Id: {workOffPlanId}");
@@ -491,9 +515,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var model = new EditWorkOffPlanModel();
-
-            await controller.DeleteWorkOffPlan(solution.CatalogueItemId, workOffPlan.Id, model);
+            var model = new EditWorkOffPlanModel()
+            {
+                SolutionType = SolutionType.GPIT,
+            };
+            await controller.DeleteWorkOffPlan(SolutionType.GPIT, solution.CatalogueItemId, workOffPlan.Id, model);
 
             await mockDPService.Received().DeleteWorkOffPlan(workOffPlan.Id);
         }
@@ -509,9 +535,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var model = new EditWorkOffPlanModel();
+            var model = new EditWorkOffPlanModel() { SolutionType = SolutionType.GPIT };
 
-            var actual = (await controller.DeleteWorkOffPlan(solution.CatalogueItemId, workOffPlan.Id, model)).As<RedirectToActionResult>();
+            var actual = (await controller.DeleteWorkOffPlan(SolutionType.GPIT, solution.CatalogueItemId, workOffPlan.Id, model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(DevelopmentPlansController.DevelopmentPlans));
