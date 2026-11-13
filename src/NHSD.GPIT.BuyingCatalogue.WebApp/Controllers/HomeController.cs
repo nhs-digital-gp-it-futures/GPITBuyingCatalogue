@@ -92,6 +92,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
         [ExcludeFromCodeCoverage]
         public IActionResult CommunityPharmacy()
-           => View();
+        {
+            ViewData["HideLogin"] = true;
+            return View();
+        }
     }
 }

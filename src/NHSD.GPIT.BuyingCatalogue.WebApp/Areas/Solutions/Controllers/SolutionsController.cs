@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Index(
-            [FromQuery] string solutionType,
+            [FromQuery] SolutionType solutionType,
             [FromQuery] string page,
             [FromQuery] string sortBy,
             [FromQuery] string selected,
@@ -72,10 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 PageSize = 10,
             };
 
-            var solutionTypeEnum = string.IsNullOrWhiteSpace(solutionType)
-                ? SolutionType.GPIT
-                : Enum.Parse<SolutionType>(solutionType, ignoreCase: true);
-            ViewData["HideLogin"] = solutionTypeEnum == SolutionType.CommunityPharmacy;
+            ViewData["HideLogin"] = solutionType != SolutionType.GPIT;
 
             var solutionsFilters = new SolutionsFilters
             {
@@ -85,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 SelectedApplicationTypeIds = selectedApplicationTypeIds,
                 SelectedHostingTypeIds = selectedHostingTypeIds,
                 SelectedIntegrationsAndTypes = filters.GetIntegrationsAndTypes(),
-                SolutionType = solutionTypeEnum,
+                SolutionType = solutionType,
             };
 
             (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
@@ -98,10 +95,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var additionalFilters = new AdditionalFiltersModel(frameworks, filters, integrations);
 
-            var viewName = solutionTypeEnum switch
+            var viewName = solutionType switch
             {
-                SolutionType.CommunityPharmacy => "Solutions",
-                _ => "Index",
+                SolutionType.GPIT => "Index",
+                _ => "Solutions",
             };
 
             return View(
@@ -109,6 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 new SolutionsModel
                 {
                     AdditionalFilters = additionalFilters,
+                    SolutionType = solutionType,
                     ResultsModel = new SolutionsResultsModel
                     {
                         PageOptions = options,
@@ -147,16 +145,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 model.ToRequestedFilters().ToRouteValues());
         }
 
-        [HttpGet("search-suggestions")]
-        public async Task<IActionResult> FilterSearchSuggestions([FromQuery] string search)
+        [HttpGet("search-suggestions/{solutionType}")]
+        public async Task<IActionResult> FilterSearchSuggestions([FromQuery] string search, [FromRoute] SolutionType solutionType)
         {
             var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
-            var query = QueryHelpers.ParseQuery(currentPageUrl.Query);
-
-            var solutionType = query.TryGetValue("solutionType", out var value)
-                ? Enum.Parse<SolutionType>(value.ToString(), ignoreCase: true)
-                : SolutionType.GPIT;
-
             var results = await solutionsFilterService.GetSolutionsBySearchTerm(search, solutionType: solutionType);
 
             return Json(

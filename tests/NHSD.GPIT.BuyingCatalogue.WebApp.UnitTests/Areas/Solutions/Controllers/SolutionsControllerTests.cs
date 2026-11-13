@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     Arg.Any<PageOptions>())
                 .Returns((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
 
-            var result = await controller.Index(nameof(SolutionType.GPIT), options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null);
+            var result = await controller.Index(SolutionType.GPIT, options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null);
             result.Should().BeOfType<ViewResult>();
 
             await mockService.Received()
@@ -261,7 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     r.Category,
                     currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).Uri.PathAndQuery));
 
-            var result = await controller.FilterSearchSuggestions(search);
+            var result = await controller.FilterSearchSuggestions(search, SolutionType.GPIT);
 
             await mockService.Received().GetSolutionsBySearchTerm(search, Arg.Any<int>(), SolutionType.GPIT);
             var actualResult = result.Should().BeOfType<JsonResult>().Subject;

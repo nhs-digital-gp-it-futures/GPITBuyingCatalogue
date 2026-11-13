@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
@@ -9,41 +8,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
     public static class SolutionsModelTests
     {
-        [Fact]
-        public static void SolutionsModel_SearchNoResults_ReturnsTitleAndAdvice()
-        {
-            var model = new SolutionsModel()
-            {
-                ResultsModel = new SolutionsResultsModel()
-                {
-                    CatalogueItems = new List<CatalogueItem>(),
-                },
-            };
-
-            var pageTitle = model.GetPageTitle();
-            pageTitle.Title.Should().Be(SolutionsModel.SearchResultsPageTitle.Title);
-            pageTitle.Caption.Should().BeNullOrEmpty();
-            pageTitle.Advice.Should().Be(SolutionsModel.SearchResultsPageTitle.Advice);
-            pageTitle.AdditionalAdvice.Should().BeNullOrEmpty();
-        }
-
         [Theory]
-        [MockAutoData]
-        public static void SolutionsModel_SearchWithResults_ReturnsTitleAndAdvice(
-            IList<CatalogueItem> solutions)
+        [InlineData(SolutionType.GPIT, "Catalogue solutions")]
+        [InlineData(SolutionType.CommunityPharmacy, "Pharmacy solutions")]
+        public static void GetPageTitle_ReturnsExpectedTitle(
+            SolutionType solutionType,
+            string expectedTitle)
         {
-            var model = new SolutionsModel()
-            {
-                ResultsModel = new SolutionsResultsModel()
-                {
-                    CatalogueItems = solutions,
-                },
-            };
+            var model = new SolutionsModel { SolutionType = solutionType };
 
             var pageTitle = model.GetPageTitle();
-            pageTitle.Title.Should().Be(SolutionsModel.SearchResultsPageTitle.Title);
+            pageTitle.Title.Should().Be(expectedTitle);
             pageTitle.Caption.Should().BeNullOrEmpty();
-            pageTitle.Advice.Should().Be(SolutionsModel.SearchResultsPageTitle.Advice);
+            pageTitle.Advice.Should().BeNullOrEmpty();
             pageTitle.AdditionalAdvice.Should().BeNullOrEmpty();
         }
 

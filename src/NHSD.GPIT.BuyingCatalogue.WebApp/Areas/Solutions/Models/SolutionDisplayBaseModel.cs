@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
@@ -165,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Controller = typeof(SolutionsController).ControllerName(),
                     Name = "Catalogue solutions",
                     Show = true,
-                    RouteData = new Dictionary<string, string> { { "area", typeof(SolutionsController).AreaName() }, { "solutionType", nameof(SolutionType.CommunityPharmacy) } },
+                    RouteData = new Dictionary<string, string> { { "area", typeof(SolutionsController).AreaName() }, { "solutionType", solutionType.ToString() } },
                 });
             }
             else
