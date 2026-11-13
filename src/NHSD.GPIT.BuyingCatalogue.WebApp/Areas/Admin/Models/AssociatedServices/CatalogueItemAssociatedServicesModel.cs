@@ -34,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
                 })];
         }
 
+        public required CatalogueItemId SolutionId { get; set; }
+
         public required SolutionType SolutionType { get; set; }
 
         public CatalogueItemId CatalogueItemId { get; set; }

@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
 [Authorize(Policy = "ManageSupplierOrganisations")]
 [Area("Admin")]
-[Route("admin/manage-suppliers/{supplierId:int}/services/{solutionType}")]
+[Route("admin/manage-suppliers/{supplierId:int}/services")]
 public class SupplierServicesController(
     ISuppliersService suppliersService,
     IAssociatedServicesService associatedServicesService,
@@ -31,7 +31,11 @@ public class SupplierServicesController(
         publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
 
     [HttpGet]
-    public async Task<IActionResult> AssociatedServices(int supplierId, SolutionType solutionType)
+    public async Task<IActionResult> AssociatedServices(
+        [FromRoute] int supplierId,
+        [FromQuery] SolutionType? solutionType,
+        [FromQuery] CatalogueItemId? solutionId,
+        [FromQuery] CatalogueItemId? additionalServiceId)
     {
         var supplier = await suppliersService.GetSupplier(supplierId);
         if (supplier is null)
@@ -41,18 +45,34 @@ public class SupplierServicesController(
 
         var model = new AssociatedServicesModel(supplier, associatedServices)
         {
-            BackLink = Url.Action(
-                nameof(SuppliersController.EditSupplier),
-                typeof(SuppliersController).ControllerName(),
-                new { supplierId }),
+            BackLink = solutionType is null && solutionId is null
+                ? Url.Action(
+                    nameof(SuppliersController.EditSupplier),
+                    typeof(SuppliersController).ControllerName(),
+                    new { supplierId })
+                : additionalServiceId is not null && solutionId == additionalServiceId
+                    ? Url.Action(
+                        nameof(CatalogueSolutionsController.AssociatedServices),
+                        typeof(CatalogueSolutionsController).ControllerName(),
+                        new { solutionType, solutionId })
+                    : Url.Action(
+                        nameof(AdditionalServicesController.AssociatedServices),
+                        typeof(AdditionalServicesController).ControllerName(),
+                        new { solutionType, solutionId, additionalServiceId }),
             SolutionType = solutionType,
+            SolutionId = solutionId,
+            AdditionalServiceId = additionalServiceId,
         };
 
         return View(model);
     }
 
     [HttpGet("add-associated-service")]
-    public async Task<IActionResult> AddAssociatedService(int supplierId, SolutionType solutionType)
+    public async Task<IActionResult> AddAssociatedService(
+        [FromRoute] int supplierId,
+        [FromQuery] SolutionType? solutionType,
+        [FromQuery] CatalogueItemId? solutionId,
+        [FromQuery] CatalogueItemId? additionalServiceId)
     {
         var supplier = await suppliersService.GetSupplier(supplierId);
         if (supplier is null)
@@ -60,14 +80,21 @@ public class SupplierServicesController(
 
         var model = new AddAssociatedServiceModel(supplier)
         {
-            BackLink = Url.Action(nameof(AssociatedServices), new { supplierId, solutionType }),
+            BackLink = Url.Action(
+                nameof(AssociatedServices),
+                new { supplierId, solutionType, solutionId, additionalServiceId }),
         };
 
         return View(model);
     }
 
     [HttpPost("add-associated-service")]
-    public async Task<IActionResult> AddAssociatedService(int supplierId, SolutionType solutionType, AddAssociatedServiceModel model)
+    public async Task<IActionResult> AddAssociatedService(
+        [FromRoute] int supplierId,
+        [FromQuery] SolutionType? solutionType,
+        [FromQuery] CatalogueItemId? solutionId,
+        [FromQuery] CatalogueItemId? additionalServiceId,
+        AddAssociatedServiceModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -85,14 +112,16 @@ public class SupplierServicesController(
 
         return RedirectToAction(
             nameof(EditAssociatedService),
-            new { supplierId, solutionType, associatedServiceId, });
+            new { supplierId, associatedServiceId, solutionType, solutionId, additionalServiceId });
     }
 
     [HttpGet("{associatedServiceId}/edit-associated-service")]
     public async Task<IActionResult> EditAssociatedService(
-        int supplierId,
-        SolutionType solutionType,
-        CatalogueItemId associatedServiceId)
+        [FromRoute] int supplierId,
+        [FromRoute] CatalogueItemId associatedServiceId,
+        [FromQuery] SolutionType? solutionType,
+        [FromQuery] CatalogueItemId? solutionId,
+        [FromQuery] CatalogueItemId? additionalServiceId)
     {
         var supplier = await suppliersService.GetSupplier(supplierId);
         if (supplier is null)
@@ -106,8 +135,11 @@ public class SupplierServicesController(
         var relatedCatalogueItems = await associatedServicesService.GetAssociatedServiceReferences(associatedServiceId);
         var model = new EditAssociatedServiceModel(supplier, associatedService, relatedCatalogueItems)
         {
-            BackLink = Url.Action(nameof(AssociatedServices), new { supplierId, solutionType }),
-            SolutionType = solutionType,
+            BackLink = Url.Action(
+                nameof(AssociatedServices),
+                new { supplierId, solutionType, solutionId, additionalServiceId }),
+            SolutionId = solutionId,
+            AdditionalServiceId = additionalServiceId,
         };
 
         return View(model);
@@ -115,9 +147,11 @@ public class SupplierServicesController(
 
     [HttpPost("{associatedServiceId}/edit-associated-service")]
     public async Task<IActionResult> SetPublicationStatus(
-        int supplierId,
-        SolutionType solutionType,
-        CatalogueItemId associatedServiceId,
+        [FromRoute] int supplierId,
+        [FromRoute] CatalogueItemId associatedServiceId,
+        [FromQuery] SolutionType? solutionType,
+        [FromQuery] CatalogueItemId? solutionId,
+        [FromQuery] CatalogueItemId? additionalServiceId,
         EditAssociatedServiceModel model)
     {
         if (!ModelState.IsValid)
@@ -134,14 +168,18 @@ public class SupplierServicesController(
 
         await publicationStatusService.SetPublicationStatus(associatedServiceId, model.SelectedPublicationStatus);
 
-        return RedirectToAction(nameof(AssociatedServices), new { supplierId, solutionType });
+        return RedirectToAction(
+            nameof(AssociatedServices),
+            new { supplierId, solutionType, solutionId, additionalServiceId });
     }
 
     [HttpGet("{associatedServiceId}/edit-associated-service-details")]
     public async Task<IActionResult> EditAssociatedServiceDetails(
-        int supplierId,
-        SolutionType solutionType,
-        CatalogueItemId associatedServiceId)
+        [FromRoute] int supplierId,
+        [FromRoute] CatalogueItemId associatedServiceId,
+        [FromQuery] SolutionType? solutionType,
+        [FromQuery] CatalogueItemId? solutionId,
+        [FromQuery] CatalogueItemId? additionalServiceId)
     {
         var supplier = await suppliersService.GetSupplier(supplierId);
         if (supplier is null)
@@ -158,7 +196,9 @@ public class SupplierServicesController(
 
         var model = new EditAssociatedServiceDetailsModel(supplier, associatedService, solutionMergersAndSplits)
         {
-            BackLink = Url.Action(nameof(EditAssociatedService), new { supplierId, solutionType, associatedServiceId }),
+            BackLink = Url.Action(
+                nameof(EditAssociatedService),
+                new { supplierId, associatedServiceId, solutionType, solutionId, additionalServiceId }),
         };
 
         return View(model);
@@ -166,9 +206,11 @@ public class SupplierServicesController(
 
     [HttpPost("{associatedServiceId}/edit-associated-service-details")]
     public async Task<IActionResult> EditAssociatedServiceDetails(
-        int supplierId,
-        SolutionType solutionType,
-        CatalogueItemId associatedServiceId,
+        [FromRoute] int supplierId,
+        [FromRoute] CatalogueItemId associatedServiceId,
+        [FromQuery] SolutionType? solutionType,
+        [FromQuery] CatalogueItemId? solutionId,
+        [FromQuery] CatalogueItemId? additionalServiceId,
         EditAssociatedServiceDetailsModel model)
     {
         var associatedService = await associatedServicesService.GetAssociatedService(associatedServiceId);
@@ -191,6 +233,6 @@ public class SupplierServicesController(
 
         return RedirectToAction(
             nameof(EditAssociatedService),
-            new { supplierId, solutionType, associatedServiceId, });
+            new { supplierId, associatedServiceId, solutionType, solutionId, additionalServiceId });
     }
 }

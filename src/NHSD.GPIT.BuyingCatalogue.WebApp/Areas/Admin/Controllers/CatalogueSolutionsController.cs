@@ -410,6 +410,7 @@ public sealed class CatalogueSolutionsController(
                 nameof(ManageCatalogueSolution),
                 new { solutionType, solutionId }),
             SolutionType = solutionType,
+            SolutionId = solutionId,
         };
 
         return View(model);

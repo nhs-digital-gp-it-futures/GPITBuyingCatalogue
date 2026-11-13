@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices;
 using Xunit;
 
@@ -12,14 +13,21 @@ public static class AssociatedServicesModelTests
     [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Supplier supplier,
-        List<AssociatedService> associatedServices)
+        List<AssociatedService> associatedServices,
+        CatalogueItemId solutionId,
+        CatalogueItemId additionalServiceId)
     {
         var model = new AssociatedServicesModel(supplier, associatedServices)
         {
             SolutionType = SolutionType.GPIT,
+            SolutionId = solutionId,
+            AdditionalServiceId = additionalServiceId,
         };
         model.SupplierId.Should().Be(supplier.Id);
         model.SupplierName.Should().Be(supplier.Name);
         model.AssociatedServices.Should().BeEquivalentTo(associatedServices);
+        model.SolutionType.Should().Be(SolutionType.GPIT);
+        model.SolutionId.Should().Be(solutionId);
+        model.AdditionalServiceId.Should().Be(additionalServiceId);
     }
 }

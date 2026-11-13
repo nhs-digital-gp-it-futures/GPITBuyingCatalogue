@@ -15,7 +15,11 @@
             url="@Url.Action(
                 nameof(SupplierServicesController.AddAssociatedService),
                 typeof(SupplierServicesController).ControllerName(),
-                new { supplierId = Model.SupplierId, solutionType = Model.SolutionType })" />
+                new { 
+                    supplierId = Model.SupplierId,
+                    solutionType = Model.SolutionType,
+                    solutionId = Model.SolutionId,
+                    additionalServiceId = Model.AdditionalServiceId })" />
 
         @if (Model.AssociatedServices.Any())
         {
@@ -53,8 +57,10 @@
                                 <a asp-action="@nameof(SupplierServicesController.EditAssociatedService)"
                                    asp-controller="@typeof(SupplierServicesController).ControllerName()"
                                    asp-route-supplierId="@Model.SupplierId"
-                                   asp-route-solutionType="@Model.SolutionType"
                                    asp-route-associatedServiceId="@associatedService.CatalogueItemId"
+                                   asp-route-solutionType="@Model.SolutionType"
+                                   asp-route-solutionId="@Model.SolutionId"
+                                   asp-route-additionalServiceId="@Model.AdditionalServiceId"
                                    data-test-id="edit-link" class="nhsuk-breadcrumb__link">Edit</a>
                             </nhs-table-cell>
                         </nhs-table-row-container>

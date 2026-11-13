@@ -15,7 +15,11 @@
             url="@Url.Action(
                 nameof(SupplierServicesController.AssociatedServices),
                 typeof(SupplierServicesController).ControllerName(),
-                new { supplierId = Model.CatalogueItemId.SupplierId, solutionType = Model.SolutionType })" />
+                new { 
+                    supplierId = Model.CatalogueItemId.SupplierId, 
+                    solutionType = Model.SolutionType, 
+                    solutionId = Model.SolutionId,
+                    additionalServiceId = Model.CatalogueItemId })" />
 
         <p>
             If an associated service is not listed, you can add it using the manage associated services link. It’ll then
@@ -28,6 +32,7 @@
             <input type="hidden" asp-for="@Model.CatalogueItemId" />
             <input type="hidden" asp-for="@Model.CatalogueItemName" />
             <input type="hidden" asp-for="@Model.CatalogueItemType" />
+            <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.SolutionType" />
 
             @if (Model.SelectableAssociatedServices.Any())

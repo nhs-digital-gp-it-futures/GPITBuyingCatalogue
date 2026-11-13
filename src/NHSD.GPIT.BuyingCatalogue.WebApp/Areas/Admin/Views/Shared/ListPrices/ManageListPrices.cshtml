@@ -116,15 +116,36 @@
         CatalogueItemType.Solution => Url.Action(
             nameof(CatalogueSolutionListPriceController.EditTieredListPrice),
             typeof(CatalogueSolutionListPriceController).ControllerName(),
-            new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
+            new
+            {
+                solutionId = Model.CatalogueItemId,
+                cataloguePrice.CataloguePriceId,
+                solutionType = Model.SolutionType,
+                additionalServiceId = Model.AdditionalServiceId,                
+                supplierId = Model.SupplierId
+            }),
         CatalogueItemType.AdditionalService => Url.Action(
             nameof(AdditionalServiceListPriceController.EditTieredListPrice),
             typeof(AdditionalServiceListPriceController).ControllerName(),
-            new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, AdditionalServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
+            new
+            {
+                solutionId = Model.CatalogueItemId,
+                AdditionalServiceId = Model.ServiceId,
+                cataloguePrice.CataloguePriceId,
+                solutionType = Model.SolutionType
+            }),
         CatalogueItemType.AssociatedService => Url.Action(
             nameof(AssociatedServiceListPriceController.EditTieredListPrice),
             typeof(AssociatedServiceListPriceController).ControllerName(),
-            new { solutionType = Model.SolutionType, supplierId = Model.SupplierId, associatedServiceId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
+            new
+            {
+                supplierId = Model.SupplierId,
+                associatedServiceId = Model.CatalogueItemId,
+                cataloguePrice.CataloguePriceId,
+                solutionType = Model.SolutionType,
+                solutionId = Model.SolutionId,
+                additionalServiceId = Model.AdditionalServiceId
+            }),
         _ => string.Empty,
     };
 
@@ -133,15 +154,35 @@
         CatalogueItemType.Solution => Url.Action(
             nameof(CatalogueSolutionListPriceController.EditFlatListPrice),
             typeof(CatalogueSolutionListPriceController).ControllerName(),
-            new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
+            new
+            {
+                solutionId = Model.CatalogueItemId,
+                cataloguePrice.CataloguePriceId,
+                solutionType = Model.SolutionType,
+                additionalServiceId = Model.AdditionalServiceId,
+                supplierId = Model.SupplierId
+            }),
         CatalogueItemType.AdditionalService => Url.Action(
             nameof(AdditionalServiceListPriceController.EditFlatListPrice),
             typeof(AdditionalServiceListPriceController).ControllerName(),
-            new { solutionType = Model.SolutionType, solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePrice.CataloguePriceId }),
+            new
+            {
+                solutionId = Model.CatalogueItemId,
+                additionalServiceId = Model.ServiceId,
+                cataloguePrice.CataloguePriceId,
+                solutionType = Model.SolutionType
+            }),
         CatalogueItemType.AssociatedService => Url.Action(
             nameof(AssociatedServiceListPriceController.EditFlatListPrice),
             typeof(AssociatedServiceListPriceController).ControllerName(),
-            new { solutionType = Model.SolutionType, supplierId = Model.SupplierId, associatedServiceId = Model.CatalogueItemId, cataloguePrice.CataloguePriceId }),
+            new
+            {
+                supplierId = Model.SupplierId,
+                associatedServiceId = Model.CatalogueItemId,
+                cataloguePrice.CataloguePriceId,
+                solutionType = Model.SolutionType,
+                additionalServiceId = Model.AdditionalServiceId
+            }),
         _ => string.Empty,
     };
 }

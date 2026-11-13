@@ -52,6 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = new ManageListPricesModel(parentCatalogueItemId, additionalService.CatalogueItem, additionalService.CatalogueItem.CataloguePrices)
             {
                 SolutionType = SolutionType.GPIT,
+                SolutionId = parentCatalogueItemId,
+                AdditionalServiceId = additionalService.CatalogueItemId,
             };
 
             additionalServicesService.GetAdditionalService(parentCatalogueItemId, additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
@@ -266,6 +268,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = new TieredPriceTiersModel(parentCatalogueItemId, additionalService.CatalogueItem, price, priceTiersSetting.MaximumNumberOfPriceTiers)
             {
                 SolutionType = SolutionType.GPIT,
+                AdditionalServiceId = additionalService.CatalogueItemId,
             };
 
             additionalServicesService.GetAdditionalService(parentCatalogueItemId, additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
@@ -543,6 +546,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = new EditTieredListPriceModel(parentCatalogueItemId, additionalService.CatalogueItem, price, priceTiersSetting.MaximumNumberOfPriceTiers)
             {
                 SolutionType = SolutionType.GPIT,
+                SolutionId = parentCatalogueItemId,
+                AdditionalServiceId = additionalService.CatalogueItemId,
             };
 
             var result = (await controller.EditTieredListPrice(SolutionType.GPIT, parentCatalogueItemId, additionalService.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();

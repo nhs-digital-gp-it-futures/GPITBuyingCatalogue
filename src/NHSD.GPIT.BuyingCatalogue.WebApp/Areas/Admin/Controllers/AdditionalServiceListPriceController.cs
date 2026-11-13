@@ -36,6 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new ManageListPricesModel(solutionId, service, service.CataloguePrices)
             {
                 SolutionType = solutionType,
+                SolutionId = solutionId,
+                AdditionalServiceId = additionalServiceId,
                 BackLink = Url.Action(
                     nameof(AdditionalServicesController.EditAdditionalService),
                     typeof(AdditionalServicesController).ControllerName(),
@@ -200,6 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 BackLink = Url.Action(nameof(EditTieredListPrice), new { solutionType, solutionId, additionalServiceId, cataloguePriceId }),
                 SolutionType = solutionType,
+                AdditionalServiceId = additionalServiceId,
                 AddTieredPriceTierUrl = Url.Action(
                     nameof(AddTieredPriceTier),
                     new { solutionType, solutionId, additionalServiceId, cataloguePriceId }),
@@ -304,6 +307,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 BackLink = Url.Action(nameof(Index), new { solutionType, solutionId, additionalServiceId }),
                 SolutionType = solutionType,
+                SolutionId = solutionId,
+                AdditionalServiceId = additionalServiceId,
                 AddPricingTierUrl = Url.Action(
                     nameof(AddTieredPriceTier),
                     new { solutionType, solutionId, additionalServiceId, cataloguePriceId, isEditing = true }),

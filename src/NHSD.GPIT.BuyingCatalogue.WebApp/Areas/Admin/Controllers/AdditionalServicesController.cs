@@ -251,6 +251,7 @@ public sealed class AdditionalServicesController(
             BackLink = Url.Action(
                 nameof(EditAdditionalService),
                 new { solutionType, solutionId, additionalServiceId }),
+            SolutionId = solutionId,
             SolutionType = solutionType,
         };
 

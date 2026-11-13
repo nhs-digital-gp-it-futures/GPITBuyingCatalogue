@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices
@@ -18,11 +19,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices
             AssociatedServices = associatedServices;
         }
 
-        public required SolutionType SolutionType { get; set; }
-
         public int SupplierId { get; set; }
 
         public string SupplierName { get; set; }
+
+        public SolutionType? SolutionType { get; set; }
+
+        public CatalogueItemId? SolutionId { get; set; }
+
+        public CatalogueItemId? AdditionalServiceId { get; set; }
 
         public IEnumerable<AssociatedService> AssociatedServices { get; } = [];
     }

@@ -89,6 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(i => i.CataloguePrices)
                 .ThenInclude(cp => cp.PricingUnit)
+                .Include(i => i.Solution)
                 .FirstOrDefaultAsync(i => i.Id == associatedServiceId);
 
         // checks to see if this associated services' name is unique for the supplier

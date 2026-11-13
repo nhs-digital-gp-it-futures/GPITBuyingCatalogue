@@ -2,6 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using Xunit;
@@ -13,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
         [Theory]
         [MockAutoData]
         public static void AssociatedServices_ValidCatalogueItem_NoRelatedServices_PropertiesSetAsExpected(
+            CatalogueItemId solutionId,
             CatalogueItem catalogueItem,
             List<AssociatedService> associatedServices)
         {
@@ -31,16 +33,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
                 associatedServices)
             {
                 SolutionType = SolutionType.GPIT,
+                SolutionId = solutionId,
             };
             actual.SelectableAssociatedServices.Should().BeEquivalentTo(expected);
             actual.SolutionMergerAndSplits.Should().BeEquivalentTo(new SolutionMergerAndSplitTypesModel(catalogueItem.Name, []));
             actual.CatalogueItemName.Should().Be(catalogueItem.Name);
             actual.CatalogueItemId.Should().Be(catalogueItem.Id);
+            actual.SolutionType.Should().Be(SolutionType.GPIT);
+            actual.SolutionId.Should().Be(solutionId);
         }
 
         [Theory]
         [MockAutoData]
         public static void AssociatedServices_ValidCatalogueItem_RelatedServices_PropertiesSetAsExpected(
+           CatalogueItemId solutionId,
            CatalogueItem catalogueItem,
            List<AssociatedService> associatedServices)
         {
@@ -66,11 +72,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
                 associatedServices)
             {
                 SolutionType = SolutionType.GPIT,
+                SolutionId = solutionId,
             };
             actual.SelectableAssociatedServices.Should().BeEquivalentTo(expected);
             actual.SolutionMergerAndSplits.Should().BeEquivalentTo(new SolutionMergerAndSplitTypesModel(catalogueItem.Name, associatedServices.Select(s => s.PracticeReorganisationType)));
             actual.CatalogueItemName.Should().Be(catalogueItem.Name);
             actual.CatalogueItemId.Should().Be(catalogueItem.Id);
+            actual.SolutionType.Should().Be(SolutionType.GPIT);
+            actual.SolutionId.Should().Be(solutionId);
         }
     }
 }

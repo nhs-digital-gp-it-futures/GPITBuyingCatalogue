@@ -397,6 +397,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 associatedServices)
             {
                 SolutionType = SolutionType.GPIT,
+                SolutionId = solutionId,
             };
             var result = await controller.AssociatedServices(SolutionType.GPIT, solutionId, additionalService.CatalogueItemId);
 
@@ -434,6 +435,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = new CatalogueItemAssociatedServicesModel(additionalService.CatalogueItem, associatedServices)
             {
                 SolutionType = SolutionType.GPIT,
+                SolutionId = solutionId,
             };
             var selectedAssociatedService = model.SelectableAssociatedServices.First();
             selectedAssociatedService.Selected = true;
