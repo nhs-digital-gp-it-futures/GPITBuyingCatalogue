@@ -5,8 +5,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public sealed class ImplementationTimescalesModel : SolutionDisplayBaseModel
     {
-        public ImplementationTimescalesModel(CatalogueItem item, CatalogueItemContentStatus contentStatus)
-            : base(item, contentStatus)
+        public ImplementationTimescalesModel(CatalogueItem item, CatalogueItemContentStatus contentStatus, SolutionSections sections)
+            : base(item, contentStatus, sections)
         {
             Description = item.Solution.ImplementationDetail;
         }

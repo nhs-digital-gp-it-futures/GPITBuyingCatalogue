@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.CommunityPharmacy.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -29,6 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         protected SolutionDisplayBaseModel(
             CatalogueItem catalogueItem,
             CatalogueItemContentStatus contentStatus,
+            SolutionSections sections,
             bool isSubPage = false)
         {
             IsSubPage = isSubPage;
@@ -37,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             SolutionId = catalogueItem.Id;
             SolutionName = catalogueItem.Name;
+            SolutionType = catalogueItem.Solution.SolutionType;
             PublicationStatus = catalogueItem.PublishedStatus;
             SolutionStandardCategory = catalogueItem.Solution.Category;
 
@@ -47,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             if (Frameworks.Count == 0)
                 throw new InvalidOperationException("A solution must have at least one framework.");
 
-            SetSections(contentStatus);
+            SetSections(contentStatus, sections);
             SetBreadcrumb(catalogueItem.Solution.SolutionType);
             SetPaginationFooter();
 
@@ -58,9 +60,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         protected SolutionDisplayBaseModel(
             CatalogueItem catalogueItem,
             CatalogueItemContentStatus contentStatus,
+            SolutionSections solutionSections,
             bool shouldShowStandardsCategory,
             bool isSubPage = false)
-            : this(catalogueItem, contentStatus, isSubPage)
+            : this(catalogueItem, contentStatus, solutionSections, isSubPage)
         {
             this.shouldShowStandardsCategory = shouldShowStandardsCategory;
         }
@@ -72,6 +75,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public CatalogueItemId SolutionId { get; set; }
 
         public string SolutionName { get; set; }
+
+        public SolutionType SolutionType { get; set; }
 
         public SolutionCategory? SolutionStandardCategory { get; set; }
 
@@ -121,6 +126,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public bool IsSuspended() => PublicationStatus == PublicationStatus.Suspended;
 
+        private static bool ShouldShowSection(SolutionSectionRequirement sectionRequirement, bool catalogueItemContentStatus)
+        {
+            return sectionRequirement switch
+            {
+                SolutionSectionRequirement.Mandatory => true,
+                SolutionSectionRequirement.Optional => catalogueItemContentStatus,
+                _ => false,
+            };
+        }
+
         private void SetBreadcrumb(SolutionType solutionType)
         {
             var breadcrumbItems = new List<SectionModel>
@@ -147,11 +162,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 });
                 breadcrumbItems.Add(new()
                 {
-                    Action = nameof(CommunityPharmacyController.Solutions),
-                    Controller = typeof(CommunityPharmacyController).ControllerName(),
+                    Action = nameof(SolutionsController.Index),
+                    Controller = typeof(SolutionsController).ControllerName(),
                     Name = "Catalogue solutions",
                     Show = true,
-                    RouteData = new Dictionary<string, string> { { "area", typeof(CommunityPharmacyController).AreaName() } },
+                    RouteData = new Dictionary<string, string> { { "area", typeof(SolutionsController).AreaName() }, { "solutionType", solutionType.ToString() } },
                 });
             }
             else
@@ -177,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             BreadcrumbItems = breadcrumbItems;
         }
 
-        private void SetSections(CatalogueItemContentStatus contentStatus)
+        private void SetSections(CatalogueItemContentStatus contentStatus, SolutionSections sections)
         {
             Sections = new List<SectionModel>
             {
@@ -186,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.Description),
                     Controller = ControllerName,
                     Name = KeyDescription,
-                    Show = CatalogueItemContentStatus.ShowDescription,
+                    Show = ShouldShowSection(sections.Description, CatalogueItemContentStatus.ShowDescription),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -194,7 +209,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.Features),
                     Controller = ControllerName,
                     Name = "Features",
-                    Show = contentStatus.ShowFeatures,
+                    Show = ShouldShowSection(sections.Features, contentStatus.ShowFeatures),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -202,7 +217,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.ListPrice),
                     Controller = ControllerName,
                     Name = "List price",
-                    Show = CatalogueItemContentStatus.ShowListPrice,
+                    Show = ShouldShowSection(sections.ListPrice, CatalogueItemContentStatus.ShowListPrice),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -210,7 +225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.Capabilities),
                     Controller = ControllerName,
                     Name = "Capabilities and Epics",
-                    Show = CatalogueItemContentStatus.ShowCapabilities,
+                    Show = ShouldShowSection(sections.CapabilitiesAndEpics, CatalogueItemContentStatus.ShowCapabilities),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -218,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.AdditionalServices),
                     Controller = ControllerName,
                     Name = "Additional services",
-                    Show = contentStatus.ShowAdditionalServices,
+                    Show = ShouldShowSection(sections.AdditionalServices, contentStatus.ShowAdditionalServices),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -226,7 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.AssociatedServices),
                     Controller = ControllerName,
                     Name = "Associated services",
-                    Show = contentStatus.ShowAssociatedServices,
+                    Show = ShouldShowSection(sections.AssociatedServices, contentStatus.ShowAssociatedServices),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -234,7 +249,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.Implementation),
                     Controller = ControllerName,
                     Name = "Implementation",
-                    Show = contentStatus.ShowImplementation,
+                    Show = ShouldShowSection(sections.Implementation, contentStatus.ShowImplementation),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -242,15 +257,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.SupplierDetails),
                     Controller = ControllerName,
                     Name = "Supplier details",
-                    Show = CatalogueItemContentStatus.ShowSupplierDetails,
+                    Show = ShouldShowSection(sections.SupplierDetails, CatalogueItemContentStatus.ShowSupplierDetails),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
                 {
                     Action = nameof(SolutionsController.Interoperability),
                     Controller = ControllerName,
-                    Name = nameof(SolutionsController.Interoperability),
-                    Show = contentStatus.ShowInteroperability,
+                    Name = sections.SolutionType == SolutionType.CommunityPharmacy ? "Integrations" : nameof(SolutionsController.Interoperability),
+                    Show = ShouldShowSection(sections.Integrations, contentStatus.ShowInteroperability),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -258,7 +273,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.ApplicationTypes),
                     Controller = ControllerName,
                     Name = "Application type",
-                    Show = CatalogueItemContentStatus.ShowApplicationsType,
+                    Show = ShouldShowSection(sections.ApplicationType, CatalogueItemContentStatus.ShowApplicationsType),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -266,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.HostingType),
                     Controller = ControllerName,
                     Name = "Hosting type",
-                    Show = contentStatus.ShowHosting,
+                    Show = ShouldShowSection(sections.HostingType, contentStatus.ShowHosting),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -274,7 +289,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.DataProcessingInformation),
                     Controller = ControllerName,
                     Name = "Data processing information",
-                    Show = CatalogueItemContentStatus.ShowDataProcessingInformation,
+                    Show = ShouldShowSection(sections.DataProcessingInformation, CatalogueItemContentStatus.ShowDataProcessingInformation),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -282,7 +297,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.Standards),
                     Controller = ControllerName,
                     Name = "Standards",
-                    Show = CatalogueItemContentStatus.ShowStandards,
+                    Show = ShouldShowSection(sections.Standards, CatalogueItemContentStatus.ShowStandards),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -290,7 +305,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.ServiceLevelAgreement),
                     Controller = ControllerName,
                     Name = "Service Level Agreement",
-                    Show = CatalogueItemContentStatus.ShowServiceLevelAgreements,
+                    Show = ShouldShowSection(sections.ServiceLevelAgreement, CatalogueItemContentStatus.ShowServiceLevelAgreements),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
                 new()
@@ -298,7 +313,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Action = nameof(SolutionsController.DevelopmentPlans),
                     Controller = ControllerName,
                     Name = "Development plans",
-                    Show = CatalogueItemContentStatus.ShowDevelopmentPlans,
+                    Show = ShouldShowSection(sections.DevelopmentPlans, CatalogueItemContentStatus.ShowDevelopmentPlans),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
             };

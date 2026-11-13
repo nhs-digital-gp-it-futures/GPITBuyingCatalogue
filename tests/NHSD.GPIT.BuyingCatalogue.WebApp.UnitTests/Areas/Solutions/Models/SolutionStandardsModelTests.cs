@@ -26,7 +26,8 @@ public static class SolutionStandardsModelTests
             solution.CatalogueItem,
             standardsComplianceModels,
             standardsWithWorkOffPlans,
-            contentStatus);
+            contentStatus,
+            new SolutionSections());
 
         model.Standards.Should().HaveCount(2);
         model.Standards.Should().Contain(x => x.Compliance == StandardCompliance.FullyMet);

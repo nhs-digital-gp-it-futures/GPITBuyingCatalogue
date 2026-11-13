@@ -14,8 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public AssociatedServicesModel(
             CatalogueItem catalogueItem,
             List<CatalogueItem> associatedServices,
-            CatalogueItemContentStatus contentStatus)
-            : this(catalogueItem, associatedServices, contentStatus, isSubPage: false)
+            CatalogueItemContentStatus contentStatus,
+            SolutionSections sections)
+            : this(catalogueItem, associatedServices, contentStatus, sections, isSubPage: false)
         {
         }
 
@@ -23,8 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             CatalogueItem catalogueItem,
             List<CatalogueItem> associatedServices,
             CatalogueItemContentStatus contentStatus,
+            SolutionSections sections,
             bool isSubPage)
-            : base(catalogueItem, contentStatus, isSubPage)
+            : base(catalogueItem, contentStatus, sections, isSubPage)
         {
             Services = associatedServices;
             PaginationFooter.FullWidth = true;

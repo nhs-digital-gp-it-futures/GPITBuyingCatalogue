@@ -52,6 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string SolutionName { get; set; }
 
+        public SolutionType SolutionType { get; set; }
+
         public Epic[] SupplierDefined { get; init; }
 
         public bool HasNhsDefined() => NhsDefined != null && NhsDefined.Length > 0;

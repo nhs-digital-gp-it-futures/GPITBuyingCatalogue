@@ -9,8 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public DevelopmentPlansModel(
             CatalogueItem catalogueItem,
             IList<WorkOffPlan> workoffPlans,
-            CatalogueItemContentStatus contentStatus)
-                : base(catalogueItem, contentStatus)
+            CatalogueItemContentStatus contentStatus,
+            SolutionSections sections)
+                : base(catalogueItem, contentStatus, sections)
         {
             WorkOffPlans = workoffPlans;
             RoadmapLink = catalogueItem.Solution.RoadMap;

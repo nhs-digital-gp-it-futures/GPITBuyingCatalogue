@@ -1,8 +1,10 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDisplayBaseModel
 @{
     Layout = "~/Views/Shared/Layouts/_SideNavigationLayout.cshtml";
+    ViewData["HideLogin"] = Model.SolutionType == SolutionType.CommunityPharmacy;
 }
 
 @if (Model.HasExpiredFrameworks)

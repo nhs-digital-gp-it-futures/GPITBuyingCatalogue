@@ -11,8 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        public InteroperabilityModel(CatalogueItem catalogueItem, CatalogueItemContentStatus contentStatus)
-            : base(catalogueItem, contentStatus)
+        public InteroperabilityModel(CatalogueItem catalogueItem, CatalogueItemContentStatus contentStatus, SolutionSections sections)
+            : base(catalogueItem, contentStatus, sections)
         {
             ArgumentNullException.ThrowIfNull(catalogueItem);
 
