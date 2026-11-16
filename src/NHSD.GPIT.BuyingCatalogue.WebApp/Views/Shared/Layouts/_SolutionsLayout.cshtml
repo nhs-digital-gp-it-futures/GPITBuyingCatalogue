@@ -4,7 +4,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDisplayBaseModel
 @{
     Layout = "~/Views/Shared/Layouts/_SideNavigationLayout.cshtml";
-    ViewData["HideLogin"] = Model.SolutionType == SolutionType.CommunityPharmacy;
+    ViewData["HideLogin"] = Model.SolutionType != SolutionType.GPIT;
 }
 
 @if (Model.HasExpiredFrameworks)

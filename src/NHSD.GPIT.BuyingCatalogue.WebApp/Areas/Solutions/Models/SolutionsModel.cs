@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 
@@ -16,11 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public PageTitleModel GetPageTitle() => new()
         {
-            Title = SolutionType switch
-            {
-                SolutionType.CommunityPharmacy => "Pharmacy solutions",
-                _ => "Catalogue solutions",
-            },
+            Title = SolutionType.Description(),
         };
     }
 }
