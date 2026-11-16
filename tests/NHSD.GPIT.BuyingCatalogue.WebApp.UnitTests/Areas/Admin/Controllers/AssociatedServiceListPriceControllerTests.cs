@@ -700,7 +700,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 supplierId,
                 associatedService.CatalogueItemId,
                 price.CataloguePriceId,
-                price.CataloguePriceId,
+                cataloguePriceTierId,
                 new EditTieredPriceTierQuery())).As<NotFoundResult>();
 
             result.Should().NotBeNull();
