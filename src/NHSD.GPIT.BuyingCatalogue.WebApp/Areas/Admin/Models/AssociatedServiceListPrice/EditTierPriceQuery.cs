@@ -11,5 +11,5 @@ public sealed class EditTierPriceQuery
 
     public CatalogueItemId? AdditionalServiceId { get; init; }
 
-    public int TierIndex { get; init; }
+    public int? TierIndex { get; init; } = 0;
 }

@@ -616,7 +616,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                         query.SolutionId,
                         query.AdditionalServiceId,
                     }),
-                TierIndex = query.TierIndex,
+                TierIndex = query.TierIndex ?? 0,
             };
 
             return View("ListPrices/EditTierPrice", model);

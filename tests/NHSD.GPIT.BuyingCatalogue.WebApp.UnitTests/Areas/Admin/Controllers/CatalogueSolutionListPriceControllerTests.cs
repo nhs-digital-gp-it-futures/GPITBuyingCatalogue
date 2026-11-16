@@ -713,9 +713,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             price.CataloguePriceTiers.Add(tier);
             solution.CatalogueItem.CataloguePrices.Add(price);
 
-            var model = new AddEditTieredPriceTierModel(solution.CatalogueItem, price, tier);
-
-            model.IsEditing = false;
+            var model = new AddEditTieredPriceTierModel(solution.CatalogueItem, price, tier)
+            {
+                IsEditing = false,
+            };
 
             listPriceService.GetCatalogueItemWithListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
