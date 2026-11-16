@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionListPrice;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -356,6 +357,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             _ = supplierId;
             var solution = await listPriceService.GetCatalogueItemWithListPrices(solutionId);
             var price = solution.CataloguePrices.FirstOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+            if (price is null)
+                return NotFound();
 
             if (!ModelState.IsValid)
             {
@@ -623,10 +626,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             [FromRoute] CatalogueItemId solutionId,
             [FromRoute] int cataloguePriceId,
             [FromRoute] int tierId,
-            [FromQuery] SolutionType? solutionType,
-            [FromQuery] CatalogueItemId? additionalServiceId,
-            [FromQuery] int? supplierId,
-            bool? isEditing = null)
+            [FromQuery] DeleteTieredPriceTierQuery query)
         {
             var solution = await listPriceService.GetCatalogueItemWithListPrices(solutionId);
 
@@ -637,7 +637,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 BackLink = Url.Action(
                     nameof(EditTieredPriceTier),
-                    new { solutionId, cataloguePriceId, tierId, solutionType, additionalServiceId, supplierId, isEditing }),
+                    new
+                    {
+                        solutionId,
+                        cataloguePriceId,
+                        tierId,
+                        query.SolutionType,
+                        query.AdditionalServiceId,
+                        query.SupplierId,
+                        query.IsEditing,
+                    }),
             };
 
             return View("ListPrices/DeleteItem", model);
@@ -648,11 +657,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             [FromRoute] CatalogueItemId solutionId,
             [FromRoute] int cataloguePriceId,
             [FromRoute] int tierId,
-            [FromQuery] SolutionType? solutionType,
-            [FromQuery] CatalogueItemId? additionalServiceId,
-            [FromQuery] int? supplierId,
-            DeleteItemConfirmationModel model,
-            bool? isEditing = null)
+            [FromQuery] DeleteTieredPriceTierQuery query,
+            DeleteItemConfirmationModel model)
         {
             _ = model;
             var solution = await listPriceService.GetCatalogueItemWithListPrices(solutionId);
@@ -662,13 +668,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 return RedirectToAction(
                     nameof(EditTieredListPrice),
-                    new { solutionId, cataloguePriceId, solutionType, additionalServiceId, supplierId });
+                    new { solutionId, cataloguePriceId, query.SolutionType, query.AdditionalServiceId, query.SupplierId });
             }
 
             await listPriceService.DeletePriceTier(solutionId, cataloguePriceId, tierId);
 
-            var actionName = GetAddOrEditBacklink(isEditing);
-            return RedirectToAction(actionName, new { solutionId, cataloguePriceId, solutionType, additionalServiceId, supplierId });
+            var actionName = GetAddOrEditBacklink(query.IsEditing);
+            return RedirectToAction(
+                actionName,
+                new
+                {
+                    solutionId,
+                    cataloguePriceId,
+                    query.SolutionType,
+                    query.AdditionalServiceId,
+                    query.SupplierId,
+                });
         }
 
         private static string GetAddOrEditBacklink(bool? isEditing)

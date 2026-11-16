@@ -1,4 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels.AddEditGpConnectIntegrationModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels;
+
+@model AddEditGpConnectIntegrationModel;
 @{
     ViewBag.Title = $"{(Model.IntegrationId is null ? "Add" : "Edit")} a GP Connect integration";
 }
@@ -21,7 +23,7 @@
                             label-text="Integration type" />
 
                 <nhs-select asp-for="IsConsumer"
-                            asp-items="@Model.ProviderConsumerTypes"
+                            asp-items="@AddEditGpConnectIntegrationModel.ProviderConsumerTypes"
                             label-text="Provider or consumer" />
 
                 <nhs-textarea asp-for="AdditionalInformation"

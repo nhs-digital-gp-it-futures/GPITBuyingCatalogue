@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -45,24 +46,32 @@ public class SupplierServicesController(
 
         var model = new AssociatedServicesModel(supplier, associatedServices)
         {
-            BackLink = solutionType is null && solutionId is null
-                ? Url.Action(
-                    nameof(SuppliersController.EditSupplier),
-                    typeof(SuppliersController).ControllerName(),
-                    new { supplierId })
-                : additionalServiceId is not null && solutionId == additionalServiceId
-                    ? Url.Action(
-                        nameof(CatalogueSolutionsController.AssociatedServices),
-                        typeof(CatalogueSolutionsController).ControllerName(),
-                        new { solutionType, solutionId })
-                    : Url.Action(
-                        nameof(AdditionalServicesController.AssociatedServices),
-                        typeof(AdditionalServicesController).ControllerName(),
-                        new { solutionType, solutionId, additionalServiceId }),
             SolutionType = solutionType,
             SolutionId = solutionId,
             AdditionalServiceId = additionalServiceId,
         };
+
+        if (solutionType is null && solutionId is null)
+        {
+            model.BackLink = Url.Action(
+                nameof(SuppliersController.EditSupplier),
+                typeof(SuppliersController).ControllerName(),
+                new { supplierId });
+        }
+        else if (additionalServiceId is not null && solutionId == additionalServiceId)
+        {
+            model.BackLink = Url.Action(
+                nameof(CatalogueSolutionsController.AssociatedServices),
+                typeof(CatalogueSolutionsController).ControllerName(),
+                new { solutionType, solutionId });
+        }
+        else
+        {
+            model.BackLink = Url.Action(
+                nameof(AdditionalServicesController.AssociatedServices),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { solutionType, solutionId, additionalServiceId });
+        }
 
         return View(model);
     }

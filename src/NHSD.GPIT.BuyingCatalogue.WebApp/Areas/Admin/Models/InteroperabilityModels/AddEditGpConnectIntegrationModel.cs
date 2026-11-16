@@ -37,6 +37,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
             AdditionalInformation = solutionIntegration.Description;
         }
 
+        public static List<SelectOption<string>> ProviderConsumerTypes =>
+        [
+            new(Interoperability.Provider, false.ToString()),
+            new(Interoperability.Consumer, true.ToString()),
+        ];
+
         public string SolutionName { get; set; }
 
         public required SolutionType SolutionType { get; set; }
@@ -46,12 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
         public int? SelectedIntegrationType { get; set; }
 
         public bool? IsConsumer { get; set; }
-
-        public List<SelectOption<string>> ProviderConsumerTypes =>
-        [
-            new(Interoperability.Provider, false.ToString()),
-            new(Interoperability.Consumer, true.ToString()),
-        ];
 
         [StringLength(1000)]
         public string AdditionalInformation { get; set; }

@@ -16,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionListPrice;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using Xunit;
 
@@ -1031,7 +1032,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 solution.CatalogueItem.Name,
                 "This pricing tier will be deleted");
 
-            var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, cataloguePriceId, tierId, null, null, null, null)).As<ViewResult>();
+            var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, cataloguePriceId, tierId, new DeleteTieredPriceTierQuery())).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -1053,7 +1054,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             listPriceService.GetCatalogueItemWithListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, null, null, null, model)).As<RedirectToActionResult>();
+            var result = (await controller.DeleteTieredPriceTier(
+                solution.CatalogueItemId,
+                price.CataloguePriceId,
+                tier.Id,
+                new DeleteTieredPriceTierQuery(),
+                model)).As<RedirectToActionResult>();
 
             await listPriceService.Received().DeletePriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id);
 
@@ -1077,7 +1083,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             listPriceService.GetCatalogueItemWithListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, null, null, null, model)).As<RedirectToActionResult>();
+            var result = (await controller.DeleteTieredPriceTier(
+                solution.CatalogueItemId,
+                price.CataloguePriceId,
+                tier.Id,
+                new DeleteTieredPriceTierQuery(),
+                model)).As<RedirectToActionResult>();
 
             await listPriceService.DidNotReceive().DeletePriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id);
 
@@ -1101,7 +1112,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             listPriceService.GetCatalogueItemWithListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id, null, null, null, model, true)).As<RedirectToActionResult>();
+            var result = (await controller.DeleteTieredPriceTier(
+                solution.CatalogueItemId,
+                price.CataloguePriceId,
+                tier.Id,
+                new DeleteTieredPriceTierQuery()
+                {
+                    IsEditing = true,
+                },
+                model)).As<RedirectToActionResult>();
 
             await listPriceService.Received().DeletePriceTier(solution.CatalogueItemId, price.CataloguePriceId, tier.Id);
 

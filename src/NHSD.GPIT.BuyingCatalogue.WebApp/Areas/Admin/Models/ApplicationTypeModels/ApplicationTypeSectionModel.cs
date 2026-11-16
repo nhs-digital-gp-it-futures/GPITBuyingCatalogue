@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
             var applicationType = catalogueItem.Solution?.EnsureAndGetApplicationType();
 
             SolutionName = catalogueItem.Name;
-            ExistingApplicationTypes = applicationType!.ExistingApplicationTypes ?? [];
+            ExistingApplicationTypes = applicationType is null ? [] : applicationType.ExistingApplicationTypes ?? [];
             ApplicationTypesToAdd = [.. Enum.GetValues<ApplicationType>().Except(ExistingApplicationTypes)];
             ApplicationTypesToAddRadioItems = ApplicationTypesToAdd.Select(t => new { Text = t.AsString(EnumFormat.DisplayName), Value = t.ToString() });
             ExistingApplicationTypesCount = ExistingApplicationTypes.Count;
