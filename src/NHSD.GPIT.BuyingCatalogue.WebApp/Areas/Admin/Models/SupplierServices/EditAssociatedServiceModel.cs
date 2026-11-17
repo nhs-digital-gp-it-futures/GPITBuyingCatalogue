@@ -42,12 +42,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices
         public EditAssociatedServiceModel(
             Supplier supplier,
             CatalogueItem associatedService,
-            IList<CatalogueItem> relatedCatalogueItems)
+            IList<CatalogueItem> relatedCatalogueItems,
+            SolutionType? solutionType)
             : this(supplier, associatedService)
         {
             WithSolutions(relatedCatalogueItems);
             WithAdditionalServices(relatedCatalogueItems);
-            SolutionType = associatedService.Solution.SolutionType;
+            SolutionType = solutionType;
         }
 
         public SolutionType? SolutionType { get; set; }

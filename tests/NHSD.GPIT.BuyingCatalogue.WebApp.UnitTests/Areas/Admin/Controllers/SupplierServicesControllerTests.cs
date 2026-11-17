@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockAssociatedServicesService.GetAssociatedServiceReferences(associatedService.CatalogueItemId)
                 .Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
-            var expectedModel = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem, [])
+            var expectedModel = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem, [], SolutionType.GPIT)
             {
                 SolutionType = SolutionType.GPIT,
             };

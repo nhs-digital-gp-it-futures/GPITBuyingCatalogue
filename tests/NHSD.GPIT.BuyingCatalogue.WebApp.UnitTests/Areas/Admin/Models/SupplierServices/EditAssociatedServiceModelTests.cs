@@ -63,9 +63,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
             var actual = new EditAssociatedServiceModel(
                 supplier,
                 associatedService.CatalogueItem,
-                relatedCatalogueItems)
+                relatedCatalogueItems,
+                SolutionType.GPIT)
             {
-                SolutionType = SolutionType.GPIT,
                 SolutionId = solutionId,
                 AdditionalServiceId = additionalServiceId,
             };

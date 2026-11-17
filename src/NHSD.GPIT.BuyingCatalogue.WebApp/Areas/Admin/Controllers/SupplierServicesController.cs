@@ -142,7 +142,7 @@ public class SupplierServicesController(
             return BadRequest($"No associated service found for Id: {associatedServiceId}");
 
         var relatedCatalogueItems = await associatedServicesService.GetAssociatedServiceReferences(associatedServiceId);
-        var model = new EditAssociatedServiceModel(supplier, associatedService, relatedCatalogueItems)
+        var model = new EditAssociatedServiceModel(supplier, associatedService, relatedCatalogueItems, solutionType)
         {
             BackLink = Url.Action(
                 nameof(AssociatedServices),
