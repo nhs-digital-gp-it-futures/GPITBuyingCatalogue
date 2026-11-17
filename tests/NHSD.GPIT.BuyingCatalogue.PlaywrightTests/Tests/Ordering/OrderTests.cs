@@ -223,10 +223,12 @@ public class OrderTests : BaseTest
             Fixture.DbConnectionString, "Order for amend journey testing", hasAddOnServices: false);
 
         await OrderPages.LoginAsync();
-        await OrderPages.Dashboard.GoToOrdersAsync();
-        await Page.Locator($"[data-test-id=\"link-C0{orderId}-01\"]").ClickAsync();
-
-        // ...continue exactly as your existing amend journey does from here
+        await OrderPages.OpenOrderToAmendAsync(orderId);
+        await OrderPages.AmendServiceRecipientsAsync();
+        await OrderPages.AmendSolutionsAndServicesAsync(solutionName: SolutionName);
+        await OrderPages.AmendDeliveryAndFundingAsync();
+        await OrderPages.StepThreeCompleteContractAsync();
+        await OrderPages.StepFourReviewAndCompleteOrderAsync();
     }
 
     [Fact]
@@ -237,9 +239,17 @@ public class OrderTests : BaseTest
             Fixture.DbConnectionString, "Order for amend journey for Add on services testing", hasAddOnServices: true);
 
         await OrderPages.LoginAsync();
-        await OrderPages.Dashboard.GoToOrdersAsync();
-        await Page.Locator($"[data-test-id=\"link-C0{orderId}-01\"]").ClickAsync();
-
-        // ...continue exactly as your existing amend journey does from here
+        await OrderPages.OpenOrderToAmendAsync(orderId);
+        await OrderPages.AmendServiceRecipientsAsync();
+        await OrderPages.AmendSolutionsAndServicesAsync(
+            solutionName: SolutionName,
+            existingAdditionalService: AdditionalService,
+            newAdditionalService: NewAdditionalService,
+            newAssociatedService: AssociatedService);
+        await OrderPages.AmendDeliveryAndFundingAsync(
+            newAdditionalService: NewAdditionalService,
+            newAssociatedService: AssociatedService);
+        await OrderPages.StepThreeCompleteContractAsync(associatedService: AssociatedService);
+        await OrderPages.StepFourReviewAndCompleteOrderAsync();
     }
 }
