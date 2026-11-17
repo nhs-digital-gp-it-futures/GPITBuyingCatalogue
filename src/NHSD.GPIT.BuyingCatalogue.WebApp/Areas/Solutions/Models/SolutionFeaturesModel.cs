@@ -5,8 +5,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class SolutionFeaturesModel : SolutionDisplayBaseModel
     {
-        public SolutionFeaturesModel(CatalogueItem item, CatalogueItemContentStatus contentStatus)
-            : base(item, contentStatus)
+        public SolutionFeaturesModel(CatalogueItem item, CatalogueItemContentStatus contentStatus, SolutionSections sections)
+            : base(item, contentStatus, sections)
         {
             Features = item.Features();
         }

@@ -12,8 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        public ListPriceModel(CatalogueItem item, CatalogueItem service, CatalogueItemContentStatus contentStatus)
-            : base(item, contentStatus, true)
+        public ListPriceModel(CatalogueItem item, CatalogueItem service, CatalogueItemContentStatus contentStatus, SolutionSections sections)
+            : base(item, contentStatus, sections, true)
         {
             FlatListPrices = service.CataloguePrices
                 .Where(p =>
@@ -30,8 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             Title = PriceFor + " prices";
         }
 
-        public ListPriceModel(CatalogueItem item, CatalogueItemContentStatus contentStatus)
-            : base(item, contentStatus, false)
+        public ListPriceModel(CatalogueItem item, CatalogueItemContentStatus contentStatus, SolutionSections sections)
+            : base(item, contentStatus, sections, false)
         {
             FlatListPrices = item.CataloguePrices
                 .Where(p =>

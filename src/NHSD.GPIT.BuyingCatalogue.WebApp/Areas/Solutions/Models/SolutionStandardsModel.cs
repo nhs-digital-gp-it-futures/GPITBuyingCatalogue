@@ -11,8 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             CatalogueItem catalogueItem,
             IEnumerable<StandardComplianceModel> standards,
             IEnumerable<string> standardsWithWorkOffPlans,
-            CatalogueItemContentStatus contentStatus)
-            : base(catalogueItem, contentStatus, true, false)
+            CatalogueItemContentStatus contentStatus,
+            SolutionSections sections)
+            : base(catalogueItem, contentStatus, sections, true, false)
         {
             Standards = standards
                 .Where(x => x.Compliance is StandardCompliance.InProgress or StandardCompliance.FullyMet)

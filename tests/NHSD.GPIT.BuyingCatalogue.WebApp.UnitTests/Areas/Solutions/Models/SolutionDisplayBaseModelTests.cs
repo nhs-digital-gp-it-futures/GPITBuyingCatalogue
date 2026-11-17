@@ -4,6 +4,7 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
 
@@ -42,6 +43,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             model.BreadcrumbItems.Select(x => x.Name)
                 .Should()
                 .Equal("Home", "Community Pharmacy", "Catalogue solutions");
+            var catalogueSolutions = model.BreadcrumbItems.Last();
+            catalogueSolutions.Action.Should().Be(nameof(SolutionsController.Index));
+            catalogueSolutions.Controller.Should().Be("Solutions");
+            catalogueSolutions.RouteData.Should().Contain("area", "Solutions")
+                .And.Contain("solutionType", nameof(SolutionType.CommunityPharmacy));
         }
 
         [Theory]
@@ -77,6 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var model = new SolutionDisplayStub(catalogueItem, contentStatus, isSubPage);
             model.IsSubPage.Should().Be(isSubPage);
             model.SolutionId.Should().Be(catalogueItem.Id);
+            model.SolutionType.Should().Be(solution.SolutionType);
             model.PublicationStatus.Should().Be(catalogueItem.PublishedStatus);
             model.IsPilotSolution.Should().Be(solution.IsPilotSolution);
             model.Sections.Any().Should().BeTrue();
@@ -109,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 CatalogueItem catalogueItem,
                 CatalogueItemContentStatus contentStatus,
                 bool isSubPage = false)
-                : base(catalogueItem, contentStatus, isSubPage)
+                : base(catalogueItem, contentStatus, new SolutionSections { Description = SolutionSectionRequirement.Mandatory }, isSubPage)
             {
             }
 
@@ -118,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 CatalogueItemContentStatus contentStatus,
                 bool shouldShowStandardsCategory,
                 bool isSubPage = false)
-                : base(catalogueItem, contentStatus, shouldShowStandardsCategory, isSubPage)
+                : base(catalogueItem, contentStatus, new SolutionSections { Description = SolutionSectionRequirement.Mandatory }, shouldShowStandardsCategory, isSubPage)
             {
             }
 

@@ -17,14 +17,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void ApplicationTypesModel_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new ApplicationTypesModel(null, new CatalogueItemContentStatus()));
+            var actual = Assert.Throws<ArgumentNullException>(() => new ApplicationTypesModel(null, new CatalogueItemContentStatus(), new SolutionSections()));
             actual.ParamName.Should().Be("catalogueItem");
         }
 
         [Fact]
         public static void ApplicationTypesModel_NullSolution_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new ApplicationTypesModel(new CatalogueItem() { Solution = null }, new CatalogueItemContentStatus()));
+            var actual = Assert.Throws<ArgumentNullException>(() => new ApplicationTypesModel(new CatalogueItem() { Solution = null }, new CatalogueItemContentStatus(), new SolutionSections()));
             actual.ParamName.Should().Be("catalogueItem");
         }
 
@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             solution.ApplicationTypeDetail = applicationTypeDetail;
 
-            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus, new SolutionSections());
 
             model.BrowserBasedApplication.Should().NotBeNull();
             model.BrowserBasedApplication.Items.Should().HaveCount(8);
@@ -172,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             solution.ApplicationTypeDetail = applicationTypeDetail;
 
-            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus, new SolutionSections());
 
             model.NativeDesktopApplication.Should().NotBeNull();
             model.NativeDesktopApplication.Items.Should().HaveCount(10);
@@ -216,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             solution.ApplicationTypeDetail = applicationTypeDetail;
 
-            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus, new SolutionSections());
 
             model.NativeMobileApplication.Should().NotBeNull();
             model.NativeMobileApplication.Items.Should().HaveCount(11);
@@ -253,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             solution.ApplicationTypeDetail = applicationTypeDetail;
 
-            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus, new SolutionSections());
 
             model.ApplicationTypes.Should().NotBeNull();
             model.ApplicationTypes.Items.Should()
