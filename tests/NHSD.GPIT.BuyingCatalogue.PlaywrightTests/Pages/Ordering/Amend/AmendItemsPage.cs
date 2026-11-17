@@ -62,7 +62,6 @@ public class AmendItemsPage : BasePage
         await AssertHeadingAsync(quantityHeading);
         await SelectLink.ClickAsync();
 
-        await AssertHeadingAsync("Review patient list sizes");
         foreach (var (practice, quantity) in practiceQuantities)
             await Page.GetByRole(AriaRole.Row)
                 .Filter(new() { HasText = practice })

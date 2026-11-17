@@ -132,10 +132,6 @@ public class ServiceRecipientsPage : BasePage
         await ManualOption.CheckAsync();
         await ClickSaveAndContinueAsync();
 
-        await AssertHeadingAsync("Select sublocations for this order");
-        await SelectLink.ClickAsync();
-        await ClickSaveAndContinueAsync();
-
         await AssertHeadingAsync("Confirm sublocations");
         await SelectLink.ClickAsync();
         await Page.GetByRole(AriaRole.Checkbox, new() { Name = practice }).CheckAsync();
