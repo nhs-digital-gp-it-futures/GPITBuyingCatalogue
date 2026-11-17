@@ -132,7 +132,8 @@
                 solutionId = Model.CatalogueItemId,
                 AdditionalServiceId = Model.ServiceId,
                 cataloguePrice.CataloguePriceId,
-                solutionType = Model.SolutionType
+                solutionType = Model.SolutionType,                
+                supplierId = Model.SupplierId
             }),
         CatalogueItemType.AssociatedService => Url.Action(
             nameof(AssociatedServiceListPriceController.EditTieredListPrice),
@@ -170,7 +171,8 @@
                 solutionId = Model.CatalogueItemId,
                 additionalServiceId = Model.ServiceId,
                 cataloguePrice.CataloguePriceId,
-                solutionType = Model.SolutionType
+                solutionType = Model.SolutionType,
+                supplierId = Model.SupplierId
             }),
         CatalogueItemType.AssociatedService => Url.Action(
             nameof(AssociatedServiceListPriceController.EditFlatListPrice),
@@ -181,7 +183,8 @@
                 associatedServiceId = Model.CatalogueItemId,
                 cataloguePrice.CataloguePriceId,
                 solutionType = Model.SolutionType,
-                additionalServiceId = Model.AdditionalServiceId
+                additionalServiceId = Model.AdditionalServiceId,
+                solutionId = Model.SolutionId
             }),
         _ => string.Empty,
     };
