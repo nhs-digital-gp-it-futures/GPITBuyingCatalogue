@@ -24,7 +24,7 @@ public sealed class SafeRefererMiddleware
 
         if (Uri.TryCreate(raw, UriKind.Absolute, out var refererUri) && IsSameOrigin(context, refererUri))
         {
-            var safePathAndQuery = refererUri.PathAndQuery.StartsWith("/", StringComparison.Ordinal)
+            var safePathAndQuery = refererUri.PathAndQuery.StartsWith('/')
                 ? refererUri.PathAndQuery
                 : "/";
 
@@ -60,8 +60,12 @@ public sealed class SafeRefererMiddleware
         var requestPort = context.Request.Host.Port.GetValueOrDefault(
             string.Equals(context.Request.Scheme, "https", StringComparison.OrdinalIgnoreCase) ? 443 : 80);
 
+        var defaultRefererPort = string.Equals(refererUri.Scheme, "https", StringComparison.OrdinalIgnoreCase)
+            ? 443
+            : 80;
+
         var refererPort = refererUri.IsDefaultPort
-            ? (string.Equals(refererUri.Scheme, "https", StringComparison.OrdinalIgnoreCase) ? 443 : 80)
+            ? defaultRefererPort
             : refererUri.Port;
 
         return refererPort == requestPort;
