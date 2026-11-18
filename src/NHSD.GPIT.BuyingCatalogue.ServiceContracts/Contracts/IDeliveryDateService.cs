@@ -4,18 +4,19 @@ using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
+
+public interface IDeliveryDateService
 {
-    public interface IDeliveryDateService
-    {
-        public Task SetDeliveryDate(string internalOrgId, CallOffId callOffId, DateTime deliveryDate);
+    public Task SetAllDeliveryDates(string internalOrgId, CallOffId callOffId, DateTime deliveryDate);
 
-        public Task SetAllDeliveryDates(string internalOrgId, CallOffId callOffId, DateTime deliveryDate);
+    public Task ResetDeliveryDates(int orderId, DateTime commencementDate);
 
-        Task ResetRecipientDeliveryDates(int orderId);
+    public Task<IEnumerable<OrderSublocationRecipient>> GetSelectedRecipientsAsync(CallOffId callOffId, IEnumerable<string> selectedRecipients);
 
-        public Task SetDeliveryDates(int orderId, OrderItem orderItem, List<RecipientDeliveryDateDto> deliveryDates);
+    public Task<IEnumerable<OrderItemSublocationRecipient>> GetRecipientOrderItemsDeliveryDatesAsync(CallOffId callOffId, string recipientId);
 
-        public Task ResetDeliveryDates(int orderId, DateTime commencementDate);
-    }
+    public Task SetRecipientOrderItemDeliveryDatesAsync(IEnumerable<RecipientOrderItemDeliveryDateDto> deliveryDates);
+
+    public Task<DateTime?> GetMostCommonRecipientDeliveryDateAsync(CallOffId callOffId);
 }

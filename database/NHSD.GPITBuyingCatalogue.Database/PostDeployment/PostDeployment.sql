@@ -91,3 +91,4 @@
 
 :r ./InsertUserLoginEvents.sql
 :r ./UpdateAspNetUsersDeactivationReason.sql
+:r ./DeleteAccountManagerRole.sql

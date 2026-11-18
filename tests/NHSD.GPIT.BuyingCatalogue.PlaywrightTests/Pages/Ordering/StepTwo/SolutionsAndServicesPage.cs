@@ -65,7 +65,7 @@ public class SolutionsAndServicesPage : BasePage
     public async Task ContinuePastEditAsync()
     {
         await AssertHeadingAsync("Edit associated service");
-        await ClickSaveAndContinueLinkAsync();
+        await ClickSaveAndContinueAsync();
     }
 
     // Add an associated OR additional service on top of a catalogue solution

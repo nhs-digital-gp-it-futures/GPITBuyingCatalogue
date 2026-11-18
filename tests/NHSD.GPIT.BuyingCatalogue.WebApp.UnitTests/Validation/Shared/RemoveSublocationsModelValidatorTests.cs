@@ -32,5 +32,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
                 .WithErrorMessage(
                     string.Format(RemoveSublocationsModelValidator.NoSelectionMadeErrorMessage, model.Pluralisation));
         }
+
+        [Theory]
+        [MockAutoData]
+        public static void Validate_NoSelectionMade_WithNullPluralisation_ThrowsValidationErrorWithDefaultPluralisation(
+RemoveSublocationsModelValidator systemUnderTest)
+        {
+            var model = new RemoveSublocationsModel
+            {
+                ConfirmRemove = null,
+            };
+
+            TestValidationResult<RemoveSublocationsModel> result = systemUnderTest.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor("ConfirmRemove")
+                .WithErrorMessage(
+                    string.Format(RemoveSublocationsModelValidator.NoSelectionMadeErrorMessage, "sublocations"));
+        }
     }
 }

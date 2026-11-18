@@ -91,7 +91,7 @@ public readonly struct NavigationMenuModel
                         CommunityPharmacy(urlHelper),
                     ]),
                 (
-                    user => user.IsBuyer() || user.IsAccountManager(), (user, urlHelper, routeValues) =>
+                    user => user.IsBuyer(), (user, urlHelper, routeValues) =>
                     [
                         Home(urlHelper),
 

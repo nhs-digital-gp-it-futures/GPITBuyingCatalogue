@@ -12,8 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared.ServiceRecipients
             RuleFor(x => x.ConfirmRemove)
                 .NotNull()
                 .WithMessage(x => string.Format(
-                    NoSelectionMadeErrorMessage,
-                    x.Pluralisation))
+                NoSelectionMadeErrorMessage,
+                x?.Pluralisation ?? "sublocations"))
                 .OverridePropertyName("ConfirmRemove");
         }
     }

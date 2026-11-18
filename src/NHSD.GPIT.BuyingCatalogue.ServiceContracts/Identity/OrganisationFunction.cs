@@ -8,7 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
     {
         public static readonly OrganisationFunction Authority = new(1, "Authority", "Admin", AuthorityAdvice, AuthorityAdvice);
         public static readonly OrganisationFunction Buyer = new(2, "Buyer", "Buyer", string.Format(BuyerAdvice, " for your organisation"), string.Format(BuyerAdvice, string.Empty));
-        public static readonly OrganisationFunction AccountManager = new(3, "AccountManager", "Account manager", string.Format(AccountManagerAdvice, "your"), string.Format(AccountManagerAdvice, "their buyer"));
         public static readonly OrganisationFunction Onboarding = new(4, "Onboarding", "Onboarding", OnboardingAdvice, OnboardingAdvice);
         public static readonly OrganisationFunction ReadOnly = new(5, "ReadOnly", "Read only", ReadOnlyAdvice, ReadOnlyAdvice);
 
@@ -20,9 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
 
         private const string ReadOnlyAdvice = "This type of user has read only access to view existing orders.";
 
-        private const string AccountManagerAdvice = "This type of user can manage user accounts for {0} organisation.";
-
-        private static readonly IEnumerable<OrganisationFunction> Values = new[] { Authority, Buyer, AccountManager, Onboarding, ReadOnly };
+        private static readonly IEnumerable<OrganisationFunction> Values = new[] { Authority, Buyer, Onboarding, ReadOnly };
 
         private OrganisationFunction(int value, string name, string displayName, string advice, string internalAdvice)
         {

@@ -241,6 +241,55 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
 
         [Theory]
         [MockAutoData]
+        public static void DetermineOrderRecipientsWithNewServices_ReturnsAllRecipientsForNewService(
+            IFixture fixture,
+            Organisation organisation,
+            CatalogueItem existingCatalogueItem,
+            CatalogueItem newCatalogueItem)
+        {
+            existingCatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            newCatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+
+            var existingOrderItem = BuildOrderItem(fixture, existingCatalogueItem, null);
+            var newOrderItem = BuildOrderItem(fixture, newCatalogueItem, null);
+            var previousRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [existingOrderItem]);
+            var currentRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [existingOrderItem, newOrderItem]);
+            var newCurrentRecipient = BuildOrderSublocationRecipient(fixture, "XXXX", [existingOrderItem, newOrderItem]);
+
+            var previousOrder = BuildOrder(
+                fixture,
+                [existingOrderItem],
+                [BuildOrderSublocation(fixture, "XXXX", [previousRecipient])],
+                organisation);
+            var currentOrder = BuildOrder(
+                fixture,
+                [existingOrderItem, newOrderItem],
+                [BuildOrderSublocation(fixture, "XXXX", [currentRecipient, newCurrentRecipient])],
+                organisation);
+            currentOrder.Revision = 2;
+
+            var orderWrapper = new OrderWrapper(currentOrder, [previousOrder]);
+
+            var result = orderWrapper.DetermineOrderRecipientsWithNewServices(newOrderItem);
+
+            result.Should().BeEquivalentTo([currentRecipient, newCurrentRecipient]);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void DetermineOrderRecipientsWithNewServices_WithUnknownOrderItem_ReturnsNoRecipients(
+            Order order,
+            OrderItem orderItem)
+        {
+            var orderWrapper = new OrderWrapper(order);
+
+            var result = orderWrapper.DetermineOrderRecipientsWithNewServices(orderItem);
+
+            result.Should().BeEmpty();
+        }
+
+        [Theory]
+        [MockAutoData]
         public static void OrderWrapper_RolledUp_Uses_Old_OrderItem_Data_Single_sublocation(
             CatalogueItem catalogueItem,
             IFixture fixture,

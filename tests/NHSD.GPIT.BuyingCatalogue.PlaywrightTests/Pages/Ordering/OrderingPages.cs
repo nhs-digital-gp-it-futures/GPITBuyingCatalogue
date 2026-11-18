@@ -209,16 +209,24 @@ public class OrderingPages
     }
 
     public async Task StepTwoDeliveryAndFundingAsync(
-        string associatedService = "",
-        string additionalService = "",
-        string catalogueSolutionOverride = "")
+    string associatedService = "",
+    string additionalService = "",
+    string catalogueSolutionOverride = "",
+    bool perRecipientDeliveryDates = false)
     {
         _output.WriteLine("Step 2 — delivery dates and funding");
 
         await PlannedDeliveryDates.NavigateAsync();
-        await PlannedDeliveryDates.EnterDeliveryDateAsync(_data.DeliveryDay, _data.DeliveryMonth, _data.DeliveryYear);
 
-        // Default to the baseline solution; override allows tests that changed the solution to fund the correct one
+        if (perRecipientDeliveryDates)
+            await PlannedDeliveryDates.EnterDeliveryDatePerRecipientAsync(
+                _data.DeliveryDay, _data.DeliveryMonth, _data.DeliveryYear,
+                _data.Practices, _data.PerRecipientDeliveryDay);
+        else
+            await PlannedDeliveryDates.EnterDeliveryDateAsync(
+                _data.DeliveryDay, _data.DeliveryMonth, _data.DeliveryYear);
+
+        // Funding — unchanged
         var solutionForFunding = string.IsNullOrWhiteSpace(catalogueSolutionOverride)
             ? _data.Solution
             : catalogueSolutionOverride;

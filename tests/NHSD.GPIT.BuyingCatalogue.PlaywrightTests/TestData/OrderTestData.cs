@@ -25,6 +25,7 @@ public class OrderTestData
 
     private static readonly DateTime OrderStartDate = DateTime.Today.AddMonths(1);
     private static readonly DateTime DeliveryDate = OrderStartDate.AddDays(15);
+    private static readonly DateTime PerRecipientDeliveryDate = DeliveryDate.AddDays(1);
 
     public string StartDay { get; set; } = OrderStartDate.Day.ToString("D2");
     public string StartMonth { get; set; } = OrderStartDate.Month.ToString("D2");
@@ -44,4 +45,5 @@ public class OrderTestData
     public string DeliveryDay { get; set; } = DeliveryDate.Day.ToString("D2");
     public string DeliveryMonth { get; set; } = DeliveryDate.Month.ToString("D2");
     public string DeliveryYear { get; set; } = DeliveryDate.Year.ToString();
+    public string PerRecipientDeliveryDay { get; set; } = PerRecipientDeliveryDate.Day.ToString("D2");
 }

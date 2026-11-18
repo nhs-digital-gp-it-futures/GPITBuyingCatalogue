@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
@@ -16,10 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 throw new ArgumentNullException(nameof(orderWrapper));
             }
 
-            if (routeValues is null or { OrderItemId: null })
-            {
-                throw new ArgumentNullException(nameof(routeValues));
-            }
+            ArgumentNullException.ThrowIfNull(routeValues);
 
             var order = orderWrapper.Order;
 
@@ -34,20 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            var orderItemId = order.GetPreviousOrderItemId(routeValues.OrderItemId.Value);
-
-            if (orderItemId == null)
-            {
-                return new RoutingResult
-                {
-                    ActionName = Constants.Actions.SelectDeliveryDate,
-                    ControllerName = Constants.Controllers.DeliveryDates,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, setAllPDD = false },
-                };
-            }
-
             var solution = order.GetSolutionOrderItem();
-            var orderItem = order.OrderItem(orderItemId.Value);
 
             if (order.OrderType.AssociatedServicesOnly
                 || solution == null)
@@ -56,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 {
                     ActionName = Constants.Actions.EditDeliveryDates,
                     ControllerName = Constants.Controllers.DeliveryDates,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, orderItemId },
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
                 };
             }
 
@@ -65,21 +48,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 .Distinct()
                 .ToList();
 
-            IEnumerable<string> solutionOdsCodes = orderWrapper.DetermineOrderRecipients(solution)
-                .Select(x => x.RecipientOdsCode);
-            IEnumerable<string> nextItemOdsCodes = orderWrapper.DetermineOrderRecipients(orderItem)
-                .Select(x => x.RecipientOdsCode);
-            var crossOver = solutionOdsCodes.Intersect(nextItemOdsCodes);
-
             if (solutionDates.Count == 0
-                || solutionDates.All(x => x == order.DeliveryDate)
-                || !crossOver.Any())
+                || solutionDates.All(x => x == order.DeliveryDate))
             {
                 return new RoutingResult
                 {
                     ActionName = Constants.Actions.EditDeliveryDates,
                     ControllerName = Constants.Controllers.DeliveryDates,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, orderItemId },
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
                 };
             }
 
@@ -87,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             {
                 ActionName = Constants.Actions.MatchDeliveryDates,
                 ControllerName = Constants.Controllers.DeliveryDates,
-                RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, orderItemId = routeValues.OrderItemId.Value },
+                RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
             };
         }
     }
