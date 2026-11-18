@@ -11,6 +11,13 @@ resource "azurerm_resource_group" "keyvault" {
   }
 }
 
+resource "azurerm_management_lock" "keyvault_rg_delete_lock" {
+  name       = "${var.project}-${var.environment}-rg-keyvault-delete-protection"
+  scope      = azurerm_resource_group.keyvault.id
+  lock_level = "CanNotDelete"
+  notes      = "Prevents accidental deletion of the keyvault resource group and its resources."
+}
+
 resource "azurerm_key_vault" "keyvault" {
   name                            = "gpitf-${var.environment}-kv"
   resource_group_name             = azurerm_resource_group.keyvault.name
