@@ -198,10 +198,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             app.UseCookiePolicy();
 
+            // Important: forwarded headers BEFORE referer validation (proxy-safe host/scheme)
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedProto,
             });
+
+            app.UseMiddleware<NHSD.GPIT.BuyingCatalogue.WebApp.Middleware.SafeRefererMiddleware>();
 
             app.Use(async (context, next) =>
             {
