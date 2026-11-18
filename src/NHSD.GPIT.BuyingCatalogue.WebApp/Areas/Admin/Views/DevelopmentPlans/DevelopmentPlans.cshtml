@@ -15,11 +15,12 @@
 
         @if (Model.HasInProgressStandards)
         {
-            <vc:nhs-action-link text="Add a Work-off Plan item"
-                                url="@Url.Action(
-                                         nameof(DevelopmentPlansController.AddWorkOffPlan),
-                                         typeof(DevelopmentPlansController).ControllerName(),
-                                         new { Model.SolutionId })"/>
+            <vc:nhs-action-link 
+                text="Add a Work-off Plan item"
+                url="@Url.Action(
+                    nameof(DevelopmentPlansController.AddWorkOffPlan),
+                    typeof(DevelopmentPlansController).ControllerName(),
+                    new { solutionType = Model.SolutionType, solutionId = Model.SolutionId })" />
 
             <p>Use the link to add information about each Work-off Plan item for your catalogue solution.</p>
         }
@@ -30,6 +31,7 @@
                     asp-action="@(nameof(CatalogueSolutionStandardsController.Index))"
                     asp-controller="@(typeof(CatalogueSolutionStandardsController).ControllerName())"
                     asp-area="@(typeof(CatalogueSolutionStandardsController).AreaName())"
+                    asp-route-solutionType="@Model.SolutionType"
                     asp-route-solutionId="@Model.SolutionId">Catalogue solution standards page</a> and change the
                 standard status to in progress.
             </p>
@@ -50,9 +52,9 @@
                         <nhs-table-cell>@workOffPlan.CompletionDate.ToString("d MMM yyyy")</nhs-table-cell>
                         <nhs-table-cell>
                             <a href="@Url.Action(
-                                         nameof(DevelopmentPlansController.EditWorkOffPlan),
-                                         typeof(DevelopmentPlansController).ControllerName(),
-                                         new { solutionid = Model.SolutionId, workOffPlanId = workOffPlan.Id })">Edit</a>
+                                nameof(DevelopmentPlansController.EditWorkOffPlan),
+                                typeof(DevelopmentPlansController).ControllerName(),
+                                new { solutionType = Model.SolutionType, solutionid = Model.SolutionId, workOffPlanId = workOffPlan.Id })">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }
@@ -64,7 +66,8 @@
         <form method="post">
             <input type="hidden" asp-for="BackLink"/>
             <input type="hidden" asp-for="SolutionName"/>
-            <input type="hidden" asp-for="SolutionId"/>
+            <input type="hidden" asp-for="SolutionId" />
+            <input type="hidden" asp-for="SolutionType" />
             <nhs-input asp-for="Link"
                        label-text="Link to roadmap (optional)"
                        label-hint="Provide a URL to a page that gives buyers further information about your roadmap."/>

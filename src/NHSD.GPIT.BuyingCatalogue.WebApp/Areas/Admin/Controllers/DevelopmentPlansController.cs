@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.DevelopmentPlans;
@@ -14,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
-    [Route("admin/catalogue-solutions/manage/{solutionId}/development-plans")]
+    [Route("admin/catalogue-solutions/manage/{solutionType}/{solutionId}/development-plans")]
     public sealed class DevelopmentPlansController(
         ISolutionsService solutionsService,
         IDevelopmentPlansService developmentPlansService,
@@ -26,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly ISolutionStandardsService solutionStandardsService = solutionStandardsService ?? throw new ArgumentNullException(nameof(solutionStandardsService));
 
         [HttpGet]
-        public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId)
+        public async Task<IActionResult> DevelopmentPlans(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
             if (solution is null)
@@ -38,15 +39,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(
                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
-                    new { solutionId }),
+                    new { solutionType, solutionId }),
                 HasInProgressStandards = inProgressStandards.Any(),
+                SolutionType = solutionType,
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId, DevelopmentPlanModel model)
+        public async Task<IActionResult> DevelopmentPlans(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            DevelopmentPlanModel model)
         {
             var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
             if (solution is null)
@@ -65,11 +70,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(
                 nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { solutionId });
+                new { solutionType, solutionId });
         }
 
         [HttpGet("add-work-off-plan")]
-        public async Task<IActionResult> AddWorkOffPlan(CatalogueItemId solutionId)
+        public async Task<IActionResult> AddWorkOffPlan(
+            SolutionType solutionType,
+            CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
 
@@ -83,14 +90,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(
                     nameof(DevelopmentPlans),
                     typeof(DevelopmentPlansController).ControllerName(),
-                    new { solutionId }),
+                    new { solutionType, solutionId }),
+                SolutionType = solutionType,
             };
 
             return View("EditWorkOffPlan", model);
         }
 
         [HttpPost("add-work-off-plan")]
-        public async Task<IActionResult> AddWorkOffPlan(CatalogueItemId solutionId, EditWorkOffPlanModel model)
+        public async Task<IActionResult> AddWorkOffPlan(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            EditWorkOffPlanModel model)
         {
             var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
 
@@ -114,11 +125,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await developmentPlansService.SaveWorkOffPlan(solutionId, saveModel);
 
-            return RedirectToAction(nameof(DevelopmentPlans), new { solutionId });
+            return RedirectToAction(nameof(DevelopmentPlans), new { solutionType, solutionId });
         }
 
         [HttpGet("edit-work-off-plan/{workOffPlanId}")]
-        public async Task<IActionResult> EditWorkOffPlan(CatalogueItemId solutionId, int workOffPlanId)
+        public async Task<IActionResult> EditWorkOffPlan(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int workOffPlanId)
         {
             var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
 
@@ -137,14 +151,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(
                     nameof(DevelopmentPlans),
                     typeof(DevelopmentPlansController).ControllerName(),
-                    new { solutionId }),
+                    new { solutionType, solutionId }),
+                SolutionType = solutionType,
             };
 
             return View(model);
         }
 
         [HttpPost("edit-work-off-plan/{workOffPlanId}")]
-        public async Task<IActionResult> EditWorkOffPlan(CatalogueItemId solutionId, int workOffPlanId, EditWorkOffPlanModel model)
+        public async Task<IActionResult> EditWorkOffPlan(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int workOffPlanId,
+            EditWorkOffPlanModel model)
         {
             var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
 
@@ -174,11 +193,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await developmentPlansService.UpdateWorkOffPlan(workOffPlanId, saveModel);
 
-            return RedirectToAction(nameof(DevelopmentPlans), new { solutionId });
+            return RedirectToAction(nameof(DevelopmentPlans), new { solutionType, solutionId });
         }
 
         [HttpGet("delete-work-off-plan/{workOffPlanId}")]
-        public async Task<IActionResult> DeleteWorkOffPlan(CatalogueItemId solutionId, int workOffPlanId)
+        public async Task<IActionResult> DeleteWorkOffPlan(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int workOffPlanId)
         {
             var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
 
@@ -193,17 +215,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new EditWorkOffPlanModel(solution, workOffPlan)
             {
                 BackLink = Url.Action(
-                nameof(EditWorkOffPlan),
-                typeof(DevelopmentPlansController).ControllerName(),
-                new { solutionId, workOffPlanId = workOffPlan.Id }),
+                    nameof(EditWorkOffPlan),
+                    typeof(DevelopmentPlansController).ControllerName(),
+                    new { solutionType, solutionId, workOffPlanId = workOffPlan.Id }),
+                SolutionType = solutionType,
             };
 
             return View(model);
         }
 
         [HttpPost("delete-work-off-plan/{workOffPlanId}")]
-        public async Task<IActionResult> DeleteWorkOffPlan(CatalogueItemId solutionId, int workOffPlanId, EditWorkOffPlanModel model)
+        public async Task<IActionResult> DeleteWorkOffPlan(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int workOffPlanId,
+            EditWorkOffPlanModel model)
         {
+            _ = model;
             var solution = await solutionsService.GetSolutionWithWorkOffPlans(solutionId);
 
             if (solution is null)
@@ -216,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await developmentPlansService.DeleteWorkOffPlan(workOffPlanId);
 
-            return RedirectToAction(nameof(DevelopmentPlans), new { solutionId });
+            return RedirectToAction(nameof(DevelopmentPlans), new { solutionType, solutionId });
         }
     }
 }

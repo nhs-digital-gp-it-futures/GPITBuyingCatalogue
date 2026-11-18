@@ -12,19 +12,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
-    [Route("admin/catalogue-solutions")]
-    public sealed class DeleteApplicationTypeController : Controller
+    [Route("admin/catalogue-solutions/manage/{solutionType}/{solutionId}/application-type/delete")]
+    public sealed class DeleteApplicationTypeController(
+        ISolutionsService solutionsService) : Controller
     {
-        private readonly ISolutionsService solutionsService;
+        private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
 
-        public DeleteApplicationTypeController(
-            ISolutionsService solutionsService)
-        {
-            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-        }
-
-        [HttpGet("manage/{solutionId}/application-type/delete/{applicationType}")]
-        public async Task<IActionResult> DeleteApplicationTypeConfirmation(CatalogueItemId solutionId, ApplicationType applicationType)
+        [HttpGet("{applicationType}")]
+        public async Task<IActionResult> DeleteApplicationTypeConfirmation(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            ApplicationType applicationType)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -38,15 +36,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     ApplicationType.BrowserBased => Url.Action(
                         nameof(BrowserBasedController.BrowserBased),
                         typeof(BrowserBasedController).ControllerName(),
-                        new { solutionId }),
+                        new { solutionType, solutionId }),
                     ApplicationType.Desktop => Url.Action(
                         nameof(DesktopBasedController.Desktop),
                         typeof(DesktopBasedController).ControllerName(),
-                        new { solutionId }),
+                        new { solutionType, solutionId }),
                     ApplicationType.MobileTablet => Url.Action(
                         nameof(MobileTabletBasedController.MobileTablet),
                         typeof(MobileTabletBasedController).ControllerName(),
-                        new { solutionId }),
+                        new { solutionType, solutionId }),
                     _ => throw new ArgumentOutOfRangeException(nameof(applicationType)),
                 },
             };
@@ -54,8 +52,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/application-type/delete/{applicationType}")]
+        [HttpPost("{applicationType}")]
         public async Task<IActionResult> DeleteApplicationTypeConfirmation(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             ApplicationType applicationType,
             DeleteApplicationTypeConfirmationModel model)
@@ -68,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(
                 nameof(CatalogueSolutionsController.ApplicationType),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { solutionId });
+                new { solutionType, solutionId });
         }
     }
 }

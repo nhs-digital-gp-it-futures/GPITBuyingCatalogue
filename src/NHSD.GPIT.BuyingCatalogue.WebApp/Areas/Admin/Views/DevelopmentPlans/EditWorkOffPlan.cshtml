@@ -12,9 +12,11 @@
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
                         advice="Provide the following information about a Work-off Plan item for your catalogue solution."/>
+
         <form method="post">
             <input type="hidden" asp-for="SolutionName"/>
-            <input type="hidden" asp-for="SolutionId"/>
+            <input type="hidden" asp-for="SolutionId" />
+            <input type="hidden" asp-for="SolutionType" />
             <input type="hidden" asp-for="BackLink"/>
 
             <nhs-inset-text>
@@ -22,6 +24,7 @@
                         asp-action="@(nameof(CatalogueSolutionStandardsController.Index))"
                         asp-controller="@(typeof(CatalogueSolutionStandardsController).ControllerName())"
                         asp-area="@(typeof(CatalogueSolutionStandardsController).AreaName())"
+                        asp-route-solutionType="@Model.SolutionType"
                         asp-route-solutionId="@Model.SolutionId">Catalogue solution standards page</a> and change the
                     standard status to in progress.</p>
             </nhs-inset-text>
@@ -47,11 +50,12 @@
         </form>
         @if (Model.WorkOffPlanId.HasValue)
         {
-            <vc:nhs-delete-button text="Delete Work-off Plan item"
-                                  url="@Url.Action(
-                                           nameof(DevelopmentPlansController.DeleteWorkOffPlan),
-                                           typeof(DevelopmentPlansController).ControllerName(),
-                                           new { Model.SolutionId, Model.WorkOffPlanId })"/>
+            <vc:nhs-delete-button 
+                text="Delete Work-off Plan item"
+                url="@Url.Action(
+                    nameof(DevelopmentPlansController.DeleteWorkOffPlan),
+                    typeof(DevelopmentPlansController).ControllerName(),
+                    new { Model.SolutionType, Model.SolutionId, Model.WorkOffPlanId })"/>
         }
     </div>
 </div>

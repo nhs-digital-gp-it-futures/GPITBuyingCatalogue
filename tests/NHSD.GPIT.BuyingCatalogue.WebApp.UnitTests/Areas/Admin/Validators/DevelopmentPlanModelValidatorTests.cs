@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DevelopmentPlans;
@@ -16,9 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             [Frozen] IUrlValidator urlValidator,
             DevelopmentPlanModelValidator validator)
         {
-            var model = new DevelopmentPlanModel();
-
-            var result = validator.TestValidate(model);
+            var model = new DevelopmentPlanModel()
+            {
+                SolutionType = SolutionType.GPIT,
+            };
+            _ = validator.TestValidate(model);
 
             urlValidator.DidNotReceive().IsValidUrl(Arg.Any<string>());
         }
@@ -44,7 +47,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             [Frozen] IUrlValidator urlValidator,
             DevelopmentPlanModelValidator validator)
         {
-            var model = new DevelopmentPlanModel { Link = "http://wiothaoih" };
+            var model = new DevelopmentPlanModel
+            {
+                Link = "http://wiothaoih",
+                SolutionType = SolutionType.GPIT,
+            };
 
             urlValidator.IsValidUrl(model.Link).Returns(false);
 
@@ -61,7 +68,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             [Frozen] IUrlValidator urlValidator,
             DevelopmentPlanModelValidator validator)
         {
-            var model = new DevelopmentPlanModel { Link = uri.ToString() };
+            var model = new DevelopmentPlanModel
+            {
+                Link = uri.ToString(),
+                SolutionType = SolutionType.GPIT,
+            };
             urlValidator.IsValidUrl(model.Link).Returns(true);
 
             var result = validator.TestValidate(model);

@@ -12,18 +12,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
-    [Route("admin/catalogue-solutions/manage/{solutionId}/hosting-type")]
-    public class HostingTypesController : Controller
+    [Route("admin/catalogue-solutions/manage/{solutionType}/{solutionId}/hosting-type")]
+    public class HostingTypesController(ISolutionsService solutionsService) : Controller
     {
-        private readonly ISolutionsService solutionsService;
-
-        public HostingTypesController(ISolutionsService solutionsService)
-        {
-            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-        }
+        private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
 
         [HttpGet]
-        public async Task<IActionResult> HostingType(CatalogueItemId solutionId)
+        public async Task<IActionResult> HostingType(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -32,17 +27,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new HostingTypeSectionModel(solution)
             {
+                SolutionType = solutionType,
                 BackLink = Url.Action(
                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
-                    new { solutionId }),
+                    new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> HostingType(CatalogueItemId solutionId, HostingTypeSectionModel model)
+        public async Task<IActionResult> HostingType(SolutionType solutionType, CatalogueItemId solutionId, HostingTypeSectionModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -62,11 +58,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(
                 nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { solutionId });
+                new { solutionType, solutionId });
         }
 
         [HttpGet("add-hosting-type")]
-        public async Task<IActionResult> AddHostingType(CatalogueItemId solutionId)
+        public async Task<IActionResult> AddHostingType(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -75,28 +71,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new HostingTypeSelectionModel(solution)
             {
-                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+                SolutionType = solutionType,
+                BackLink = Url.Action(nameof(HostingType), new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
         [HttpPost("add-hosting-type")]
-        public async Task<IActionResult> AddHostingType(CatalogueItemId solutionId, HostingTypeSelectionModel model)
+        public async Task<IActionResult> AddHostingType(SolutionType solutionType, CatalogueItemId solutionId, HostingTypeSelectionModel model)
         {
             if (!ModelState.IsValid)
             {
                 var solution = await solutionsService.GetSolutionThin(solutionId);
-                return View(new HostingTypeSelectionModel(solution));
+                return View(new HostingTypeSelectionModel(solution) { SolutionType = solutionType });
             }
 
             return model.SelectedHostingType is null
-                ? RedirectToAction(nameof(HostingType), new { solutionId })
-                : RedirectToAction(model.SelectedHostingType.ToString(), new { solutionId, isNewHostingType = true });
+                ? RedirectToAction(nameof(HostingType), new { solutionType, solutionId })
+                : RedirectToAction(model.SelectedHostingType.ToString(), new { solutionType, solutionId, isNewHostingType = true });
         }
 
         [HttpGet("hosting-type-public-cloud")]
-        public async Task<IActionResult> PublicCloud(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
+        public async Task<IActionResult> PublicCloud(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            [FromQuery] bool? isNewHostingType = false)
         {
             var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
             if (catalogueItem is null)
@@ -104,15 +104,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new PublicCloudModel(catalogueItem)
             {
+                SolutionType = solutionType,
                 IsNewHostingType = isNewHostingType.GetValueOrDefault(),
-                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+                BackLink = Url.Action(nameof(HostingType), new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
         [HttpPost("hosting-type-public-cloud")]
-        public async Task<IActionResult> PublicCloud(CatalogueItemId solutionId, PublicCloudModel model)
+        public async Task<IActionResult> PublicCloud(SolutionType solutionType, CatalogueItemId solutionId, PublicCloudModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -126,11 +127,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveHosting(solutionId, hosting);
 
-            return RedirectToAction(nameof(HostingType), new { solutionId });
+            return RedirectToAction(nameof(HostingType), new { solutionType, solutionId });
         }
 
         [HttpGet("hosting-type-private-cloud")]
-        public async Task<IActionResult> PrivateCloud(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
+        public async Task<IActionResult> PrivateCloud(SolutionType solutionType, CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
             var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
             if (catalogueItem is null)
@@ -138,15 +139,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new PrivateCloudModel(catalogueItem)
             {
+                SolutionType = solutionType,
                 IsNewHostingType = isNewHostingType.GetValueOrDefault(),
-                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+                BackLink = Url.Action(nameof(HostingType), new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
         [HttpPost("hosting-type-private-cloud")]
-        public async Task<IActionResult> PrivateCloud(CatalogueItemId solutionId, PrivateCloudModel model)
+        public async Task<IActionResult> PrivateCloud(SolutionType solutionType, CatalogueItemId solutionId, PrivateCloudModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -160,11 +162,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveHosting(solutionId, hosting);
 
-            return RedirectToAction(nameof(HostingType), new { solutionId });
+            return RedirectToAction(nameof(HostingType), new { solutionType, solutionId });
         }
 
         [HttpGet("hosting-type-hybrid")]
-        public async Task<IActionResult> Hybrid(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
+        public async Task<IActionResult> Hybrid(SolutionType solutionType, CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
             var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
             if (catalogueItem is null)
@@ -172,15 +174,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new HybridModel(catalogueItem)
             {
+                SolutionType = solutionType,
                 IsNewHostingType = isNewHostingType.GetValueOrDefault(),
-                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+                BackLink = Url.Action(nameof(HostingType), new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
         [HttpPost("hosting-type-hybrid")]
-        public async Task<IActionResult> Hybrid(CatalogueItemId solutionId, HybridModel model)
+        public async Task<IActionResult> Hybrid(SolutionType solutionType, CatalogueItemId solutionId, HybridModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -194,11 +197,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveHosting(solutionId, hosting);
 
-            return RedirectToAction(nameof(HostingType), new { solutionId });
+            return RedirectToAction(nameof(HostingType), new { solutionType, solutionId });
         }
 
         [HttpGet("hosting-type-on-premise")]
-        public async Task<IActionResult> OnPremise(CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
+        public async Task<IActionResult> OnPremise(SolutionType solutionType, CatalogueItemId solutionId, [FromQuery] bool? isNewHostingType = false)
         {
             var catalogueItem = await solutionsService.GetSolutionThin(solutionId);
             if (catalogueItem is null)
@@ -206,15 +209,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new OnPremiseModel(catalogueItem)
             {
+                SolutionType = solutionType,
                 IsNewHostingType = isNewHostingType.GetValueOrDefault(),
-                BackLink = Url.Action(nameof(HostingType), new { solutionId }),
+                BackLink = Url.Action(nameof(HostingType), new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
         [HttpPost("hosting-type-on-premise")]
-        public async Task<IActionResult> OnPremise(CatalogueItemId solutionId, OnPremiseModel model)
+        public async Task<IActionResult> OnPremise(SolutionType solutionType, CatalogueItemId solutionId, OnPremiseModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -228,11 +232,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveHosting(solutionId, hosting);
 
-            return RedirectToAction(nameof(HostingType), new { solutionId });
+            return RedirectToAction(nameof(HostingType), new { solutionType, solutionId });
         }
 
         [HttpGet("delete-hosting-type/{hostingType}")]
-        public async Task<IActionResult> DeleteHostingType(CatalogueItemId solutionId, HostingType hostingType)
+        public async Task<IActionResult> DeleteHostingType(SolutionType solutionType, CatalogueItemId solutionId, HostingType hostingType)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -247,14 +251,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new DeleteHostingTypeConfirmationModel(solution, hostingType)
             {
-                BackLink = Url.Action(backlinkActionName, new { solutionId }),
+                BackLink = Url.Action(backlinkActionName, new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
         [HttpPost("delete-hosting-type/{hostingType}")]
-        public async Task<IActionResult> DeleteHostingType(CatalogueItemId solutionId, HostingType hostingType, DeleteHostingTypeConfirmationModel model)
+        public async Task<IActionResult> DeleteHostingType(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            HostingType hostingType,
+            DeleteHostingTypeConfirmationModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -285,7 +293,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveHosting(solutionId, hosting);
 
-            return RedirectToAction(nameof(HostingType), new { solutionId });
+            return RedirectToAction(nameof(HostingType), new { solutionType, solutionId });
         }
     }
 }

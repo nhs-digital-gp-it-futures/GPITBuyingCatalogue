@@ -46,6 +46,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             SupplierId = supplierId;
         }
 
+        public SolutionType? SolutionType { get; set; }
+
+        public CatalogueItemId? SolutionId { get; set; }
+
+        public CatalogueItemId? AdditionalServiceId { get; set; }
+
         public int? SupplierId { get; set; }
 
         public CatalogueItemId ServiceId { get; set; }

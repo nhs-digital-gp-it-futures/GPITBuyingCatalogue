@@ -23,8 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
             additionalService.CatalogueItem.Name = additionalServiceName;
             additionalService.FullDescription = additionalServiceDescription;
 
-            var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem, associatedServices.Select(x => x.CatalogueItem).ToList());
-
+            var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem, [.. associatedServices.Select(x => x.CatalogueItem)])
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             model.DetailsStatus.Should().Be(TaskProgress.Completed);
         }
 
@@ -38,8 +40,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
             additionalService.CatalogueItem.Name = null;
             additionalService.FullDescription = null;
 
-            var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem, []);
-
+            var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem, [])
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             model.DetailsStatus.Should().Be(TaskProgress.NotStarted);
         }
     }

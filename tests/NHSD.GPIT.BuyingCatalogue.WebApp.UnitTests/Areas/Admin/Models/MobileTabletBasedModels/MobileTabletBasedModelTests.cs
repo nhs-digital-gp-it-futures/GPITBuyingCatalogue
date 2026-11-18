@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         public static void FromCatalogueItem_ValidCatalogueItem_ApplicationTypeSetCorrectly(
             CatalogueItem catalogueItem)
         {
-            var actual = new MobileTabletBasedModel(catalogueItem);
+            var actual = new MobileTabletBasedModel(catalogueItem) { SolutionType = SolutionType.GPIT };
 
             actual.ApplicationType.Should().Be(ApplicationType.MobileTablet);
         }
@@ -21,7 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new MobileTabletBasedModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new MobileTabletBasedModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

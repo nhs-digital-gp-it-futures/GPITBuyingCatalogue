@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
             Solution solution)
         {
             var catalogueItem = solution.CatalogueItem;
-            var actual = new OperatingSystemsModel(catalogueItem);
+            var actual = new OperatingSystemsModel(catalogueItem) { SolutionType = SolutionType.GPIT };
 
             var mobileOperatingSystems = solution.ApplicationTypeDetail.MobileOperatingSystems;
 
@@ -33,7 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new OperatingSystemsModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new OperatingSystemsModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

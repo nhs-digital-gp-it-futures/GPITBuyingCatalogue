@@ -24,6 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans
             WorkOffPlans = catalogueItem.Solution.WorkOffPlans;
         }
 
+        public required SolutionType SolutionType { get; init; }
+
         [StringLength(1000)]
         public string Link { get; set; }
 

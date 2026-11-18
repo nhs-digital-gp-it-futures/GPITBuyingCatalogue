@@ -6,9 +6,9 @@
     var hasDataProcessing = Model.Solution.DataProcessingInformation?.Details is not null && Model.Solution.DataProcessingInformation?.Location is not null;
     var hasDataProtectionOfficer = Model.Solution.DataProcessingInformation?.Officer is not null;
 
-    var dataProcessingInfoUrl = Url.Action(nameof(DataProcessingInformationController.AddOrEditDataProcessingInformation), typeof(DataProcessingInformationController).ControllerName(), new { solutionId = Model.Solution.CatalogueItemId });
-    var dataProtectionOfficerUrl = Url.Action(nameof(DataProcessingInformationController.AddOrEditDataProtectionOfficer), typeof(DataProcessingInformationController).ControllerName(), new { solutionId = Model.Solution.CatalogueItemId });
-    var addSubProcessorUrl = Url.Action(action: nameof(DataProcessingInformationController.AddSubProcessor), controller: typeof(DataProcessingInformationController).ControllerName(), values: new { area = typeof(DataProcessingInformationController).AreaName(), solutionId = Model.Solution.CatalogueItemId });
+    var dataProcessingInfoUrl = Url.Action(nameof(DataProcessingInformationController.AddOrEditDataProcessingInformation), typeof(DataProcessingInformationController).ControllerName(), new { solutionType = Model.SolutionType, solutionId = Model.Solution.CatalogueItemId });
+    var dataProtectionOfficerUrl = Url.Action(nameof(DataProcessingInformationController.AddOrEditDataProtectionOfficer), typeof(DataProcessingInformationController).ControllerName(), new { solutionType = Model.SolutionType, solutionId = Model.Solution.CatalogueItemId });
+    var addSubProcessorUrl = Url.Action(action: nameof(DataProcessingInformationController.AddSubProcessor), controller: typeof(DataProcessingInformationController).ControllerName(), values: new { area = typeof(DataProcessingInformationController).AreaName(), solutionType = Model.SolutionType, solutionId = Model.Solution.CatalogueItemId });
 }
 
 <partial name="Partials/_BackLink" model="@Model"/>
@@ -111,6 +111,7 @@
                                 <nhs-table-cell>
                                     <a asp-action="@(nameof(DataProcessingInformationController.EditSubProcessor))"
                                        asp-controller="@(typeof(DataProcessingInformationController).ControllerName())"
+                                       asp-route-solutionType="@Model.SolutionType"
                                        asp-route-solutionId="@Model.Solution.CatalogueItemId"
                                        asp-route-subProcessorId="@subProcessor.Id">
                                         Change
