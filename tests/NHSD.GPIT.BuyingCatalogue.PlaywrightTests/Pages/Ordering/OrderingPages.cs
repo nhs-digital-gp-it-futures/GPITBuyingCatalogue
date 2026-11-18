@@ -279,11 +279,11 @@ public class OrderingPages
         await Declaration.NavigateAndAgreeAsync();
     }
 
-    public async Task StepFourReviewAndCompleteOrderAsync()
+    public async Task StepFourReviewAndCompleteOrderAsync(bool isAmendment = false)
     {
         _output.WriteLine("Step 4 — review and complete");
         await ReviewOrder.NavigateAsync();
-        await ReviewOrder.CompleteOrderAsync();
+        await ReviewOrder.CompleteOrderAsync(isAmendment ? "Order amendment completed" : "Order completed");
     }
 
     /// <summary>

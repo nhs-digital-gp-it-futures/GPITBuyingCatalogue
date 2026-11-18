@@ -228,7 +228,7 @@ public class OrderTests : BaseTest
         await OrderPages.AmendSolutionsAndServicesAsync(solutionName: SolutionName);
         await OrderPages.AmendDeliveryAndFundingAsync();
         await OrderPages.StepThreeCompleteContractAsync();
-        await OrderPages.StepFourReviewAndCompleteOrderAsync();
+        await OrderPages.StepFourReviewAndCompleteOrderAsync(isAmendment: true);
     }
 
     [Fact]
@@ -250,6 +250,6 @@ public class OrderTests : BaseTest
             newAdditionalService: NewAdditionalService,
             newAssociatedService: AssociatedService);
         await OrderPages.StepThreeCompleteContractAsync(associatedService: AssociatedService);
-        await OrderPages.StepFourReviewAndCompleteOrderAsync();
+        await OrderPages.StepFourReviewAndCompleteOrderAsync(isAmendment: true);
     }
 }
