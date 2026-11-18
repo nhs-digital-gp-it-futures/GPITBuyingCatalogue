@@ -326,10 +326,7 @@ public class CompetitionNonPriceElementsController(
 
         var model = new NonPriceElementWeightsModel(competition)
         {
-            BackLink = returnUrl ?? Url.Action(
-                nameof(CompetitionTaskListController.Index),
-                typeof(CompetitionTaskListController).ControllerName(),
-                new { internalOrgId, competitionId }),
+            BackLink = GetBackLink(internalOrgId, competitionId, returnUrl),
         };
 
         return View(model);
@@ -354,12 +351,7 @@ public class CompetitionNonPriceElementsController(
             model.ServiceLevel,
             model.Features);
 
-        return !string.IsNullOrWhiteSpace(returnUrl)
-            ? Redirect(returnUrl)
-            : RedirectToAction(
-                nameof(CompetitionTaskListController.Index),
-                typeof(CompetitionTaskListController).ControllerName(),
-                new { internalOrgId, competitionId });
+        return GetRedirect(internalOrgId, competitionId, returnUrl);
     }
 
     [CriteriaReviewedGuardFilter]
@@ -406,7 +398,10 @@ public class CompetitionNonPriceElementsController(
         int competitionId,
         string returnUrl)
     {
-        return returnUrl ?? Url.Action(nameof(Index), new { internalOrgId, competitionId });
+        if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+            return returnUrl;
+
+        return Url.Action(nameof(Index), new { internalOrgId, competitionId });
     }
 
     internal IActionResult GetRedirect(
@@ -414,9 +409,12 @@ public class CompetitionNonPriceElementsController(
         int competitionId,
         string returnUrl)
     {
-        if (!string.IsNullOrWhiteSpace(returnUrl))
-            return Redirect(returnUrl);
+        if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+            return LocalRedirect(returnUrl);
 
-        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+        return RedirectToAction(
+            nameof(CompetitionTaskListController.Index),
+            typeof(CompetitionTaskListController).ControllerName(),
+            new { internalOrgId, competitionId });
     }
 }

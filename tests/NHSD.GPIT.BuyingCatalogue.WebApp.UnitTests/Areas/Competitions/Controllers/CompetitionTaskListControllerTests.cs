@@ -285,6 +285,64 @@ public static class CompetitionTaskListControllerTests
 
     [Theory]
     [MockAutoData]
+    public static async Task Weightings_ValidModel_WithLocalReturnUrl_RedirectsLocal(
+        Organisation organisation,
+        int competitionId,
+        CompetitionWeightingsModel model,
+        [Frozen] ICompetitionsService competitionsService,
+        IUrlHelper urlHelper,
+        CompetitionTaskListController controller)
+    {
+        const string returnUrl = "/organisation/org-1/competitions/123";
+
+        urlHelper.IsLocalUrl(returnUrl).Returns(true);
+        controller.Url = urlHelper;
+
+        var result = (await controller.Weightings(organisation.InternalIdentifier, competitionId, model, returnUrl))
+            .As<LocalRedirectResult>();
+
+        await competitionsService.Received()
+            .SetCompetitionWeightings(
+                organisation.InternalIdentifier,
+                competitionId,
+                model.Price.GetValueOrDefault(),
+                model.NonPrice.GetValueOrDefault());
+
+        result.Should().NotBeNull();
+        result.Url.Should().Be(returnUrl);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task Weightings_ValidModel_WithExternalReturnUrl_RedirectsToIndex(
+        Organisation organisation,
+        int competitionId,
+        CompetitionWeightingsModel model,
+        [Frozen] ICompetitionsService competitionsService,
+        IUrlHelper urlHelper,
+        CompetitionTaskListController controller)
+    {
+        const string returnUrl = "https://evil.example/phish";
+
+        urlHelper.IsLocalUrl(returnUrl).Returns(false);
+        controller.Url = urlHelper;
+
+        var result = (await controller.Weightings(organisation.InternalIdentifier, competitionId, model, returnUrl))
+            .As<RedirectToActionResult>();
+
+        await competitionsService.Received()
+            .SetCompetitionWeightings(
+                organisation.InternalIdentifier,
+                competitionId,
+                model.Price.GetValueOrDefault(),
+                model.NonPrice.GetValueOrDefault());
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [MockAutoData]
     public static async Task ReviewCriteria_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
