@@ -52,7 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 
                 dbContext.Roles.Add(new() { Name = OrganisationFunction.Buyer.Name, NormalizedName = OrganisationFunction.Buyer.Name.ToUpperInvariant() });
                 dbContext.Roles.Add(new() { Name = OrganisationFunction.Authority.Name, NormalizedName = OrganisationFunction.Authority.Name.ToUpperInvariant() });
-                dbContext.Roles.Add(new() { Name = OrganisationFunction.AccountManager.Name, NormalizedName = OrganisationFunction.AccountManager.Name.ToUpperInvariant() });
+                dbContext.Roles.Add(new() { Name = OrganisationFunction.Onboarding.Name, NormalizedName = OrganisationFunction.Onboarding.Name.ToUpperInvariant() });
+                dbContext.Roles.Add(new() { Name = OrganisationFunction.ReadOnly.Name, NormalizedName = OrganisationFunction.ReadOnly.Name.ToUpperInvariant() });
                 dbContext.SaveChanges();
 
                 return dbContext;

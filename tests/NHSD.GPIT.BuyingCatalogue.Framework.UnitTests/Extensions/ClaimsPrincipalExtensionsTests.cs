@@ -104,7 +104,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 
             Assert.True(user.IsAdmin());
             Assert.False(user.IsBuyer());
-            Assert.False(user.IsAccountManager());
         }
 
         [Fact]
@@ -121,7 +120,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             var user = CreatePrincipal(ClaimTypes.Role, OrganisationFunction.Buyer.Name);
 
             Assert.False(user.IsAdmin());
-            Assert.False(user.IsAccountManager());
             Assert.True(user.IsBuyer());
         }
 
@@ -131,24 +129,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             var user = CreatePrincipal("UnrelatedClaim", "True");
 
             Assert.False(user.IsBuyer());
-        }
-
-        [Fact]
-        public static void IsAccountManager_True_WithClaim()
-        {
-            var user = CreatePrincipal(ClaimTypes.Role, OrganisationFunction.AccountManager.Name);
-
-            Assert.True(user.IsAccountManager());
-            Assert.False(user.IsAdmin());
-            Assert.False(user.IsBuyer());
-        }
-
-        [Fact]
-        public static void IsAccountManager_False_WithoutClaim()
-        {
-            var user = CreatePrincipal("UnrelatedClaim", "True");
-
-            Assert.False(user.IsAccountManager());
         }
 
         [Fact]
@@ -169,7 +149,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             user.IsFullAdmin().Should().Be(role == OrganisationFunction.Authority.Name);
             user.IsOnboarding().Should().Be(role == OrganisationFunction.Onboarding.Name);
             user.IsReadOnly().Should().Be(role == OrganisationFunction.ReadOnly.Name);
-            user.IsAccountManager().Should().BeFalse();
             user.IsBuyer().Should().BeFalse();
         }
 

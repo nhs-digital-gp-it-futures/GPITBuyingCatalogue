@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
@@ -15,20 +14,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
     public abstract class OrganisationBaseController : Controller
     {
         internal const string ViewBaseName = "OrganisationBase";
-        private readonly AccountManagementSettings accountManagementSettings;
 
         protected OrganisationBaseController(
             IOrganisationsService organisationsService,
             IOdsService odsService,
             ICreateUserService createBuyerService,
-            IUsersService userService,
-            AccountManagementSettings accountManagementSettings)
+            IUsersService userService)
         {
             OrganisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             OdsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             CreateBuyerService = createBuyerService ?? throw new ArgumentNullException(nameof(createBuyerService));
             UserService = userService ?? throw new ArgumentNullException(nameof(userService));
-            this.accountManagementSettings = accountManagementSettings ?? throw new ArgumentNullException(nameof(accountManagementSettings));
         }
 
         protected IOrganisationsService OrganisationsService { get; }
@@ -83,14 +79,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public async Task<IActionResult> AddUser(int organisationId)
         {
             var organisation = await OrganisationsService.GetOrganisation(organisationId);
-            var isLimit = await UserService.IsAccountManagerLimit(organisationId);
 
             var model = new UserDetailsModel(organisation)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
                 ControllerName = ControllerName,
-                IsDefaultAccountType = isLimit,
-                MaxNumberOfAccountManagers = accountManagementSettings.MaximumNumberOfAccountManagers,
+                IsDefaultAccountType = true,
             };
 
             return View($"{ViewBaseName}/UserDetails", model);
@@ -124,14 +118,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             if (user == null || organisation == null || organisation.Id != user.PrimaryOrganisationId)
                 return NotFound();
 
-            var isLimit = await UserService.IsAccountManagerLimit(organisationId, userId);
-
             var model = new UserDetailsModel(organisation, user)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
                 ControllerName = ControllerName,
-                IsDefaultAccountType = isLimit && !user.Disabled,
-                MaxNumberOfAccountManagers = accountManagementSettings.MaximumNumberOfAccountManagers,
+                IsDefaultAccountType = !user.Disabled,
             };
 
             return View($"{ViewBaseName}/UserDetails", model);
