@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Infrastructure;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Builders;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Database;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData.Generators;
 using Xunit.Abstractions;
 
@@ -212,5 +213,43 @@ public class OrderTests : BaseTest
             perRecipientDeliveryDates: true);
         await OrderPages.StepThreeCompleteContractAsync();
         await OrderPages.StepFourReviewAndCompleteOrderAsync();
+    }
+
+    [Fact]
+    [Trait("Category", Categories.OrderJourney)]
+    public async Task AmendJourneyForCatalogueSolutionOrder()
+    {
+        var orderId = await TestOrderSeeder.CreateCompletedOrderAsync(
+            Fixture.DbConnectionString, "Order for amend journey testing", hasAddOnServices: false);
+
+        await OrderPages.LoginAsync();
+        await OrderPages.OpenOrderToAmendAsync(orderId);
+        await OrderPages.AmendServiceRecipientsAsync();
+        await OrderPages.AmendSolutionsAndServicesAsync(solutionName: SolutionName);
+        await OrderPages.AmendDeliveryAndFundingAsync();
+        await OrderPages.StepThreeCompleteContractAsync();
+        await OrderPages.StepFourReviewAndCompleteOrderAsync(isAmendment: true);
+    }
+
+    [Fact]
+    [Trait("Category", Categories.OrderJourney)]
+    public async Task AmendJourneyForCatalogueSolutionAndAddOnServicesOrder()
+    {
+        var orderId = await TestOrderSeeder.CreateCompletedOrderAsync(
+            Fixture.DbConnectionString, "Order for amend journey for Add on services testing", hasAddOnServices: true);
+
+        await OrderPages.LoginAsync();
+        await OrderPages.OpenOrderToAmendAsync(orderId);
+        await OrderPages.AmendServiceRecipientsAsync();
+        await OrderPages.AmendSolutionsAndServicesAsync(
+            solutionName: SolutionName,
+            existingAdditionalService: AdditionalService,
+            newAdditionalService: NewAdditionalService,
+            newAssociatedService: AssociatedService);
+        await OrderPages.AmendDeliveryAndFundingAsync(
+            newAdditionalService: NewAdditionalService,
+            newAssociatedService: AssociatedService);
+        await OrderPages.StepThreeCompleteContractAsync(associatedService: AssociatedService);
+        await OrderPages.StepFourReviewAndCompleteOrderAsync(isAmendment: true);
     }
 }
