@@ -24,57 +24,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
         private static List<TaskProgress> GetMandatoryTaskStatuses(ManageCatalogueSolutionModel model)
         {
-            List<TaskProgress> mandatoryTasksStatuses = [];
-
             if (model.SolutionSections is null)
-                return mandatoryTasksStatuses;
+                return [];
 
-            if (model.SolutionSections.Description == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.DescriptionStatus);
+            (SolutionSectionRequirement Requirement, TaskProgress Status)[] tasks =
+            [
+                (model.SolutionSections.Description, model.DescriptionStatus),
+                (model.SolutionSections.Features, model.FeaturesStatus),
+                (model.SolutionSections.Integrations, model.InteroperabilityStatus),
+                (model.SolutionSections.Implementation, model.ImplementationStatus),
+                (model.SolutionSections.ApplicationType, model.ApplicationTypeStatus),
+                (model.SolutionSections.HostingType, model.HostingTypeStatus),
+                (model.SolutionSections.DataProcessingInformation, model.DataProcessingStatus),
+                (model.SolutionSections.ListPrice, model.ListPriceStatus),
+                (model.SolutionSections.CapabilitiesAndEpics, model.CapabilitiesStatus),
+                (model.SolutionSections.AdditionalServices, model.AdditionalServicesStatus),
+                (model.SolutionSections.AssociatedServices, model.AssociatedServicesStatus),
+                (model.SolutionSections.Standards, model.StandardsStatus),
+                (model.SolutionSections.DevelopmentPlans, model.RoadmapStatus),
+                (model.SolutionSections.SupplierDetails, model.SupplierDetailsStatus),
+                (model.SolutionSections.ServiceLevelAgreement, model.SlaStatus),
+            ];
 
-            if (model.SolutionSections.Features == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.FeaturesStatus);
-
-            if (model.SolutionSections.Integrations == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.InteroperabilityStatus);
-
-            if (model.SolutionSections.Implementation == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.ImplementationStatus);
-
-            if (model.SolutionSections.ApplicationType == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.ApplicationTypeStatus);
-
-            if (model.SolutionSections.HostingType == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.HostingTypeStatus);
-
-            if (model.SolutionSections.DataProcessingInformation == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.DataProcessingStatus);
-
-            if (model.SolutionSections.ListPrice == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.ListPriceStatus);
-
-            if (model.SolutionSections.CapabilitiesAndEpics == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.CapabilitiesStatus);
-
-            if (model.SolutionSections.AdditionalServices == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.AdditionalServicesStatus);
-
-            if (model.SolutionSections.AssociatedServices == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.AssociatedServicesStatus);
-
-            if (model.SolutionSections.Standards == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.StandardsStatus);
-
-            if (model.SolutionSections.DevelopmentPlans == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.RoadmapStatus);
-
-            if (model.SolutionSections.SupplierDetails == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.SupplierDetailsStatus);
-
-            if (model.SolutionSections.ServiceLevelAgreement == SolutionSectionRequirement.Mandatory)
-                mandatoryTasksStatuses.Add(model.SlaStatus);
-
-            return mandatoryTasksStatuses;
+            return [.. tasks.Where(task => task.Requirement == SolutionSectionRequirement.Mandatory).Select(task => task.Status)];
         }
 
         private bool HaveCompletedAllMandatorySections(ManageCatalogueSolutionModel model)
