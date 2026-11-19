@@ -294,7 +294,8 @@ TRUNCATED FOR DEMO', N'www.emishealth.com', N'{"line1": "NotEmis Tower", "line2"
         (95, 10071, N'Avah', N'Martin', N'avahmartin@test.test', N'01234 567891', NULL, GETUTCDATE(), 2),
         (96, 10072, N'Junior', N'Bauer', N'juniorbauer@test.test', N'01234 567891', NULL, GETUTCDATE(), 2),
         (97, 10073, N'Camille', N'Kirk', N'camillekirk@test.test', N'01234 567891', NULL, GETUTCDATE(), 2),
-        (98, 100021, N'Joe', N'Sample', N'joe@email.com', N'1234567', N'Procurement', GETUTCDATE(), 2))
+        (98, 100021, N'Joe', N'Sample', N'joe@email.com', N'1234567', N'Procurement', GETUTCDATE(), 2),
+        (99, 100022, N'John', N'Sample', N'john@email.com', N'1234567', NULL, GETUTCDATE(), 2))
     AS SOURCE ([Id], [SupplierId], [FirstName], [LastName], [Email], [PhoneNumber], [Department], [LastUpdated], [LastUpdatedBy])
     ON TARGET.[Id] = SOURCE.[Id]
     WHEN MATCHED THEN UPDATE SET
