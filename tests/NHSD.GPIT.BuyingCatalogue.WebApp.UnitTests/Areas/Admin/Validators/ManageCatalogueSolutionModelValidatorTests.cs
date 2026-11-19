@@ -15,6 +15,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 {
     public static class ManageCatalogueSolutionModelValidatorTests
     {
+        private static readonly SolutionSections GPITSolutionSections = new()
+        {
+            SolutionType = SolutionType.GPIT,
+            Details = SolutionSectionRequirement.Mandatory,
+            Description = SolutionSectionRequirement.Mandatory,
+            Features = SolutionSectionRequirement.Optional,
+            Integrations = SolutionSectionRequirement.Optional,
+            Implementation = SolutionSectionRequirement.Optional,
+            ApplicationType = SolutionSectionRequirement.Mandatory,
+            HostingType = SolutionSectionRequirement.Optional,
+            DataProcessingInformation = SolutionSectionRequirement.Optional,
+            ListPrice = SolutionSectionRequirement.Mandatory,
+            CapabilitiesAndEpics = SolutionSectionRequirement.Mandatory,
+            AdditionalServices = SolutionSectionRequirement.Optional,
+            AssociatedServices = SolutionSectionRequirement.Optional,
+            Standards = SolutionSectionRequirement.Optional,
+            DevelopmentPlans = SolutionSectionRequirement.Optional,
+            SupplierDetails = SolutionSectionRequirement.Mandatory,
+            ServiceLevelAgreement = SolutionSectionRequirement.Mandatory,
+        };
+
         public static IEnumerable<object[]> MandatorySectionCases =>
             new[]
             {
@@ -39,27 +60,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 new object[] { section, false },
                 new object[] { section, true },
             });
-
-        private static readonly SolutionSections GPITSolutionSections = new()
-        {
-            SolutionType = SolutionType.GPIT,
-            Details = SolutionSectionRequirement.Mandatory,
-            Description = SolutionSectionRequirement.Mandatory,
-            Features = SolutionSectionRequirement.Optional,
-            Integrations = SolutionSectionRequirement.Optional,
-            Implementation = SolutionSectionRequirement.Optional,
-            ApplicationType = SolutionSectionRequirement.Mandatory,
-            HostingType = SolutionSectionRequirement.Optional,
-            DataProcessingInformation = SolutionSectionRequirement.Optional,
-            ListPrice = SolutionSectionRequirement.Mandatory,
-            CapabilitiesAndEpics = SolutionSectionRequirement.Mandatory,
-            AdditionalServices = SolutionSectionRequirement.Optional,
-            AssociatedServices = SolutionSectionRequirement.Optional,
-            Standards = SolutionSectionRequirement.Optional,
-            DevelopmentPlans = SolutionSectionRequirement.Optional,
-            SupplierDetails = SolutionSectionRequirement.Mandatory,
-            ServiceLevelAgreement = SolutionSectionRequirement.Mandatory,
-        };
 
         [Theory]
         [MockMemberAutoData(nameof(MandatorySectionCases))]
