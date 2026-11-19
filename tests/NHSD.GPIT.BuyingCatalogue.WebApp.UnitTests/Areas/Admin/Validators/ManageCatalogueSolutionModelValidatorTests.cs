@@ -36,30 +36,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             ServiceLevelAgreement = SolutionSectionRequirement.Mandatory,
         };
 
+        private static readonly string[] MandatorySections =
+        [
+            "Description",
+            "Features",
+            "Integrations",
+            "Implementation",
+            "ApplicationType",
+            "HostingType",
+            "DataProcessingInformation",
+            "ListPrice",
+            "CapabilitiesAndEpics",
+            "AdditionalServices",
+            "AssociatedServices",
+            "Standards",
+            "DevelopmentPlans",
+            "SupplierDetails",
+            "ServiceLevelAgreement",
+        ];
+
         public static IEnumerable<object[]> MandatorySectionCases =>
-            new[]
-            {
-                "Description",
-                "Features",
-                "Integrations",
-                "Implementation",
-                "ApplicationType",
-                "HostingType",
-                "DataProcessingInformation",
-                "ListPrice",
-                "CapabilitiesAndEpics",
-                "AdditionalServices",
-                "AssociatedServices",
-                "Standards",
-                "DevelopmentPlans",
-                "SupplierDetails",
-                "ServiceLevelAgreement",
-            }
-            .SelectMany(section => new[]
-            {
-                new object[] { section, false },
-                new object[] { section, true },
-            });
+            MandatorySections.SelectMany(GetMandatorySectionCases);
 
         [Theory]
         [MockMemberAutoData(nameof(MandatorySectionCases))]
@@ -387,6 +384,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();
+        }
+
+        private static IEnumerable<object[]> GetMandatorySectionCases(string section)
+        {
+            yield return new object[] { section, false };
+            yield return new object[] { section, true };
         }
 
         private static ManageCatalogueSolutionModel CreateModel(
