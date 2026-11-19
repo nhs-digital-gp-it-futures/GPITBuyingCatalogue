@@ -35,7 +35,7 @@ public sealed class SafeRefererMiddleware
         {
             if (!string.IsNullOrWhiteSpace(raw))
             {
-                logger.LogInformation(
+                logger.LogWarning(
                     "Rejected non-local Referer. RequestPath: {RequestPath}, Referer: {Referer}",
                     context.Request.Path,
                     raw);
