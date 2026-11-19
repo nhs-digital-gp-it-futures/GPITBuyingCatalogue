@@ -16,12 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users;
 
 public sealed class UsersService(
     UserManager<AspNetUser> userManager,
-    AccountManagementSettings accountManagementSettings,
     AccountTemplateSettings accountTemplateSettings,
     IGovNotifyEmailService govNotifyEmailService) : IUsersService
 {
     private readonly UserManager<AspNetUser> userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-    private readonly AccountManagementSettings accountManagementSettings = accountManagementSettings ?? throw new ArgumentNullException(nameof(accountManagementSettings));
     private readonly AccountTemplateSettings accountTemplateSettings = accountTemplateSettings ?? throw new ArgumentNullException(nameof(accountTemplateSettings));
     private readonly IGovNotifyEmailService govNotifyEmailService = govNotifyEmailService ?? throw new ArgumentNullException(nameof(govNotifyEmailService));
 
@@ -107,21 +105,6 @@ public sealed class UsersService(
             .FirstOrDefaultAsync(x => x.Id != userId && x.NormalizedEmail == testAddress);
 
         return user != null;
-    }
-
-    public async Task<bool> IsAccountManagerLimit(int organisationId, int userId = 0)
-    {
-        var users = await userManager.Users
-            .Include(x => x.AspNetUserRoles)
-            .ThenInclude(x => x.Role)
-            .AsAsyncEnumerable()
-            .CountAsync(
-                u => u.Id != userId
-                    && u.PrimaryOrganisationId == organisationId
-                    && u.GetRoleName() == OrganisationFunction.AccountManager.Name
-                    && !u.Disabled);
-
-        return users >= accountManagementSettings.MaximumNumberOfAccountManagers;
     }
 
     public async Task SendDeactivatedUserEmail(string email)
