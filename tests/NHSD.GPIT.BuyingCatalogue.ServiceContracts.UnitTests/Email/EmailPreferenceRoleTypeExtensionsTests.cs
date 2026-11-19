@@ -24,12 +24,6 @@ public static class EmailPreferenceRoleTypeExtensionsTests
         },
         new object[]
         {
-            EmailPreferenceRoleType.All,
-            new AspNetRole { Name = OrganisationFunction.AccountManager.Name },
-            true,
-        },
-        new object[]
-        {
             EmailPreferenceRoleType.Buyers,
             new AspNetRole { Name = OrganisationFunction.Authority.Name },
             false,
@@ -40,12 +34,6 @@ public static class EmailPreferenceRoleTypeExtensionsTests
         },
         new object[]
         {
-            EmailPreferenceRoleType.Buyers,
-            new AspNetRole { Name = OrganisationFunction.AccountManager.Name },
-            true,
-        },
-        new object[]
-        {
             EmailPreferenceRoleType.Admins,
             new AspNetRole { Name = OrganisationFunction.Authority.Name },
             true,
@@ -53,12 +41,6 @@ public static class EmailPreferenceRoleTypeExtensionsTests
         new object[]
         {
             EmailPreferenceRoleType.Admins, new AspNetRole { Name = OrganisationFunction.Buyer.Name }, false,
-        },
-        new object[]
-        {
-            EmailPreferenceRoleType.Admins,
-            new AspNetRole { Name = OrganisationFunction.AccountManager.Name },
-            false,
         },
     };
 

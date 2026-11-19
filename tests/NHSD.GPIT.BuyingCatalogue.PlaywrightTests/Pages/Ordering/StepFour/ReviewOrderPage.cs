@@ -16,10 +16,10 @@ public class ReviewOrderPage : BasePage
         await AssertHeadingAsync("Review and complete order");
     }
 
-    public async Task CompleteOrderAsync()
+    public async Task CompleteOrderAsync(string completedHeading = "Order completed")
     {
         await CompleteOrderButton.ClickAsync();
-        await AssertHeadingAsync("Order completed");
+        await AssertHeadingAsync(completedHeading);
     }
 
     public async Task AssertOrderCompletedAsync() =>

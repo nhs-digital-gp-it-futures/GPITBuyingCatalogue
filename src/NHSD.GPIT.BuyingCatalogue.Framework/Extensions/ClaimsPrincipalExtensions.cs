@@ -59,11 +59,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             return HasOrganisationClaim(user, OrganisationFunction.Buyer.Name);
         }
 
-        public static bool IsAccountManager(this ClaimsPrincipal user)
-        {
-            return HasOrganisationClaim(user, OrganisationFunction.AccountManager.Name);
-        }
-
         public static bool IsOnboarding(this ClaimsPrincipal user)
         {
             return HasOrganisationClaim(user, OrganisationFunction.Onboarding.Name);
