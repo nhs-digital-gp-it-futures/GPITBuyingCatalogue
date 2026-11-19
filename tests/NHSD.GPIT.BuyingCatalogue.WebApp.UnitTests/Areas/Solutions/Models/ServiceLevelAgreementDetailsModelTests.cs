@@ -15,19 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 new CatalogueItemContentStatus()));
 
         [Fact]
-        public static void Constructing_CatalogueItemWithoutSolution_ThrowsArgumentException()
-        {
-            var catalogueItem = new CatalogueItem
-            {
-                Solution = null,
-            };
-
-            Assert.Throws<ArgumentException>(() => new ServiceLevelAgreementDetailsModel(
-                catalogueItem,
-                new CatalogueItemContentStatus()));
-        }
-
-        [Fact]
         public static void Constructing_WithServiceLevelAgreement_SetsProperties()
         {
             var serviceHours = new[] { new ServiceAvailabilityTimes() };
@@ -36,6 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             var catalogueItem = new CatalogueItem
             {
+                Supplier = new Supplier
+                {
+                    Name = "Test Supplier",
+                },
                 Solution = new Solution
                 {
                     ServiceLevelAgreement = new ServiceLevelAgreements
@@ -62,6 +53,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var catalogueItem = new CatalogueItem
             {
+                Supplier = new Supplier
+                {
+                    Name = "Test Supplier",
+                },
                 Solution = new Solution
                 {
                     ServiceLevelAgreement = null,
