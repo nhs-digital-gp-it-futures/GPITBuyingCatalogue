@@ -1,7 +1,10 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ServiceLevelAgreementDetailsModel
 @{
-    var showContactsApplicableDays = Model.SlaContacts.Any(c => !string.IsNullOrWhiteSpace(c.ApplicableDays));
+    var slaContacts = Model.SlaContacts ?? Enumerable.Empty<dynamic>();
+    var serviceAvailabilityTimes = Model.ServiceAvailabilityTimes ?? Enumerable.Empty<dynamic>();
+    var serviceLevels = Model.ServiceLevels ?? Enumerable.Empty<dynamic>();
+    var showContactsApplicableDays = slaContacts.Any(c => !string.IsNullOrWhiteSpace(c.ApplicableDays));
 }
 
 <partial name="_solutionSummary" model="Model"/>

@@ -14,12 +14,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
+            if (catalogueItem.Solution is null)
+                throw new ArgumentException("Catalogue item does not have a solution", nameof(catalogueItem));
 
-            var serviceLevelAgreement = catalogueItem.Solution.ServiceLevelAgreement;
+            if (catalogueItem.Solution.ServiceLevelAgreement is not null)
+            {
+                var serviceLevelAgreement = catalogueItem.Solution.ServiceLevelAgreement;
 
-            ServiceAvailabilityTimes = serviceLevelAgreement.ServiceHours;
-            SlaContacts = serviceLevelAgreement.Contacts;
-            ServiceLevels = serviceLevelAgreement.ServiceLevels;
+                ServiceAvailabilityTimes = serviceLevelAgreement.ServiceHours;
+                SlaContacts = serviceLevelAgreement.Contacts;
+                ServiceLevels = serviceLevelAgreement.ServiceLevels;
+            }
         }
 
         public ICollection<ServiceAvailabilityTimes> ServiceAvailabilityTimes { get; init; }
