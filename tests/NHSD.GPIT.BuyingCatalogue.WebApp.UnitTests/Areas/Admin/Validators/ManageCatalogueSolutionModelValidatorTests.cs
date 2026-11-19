@@ -3,6 +3,8 @@ using System.Linq;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
@@ -13,6 +15,79 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 {
     public static class ManageCatalogueSolutionModelValidatorTests
     {
+        public static IEnumerable<object[]> MandatorySectionCases =>
+            new[]
+            {
+                "Description",
+                "Features",
+                "Integrations",
+                "Implementation",
+                "ApplicationType",
+                "HostingType",
+                "DataProcessingInformation",
+                "ListPrice",
+                "CapabilitiesAndEpics",
+                "AdditionalServices",
+                "AssociatedServices",
+                "Standards",
+                "DevelopmentPlans",
+                "SupplierDetails",
+                "ServiceLevelAgreement",
+            }
+            .SelectMany(section => new[]
+            {
+                new object[] { section, false },
+                new object[] { section, true },
+            });
+
+        private static readonly SolutionSections GPITSolutionSections = new()
+        {
+            SolutionType = SolutionType.GPIT,
+            Details = SolutionSectionRequirement.Mandatory,
+            Description = SolutionSectionRequirement.Mandatory,
+            Features = SolutionSectionRequirement.Optional,
+            Integrations = SolutionSectionRequirement.Optional,
+            Implementation = SolutionSectionRequirement.Optional,
+            ApplicationType = SolutionSectionRequirement.Mandatory,
+            HostingType = SolutionSectionRequirement.Optional,
+            DataProcessingInformation = SolutionSectionRequirement.Optional,
+            ListPrice = SolutionSectionRequirement.Mandatory,
+            CapabilitiesAndEpics = SolutionSectionRequirement.Mandatory,
+            AdditionalServices = SolutionSectionRequirement.Optional,
+            AssociatedServices = SolutionSectionRequirement.Optional,
+            Standards = SolutionSectionRequirement.Optional,
+            DevelopmentPlans = SolutionSectionRequirement.Optional,
+            SupplierDetails = SolutionSectionRequirement.Mandatory,
+            ServiceLevelAgreement = SolutionSectionRequirement.Mandatory,
+        };
+
+        [Theory]
+        [MockMemberAutoData(nameof(MandatorySectionCases))]
+        public static void Validate_MandatorySectionStatus_ReturnsExpectedResult(
+            string section,
+            bool isCompleted,
+            Solution solution,
+            [Frozen] ISolutionsService solutionsService,
+            ManageCatalogueSolutionModelValidator validator)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+
+            var model = CreateModel(solution.CatalogueItemId, section, isCompleted ? TaskProgress.Completed : TaskProgress.NotStarted);
+
+            var result = validator.TestValidate(model);
+
+            if (isCompleted)
+            {
+                result.ShouldNotHaveAnyValidationErrors();
+            }
+            else
+            {
+                result.ShouldHaveAnyValidationError()
+                    .WithErrorMessage("Complete all mandatory sections before publishing");
+            }
+        }
+
         [Theory]
         [MockAutoData]
         public static void Validate_SamePublicationStatus_NoModelError(
@@ -76,6 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
                 SolutionType = SolutionType.GPIT,
+                SolutionSections = GPITSolutionSections,
             };
 
             var result = validator.TestValidate(model);
@@ -107,6 +183,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
                 SolutionType = SolutionType.GPIT,
+                SolutionSections = GPITSolutionSections,
             };
 
             var result = validator.TestValidate(model);
@@ -142,6 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
                 SolutionType = SolutionType.GPIT,
+                SolutionSections = GPITSolutionSections,
             };
 
             var result = validator.TestValidate(model);
@@ -174,6 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
                 SolutionType = SolutionType.GPIT,
+                SolutionSections = GPITSolutionSections,
             };
 
             var result = validator.TestValidate(model);
@@ -205,6 +284,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
                 SolutionType = SolutionType.GPIT,
+                SolutionSections = GPITSolutionSections,
             };
 
             var result = validator.TestValidate(model);
@@ -237,6 +317,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
                 SolutionType = SolutionType.GPIT,
+                SolutionSections = GPITSolutionSections,
             };
 
             var result = validator.TestValidate(model);
@@ -261,6 +342,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SolutionId = solution.CatalogueItemId,
                 SelectedPublicationStatus = PublicationStatus.Published,
                 SolutionType = SolutionType.GPIT,
+                SolutionSections = GPITSolutionSections,
             };
 
             var result = validator.TestValidate(model);
@@ -305,6 +387,65 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();
+        }
+
+        private static ManageCatalogueSolutionModel CreateModel(
+            CatalogueItemId solutionId,
+            string section,
+            TaskProgress status)
+        {
+            var sections = new SolutionSections();
+
+            switch (section)
+            {
+                case "Description":
+                    sections.Description = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, DescriptionStatus = status };
+                case "Features":
+                    sections.Features = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, FeaturesStatus = status };
+                case "Integrations":
+                    sections.Integrations = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, InteroperabilityStatus = status };
+                case "Implementation":
+                    sections.Implementation = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, ImplementationStatus = status };
+                case "ApplicationType":
+                    sections.ApplicationType = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, ApplicationTypeStatus = status };
+                case "HostingType":
+                    sections.HostingType = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, HostingTypeStatus = status };
+                case "DataProcessingInformation":
+                    sections.DataProcessingInformation = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, DataProcessingStatus = status };
+                case "ListPrice":
+                    sections.ListPrice = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, ListPriceStatus = status };
+                case "CapabilitiesAndEpics":
+                    sections.CapabilitiesAndEpics = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, CapabilitiesStatus = status };
+                case "AdditionalServices":
+                    sections.AdditionalServices = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, AdditionalServicesStatus = status };
+                case "AssociatedServices":
+                    sections.AssociatedServices = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, AssociatedServicesStatus = status };
+                case "Standards":
+                    sections.Standards = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, StandardsStatus = status };
+                case "DevelopmentPlans":
+                    sections.DevelopmentPlans = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, RoadmapStatus = status };
+                case "SupplierDetails":
+                    sections.SupplierDetails = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, SupplierDetailsStatus = status };
+                case "ServiceLevelAgreement":
+                    sections.ServiceLevelAgreement = SolutionSectionRequirement.Mandatory;
+                    return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections, SlaStatus = status };
+            }
+
+            return new ManageCatalogueSolutionModel { SolutionId = solutionId, SelectedPublicationStatus = PublicationStatus.Published, SolutionType = SolutionType.GPIT, SolutionSections = sections };
         }
     }
 }
