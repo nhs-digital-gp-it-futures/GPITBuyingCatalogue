@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var result = await controller.Index(catalogueItemId);
+            var result = await controller.Index(SolutionType.GPIT, catalogueItemId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
@@ -67,13 +67,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] IAdditionalServicesService additionalServicesService,
             AdditionalServicesController controller)
         {
-            var expectedResult = new AdditionalServicesModel(catalogueItem, additionalServices);
+            var expectedResult = new AdditionalServicesModel(catalogueItem, additionalServices)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
             additionalServicesService.GetAdditionalServicesBySolutionId(catalogueItem.Id, false).Returns(additionalServices);
 
-            var result = await controller.Index(catalogueItem.Id);
+            var result = await controller.Index(SolutionType.GPIT, catalogueItem.Id);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedResult);
@@ -89,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditAdditionalService(catalogueItemId, additionalServiceId);
+            var result = await controller.EditAdditionalService(SolutionType.GPIT, catalogueItemId, additionalServiceId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
@@ -107,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
             additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalServiceId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditAdditionalService(solution.CatalogueItemId, additionalServiceId);
+            var result = await controller.EditAdditionalService(SolutionType.GPIT, solution.CatalogueItemId, additionalServiceId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No additional service with Id {additionalServiceId} found for Solution {solution.CatalogueItemId}");
@@ -132,8 +135,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var expectedResult = new EditAdditionalServiceModel(
                 catalogueItem,
                 additionalService.CatalogueItem,
-                associatedServiceCatalogueItems);
-
+                associatedServiceCatalogueItems)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
             additionalServicesService.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId)
@@ -142,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(additionalService.CatalogueItemId)
                 .Returns(associatedServiceCatalogueItems);
 
-            var result = await controller.EditAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId);
+            var result = await controller.EditAdditionalService(SolutionType.GPIT, catalogueItem.Id, additionalService.CatalogueItemId);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>()
@@ -159,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockSolutionsService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var result = await controller.AddAdditionalService(catalogueItemId);
+            var result = await controller.AddAdditionalService(SolutionType.GPIT, catalogueItemId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
@@ -176,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            var result = await controller.AddAdditionalService(catalogueItem.Id);
+            var result = await controller.AddAdditionalService(SolutionType.GPIT, catalogueItem.Id);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(model => model.BackLink));
@@ -191,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = await controller.AddAdditionalService(catalogueItemId, model);
+            var result = await controller.AddAdditionalService(SolutionType.GPIT, catalogueItemId, model);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -207,7 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var result = await controller.AddAdditionalService(catalogueItemId, model);
+            var result = await controller.AddAdditionalService(SolutionType.GPIT, catalogueItemId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
@@ -223,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
-            var result = await controller.AddAdditionalService(catalogueItem.Id, model);
+            var result = await controller.AddAdditionalService(SolutionType.GPIT, catalogueItem.Id, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServicesController.EditAdditionalService));
@@ -239,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditAdditionalServiceDetails(catalogueItemId, additionalServiceId);
+            var result = await controller.EditAdditionalServiceDetails(SolutionType.GPIT, catalogueItemId, additionalServiceId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
@@ -257,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
             additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalServiceId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditAdditionalServiceDetails(solution.CatalogueItemId, additionalServiceId);
+            var result = await controller.EditAdditionalServiceDetails(SolutionType.GPIT, solution.CatalogueItemId, additionalServiceId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No additional service with Id {additionalServiceId} found for Solution {solution.CatalogueItemId}");
@@ -278,7 +283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             additionalServicesService.GetAdditionalService(catalogueItem.Id, catalogueItem.Id).Returns(catalogueItem);
 
-            var result = await controller.EditAdditionalServiceDetails(catalogueItem.Id, catalogueItem.Id);
+            var result = await controller.EditAdditionalServiceDetails(SolutionType.GPIT, catalogueItem.Id, catalogueItem.Id);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -294,7 +299,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = await controller.EditAdditionalServiceDetails(catalogueItemId, additionalServiceId, model);
+            var result = await controller.EditAdditionalServiceDetails(SolutionType.GPIT, catalogueItemId, additionalServiceId, model);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -311,7 +316,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditAdditionalServiceDetails(catalogueItemId, additionalServiceId, model);
+            var result = await controller.EditAdditionalServiceDetails(SolutionType.GPIT, catalogueItemId, additionalServiceId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
@@ -330,7 +335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
             additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalServiceId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditAdditionalServiceDetails(solution.CatalogueItemId, additionalServiceId, model);
+            var result = await controller.EditAdditionalServiceDetails(SolutionType.GPIT, solution.CatalogueItemId, additionalServiceId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No additional service with Id {additionalServiceId} found for Solution {solution.CatalogueItemId}");
@@ -350,7 +355,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             additionalServicesService.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
 
-            var result = await controller.EditAdditionalServiceDetails(catalogueItem.Id, additionalService.CatalogueItemId, model);
+            var result = await controller.EditAdditionalServiceDetails(SolutionType.GPIT, catalogueItem.Id, additionalService.CatalogueItemId, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServicesController.EditAdditionalService));
@@ -366,7 +371,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             additionalServicesService.GetAdditionalService(solutionId, additionalServiceId).Returns((CatalogueItem)null);
 
-            var result = await controller.AssociatedServices(solutionId, additionalServiceId);
+            var result = await controller.AssociatedServices(SolutionType.GPIT, solutionId, additionalServiceId);
 
             result.Should().BeOfType<BadRequestObjectResult>();
         }
@@ -389,9 +394,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new CatalogueItemAssociatedServicesModel(
                 additionalService.CatalogueItem,
-                associatedServices);
-
-            var result = await controller.AssociatedServices(solutionId, additionalService.CatalogueItemId);
+                associatedServices)
+            {
+                SolutionType = SolutionType.GPIT,
+                SolutionId = solutionId,
+            };
+            var result = await controller.AssociatedServices(SolutionType.GPIT, solutionId, additionalService.CatalogueItemId);
 
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
             viewResult.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -407,7 +415,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = await controller.AssociatedServices(solutionId, additionalServiceId, model);
+            var result = await controller.AssociatedServices(SolutionType.GPIT, solutionId, additionalServiceId, model);
 
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
             viewResult.Model.Should().BeEquivalentTo(model);
@@ -424,12 +432,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             associatedServices.ForEach(x => x.CatalogueItem.SupplierServiceAssociations = new List<SupplierServiceAssociation>());
 
-            var model = new CatalogueItemAssociatedServicesModel(additionalService.CatalogueItem, associatedServices);
-
+            var model = new CatalogueItemAssociatedServicesModel(additionalService.CatalogueItem, associatedServices)
+            {
+                SolutionType = SolutionType.GPIT,
+                SolutionId = solutionId,
+            };
             var selectedAssociatedService = model.SelectableAssociatedServices.First();
             selectedAssociatedService.Selected = true;
 
-            var result = await controller.AssociatedServices(solutionId, additionalService.CatalogueItemId, model);
+            var result = await controller.AssociatedServices(SolutionType.GPIT, solutionId, additionalService.CatalogueItemId, model);
 
             result.Should().BeOfType<RedirectToActionResult>();
             await associatedServicesService.Received()
@@ -450,13 +461,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             additionalService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
 
-            var model = new EditAdditionalServiceModel { SelectedPublicationStatus = PublicationStatus.Published };
+            var model = new EditAdditionalServiceModel
+            {
+                SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
+            };
 
             mockSolutionService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
             additionalServicesService.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
 
-            await controller.SetPublicationStatus(catalogueItem.Id, additionalService.CatalogueItemId, model);
+            await controller.SetPublicationStatus(SolutionType.GPIT, catalogueItem.Id, additionalService.CatalogueItemId, model);
 
             await publicationStatusService.Received().SetPublicationStatus(additionalService.CatalogueItemId, model.SelectedPublicationStatus);
         }
@@ -472,13 +487,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             additionalService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
 
-            var model = new EditAdditionalServiceModel { SelectedPublicationStatus = PublicationStatus.Published };
+            var model = new EditAdditionalServiceModel
+            {
+                SelectedPublicationStatus = PublicationStatus.Published,
+                SolutionType = SolutionType.GPIT,
+            };
 
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
             additionalServicesService.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
 
-            var actual = (await controller.SetPublicationStatus(catalogueItem.Id, additionalService.CatalogueItemId, model)).As<RedirectToActionResult>();
+            var actual = (await controller.SetPublicationStatus(SolutionType.GPIT, catalogueItem.Id, additionalService.CatalogueItemId, model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(AdditionalServicesController.Index));
@@ -495,13 +514,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var model = new EditAdditionalServiceModel(catalogueItem, additionalService.CatalogueItem, []);
+            var model = new EditAdditionalServiceModel(catalogueItem, additionalService.CatalogueItem, [])
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             solutionsService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
 
             additionalServicesService.GetAdditionalService(catalogueItem.Id, additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
 
-            var actual = (await controller.SetPublicationStatus(catalogueItem.Id, additionalService.CatalogueItemId, model)).As<ViewResult>();
+            var actual = (await controller.SetPublicationStatus(SolutionType.GPIT, catalogueItem.Id, additionalService.CatalogueItemId, model)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().Be(nameof(AdditionalServicesController.EditAdditionalService));
@@ -520,7 +542,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
             additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalServiceId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalServiceId);
+            var result = await controller.EditCapabilities(SolutionType.GPIT, solution.CatalogueItemId, additionalServiceId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No additional service with Id {additionalServiceId} found for Solution {solution.CatalogueItemId}");
@@ -548,7 +570,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId);
+            var result = await controller.EditCapabilities(SolutionType.GPIT, solution.CatalogueItemId, additionalService.CatalogueItemId);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -587,6 +609,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 "some-error");
 
             var result = await controller.EditCapabilities(
+                SolutionType.GPIT,
                 catalogueItem.Id,
                 additionalService.CatalogueItemId,
                 postedModel);
@@ -613,7 +636,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId).Returns(default(CatalogueItem));
 
             var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
-            var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, postedModel);
+            var result = await controller.EditCapabilities(SolutionType.GPIT, solution.CatalogueItemId, additionalService.CatalogueItemId, postedModel);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No additional service with Id {additionalService.CatalogueItemId} found for Solution {solution.CatalogueItemId}");
@@ -632,7 +655,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
 
             var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
-            _ = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, postedModel);
+            _ = await controller.EditCapabilities(SolutionType.GPIT, solution.CatalogueItemId, additionalService.CatalogueItemId, postedModel);
 
             await capabilitiesService.Received().AddCapabilitiesToCatalogueItem(additionalService.CatalogueItemId, Arg.Any<SaveCatalogueItemCapabilitiesModel>());
         }
@@ -649,7 +672,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
 
             var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
-            var result = await controller.EditCapabilities(solution.CatalogueItemId, additionalService.CatalogueItemId, postedModel);
+            var result = await controller.EditCapabilities(SolutionType.GPIT, solution.CatalogueItemId, additionalService.CatalogueItemId, postedModel);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServicesController.EditAdditionalService));

@@ -13,11 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var solutions = new List<CatalogueItem>()
             {
-                new CatalogueItem() { Name = "Test 1" },
-                new CatalogueItem() { Name = "Test 2" },
+                new() { Name = "Test 1" },
+                new() { Name = "Test 2" },
             };
 
-            var actual = new CatalogueSolutionsModel(solutions);
+            var actual = new CatalogueSolutionsModel(solutions)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             actual.Solutions.Should().NotBeNullOrEmpty();
             actual.Solutions[0].Name.Should().Be(solutions[0].Name);
@@ -29,11 +32,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var solutions = new List<CatalogueItem>()
             {
-                new CatalogueItem() { Name = "Test 1" },
-                new CatalogueItem() { Name = "Test 2" },
+                new() { Name = "Test 1" },
+                new() { Name = "Test 2" },
             };
 
-            var actual = new CatalogueSolutionsModel();
+            var actual = new CatalogueSolutionsModel()
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             actual.SetSolutions(solutions);
 
@@ -45,7 +51,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Fact]
         public static void NewCatalogueSolutionsModel_SetSolutionWithNull_ResultAsExpected()
         {
-            var actual = new CatalogueSolutionsModel();
+            var actual = new CatalogueSolutionsModel()
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             actual.SetSolutions(null);
 

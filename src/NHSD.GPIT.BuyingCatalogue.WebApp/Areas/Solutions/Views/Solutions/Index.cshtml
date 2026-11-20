@@ -1,9 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsModalSearch
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSuggestionSearch
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
@@ -36,7 +31,7 @@
                 <nhs-card title="Search catalogue solutions">
                     <div id="search-by">
                         <vc:nhs-suggestion-search id="marketing-suggestion-search"
-                                                  ajax-url="@Url.Action(nameof(SolutionsController.FilterSearchSuggestions), typeof(SolutionsController).ControllerName())"
+                                                  ajax-url="@Url.Action(nameof(SolutionsController.FilterSearchSuggestions), typeof(SolutionsController).ControllerName(), new { solutionType = Model.SolutionType })"
                                                   title-text="Search by supplier or solution name"
                                                   query-parameter-name="search"/>
                     </div>

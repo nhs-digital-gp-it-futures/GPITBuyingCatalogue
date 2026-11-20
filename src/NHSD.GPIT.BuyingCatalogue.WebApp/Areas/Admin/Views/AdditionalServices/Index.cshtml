@@ -9,10 +9,12 @@
                         caption="@Model.ItemName"
                         advice="Add any services that provide extra functionality to your catalogue solution." />
 
-        <vc:nhs-action-link url="@Url.Action(
-            nameof(AdditionalServicesController.AddAdditionalService),
-            typeof(AdditionalServicesController).ControllerName(),
-            new { solutionId = Model.ItemId })" text="Add an additional service" />
+        <vc:nhs-action-link 
+            text="Add an additional service" 
+            url="@Url.Action(
+                nameof(AdditionalServicesController.AddAdditionalService),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { solutionType = Model.SolutionType, solutionId = Model.ItemId })" />
 
         <p>
             Use the link to add information on each of the additional services available with your catalogue solution.
@@ -51,6 +53,7 @@
                         <nhs-table-cell>
                             <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
                                asp-action="@nameof(AdditionalServicesController.EditAdditionalService)"
+                               asp-route-solutionType="@Model.SolutionType"
                                asp-route-solutionId="@Model.ItemId"
                                asp-route-additionalServiceId="@additionalService.Id"
                                class="nhsuk-breadcrumb__link">Edit</a>
@@ -60,9 +63,11 @@
             </nhs-table>
         }
 
-        <vc:nhs-anchor-button text="Save and continue" url="@Url.Action(
-                                                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
-                                                     typeof(CatalogueSolutionsController).ControllerName(),
-                                                     new { solutionId = Model.ItemId })" type="Primary" />
+        <vc:nhs-anchor-button
+            text="Save and continue"
+            url="@Url.Action(
+                nameof(CatalogueSolutionsController.ManageCatalogueSolution),
+                typeof(CatalogueSolutionsController).ControllerName(),
+                new { solutionType = Model.SolutionType, solutionId = Model.ItemId })" type="Primary" />
     </div>
 </div>

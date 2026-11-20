@@ -9,8 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     {
         public ServiceLevelAgreementDetailsModel(
             CatalogueItem catalogueItem,
-            CatalogueItemContentStatus contentStatus)
-            : base(catalogueItem, contentStatus)
+            CatalogueItemContentStatus contentStatus,
+            SolutionSections sections)
+            : base(catalogueItem, contentStatus, sections)
         {
             if (catalogueItem.Solution is not null && catalogueItem.Solution.ServiceLevelAgreement is not null)
             {

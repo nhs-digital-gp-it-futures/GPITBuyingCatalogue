@@ -89,13 +89,14 @@ public static class FrameworksControllerTests
         FrameworksController controller)
     {
         model.MaximumTerm = "36";
+        model.SolutionType = SolutionType.GPIT;
         model.FundingTypes.ForEach(f => f.Selected = selected);
 
         var result = (await controller.Add(model)).As<RedirectToActionResult>();
 
         await service
             .Received()
-            .AddFramework(model.Name, Arg.Is<IEnumerable<FundingType>>(f => f.Any() == selected), Arg.Any<int>());
+            .AddFramework(model.Name, Arg.Is<IEnumerable<FundingType>>(f => f.Any() == selected), Arg.Any<int>(), model.SolutionType);
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Dashboard));
@@ -126,6 +127,8 @@ public static class FrameworksControllerTests
         [Frozen] IFrameworkService service,
         FrameworksController controller)
     {
+        framework.SolutionType = SolutionType.CommunityPharmacy;
+
         service
             .GetFramework(frameworkId)
             .Returns(framework);
@@ -135,6 +138,7 @@ public static class FrameworksControllerTests
         result.Should().NotBeNull();
         result.Model.Should().NotBeNull();
         result.Model.Should().BeOfType<AddEditFrameworkModel>();
+        result.Model.As<AddEditFrameworkModel>().SolutionType.Should().Be(framework.SolutionType);
     }
 
     [Theory]
@@ -169,7 +173,7 @@ public static class FrameworksControllerTests
 
         await service
             .Received()
-            .UpdateFramework(frameworkId, model.Name, Arg.Is<IEnumerable<FundingType>>(f => f.Any() == selected), Arg.Any<int>());
+            .UpdateFramework(frameworkId, model.Name, Arg.Is<IEnumerable<FundingType>>(f => f.Any() == selected), Arg.Any<int>(), Arg.Any<SolutionType>());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Dashboard));

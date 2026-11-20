@@ -17,7 +17,7 @@ public static class StandardPartialModelTests
         StandardType standardType,
         List<StandardComplianceModel> standards)
     {
-        var model = new StandardPartialModel(solutionId, standardType, standards);
+        var model = new StandardPartialModel(solutionId, SolutionType.GPIT, standardType, standards);
 
         model.SolutionId.Should().Be(solutionId);
         model.StandardType.Should().Be(standardType);

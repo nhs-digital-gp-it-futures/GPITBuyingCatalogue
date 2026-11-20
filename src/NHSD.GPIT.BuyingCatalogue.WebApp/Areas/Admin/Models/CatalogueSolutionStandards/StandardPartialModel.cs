@@ -7,10 +7,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionS
 
 public struct StandardPartialModel(
     CatalogueItemId solutionId,
+    SolutionType solutionType,
     StandardType standardType,
     ICollection<StandardComplianceModel> standards)
 {
     public CatalogueItemId SolutionId { get; set; } = solutionId;
+
+    public SolutionType SolutionType { get; set; } = solutionType;
 
     public StandardType StandardType { get; set; } = standardType;
 

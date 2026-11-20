@@ -162,6 +162,56 @@ public static class FrameworkServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
+    public static async Task GetFrameworksByCatalogueItems_NonGpitFramework_ReturnsOnlyGpitFrameworks(
+        EntityFramework.Catalogue.Models.Framework gpitFramework,
+        EntityFramework.Catalogue.Models.Framework communityPharmacyFramework,
+        FrameworkSolution gpitFrameworkSolution,
+        FrameworkSolution communityPharmacyFrameworkSolution,
+        CatalogueItem gpitCatalogueItem,
+        CatalogueItem communityPharmacyCatalogueItem,
+        Solution gpitSolution,
+        Solution communityPharmacySolution,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        FrameworkService service)
+    {
+        dbContext.FrameworkSolutions.RemoveRange(dbContext.FrameworkSolutions);
+
+        gpitFramework.SolutionType = SolutionType.GPIT;
+        communityPharmacyFramework.SolutionType = SolutionType.CommunityPharmacy;
+
+        gpitCatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+        gpitCatalogueItem.PublishedStatus = PublicationStatus.Published;
+        communityPharmacyCatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+        communityPharmacyCatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+        gpitSolution.FrameworkSolutions.Clear();
+        communityPharmacySolution.FrameworkSolutions.Clear();
+
+        gpitSolution.CatalogueItem = gpitCatalogueItem;
+        communityPharmacySolution.CatalogueItem = communityPharmacyCatalogueItem;
+
+        gpitFrameworkSolution.Solution = gpitSolution;
+        gpitFrameworkSolution.Framework = gpitFramework;
+        communityPharmacyFrameworkSolution.Solution = communityPharmacySolution;
+        communityPharmacyFrameworkSolution.Framework = communityPharmacyFramework;
+
+        dbContext.FrameworkSolutions.AddRange(gpitFrameworkSolution, communityPharmacyFrameworkSolution);
+        dbContext.Frameworks.AddRange(gpitFramework, communityPharmacyFramework);
+        dbContext.CatalogueItems.AddRange(gpitCatalogueItem, communityPharmacyCatalogueItem);
+        dbContext.Solutions.AddRange(gpitSolution, communityPharmacySolution);
+
+        await dbContext.SaveChangesAsync();
+
+        var result = await service.GetFrameworksWithPublishedCatalogueItems();
+
+        result.Should().HaveCount(1);
+        result.Should().ContainSingle();
+        result.Single().Id.Should().Be(gpitFramework.Id);
+        result.Single().SolutionType.Should().Be(SolutionType.GPIT);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
     public static async Task GetFramework_ReturnsExpected(
         EntityFramework.Catalogue.Models.Framework framework,
         [Frozen] BuyingCatalogueDbContext dbContext,
@@ -194,14 +244,14 @@ public static class FrameworkServiceTests
     [Theory]
     [MockInMemoryDbAutoData]
     public static Task AddFramework_NullName_ThrowsException(FrameworkService service) => FluentActions
-        .Invoking(() => service.AddFramework(null, Enumerable.Empty<FundingType>(), 0))
+        .Invoking(() => service.AddFramework(null, Enumerable.Empty<FundingType>(), 0, SolutionType.GPIT))
         .Should()
         .ThrowAsync<ArgumentException>();
 
     [Theory]
     [MockInMemoryDbAutoData]
     public static Task AddFramework_NullFundingType_ThrowsException(string name, FrameworkService service) => FluentActions
-        .Invoking(() => service.AddFramework(name, null, 0))
+        .Invoking(() => service.AddFramework(name, null, 0, SolutionType.GPIT))
         .Should()
         .ThrowAsync<ArgumentException>();
 
@@ -219,7 +269,7 @@ public static class FrameworkServiceTests
 
         dbContext.ChangeTracker.Clear();
 
-        await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>(), 0));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>(), 0, SolutionType.GPIT));
     }
 
     [Theory]
@@ -240,13 +290,14 @@ public static class FrameworkServiceTests
 
         dbContext.ChangeTracker.Clear();
 
-        await service.UpdateFramework(frameworkId, newName, fundingTypes, maximumTerm);
+        await service.UpdateFramework(frameworkId, newName, fundingTypes, maximumTerm, SolutionType.GPIT);
 
         var framework = dbContext.Frameworks.AsNoTracking().FirstOrDefault(x => x.Id == frameworkId);
 
         framework.Name.Should().Be(newName);
         framework.FundingTypes.Should().BeEquivalentTo(fundingTypes);
         framework.MaximumTerm.Should().Be(maximumTerm);
+        framework.SolutionType.Should().Be(SolutionType.GPIT);
     }
 
     [Theory]
@@ -256,7 +307,7 @@ public static class FrameworkServiceTests
         EntityFramework.Catalogue.Models.Framework framework)
     {
        await FluentActions
-            .Awaiting(async () => await service.UpdateFramework(framework.Id, null, null, 0))
+            .Awaiting(async () => await service.UpdateFramework(framework.Id, null, null, 0, SolutionType.GPIT))
             .Should()
             .NotThrowAsync();
     }

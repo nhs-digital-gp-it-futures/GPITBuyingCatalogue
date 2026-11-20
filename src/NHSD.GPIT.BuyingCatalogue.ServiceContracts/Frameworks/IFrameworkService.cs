@@ -12,9 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks
 
         Task<IList<Framework>> GetFrameworks();
 
-        Task AddFramework(string name, IEnumerable<FundingType> fundingTypes, int maximumTerm);
+        Task AddFramework(string name, IEnumerable<FundingType> fundingTypes, int maximumTerm, SolutionType solutionType);
 
-        Task UpdateFramework(string frameworkId, string name, IEnumerable<FundingType> fundingTypes, int maximumTerm);
+        Task UpdateFramework(string frameworkId, string name, IEnumerable<FundingType> fundingTypes, int maximumTerm, SolutionType solutionType);
 
         Task MarkAsExpired(string frameworkId);
 
