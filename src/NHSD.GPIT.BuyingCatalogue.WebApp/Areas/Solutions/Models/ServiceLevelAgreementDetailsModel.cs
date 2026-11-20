@@ -12,12 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             CatalogueItemContentStatus contentStatus)
             : base(catalogueItem, contentStatus)
         {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
-            if (catalogueItem.Solution is null)
-                throw new ArgumentException("Catalogue item does not have a solution", nameof(catalogueItem));
-
-            if (catalogueItem.Solution.ServiceLevelAgreement is not null)
+            if (catalogueItem.Solution is not null && catalogueItem.Solution.ServiceLevelAgreement is not null)
             {
                 var serviceLevelAgreement = catalogueItem.Solution.ServiceLevelAgreement;
 
