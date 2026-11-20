@@ -23,7 +23,7 @@
                 <nhs-table-column>Applicable days</nhs-table-column>
             }
 
-            @foreach (var slaContact in Model.SlaContacts.OrderBy(sat => sat.Channel).ThenBy(sat => sat.TimeFrom))
+            @foreach (var slaContact in slaContacts.OrderBy(sat => sat.Channel).ThenBy(sat => sat.TimeFrom))
             {
                 <nhs-table-row-container>
                     <nhs-table-cell style="word-break: break-word">@slaContact.Channel</nhs-table-cell>
@@ -43,7 +43,7 @@
 <h2 class="nhsuk-heading-s">Service availability</h2>
 <p>This is when you can contact support services for this catalogue solution.</p>
 
-@foreach (var serviceAvailabilityTime in Model.ServiceAvailabilityTimes.OrderBy(sat => sat.Category).ThenBy(sat => sat.TimeFrom))
+@foreach (var serviceAvailabilityTime in serviceAvailabilityTimes.OrderBy(sat => sat.Category).ThenBy(sat => sat.TimeFrom))
 {
     <nhs-expander label-text="@serviceAvailabilityTime.Category" open="false" style="word-break: break-word">
         <nhs-summary-list>
@@ -81,7 +81,7 @@
 <h2 class="nhsuk-heading-s">Service levels</h2>
 <p>These are the levels of service provided for this catalogue solution.</p>
 
-@foreach (var serviceLevel in Model.ServiceLevels)
+@foreach (var serviceLevel in serviceLevels)
 {
     <nhs-expander label-text="@serviceLevel.TypeOfService" open="false">
         <nhs-summary-list>
