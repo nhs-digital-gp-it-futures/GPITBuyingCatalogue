@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
@@ -13,14 +12,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             SolutionSections sections)
             : base(catalogueItem, contentStatus, sections)
         {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
+            if (catalogueItem.Solution is not null && catalogueItem.Solution.ServiceLevelAgreement is not null)
+            {
+                var serviceLevelAgreement = catalogueItem.Solution.ServiceLevelAgreement;
 
-            var serviceLevelAgreement = catalogueItem.Solution.ServiceLevelAgreement;
-
-            ServiceAvailabilityTimes = serviceLevelAgreement.ServiceHours;
-            SlaContacts = serviceLevelAgreement.Contacts;
-            ServiceLevels = serviceLevelAgreement.ServiceLevels;
+                ServiceAvailabilityTimes = serviceLevelAgreement.ServiceHours;
+                SlaContacts = serviceLevelAgreement.Contacts;
+                ServiceLevels = serviceLevelAgreement.ServiceLevels;
+            }
         }
 
         public ICollection<ServiceAvailabilityTimes> ServiceAvailabilityTimes { get; init; }
