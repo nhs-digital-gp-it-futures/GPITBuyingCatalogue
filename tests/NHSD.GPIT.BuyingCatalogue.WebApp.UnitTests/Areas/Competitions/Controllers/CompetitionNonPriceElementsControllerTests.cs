@@ -489,7 +489,6 @@ public static class CompetitionNonPriceElementsControllerTests
     [Theory]
     [MockAutoData]
     public static async Task PostDeleteFeature_WithReturn_MoreThanOneFeature_DeletesSingleFeature(
-        string returnUrl,
         FeaturesCriteria firstCriteria,
         FeaturesCriteria secondCriteria,
         string internalOrgId,
@@ -497,14 +496,20 @@ public static class CompetitionNonPriceElementsControllerTests
         DeleteNonPriceElementModel model,
         [Frozen] ICompetitionsService competitionsService,
         [Frozen] ICompetitionNonPriceElementsService competitionNonPriceElementsService,
+        IUrlHelper urlHelper,
         CompetitionNonPriceElementsController controller)
     {
+        const string returnUrl = "/organisation/org-1/competitions/123/non-price-elements/dashboard";
+
         competition.NonPriceElements = new()
         {
-            Features = new List<FeaturesCriteria> { firstCriteria, secondCriteria, },
+            Features = new List<FeaturesCriteria> { firstCriteria, secondCriteria },
         };
 
         competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id).Returns(competition);
+
+        urlHelper.IsLocalUrl(returnUrl).Returns(true);
+        controller.Url = urlHelper;
 
         var result = (await controller.DeleteFeature(
                 internalOrgId,
@@ -512,7 +517,7 @@ public static class CompetitionNonPriceElementsControllerTests
                 firstCriteria.Id,
                 model,
                 returnUrl))
-            .As<RedirectResult>();
+            .As<LocalRedirectResult>();
 
         result.Should().NotBeNull();
         result.Url.Should().Be(returnUrl);
@@ -562,7 +567,6 @@ public static class CompetitionNonPriceElementsControllerTests
     [Theory]
     [MockAutoData]
     public static async Task PostDeleteFeature_WithReturn_OneFeature_DeletesFeatureNonPriceElement(
-        string returnUrl,
         FeaturesCriteria firstCriteria,
         string internalOrgId,
         Competition competition,
@@ -582,12 +586,11 @@ public static class CompetitionNonPriceElementsControllerTests
                 internalOrgId,
                 competition.Id,
                 firstCriteria.Id,
-                model,
-                returnUrl))
-            .As<RedirectResult>();
+                model))
+            .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
-        result.Url.Should().Be(returnUrl);
+        result.ActionName.Should().Be(nameof(controller.Index));
 
         await competitionNonPriceElementsService.Received()
             .DeleteNonPriceElement(
@@ -652,7 +655,7 @@ public static class CompetitionNonPriceElementsControllerTests
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(CompetitionTaskListController.Index));
-        result.ControllerName.Should().Be(typeof(CompetitionTaskListController).ControllerName());
+        result.ControllerName.Should().Be(null);
     }
 
     [Theory]
