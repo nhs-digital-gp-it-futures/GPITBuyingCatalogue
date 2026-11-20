@@ -19,7 +19,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             // CatalogueItem must be frozen so that the same instance is used to construct the Solution and
             // ApplicationTypeSectionModel instances
             _ = catalogueItem;
-            var actual = new ApplicationTypeSectionModel(solution.CatalogueItem);
+            var actual = new ApplicationTypeSectionModel(solution.CatalogueItem)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
 
             actual.SolutionId.Should().BeEquivalentTo(expected.SolutionId);
             actual.SolutionName.Should().BeEquivalentTo(expected.SolutionName);
@@ -28,7 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new ApplicationTypeSectionModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new ApplicationTypeSectionModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

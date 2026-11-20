@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<CatalogueItem> GetSolutionWithDataProcessingInformation(CatalogueItemId solutionId);
 
-        Task<SolutionLoadingStatusesModel> GetSolutionLoadingStatuses(CatalogueItemId solutionId);
+        Task<SolutionLoadingStatusesModel> GetSolutionLoadingStatuses(CatalogueItemId solutionId, SolutionSections solutionSections);
 
         Task<CatalogueItem> GetSolutionByName(string solutionName);
 
@@ -70,9 +70,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<List<CatalogueItem>> GetSupplierSolutionsWithAssociatedServices(int? supplierId, PracticeReorganisationTypeEnum practiceReorganisationType, string selectedFrameworkId);
 
-        Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null);
+        Task<IList<CatalogueItem>> GetAllSolutions(SolutionType solutionType, PublicationStatus? publicationStatus = null);
 
-        Task<IList<CatalogueItem>> GetAllSolutionsForSearchTerm(string searchTerm);
+        Task<IList<CatalogueItem>> GetAllSolutionsForSearchTerm(SolutionType solutionType, string searchTerm);
 
         Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model);
 

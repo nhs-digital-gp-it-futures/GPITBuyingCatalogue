@@ -45,6 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
 
         public CatalogueItemId SolutionId { get; set; }
 
+        public required SolutionType SolutionType { get; set; }
+
         [StringLength(300)]
         public string Channel { get; set; }
 

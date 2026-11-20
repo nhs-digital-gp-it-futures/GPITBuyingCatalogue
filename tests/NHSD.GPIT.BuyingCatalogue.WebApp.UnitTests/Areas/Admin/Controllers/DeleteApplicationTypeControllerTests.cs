@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             typeof(DeleteApplicationTypeController).Should()
                 .BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
             typeof(DeleteApplicationTypeController).Should()
-                .BeDecoratedWith<RouteAttribute>(r => r.Template == "admin/catalogue-solutions");
+                .BeDecoratedWith<RouteAttribute>(r => r.Template == "admin/catalogue-solutions/manage/{solutionType}/{solutionId}/application-type/delete");
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(Arg.Any<CatalogueItemId>()).Returns(catalogueItem);
 
-            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItem.Id, applicationType)).As<ViewResult>();
+            var actual = (await controller.DeleteApplicationTypeConfirmation(SolutionType.GPIT, catalogueItem.Id, applicationType)).As<ViewResult>();
 
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new DeleteApplicationTypeConfirmationModel(catalogueItem, applicationType), opt => opt.Excluding(m => m.BackLink));
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetSolutionThin(Arg.Any<CatalogueItemId>()).Returns((CatalogueItem)null);
 
-            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItem.Id, applicationType)).As<BadRequestObjectResult>();
+            var actual = (await controller.DeleteApplicationTypeConfirmation(SolutionType.GPIT, catalogueItem.Id, applicationType)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().BeOfType<string>();
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.GetApplicationType(catalogueItemId).Returns(applicationTypeDetail);
 
-            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItemId, applicationType, model)).As<RedirectToActionResult>();
+            var actual = (await controller.DeleteApplicationTypeConfirmation(SolutionType.GPIT, catalogueItemId, applicationType, model)).As<RedirectToActionResult>();
 
             await mockService.Received().DeleteApplicationType(catalogueItemId, applicationType);
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ApplicationType));
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError(errorKey, errorMessage);
 
-            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItemId, applicationType, model)).As<ViewResult>();
+            var actual = (await controller.DeleteApplicationTypeConfirmation(SolutionType.GPIT, catalogueItemId, applicationType, model)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();

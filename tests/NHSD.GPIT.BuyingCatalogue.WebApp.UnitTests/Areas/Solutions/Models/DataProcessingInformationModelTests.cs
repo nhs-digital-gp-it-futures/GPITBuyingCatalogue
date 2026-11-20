@@ -14,7 +14,7 @@ public static class DataProcessingInformationModelTests
         Solution solution,
         CatalogueItemContentStatus contentStatuses)
     {
-        var model = new DataProcessingInformationModel(solution.CatalogueItem, contentStatuses);
+        var model = new DataProcessingInformationModel(solution.CatalogueItem, contentStatuses, new SolutionSections());
 
         model.Index.Should().Be(11);
         model.Information.Should().Be(solution.DataProcessingInformation);

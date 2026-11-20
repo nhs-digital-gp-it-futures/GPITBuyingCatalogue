@@ -1,11 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 @model TieredPriceTiersModel
 
 @{
@@ -76,6 +70,8 @@
             <input type="hidden" asp-for="CatalogueItemName" />
             <input type="hidden" asp-for="CatalogueItemType" />
             <input type="hidden" asp-for="AddTieredPriceTierUrl" />
+            <input type="hidden" asp-for="SolutionType" />
+            <input type="hidden" asp-for="AdditionalServiceId" />
             <nhs-fieldset-form-label label-text="Publication status" size="Medium" asp-for="SelectedPublicationStatus">
                 <nhs-radio-buttons
                     asp-for="SelectedPublicationStatus"
@@ -97,15 +93,37 @@
         CatalogueItemType.Solution => Url.Action(
             nameof(CatalogueSolutionListPriceController.EditTieredPriceTier),
             typeof(CatalogueSolutionListPriceController).ControllerName(),
-            new { solutionId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id }),
+            new 
+            { 
+                solutionId = Model.CatalogueItemId, 
+                cataloguePriceId = tier.CataloguePriceId,
+                tierId = tier.Id,
+                solutionType = Model.SolutionType,
+                additionalServiceId = Model.AdditionalServiceId
+            }),
         CatalogueItemType.AdditionalService => Url.Action(
             nameof(AdditionalServiceListPriceController.EditTieredPriceTier),
             typeof(AdditionalServiceListPriceController).ControllerName(),
-            new { solutionId = Model.CatalogueItemId, additionalServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id }),
+            new
+            { 
+                solutionId = Model.CatalogueItemId, 
+                additionalServiceId = Model.ServiceId, 
+                cataloguePriceId = tier.CataloguePriceId, 
+                tierId = tier.Id,
+                solutionType = Model.SolutionType,
+            }),
         CatalogueItemType.AssociatedService => Url.Action(
             nameof(AssociatedServiceListPriceController.EditTieredPriceTier),
             typeof(AssociatedServiceListPriceController).ControllerName(),
-            new { supplierId = Model.SupplierId, associatedServiceId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id }),
+            new 
+            { 
+                supplierId = Model.SupplierId,
+                associatedServiceId = Model.CatalogueItemId,
+                cataloguePriceId = tier.CataloguePriceId,
+                tierId = tier.Id,
+                solutionType = Model.SolutionType,
+                additionalServiceId = Model.AdditionalServiceId
+            }),
         _ => string.Empty,
         };
 }

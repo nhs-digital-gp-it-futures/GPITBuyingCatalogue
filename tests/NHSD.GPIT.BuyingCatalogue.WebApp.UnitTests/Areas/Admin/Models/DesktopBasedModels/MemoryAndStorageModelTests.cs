@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
             Solution solution)
         {
             var catalogueItem = solution.CatalogueItem;
-            var actual = new MemoryAndStorageModel(catalogueItem);
+            var actual = new MemoryAndStorageModel(catalogueItem) { SolutionType = SolutionType.GPIT };
 
             actual.MemorySizes.Should().BeEquivalentTo(Framework.Constants.SelectLists.MemorySizes);
 
@@ -29,7 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new MemoryAndStorageModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new MemoryAndStorageModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

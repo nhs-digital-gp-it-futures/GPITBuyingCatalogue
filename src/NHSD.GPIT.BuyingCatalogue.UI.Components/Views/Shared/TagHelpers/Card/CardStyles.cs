@@ -13,4 +13,6 @@ public static class CardStyles
     internal const string CardHeadingMinHeightClass = "card-title-min-height";
     internal const string CardLinkClass = "nhsuk-card__link";
     internal const string CardCenterAlignmentClass = "nhsuk-card__center";
+    internal const string CardChevronClass = "nhsuk-card--with-chevron";
+    internal const string CardHorizontalAlignClass = "nhsuk-card--horizontal-align";
 }

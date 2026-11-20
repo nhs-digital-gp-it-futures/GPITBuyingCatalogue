@@ -28,6 +28,19 @@ public readonly struct NavigationMenuModel
             typeof(SolutionsController).ControllerName(),
             new { area = typeof(SolutionsController).AreaName() }));
 
+    private static readonly Func<IUrlHelper, KeyValuePair<string, string>> GeneralPractice = urlHelper => new KeyValuePair<string, string>(
+        "General Practice",
+        urlHelper.Action(
+            nameof(HomeController.GPIT),
+            typeof(HomeController).ControllerName()));
+
+    private static readonly Func<IUrlHelper, KeyValuePair<string, string>> CommunityPharmacy = urlHelper => new KeyValuePair<string, string>(
+        "Community Pharmacy",
+        urlHelper.Action(
+            nameof(HomeController.CommunityPharmacy),
+            typeof(HomeController).ControllerName(),
+            new { area = string.Empty }));
+
     private static readonly Func<IUrlHelper, KeyValuePair<string, string>> Logout = urlHelper =>
         new KeyValuePair<string, string>(
             "Log out",
@@ -40,8 +53,7 @@ public readonly struct NavigationMenuModel
         "Home",
         urlHelper.Action(
             nameof(Areas.Admin.Controllers.HomeController.Index),
-            typeof(Areas.Admin.Controllers.HomeController)
-                .ControllerName(),
+            typeof(Areas.Admin.Controllers.HomeController).ControllerName(),
             new
             {
                 area =
@@ -64,13 +76,6 @@ public readonly struct NavigationMenuModel
                 typeof(SuppliersController).ControllerName(),
                 new { area = typeof(OrganisationsController).AreaName() }));
 
-    private static readonly Func<IUrlHelper, KeyValuePair<string, string>> AdminCatalogueSolutions = urlHelper => new(
-        "Catalogue solutions",
-        urlHelper.Action(
-            nameof(CatalogueSolutionsController.Index),
-            typeof(CatalogueSolutionsController).ControllerName(),
-            new { area = typeof(OrganisationsController).AreaName() }));
-
     private static readonly
         List<(Func<ClaimsPrincipal, bool> Key, Func<ClaimsPrincipal, IUrlHelper, RouteValueDictionary,
                 List<KeyValuePair<string, string>>>
@@ -82,7 +87,8 @@ public readonly struct NavigationMenuModel
                     (_, urlHelper, _) =>
                     [
                         Home(urlHelper),
-                        CatalogueSolutions(urlHelper),
+                        GeneralPractice(urlHelper),
+                        CommunityPharmacy(urlHelper),
                     ]),
                 (
                     user => user.IsBuyer(), (user, urlHelper, routeValues) =>
@@ -133,7 +139,6 @@ public readonly struct NavigationMenuModel
                         AdminHome(urlHelper),
                         AdminBuyerOrganisations(urlHelper),
                         AdminSupplierOrganisations(urlHelper),
-                        AdminCatalogueSolutions(urlHelper),
                         Logout(urlHelper),
                     ]),
                 (
@@ -141,7 +146,6 @@ public readonly struct NavigationMenuModel
                     [
                         AdminHome(urlHelper),
                         AdminSupplierOrganisations(urlHelper),
-                        AdminCatalogueSolutions(urlHelper),
                         Logout(urlHelper),
                     ]),
                 (

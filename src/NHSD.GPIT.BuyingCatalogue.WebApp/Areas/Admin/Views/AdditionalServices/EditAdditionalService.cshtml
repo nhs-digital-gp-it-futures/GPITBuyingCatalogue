@@ -22,6 +22,7 @@
                 <nhs-table-cell>
                     <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
                        asp-action="@nameof(AdditionalServicesController.EditAdditionalServiceDetails)"
+                       asp-route-solutionType="@Model.SolutionType"
                        asp-route-solutionId="@Model.SolutionId"
                        asp-route-additionalServiceId="@Model.AdditionalServiceId">
                         Edit
@@ -35,6 +36,7 @@
                 <nhs-table-cell>
                     <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
                        asp-action="@nameof(AdditionalServicesController.EditCapabilities)"
+                       asp-route-solutionType="@Model.SolutionType"
                        asp-route-solutionId="@Model.SolutionId"
                        asp-route-additionalServiceId="@Model.AdditionalServiceId">
                         Edit
@@ -48,6 +50,7 @@
                 <nhs-table-cell>
                     <a asp-controller="@typeof(AdditionalServiceListPriceController).ControllerName()"
                        asp-action="@nameof(AdditionalServiceListPriceController.Index)"
+                       asp-route-solutionType="@Model.SolutionType"
                        asp-route-solutionId="@Model.SolutionId"
                        asp-route-additionalServiceId="@Model.AdditionalServiceId">
                         Edit
@@ -61,6 +64,7 @@
                 <nhs-table-cell>
                     <a asp-controller="@typeof(AdditionalServicesController).ControllerName()"
                        asp-action="@nameof(AdditionalServicesController.AssociatedServices)"
+                       asp-route-solutionType="@Model.SolutionType"
                        asp-route-solutionId="@Model.SolutionId"
                        asp-route-additionalServiceId="@Model.AdditionalServiceId">
                         Edit
@@ -72,6 +76,7 @@
         <form method="post" asp-action="SetPublicationStatus" asp-route-solutionId="@Model.SolutionId" asp-route-additionalServiceId="@Model.AdditionalServiceId">
             <input type="hidden" asp-for="SolutionId" />
             <input type="hidden" asp-for="SolutionName" />
+            <input type="hidden" asp-for="SolutionType" />
             <input type="hidden" asp-for="AdditionalServiceId" />
             <input type="hidden" asp-for="AdditionalServiceName" />
             <input type="hidden" asp-for="BackLink" />

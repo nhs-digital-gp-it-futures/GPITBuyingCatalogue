@@ -14,6 +14,7 @@
         <form method="post">
             <input type="hidden" asp-for="ServiceLevelId" />
             <input type="hidden" asp-for="SolutionName" />
+            <input type="hidden" asp-for="SolutionType" />
             <input type="hidden" asp-for="SolutionId" />
             <input type="hidden" asp-for="CanDelete" />
             <input type="hidden" asp-for="BackLink" />
@@ -46,11 +47,12 @@
 
         @if (Model.CanDelete)
         {
-            <vc:nhs-delete-button url="@Url.Action(
-                                              nameof(ServiceLevelAgreementsController.DeleteServiceLevel),
-                                              typeof(ServiceLevelAgreementsController).ControllerName(),
-                                              new {solutionId = Model.SolutionId, serviceLevelId = Model.ServiceLevelId})"
-                                  text="Delete service level" />
+            <vc:nhs-delete-button 
+                text="Delete service level"
+                url="@Url.Action(
+                    nameof(ServiceLevelAgreementsController.DeleteServiceLevel),
+                    typeof(ServiceLevelAgreementsController).ControllerName(),
+                    new { solutionType = Model.SolutionType, solutionId = Model.SolutionId, serviceLevelId = Model.ServiceLevelId })" />
         }
     </div>
 </article>

@@ -174,7 +174,8 @@ TRUNCATED FOR DEMO', N'www.emishealth.com', N'{"line1": "NotEmis Tower", "line2"
         (100018, N'Mana Systems', N'Mana Systems', N'Mana Systems', NULL, N'{"line1": "Mana Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', 0, CAST(N'2025-08-18T11:08:02.9000000' AS DateTime2), 2, 1),
         (100019, N'Sunhealth Nanosystems', N'Sunhealth Nanosystems', N'Sunhealth Nanosystems', NULL, N'{"line1": "Sunhealth Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', 0, CAST(N'2025-08-18T11:08:02.9000000' AS DateTime2), 2, 1),
         (100020, N'Oakwood', N'Oakwood Ltd', N'Oakwood', NULL, N'{"line1": "Oakwood Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', 0, CAST(N'2025-08-18T11:08:02.9000000' AS DateTime2), 2, 1),
-        (100021, N'Dummy supplier', N'Dummy supplier', NULL, NULL, N'{"Line1":"10-12 Example Street","Line2":null,"Line3":null,"Line4":null,"Line5":null,"Town":"Leeds","County":"West Yorkshire","Postcode":"LS1 2AB","Country":"United Kingdom"}', 0, CAST(N'2026-01-27T13:47:04.5678005' AS DateTime2), 2, 1))
+        (100021, N'Dummy supplier', N'Dummy supplier', NULL, NULL, N'{"Line1":"10-12 Example Street","Line2":null,"Line3":null,"Line4":null,"Line5":null,"Town":"Leeds","County":"West Yorkshire","Postcode":"LS1 2AB","Country":"United Kingdom"}', 0, CAST(N'2026-01-27T13:47:04.5678005' AS DateTime2), 2, 1),
+        (100022, N'Community pharmacy supplier', N'Community pharmacy supplier', N'Test supplier for community pharmacy solutions.', NULL, N'{"Line1":"1 Pharmacy Way","Line2":null,"Line3":null,"Line4":null,"Line5":null,"Town":"Leeds","County":"West Yorkshire","Postcode":"LS1 2AB","Country":"United Kingdom"}', 0, CAST(N'2026-08-25T09:00:00.0000000' AS DateTime2), 2, 1))
     AS SOURCE ([Id], [Name], [LegalName], [Summary], [SupplierUrl], [Address], [Deleted], [LastUpdated], [LastUpdatedBy], [IsActive])
     ON TARGET.[Id] = SOURCE.[Id]
     WHEN MATCHED THEN UPDATE SET
@@ -293,7 +294,8 @@ TRUNCATED FOR DEMO', N'www.emishealth.com', N'{"line1": "NotEmis Tower", "line2"
         (95, 10071, N'Avah', N'Martin', N'avahmartin@test.test', N'01234 567891', NULL, GETUTCDATE(), 2),
         (96, 10072, N'Junior', N'Bauer', N'juniorbauer@test.test', N'01234 567891', NULL, GETUTCDATE(), 2),
         (97, 10073, N'Camille', N'Kirk', N'camillekirk@test.test', N'01234 567891', NULL, GETUTCDATE(), 2),
-        (98, 100021, N'Joe', N'Sample', N'joe@email.com', N'1234567', N'Procurement', GETUTCDATE(), 2))
+        (98, 100021, N'Joe', N'Sample', N'joe@email.com', N'1234567', N'Procurement', GETUTCDATE(), 2),
+        (99, 100022, N'John', N'Sample', N'john@email.com', N'1234567', NULL, GETUTCDATE(), 2))
     AS SOURCE ([Id], [SupplierId], [FirstName], [LastName], [Email], [PhoneNumber], [Department], [LastUpdated], [LastUpdatedBy])
     ON TARGET.[Id] = SOURCE.[Id]
     WHEN MATCHED THEN UPDATE SET

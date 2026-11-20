@@ -15,22 +15,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
-    [Route("admin/catalogue-solutions/manage/{solutionId}/service-level-agreements")]
-    public class ServiceLevelAgreementsController : Controller
+    [Route("admin/catalogue-solutions/manage/{solutionType}/{solutionId}/service-level-agreements")]
+    public class ServiceLevelAgreementsController(
+        IServiceLevelAgreementsService serviceLevelAgreementsService,
+        ISolutionsService solutionsService) : Controller
     {
-        private readonly IServiceLevelAgreementsService serviceLevelAgreementsService;
-        private readonly ISolutionsService solutionsService;
+        private readonly IServiceLevelAgreementsService serviceLevelAgreementsService = serviceLevelAgreementsService ??
+            throw new ArgumentNullException(nameof(serviceLevelAgreementsService));
 
-        public ServiceLevelAgreementsController(
-            IServiceLevelAgreementsService serviceLevelAgreementsService,
-            ISolutionsService solutionsService)
-        {
-            this.serviceLevelAgreementsService = serviceLevelAgreementsService ?? throw new ArgumentNullException(nameof(serviceLevelAgreementsService));
-            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-        }
+        private readonly ISolutionsService solutionsService = solutionsService ??
+            throw new ArgumentNullException(nameof(solutionsService));
 
         [HttpGet]
-        public async Task<IActionResult> Index(CatalogueItemId solutionId)
+        public async Task<IActionResult> Index(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
@@ -40,14 +37,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             if (sla is null)
             {
-                return RedirectToAction(nameof(AddServiceLevelAgreement), new { solutionId });
+                return RedirectToAction(nameof(AddServiceLevelAgreement), new { solutionType, solutionId });
             }
 
-            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionType, solutionId });
         }
 
         [HttpGet("add-sla")]
-        public async Task<IActionResult> AddServiceLevelAgreement(CatalogueItemId solutionId)
+        public async Task<IActionResult> AddServiceLevelAgreement(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
@@ -58,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(
                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
-                    new { solutionId }),
+                    new { solutionType, solutionId }),
                 Title = "Catalogue solution type",
             };
 
@@ -66,7 +63,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("add-sla")]
-        public async Task<IActionResult> AddServiceLevelAgreement(CatalogueItemId solutionId, AddSlaTypeModel model)
+        public async Task<IActionResult> AddServiceLevelAgreement(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            AddSlaTypeModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -85,11 +85,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await serviceLevelAgreementsService.AddServiceLevelAgreement(addSlaModel);
 
-            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionType, solutionId });
         }
 
         [HttpGet("edit-service-level-agreement")]
-        public async Task<IActionResult> EditServiceLevelAgreement(CatalogueItemId solutionId)
+        public async Task<IActionResult> EditServiceLevelAgreement(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
@@ -102,14 +102,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(
                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
-                    new { solutionId }),
+                    new { solutionType, solutionId }),
+                SolutionType = solutionType,
             };
 
             return View(model);
         }
 
         [HttpGet("edit-service-level-agreement/edit-sla-type")]
-        public async Task<IActionResult> EditServiceLevelAgreementType(CatalogueItemId solutionId)
+        public async Task<IActionResult> EditServiceLevelAgreementType(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
@@ -120,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new AddSlaTypeModel(catalogueItem)
             {
                 SlaLevel = serviceLevelAgreements.SlaType,
-                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
+                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionType, solutionId }),
                 Title = "Catalogue solution type",
             };
 
@@ -128,7 +129,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("edit-service-level-agreement/edit-sla-type")]
-        public async Task<IActionResult> EditServiceLevelAgreementType(CatalogueItemId solutionId, AddSlaTypeModel model)
+        public async Task<IActionResult> EditServiceLevelAgreementType(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            AddSlaTypeModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -140,13 +144,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             if (model.SlaLevel!.Value != solution.Solution.ServiceLevelAgreement.SlaType)
-                return RedirectToAction(nameof(EditServiceLevelAgreementTypeConfirmation), new { solutionId });
+                return RedirectToAction(nameof(EditServiceLevelAgreementTypeConfirmation), new { solutionType, solutionId });
 
-            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionType, solutionId });
         }
 
         [HttpGet("edit-service-level-agreement/edit-sla-type/confirm-change")]
-        public async Task<IActionResult> EditServiceLevelAgreementTypeConfirmation(CatalogueItemId solutionId)
+        public async Task<IActionResult> EditServiceLevelAgreementTypeConfirmation(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
@@ -154,14 +158,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new EditSlaTypeConfirmationModel(catalogueItem)
             {
-                BackLink = Url.Action(nameof(EditServiceLevelAgreementType), new { solutionId }),
+                BackLink = Url.Action(nameof(EditServiceLevelAgreementType), new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
         [HttpPost("edit-service-level-agreement/edit-sla-type/confirm-change")]
-        public async Task<IActionResult> EditServiceLevelAgreementTypeConfirmation(CatalogueItemId solutionId, EditSlaTypeConfirmationModel model)
+        public async Task<IActionResult> EditServiceLevelAgreementTypeConfirmation(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            EditSlaTypeConfirmationModel model)
         {
             var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
@@ -171,11 +178,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await serviceLevelAgreementsService.UpdateServiceLevelTypeAsync(catalogueItem, newSlaType);
 
-            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionType, solutionId });
         }
 
         [HttpGet("edit-service-level-agreement/add-service-availability-times")]
-        public async Task<IActionResult> AddServiceAvailabilityTimes(CatalogueItemId solutionId)
+        public async Task<IActionResult> AddServiceAvailabilityTimes(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
@@ -183,14 +190,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new EditServiceAvailabilityTimesModel(solution)
             {
-                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
+                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionType, solutionId }),
+                SolutionType = solutionType,
             };
 
             return View("AddEditServiceAvailabilityTimes", model);
         }
 
         [HttpPost("edit-service-level-agreement/add-service-availability-times")]
-        public async Task<IActionResult> AddServiceAvailabilityTimes(CatalogueItemId solutionId, EditServiceAvailabilityTimesModel model)
+        public async Task<IActionResult> AddServiceAvailabilityTimes(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            EditServiceAvailabilityTimesModel model)
         {
             if (!ModelState.IsValid)
                 return View("AddEditServiceAvailabilityTimes", model);
@@ -212,11 +223,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await serviceLevelAgreementsService.SaveServiceAvailabilityTimes(solution, serviceAvailabilityTimesModel);
 
-            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionType, solutionId });
         }
 
         [HttpGet("edit-service-level-agreement/edit-service-availability-times/{serviceAvailabilityTimesId}")]
-        public async Task<IActionResult> EditServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId)
+        public async Task<IActionResult> EditServiceAvailabilityTimes(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId)
         {
             var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
@@ -228,15 +242,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new EditServiceAvailabilityTimesModel(solution, serviceAvailabilityTimes)
             {
-                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
-                CanDelete = solution.PublishedStatus != PublicationStatus.Published || ((await serviceLevelAgreementsService.GetCountOfServiceAvailabilityTimes(solutionId, serviceAvailabilityTimes.Id)) > 0),
+                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionType, solutionId }),
+                SolutionType = solutionType,
+                CanDelete = solution.PublishedStatus != PublicationStatus.Published ||
+                    ((await serviceLevelAgreementsService.GetCountOfServiceAvailabilityTimes(solutionId, serviceAvailabilityTimes.Id)) > 0),
             };
 
             return View("AddEditServiceAvailabilityTimes", model);
         }
 
         [HttpPost("edit-service-level-agreement/edit-service-availability-times/{serviceAvailabilityTimesId}")]
-        public async Task<IActionResult> EditServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId, EditServiceAvailabilityTimesModel model)
+        public async Task<IActionResult> EditServiceAvailabilityTimes(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId,
+            EditServiceAvailabilityTimesModel model)
         {
             if (!ModelState.IsValid)
                 return View("AddEditServiceAvailabilityTimes", model);
@@ -262,11 +282,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await serviceLevelAgreementsService.UpdateServiceAvailabilityTimes(solution, serviceAvailabilityTimesId, serviceAvailabilityTimesModel);
 
-            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionType, solutionId });
         }
 
         [HttpGet("edit-service-level-agreement/delete-service-availability-times/{serviceAvailabilityTimesId}")]
-        public async Task<IActionResult> DeleteServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId)
+        public async Task<IActionResult> DeleteServiceAvailabilityTimes(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId)
         {
             var solution = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (solution is null)
@@ -278,14 +301,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new DeleteServiceAvailabilityTimesModel(solution, serviceAvailabilityTimes)
             {
-                BackLink = Url.Action(nameof(EditServiceAvailabilityTimes), new { solutionId, serviceAvailabilityTimesId }),
+                BackLink = Url.Action(nameof(EditServiceAvailabilityTimes), new { solutionType, solutionId, serviceAvailabilityTimesId }),
             };
 
             return View(model);
         }
 
         [HttpPost("edit-service-level-agreement/delete-service-availability-times/{serviceAvailabilityTimesId}")]
-        public async Task<IActionResult> DeleteServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId, DeleteServiceAvailabilityTimesModel model)
+        public async Task<IActionResult> DeleteServiceAvailabilityTimes(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int serviceAvailabilityTimesId,
+            DeleteServiceAvailabilityTimesModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -300,11 +327,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await serviceLevelAgreementsService.DeleteServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
 
-            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionType, solutionId });
         }
 
         [HttpGet("add-contact")]
-        public async Task<IActionResult> AddContact(CatalogueItemId solutionId)
+        public async Task<IActionResult> AddContact(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
@@ -312,14 +339,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem)
             {
-                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
+                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionType, solutionId }),
+                SolutionType = solutionType,
             };
 
             return View("EditSLAContact", model);
         }
 
         [HttpPost("add-contact")]
-        public async Task<IActionResult> AddContact(CatalogueItemId solutionId, Models.ServiceLevelAgreements.EditSLAContactModel model)
+        public async Task<IActionResult> AddContact(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            Models.ServiceLevelAgreements.EditSLAContactModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -342,11 +373,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await serviceLevelAgreementsService.AddSLAContact(catalogueItem, addSLAContactModel);
 
-            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionType, solutionId });
         }
 
         [HttpGet("edit-contact/{contactId}")]
-        public async Task<IActionResult> EditContact(CatalogueItemId solutionId, int contactId)
+        public async Task<IActionResult> EditContact(SolutionType solutionType, CatalogueItemId solutionId, int contactId)
         {
             var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
@@ -361,14 +392,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem, contact, serviceLevelAgreements)
             {
-                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
+                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionType, solutionId }),
+                SolutionType = solutionType,
             };
 
             return View("EditSLAContact", model);
         }
 
         [HttpPost("edit-contact/{contactId}")]
-        public async Task<IActionResult> EditContact(CatalogueItemId solutionId, int contactId, Models.ServiceLevelAgreements.EditSLAContactModel model)
+        public async Task<IActionResult> EditContact(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int contactId,
+            Models.ServiceLevelAgreements.EditSLAContactModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -395,11 +431,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await serviceLevelAgreementsService.EditSlaContact(addSLAContactModel);
 
-            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionType, solutionId });
         }
 
         [HttpGet("delete-contact/{contactId}")]
-        public async Task<IActionResult> DeleteContact(CatalogueItemId solutionId, int contactId)
+        public async Task<IActionResult> DeleteContact(SolutionType solutionType, CatalogueItemId solutionId, int contactId)
         {
             var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
@@ -412,14 +448,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem, contact)
             {
-                BackLink = Url.Action(nameof(EditContact), new { solutionId, contactId }),
+                BackLink = Url.Action(nameof(EditContact), new { solutionType, solutionId, contactId }),
+                SolutionType = solutionType,
             };
 
             return View("DeleteSLAContact", model);
         }
 
         [HttpPost("delete-contact/{contactId}")]
-        public async Task<IActionResult> DeleteContact(CatalogueItemId solutionId, int contactId, Models.ServiceLevelAgreements.EditSLAContactModel model)
+        public async Task<IActionResult> DeleteContact(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int contactId,
+            Models.ServiceLevelAgreements.EditSLAContactModel model)
         {
             var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
@@ -430,11 +471,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await serviceLevelAgreementsService.DeleteSlaContact(contactId);
 
-            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionId });
+            return RedirectToAction(nameof(EditServiceLevelAgreement), new { solutionType, solutionId });
         }
 
         [HttpGet("add-service-level")]
-        public async Task<IActionResult> AddServiceLevel(CatalogueItemId solutionId)
+        public async Task<IActionResult> AddServiceLevel(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
@@ -442,14 +483,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditServiceLevelModel(catalogueItem)
             {
-                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
+                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionType, solutionId }),
+                SolutionType = solutionType,
             };
 
             return View("AddEditServiceLevel", model);
         }
 
         [HttpPost("add-service-level")]
-        public async Task<IActionResult> AddServiceLevel(CatalogueItemId solutionId, AddEditServiceLevelModel model)
+        public async Task<IActionResult> AddServiceLevel(SolutionType solutionType, CatalogueItemId solutionId, AddEditServiceLevelModel model)
         {
             if (!ModelState.IsValid)
                 return View("AddEditServiceLevel", model);
@@ -468,11 +510,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await serviceLevelAgreementsService.AddServiceLevel(solutionId, addServiceLevelModel);
 
-            return RedirectToAction(nameof(Index), new { solutionId });
+            return RedirectToAction(nameof(Index), new { solutionType, solutionId });
         }
 
         [HttpGet("edit-service-level/{serviceLevelId}")]
-        public async Task<IActionResult> EditServiceLevel(CatalogueItemId solutionId, int serviceLevelId)
+        public async Task<IActionResult> EditServiceLevel(SolutionType solutionType, CatalogueItemId solutionId, int serviceLevelId)
         {
             var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
@@ -484,15 +526,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditServiceLevelModel(catalogueItem, serviceLevel)
             {
-                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionId }),
-                CanDelete = catalogueItem.PublishedStatus != PublicationStatus.Published || catalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.Any(sl => sl.Id != serviceLevelId),
+                BackLink = Url.Action(nameof(EditServiceLevelAgreement), new { solutionType, solutionId }),
+                SolutionType = solutionType,
+                CanDelete = catalogueItem.PublishedStatus != PublicationStatus.Published ||
+                    catalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.Any(sl => sl.Id != serviceLevelId),
             };
 
             return View("AddEditServiceLevel", model);
         }
 
         [HttpPost("edit-service-level/{serviceLevelId}")]
-        public async Task<IActionResult> EditServiceLevel(CatalogueItemId solutionId, int serviceLevelId, AddEditServiceLevelModel model)
+        public async Task<IActionResult> EditServiceLevel(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int serviceLevelId,
+            AddEditServiceLevelModel model)
         {
             if (!ModelState.IsValid)
                 return View("AddEditServiceLevel", model);
@@ -514,11 +562,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await serviceLevelAgreementsService.UpdateServiceLevel(solutionId, serviceLevelId, addServiceLevelModel);
 
-            return RedirectToAction(nameof(Index), new { solutionId });
+            return RedirectToAction(nameof(Index), new { solutionType, solutionId });
         }
 
         [HttpGet("delete-service-level/{serviceLevelId}")]
-        public async Task<IActionResult> DeleteServiceLevel(CatalogueItemId solutionId, int serviceLevelId)
+        public async Task<IActionResult> DeleteServiceLevel(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int serviceLevelId)
         {
             var catalogueItem = await solutionsService.GetSolutionWithServiceLevelAgreements(solutionId);
             if (catalogueItem is null)
@@ -530,14 +581,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new DeleteServiceLevelModel(catalogueItem, serviceLevel)
             {
-                BackLink = Url.Action(nameof(EditServiceLevel), new { solutionId, serviceLevelId }),
+                BackLink = Url.Action(nameof(EditServiceLevel), new { solutionType, solutionId, serviceLevelId }),
             };
 
             return View(model);
         }
 
         [HttpPost("delete-service-level/{serviceLevelId}")]
-        public async Task<IActionResult> DeleteServiceLevel(CatalogueItemId solutionId, int serviceLevelId, DeleteServiceLevelModel model)
+        public async Task<IActionResult> DeleteServiceLevel(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            int serviceLevelId,
+            DeleteServiceLevelModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -552,7 +607,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await serviceLevelAgreementsService.DeleteServiceLevel(solutionId, serviceLevelId);
 
-            return RedirectToAction(nameof(Index), new { solutionId });
+            return RedirectToAction(nameof(Index), new { solutionType, solutionId });
         }
     }
 }

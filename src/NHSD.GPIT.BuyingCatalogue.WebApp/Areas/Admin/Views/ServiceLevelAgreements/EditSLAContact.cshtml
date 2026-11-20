@@ -12,6 +12,7 @@
                         advice="Provide information on how users can contact your support services under this Service Level Agreement." />
         <form method="post">
             <input type="hidden" asp-for="SolutionName" />
+            <input type="hidden" asp-for="SolutionType" />
             <input type="hidden" asp-for="SolutionId" />
             <input type="hidden" asp-for="CanDelete" />
 
@@ -40,11 +41,12 @@
 
         @if (Model.CanDelete)
         {
-            <vc:nhs-delete-button url="@Url.Action(
-                                              nameof(ServiceLevelAgreementsController.DeleteContact),
-                                              typeof(ServiceLevelAgreementsController).ControllerName(),
-                                              new {solutionId = Model.SolutionId, contactId = Model.ContactId})"
-                                  text="Delete contact" />
+            <vc:nhs-delete-button
+                text="Delete contact" 
+                url="@Url.Action(
+                    nameof(ServiceLevelAgreementsController.DeleteContact),
+                    typeof(ServiceLevelAgreementsController).ControllerName(),
+                    new { solutionType = Model.SolutionType, solutionId = Model.SolutionId, contactId = Model.ContactId })" />
         }
     </div>
 </article>

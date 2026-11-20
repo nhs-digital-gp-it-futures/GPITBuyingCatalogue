@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -14,18 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
-    [Route("admin/catalogue-solutions/manage/{solutionId}/application-type/browser-based")]
-    public class BrowserBasedController : Controller
+    [Route("admin/catalogue-solutions/manage/{solutionType}/{solutionId}/application-type/browser-based")]
+    public class BrowserBasedController(ISolutionsService solutionsService) : Controller
     {
-        private readonly ISolutionsService solutionsService;
-
-        public BrowserBasedController(ISolutionsService solutionsService)
-        {
-            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-        }
+        private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
 
         [HttpGet]
-        public async Task<IActionResult> BrowserBased(CatalogueItemId solutionId)
+        public async Task<IActionResult> BrowserBased(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -35,33 +29,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var applicationType = solution.Solution.EnsureAndGetApplicationType();
             var model = new BrowserBasedModel(solution)
             {
+                SolutionType = solutionType,
                 BackLink = applicationType?.HasApplicationType(ApplicationType.BrowserBased) ?? false
                     ? Url.Action(
                         nameof(CatalogueSolutionsController.ApplicationType),
                         typeof(CatalogueSolutionsController).ControllerName(),
-                        new { solutionId })
+                        new { solutionType, solutionId })
                     : Url.Action(
                         nameof(CatalogueSolutionsController.AddApplicationType),
                         typeof(CatalogueSolutionsController).ControllerName(),
-                        new { solutionId }),
+                        new { solutionType, solutionId }),
             };
 
             return View(model);
         }
 
         [HttpGet("supported-browser")]
-        public async Task<IActionResult> SupportedBrowsers(CatalogueItemId solutionId)
+        public async Task<IActionResult> SupportedBrowsers(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
             if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+                return BadRequest($"No Solution found for Id: {solutionId}, solution type: {solutionType}");
 
-            return View(new SupportedBrowsersModel(solution));
+            return View(new SupportedBrowsersModel(solution) { SolutionType = solutionType });
         }
 
         [HttpPost("supported-browser")]
-        public async Task<IActionResult> SupportedBrowsers(CatalogueItemId solutionId, SupportedBrowsersModel model)
+        public async Task<IActionResult> SupportedBrowsers(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            SupportedBrowsersModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -76,16 +74,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             applicationType.BrowsersSupported.Clear();
             applicationType.BrowsersSupported = model.Browsers is null
-                ? new HashSet<SupportedBrowser>()
-                : model.Browsers.Where(b => b.Checked)
+                ? []
+                : [.. model.Browsers.Where(b => b.Checked)
                     .Select(
                         b =>
                             new SupportedBrowser
                             {
                                 BrowserName = b.BrowserName,
                                 MinimumBrowserVersion = b.MinimumBrowserVersion,
-                            })
-                    .ToHashSet();
+                            })];
 
             applicationType.MobileResponsive = string.IsNullOrWhiteSpace(model.MobileResponsive)
                 ? null
@@ -95,21 +92,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-            return RedirectToAction(nameof(BrowserBased), new { solutionId });
+            return RedirectToAction(nameof(BrowserBased), new { solutionType, solutionId });
         }
 
         [HttpGet("plug-ins-or-extensions")]
-        public async Task<IActionResult> PlugInsOrExtensions(CatalogueItemId solutionId)
+        public async Task<IActionResult> PlugInsOrExtensions(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+                return BadRequest($"No Solution found for Id: {solutionId}, solution type: {solutionType}");
 
-            return View(new PlugInsOrExtensionsModel(solution));
+            return View(new PlugInsOrExtensionsModel(solution) { SolutionType = solutionType });
         }
 
         [HttpPost("plug-ins-or-extensions")]
-        public async Task<IActionResult> PlugInsOrExtensions(CatalogueItemId solutionId, PlugInsOrExtensionsModel model)
+        public async Task<IActionResult> PlugInsOrExtensions(
+            SolutionType solutionType,
+            CatalogueItemId solutionId,
+            PlugInsOrExtensionsModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -134,28 +134,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-            return RedirectToAction(nameof(BrowserBased), new { solutionId });
+            return RedirectToAction(nameof(BrowserBased), new { solutionType, solutionId });
         }
 
         [HttpGet("connectivity-and-resolution")]
-        public async Task<IActionResult> ConnectivityAndResolution(CatalogueItemId solutionId)
+        public async Task<IActionResult> ConnectivityAndResolution(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+                return BadRequest($"No Solution found for Id: {solutionId}, solution type: {solutionType}");
 
-            return View(new ConnectivityAndResolutionModel(solution));
+            return View(new ConnectivityAndResolutionModel(solution) { SolutionType = solutionType });
         }
 
         [HttpPost("connectivity-and-resolution")]
         public async Task<IActionResult> ConnectivityAndResolution(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             ConnectivityAndResolutionModel model)
         {
             if (!ModelState.IsValid)
             {
                 var solution = await solutionsService.GetSolutionThin(solutionId);
-                return View(new ConnectivityAndResolutionModel(solution));
+                return View(new ConnectivityAndResolutionModel(solution) { SolutionType = solutionType });
             }
 
             var applicationType = await solutionsService.GetApplicationType(solutionId);
@@ -168,21 +169,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-            return RedirectToAction(nameof(BrowserBased), new { solutionId });
+            return RedirectToAction(nameof(BrowserBased), new { solutionType, solutionId });
         }
 
         [HttpGet("hardware-requirements")]
-        public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId)
+        public async Task<IActionResult> HardwareRequirements(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+                return BadRequest($"No Solution found for Id: {solutionId}, solution type: {solutionType}");
 
-            return View(new HardwareRequirementsModel(solution));
+            return View(new HardwareRequirementsModel(solution) { SolutionType = solutionType });
         }
 
         [HttpPost("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             HardwareRequirementsModel model)
         {
@@ -202,21 +204,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-            return RedirectToAction(nameof(BrowserBased), new { solutionId });
+            return RedirectToAction(nameof(BrowserBased), new { solutionType, solutionId });
         }
 
         [HttpGet("additional-information")]
-        public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId)
+        public async Task<IActionResult> AdditionalInformation(SolutionType solutionType, CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
             if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+                return BadRequest($"No Solution found for Id: {solutionId}, solution type: {solutionType}");
 
-            return View(new AdditionalInformationModel(solution));
+            return View(new AdditionalInformationModel(solution) { SolutionType = solutionType });
         }
 
         [HttpPost("additional-information")]
         public async Task<IActionResult> AdditionalInformation(
+            SolutionType solutionType,
             CatalogueItemId solutionId,
             AdditionalInformationModel model)
         {
@@ -232,7 +235,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-            return RedirectToAction(nameof(BrowserBased), new { solutionId });
+            return RedirectToAction(nameof(BrowserBased), new { solutionType, solutionId });
         }
     }
 }
