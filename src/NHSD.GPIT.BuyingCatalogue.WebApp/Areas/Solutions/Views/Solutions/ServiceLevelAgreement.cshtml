@@ -1,10 +1,13 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+﻿﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ServiceLevelAgreementDetailsModel
 @{
-    var showContactsApplicableDays = Model.SlaContacts.Any(c => !string.IsNullOrWhiteSpace(c.ApplicableDays));
+    var slaContacts = Model.SlaContacts ?? Enumerable.Empty<dynamic>();
+    var serviceAvailabilityTimes = Model.ServiceAvailabilityTimes ?? Enumerable.Empty<dynamic>();
+    var serviceLevels = Model.ServiceLevels ?? Enumerable.Empty<dynamic>();
+    var showContactsApplicableDays = slaContacts.Any(c => !string.IsNullOrWhiteSpace(c.ApplicableDays));
 }
 
-<partial name="_solutionSummary" model="Model"/>
+<partial name="_solutionSummary" model="Model" />
 <p>These are the levels of service the supplier has committed to for this catalogue solution:</p>
 
 <h2 class="nhsuk-heading-m">Contact details</h2>
@@ -20,7 +23,7 @@
                 <nhs-table-column>Applicable days</nhs-table-column>
             }
 
-            @foreach (var slaContact in Model.SlaContacts.OrderBy(sat => sat.Channel).ThenBy(sat => sat.TimeFrom))
+            @foreach (var slaContact in slaContacts.OrderBy(sat => sat.Channel).ThenBy(sat => sat.TimeFrom))
             {
                 <nhs-table-row-container>
                     <nhs-table-cell style="word-break: break-word">@slaContact.Channel</nhs-table-cell>
@@ -28,19 +31,19 @@
                     <nhs-table-cell>@slaContact.TimeFrom.ToString("HH:mm") - @slaContact.TimeUntil.ToString("HH:mm")</nhs-table-cell>
                     @if (showContactsApplicableDays)
                     {
-                        <nhs-table-cell  style="word-break: break-word">@slaContact.ApplicableDays</nhs-table-cell>
+                        <nhs-table-cell style="word-break: break-word">@slaContact.ApplicableDays</nhs-table-cell>
                     }
                 </nhs-table-row-container>
             }
         </nhs-table>
     </nhs-card-content>
 </nhs-card-v2>
-<hr/>
+<hr />
 
 <h2 class="nhsuk-heading-s">Service availability</h2>
 <p>This is when you can contact support services for this catalogue solution.</p>
 
-@foreach (var serviceAvailabilityTime in Model.ServiceAvailabilityTimes.OrderBy(sat => sat.Category).ThenBy(sat => sat.TimeFrom))
+@foreach (var serviceAvailabilityTime in serviceAvailabilityTimes.OrderBy(sat => sat.Category).ThenBy(sat => sat.TimeFrom))
 {
     <nhs-expander label-text="@serviceAvailabilityTime.Category" open="false" style="word-break: break-word">
         <nhs-summary-list>
@@ -78,7 +81,7 @@
 <h2 class="nhsuk-heading-s">Service levels</h2>
 <p>These are the levels of service provided for this catalogue solution.</p>
 
-@foreach (var serviceLevel in Model.ServiceLevels)
+@foreach (var serviceLevel in serviceLevels)
 {
     <nhs-expander label-text="@serviceLevel.TypeOfService" open="false">
         <nhs-summary-list>
