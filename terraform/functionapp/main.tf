@@ -30,6 +30,13 @@ resource "azurerm_resource_group" "function_app_rg" {
   location = var.region
 }
 
+resource "azurerm_management_lock" "function_app_rg_delete_lock" {
+  name       = "${local.project_environment}-rg-functionapp-delete-protection"
+  scope      = azurerm_resource_group.function_app_rg.id
+  lock_level = "CanNotDelete"
+  notes      = "Prevents accidental deletion of the functionapp resource group and its resources."
+}
+
 resource "azurerm_virtual_network" "function_app_vnet" {
   name                = "${local.project_environment}-fa-vnet"
   location            = var.region
