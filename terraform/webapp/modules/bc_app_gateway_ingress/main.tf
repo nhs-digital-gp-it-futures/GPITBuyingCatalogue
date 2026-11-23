@@ -159,3 +159,21 @@ resource "azurerm_application_gateway" "app_gateway" {
     ignore_changes = [ ]
   }
 }
+
+resource "azurerm_monitor_diagnostic_setting" "app_gateway" {
+  count = var.use_app_gateway ? 1 : 0
+
+  name               = "${local.gateway_name}-diagnostics"
+  target_resource_id = azurerm_application_gateway.app_gateway[count.index].id
+
+  log_analytics_workspace_id     = azurerm_log_analytics_workspace.log_analytics.id
+  log_analytics_destination_type = "Dedicated"
+
+  enabled_log {
+    category_group = "allLogs"
+  }
+
+  enabled_metric {
+    category = "AllMetrics"
+  }
+}
