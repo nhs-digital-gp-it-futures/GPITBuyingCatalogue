@@ -41,3 +41,7 @@ variable "kv_access_group" {
 variable "log_analytics_workspace_id" {
   type = string
 }
+
+variable "core_log_analytics_workspace_id" {
+  type = string
+}
