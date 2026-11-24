@@ -94,7 +94,7 @@ public class CompetitionNonPriceElementsController(
             competitionId,
             integrations);
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, false);
     }
 
     [CriteriaReviewedGuardFilter]
@@ -133,7 +133,7 @@ public class CompetitionNonPriceElementsController(
 
         await competitionsService.SetImplementationCriteria(internalOrgId, competitionId, model.Requirements);
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, false);
     }
 
     [CriteriaReviewedGuardFilter]
@@ -178,7 +178,7 @@ public class CompetitionNonPriceElementsController(
             model.ApplicableDays.Where(x => x.Selected).Select(x => x.Value),
             model.IncludesBankHolidays!.Value);
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, false);
     }
 
     [CriteriaReviewedGuardFilter]
@@ -260,7 +260,7 @@ public class CompetitionNonPriceElementsController(
             model.Requirements,
             model.SelectedCompliance!.Value);
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, false);
     }
 
     [CriteriaReviewedGuardFilter]
@@ -313,7 +313,7 @@ public class CompetitionNonPriceElementsController(
                 NonPriceElement.Features);
         }
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, false);
     }
 
     [HttpGet("weights")]
@@ -351,7 +351,7 @@ public class CompetitionNonPriceElementsController(
             model.ServiceLevel,
             model.Features);
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, true);
     }
 
     [CriteriaReviewedGuardFilter]
@@ -407,11 +407,18 @@ public class CompetitionNonPriceElementsController(
     internal IActionResult GetRedirect(
         string internalOrgId,
         int competitionId,
-        string returnUrl)
+        string returnUrl,
+        bool backtoList)
     {
         if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
             return LocalRedirect(returnUrl);
-
-        return RedirectToAction(nameof(CompetitionTaskListController.Index), typeof(CompetitionTaskListController).ControllerName(), new { internalOrgId, competitionId });
+        if (backtoList)
+        {
+            return RedirectToAction(nameof(CompetitionTaskListController.Index), typeof(CompetitionTaskListController).ControllerName(), new { internalOrgId, competitionId });
+        }
+        else
+        {
+            return RedirectToAction(nameof(Index),  new { internalOrgId, competitionId });
+        }
     }
 }
