@@ -37,3 +37,7 @@ variable "kv_sqlusername" {
 variable "kv_access_group" {
   type = string
 }
+
+variable "log_analytics_workspace_id" {
+  type = string
+}
