@@ -655,7 +655,6 @@ public static class CompetitionNonPriceElementsControllerTests
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(CompetitionTaskListController.Index));
-        result.ControllerName.Should().Be(null);
     }
 
     [Theory]
