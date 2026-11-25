@@ -412,13 +412,12 @@ public class CompetitionNonPriceElementsController(
     {
         if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
             return LocalRedirect(returnUrl);
+
         if (backtoList)
         {
             return RedirectToAction(nameof(CompetitionTaskListController.Index), typeof(CompetitionTaskListController).ControllerName(), new { internalOrgId, competitionId });
         }
-        else
-        {
-            return RedirectToAction(nameof(Index),  new { internalOrgId, competitionId });
-        }
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }
 }
