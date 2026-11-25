@@ -10,7 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "ManageCatalogueSolutions")]
     [Area("Admin")]
     [Route("admin/catalogue-solutions/manage/{solutionType}/{solutionId}/hosting-type")]
     public class HostingTypesController(ISolutionsService solutionsService) : Controller

@@ -20,7 +20,7 @@ public static class DataProcessingInformationControllerTests
     [Fact]
     public static void ClassIsCorrectlyDecorated()
     {
-        typeof(DataProcessingInformationController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "AdminOnly");
+        typeof(DataProcessingInformationController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "ManageCatalogueSolutions");
         typeof(DataProcessingInformationController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
     }
 

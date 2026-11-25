@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static void ClassIsCorrectlyDecorated()
         {
             typeof(DeleteApplicationTypeController).Should()
-                .BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "AdminOnly");
+                .BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "ManageCatalogueSolutions");
             typeof(DeleteApplicationTypeController).Should()
                 .BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
             typeof(DeleteApplicationTypeController).Should()
