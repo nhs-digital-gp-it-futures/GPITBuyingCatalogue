@@ -21,7 +21,7 @@ public static class CatalogueSolutionStandardsControllerTests
     [Fact]
     public static void ClassIsCorrectlyDecorated()
     {
-        typeof(CatalogueSolutionStandardsController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "AdminOnly");
+        typeof(CatalogueSolutionStandardsController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "ManageCatalogueSolutions");
         typeof(CatalogueSolutionStandardsController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
     }
 
