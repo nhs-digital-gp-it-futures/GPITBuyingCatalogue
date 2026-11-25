@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -16,14 +15,11 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
-using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
-using NuGet.Configuration;
 using Xunit;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
@@ -226,8 +222,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             LoginViewModel model,
             UserManager<AspNetUser> mockUserManager,
             SignInManager<AspNetUser> mockSignInManager,
-            IOdsService mockOdsService)
+            IOdsService mockOdsService,
+            IUrlHelper mockUrlHelper)
         {
+            model.ReturnUrl = "/orders/dashboard";
+
             user.Disabled = false;
             user.PrimaryOrganisation = new Organisation { ExternalIdentifier = odsCode };
 
@@ -239,7 +238,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 .PasswordSignInAsync(user, model.Password, false, true)
                 .Returns(SignInResult.Success);
 
+            mockUrlHelper.IsLocalUrl(model.ReturnUrl).Returns(true);
+
             var controller = CreateController(mockUserManager, mockSignInManager, odsService: mockOdsService);
+            controller.Url = mockUrlHelper;
 
             var result = await controller.Login(model);
 
@@ -247,8 +249,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             await mockSignInManager.Received().PasswordSignInAsync(user, model.Password, false, true);
             await mockOdsService.Received().UpdateOrganisationDetails(odsCode);
 
-            var actualResult = result.Should().BeAssignableTo<RedirectResult>().Subject;
-
+            var actualResult = result.Should().BeAssignableTo<LocalRedirectResult>().Subject;
             actualResult.Url.Should().Be(model.ReturnUrl);
         }
 
@@ -271,21 +272,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             user.Disabled = false;
             user.PrimaryOrganisation = new Organisation { ExternalIdentifier = odsCode };
 
-            mockUserManager
-                .FindByNameAsync(model.EmailAddress)
-                .Returns(user);
+            mockUserManager.FindByNameAsync(model.EmailAddress).Returns(user);
+            mockUserManager.IsInRoleAsync(user, OrganisationFunction.Authority.Name).Returns(false);
 
-            mockUserManager
-                .IsInRoleAsync(user, OrganisationFunction.Authority.Name)
-                .Returns(false);
+            mockSignInManager.PasswordSignInAsync(user, model.Password, false, true).Returns(SignInResult.Success);
 
-            mockSignInManager
-                .PasswordSignInAsync(user, model.Password, false, true)
-                .Returns(SignInResult.Success);
-
-            mockUrlHelper
-                .Action(Arg.Any<UrlActionContext>())
-                .Returns(url);
+            mockUrlHelper.Action(Arg.Any<UrlActionContext>()).Returns(url);
 
             var userPrincipal = new ClaimsPrincipal(
                 new ClaimsIdentity(
@@ -295,23 +287,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                         new(CatalogueClaims.PrimaryOrganisationInternalIdentifier, odsCode),
                     },
                     "mock"));
-            var controller = CreateController(mockUserManager, mockSignInManager, odsService: mockOdsService);
 
+            var controller = CreateController(mockUserManager, mockSignInManager, odsService: mockOdsService);
             controller.Url = mockUrlHelper;
             controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = userPrincipal, },
+                HttpContext = new DefaultHttpContext { User = userPrincipal },
             };
 
             var result = await controller.Login(model);
 
-            await mockUserManager.Received().FindByNameAsync(model.EmailAddress);
-            await mockUserManager.Received().IsInRoleAsync(user, OrganisationFunction.Authority.Name);
-            await mockSignInManager.Received().PasswordSignInAsync(user, model.Password, false, true);
-            await mockOdsService.Received().UpdateOrganisationDetails(odsCode);
-
-            var actualResult = result.Should().BeAssignableTo<RedirectResult>().Subject;
-
+            var actualResult = result.Should().BeAssignableTo<LocalRedirectResult>().Subject;
             actualResult.Url.Should().Be("~/");
         }
 
@@ -332,17 +318,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             user.Disabled = false;
             user.PrimaryOrganisation = new Organisation { ExternalIdentifier = odsCode };
 
-            mockUserManager
-                .FindByNameAsync(model.EmailAddress)
-                .Returns(user);
+            mockUserManager.FindByNameAsync(model.EmailAddress).Returns(user);
+            mockUserManager.IsInRoleAsync(user, OrganisationFunction.Authority.Name).Returns(true);
 
-            mockUserManager
-                .IsInRoleAsync(user, OrganisationFunction.Authority.Name)
-                .Returns(true);
-
-            mockSignInManager
-                .PasswordSignInAsync(user, model.Password, false, true)
-                .Returns(SignInResult.Success);
+            mockSignInManager.PasswordSignInAsync(user, model.Password, false, true).Returns(SignInResult.Success);
 
             mockUrlHelper.Action(Arg.Any<UrlActionContext>()).Returns(adminUrl);
 
@@ -351,13 +330,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
             var result = await controller.Login(model);
 
-            await mockUserManager.Received().FindByNameAsync(model.EmailAddress);
-            await mockUserManager.Received().IsInRoleAsync(user, OrganisationFunction.Authority.Name);
-            await mockSignInManager.Received().PasswordSignInAsync(user, model.Password, false, true);
-            await mockOdsService.Received().UpdateOrganisationDetails(odsCode);
-
-            var actualResult = result.Should().BeAssignableTo<RedirectResult>().Subject;
-
+            var actualResult = result.Should().BeAssignableTo<LocalRedirectResult>().Subject;
             actualResult.Url.Should().Be(adminUrl);
         }
 
@@ -392,7 +365,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
             var result = await controller.Login(model);
 
-            result.Should().BeOfType<RedirectResult>();
+            result.Should().BeOfType<LocalRedirectResult>();
 
             user.LoginEvents.Should().ContainSingle();
         }
