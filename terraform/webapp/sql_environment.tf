@@ -13,6 +13,20 @@ module "sql_server_pri" {
   primary_vpn                = var.primary_vpn
 }
 
+resource "azurerm_monitor_diagnostic_setting" "sql_primary_master" {
+  name                       = "${var.project}-${var.environment}-sql-primary-master-diag"
+  target_resource_id         = "${module.sql_server_pri[0].sql_server_id}/databases/master"
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics.id
+
+  enabled_log {
+    category = "DevOpsOperationsAudit"
+  }
+
+  enabled_log {
+    category = "SQLSecurityAuditEvents"
+  }
+}
+
 resource "azurerm_mssql_virtual_network_rule" "sqlvnetrule" {
   name                = "${var.project}-${var.environment}-subnet-rule"
   server_id           = join("", module.sql_server_pri[*].sql_server_id)
@@ -37,4 +51,20 @@ module "sql_server_sec" {
   sql_admin_password         = module.keyvault[0].sqladminpassword
   sqladmins                  = var.sql_admin_group
   primary_vpn                = var.primary_vpn
+}
+
+resource "azurerm_monitor_diagnostic_setting" "sql_secondary_master" {
+  count = local.is_live_environment ? 1 : 0
+
+  name                       = "${var.project}-${var.environment}-sql-secondary-master-diag"
+  target_resource_id         = "${module.sql_server_sec[count.index].sql_server_id}/databases/master"
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics.id
+
+  enabled_log {
+    category = "DevOpsOperationsAudit"
+  }
+
+  enabled_log {
+    category = "SQLSecurityAuditEvents"
+  }
 }
