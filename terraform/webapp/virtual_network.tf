@@ -36,3 +36,19 @@ resource "azurerm_subnet" "backend" {
 
   service_endpoints = ["Microsoft.Sql", "Microsoft.Storage"]
 }
+
+resource "azurerm_monitor_diagnostic_setting" "virtualnet" {
+  name               = "${azurerm_virtual_network.virtualnet.name}-diagnostics"
+  target_resource_id = azurerm_virtual_network.virtualnet.id
+
+  log_analytics_workspace_id     = azurerm_log_analytics_workspace.log_analytics.id
+  log_analytics_destination_type = "AzureDiagnostics"
+
+  enabled_log {
+    category_group = "allLogs"
+  }
+
+  enabled_metric {
+    category = "AllMetrics"
+  }
+}
