@@ -33,7 +33,7 @@
                     <p>Upload new Capabilities and Epics using a CSV file.</p>
                 </li>
                 <li asp-authorize-policy="@CataloguePermissions.ManageInteroperability">
-                    <a href="@Url.Action(nameof(ManageIntegrationsController.Integrations), typeof(ManageIntegrationsController).ControllerName())">Manage interoperability</a>
+                    <a href="@Url.Action(nameof(ManageIntegrationsController.Integrations), typeof(ManageIntegrationsController).ControllerName())">Manage integrations</a>
                     <p>Add new integration types or edit an existing one.</p>
                 </li>
             </ul>

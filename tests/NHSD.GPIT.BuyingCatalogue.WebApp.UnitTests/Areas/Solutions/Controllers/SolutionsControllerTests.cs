@@ -1543,7 +1543,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             mockService.GetContentStatusForCatalogueItem(id).Returns(contentStatus);
 
-            await controller.Interoperability(id);
+            await controller.Integrations(id);
 
             await mockService.Received().GetSolutionWithBasicInformation(id);
             await mockService.Received().GetContentStatusForCatalogueItem(id);
@@ -1558,7 +1558,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             mockService.GetSolutionWithBasicInformation(id).Returns(default(CatalogueItem));
 
-            var actual = (await controller.Interoperability(id)).As<BadRequestObjectResult>();
+            var actual = (await controller.Integrations(id)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
@@ -1585,7 +1585,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             mockSolutionService.GetContentStatusForCatalogueItem(catalogueItem.Id).Returns(contentStatus);
 
-            var actual = (await controller.Interoperability(catalogueItem.Id)).As<ViewResult>();
+            var actual = (await controller.Integrations(catalogueItem.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();

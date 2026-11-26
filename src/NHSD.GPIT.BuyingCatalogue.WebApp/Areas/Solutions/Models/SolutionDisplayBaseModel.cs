@@ -211,9 +211,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.Interoperability),
+                    Action = nameof(SolutionsController.Integrations),
                     Controller = ControllerName,
-                    Name = nameof(SolutionsController.Interoperability),
+                    Name = "Integrations",
                     Show = contentStatus.ShowInteroperability,
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },
