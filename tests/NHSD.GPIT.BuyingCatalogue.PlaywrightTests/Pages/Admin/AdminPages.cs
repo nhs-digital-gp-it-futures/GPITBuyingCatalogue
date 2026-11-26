@@ -83,6 +83,14 @@ public class AdminPages
         await Login.AssertLoginSuccessfulAsync("Buying Catalogue admin");
     }
 
+    public async Task LoginAsOnboardingUserAsync()
+    {
+        _output.WriteLine("Onboarding login");
+        await Login.NavigateAsync(_baseUrl);
+        await Login.LoginAsync(_data.OnboardingEmail, _data.Password);
+        await Login.AssertLoginSuccessfulAsync("Buying Catalogue admin");
+    }
+
     public async Task CreateNewUserAsync(
         string organisation, string firstName, string lastName,
         string email, string accountType, string accountStatus)
