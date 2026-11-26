@@ -28,11 +28,4 @@ public static class AddOnServiceTypeExtensions
         AddOnServiceType.Additional => "Quantity of additional service",
         _ => throw new ArgumentOutOfRangeException(nameof(type))
     };
-
-    public static string AddHeading(this AddOnServiceType type) => type switch
-    {
-        AddOnServiceType.Associated => "Add associated services",
-        AddOnServiceType.Additional => "Add additional services",
-        _ => throw new ArgumentOutOfRangeException(nameof(type))
-    };
 }

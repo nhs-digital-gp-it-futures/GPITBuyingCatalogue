@@ -32,19 +32,14 @@ public class OrderTestData
     public string StartYear { get; set; } = OrderStartDate.Year.ToString();
     public string InitialPeriod { get; set; } = "6";
     public string Duration { get; set; } = "12";
+
     public string Sublocation { get; set; } = "02T";
     public string[] Practices { get; set; } = { "BANKFIELD SURGERY", "BEECHWOOD MEDICAL CENTRE" };
-    public string AmendPractice { get; set; } = "BRIG ROYD SURGERY";
 
     public Dictionary<string, string> Quantities { get; set; } = new()
     {
         { "BANKFIELD SURGERY", "2"  },
         { "BEECHWOOD MEDICAL CENTRE", "20" }
-    };
-
-    public Dictionary<string, string> AmendQuantities { get; set; } = new()
-    {
-        { "BRIG ROYD SURGERY", "2" }
     };
 
     public string DeliveryDay { get; set; } = DeliveryDate.Day.ToString("D2");
