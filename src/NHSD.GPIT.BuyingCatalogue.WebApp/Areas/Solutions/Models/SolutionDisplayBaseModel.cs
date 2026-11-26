@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.Interoperability),
+                    Action = nameof(SolutionsController.Integrations),
                     Controller = ControllerName,
                     Name = sections.SolutionType == SolutionType.CommunityPharmacy ? "Integrations" : nameof(SolutionsController.Interoperability),
                     Show = ShouldShowSection(sections.Integrations, contentStatus.ShowInteroperability),

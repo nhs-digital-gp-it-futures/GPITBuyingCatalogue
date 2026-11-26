@@ -154,6 +154,6 @@ public static class NonPriceElementsModelTests
         var model = new NonPriceElementsModel(competition, integrations);
 
         model.Advice.Should()
-            .Be("Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.");
+            .Be("Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, integrations or service levels.");
     }
 }

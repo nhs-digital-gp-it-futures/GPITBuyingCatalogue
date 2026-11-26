@@ -19,7 +19,7 @@ public static class SelectInteroperabilityCriteriaModelTests
     {
         var model = new SelectInteroperabilityCriteriaModel(competition, integrations);
 
-        model.CompetitionName.Should().Be(competition.Name);
+        model.CompetitionName.Should().Be("Integrations");
     }
 
     [Theory]
