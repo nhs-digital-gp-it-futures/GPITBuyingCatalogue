@@ -264,7 +264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 {
                     Action = nameof(SolutionsController.Integrations),
                     Controller = ControllerName,
-                    Name = sections.SolutionType == SolutionType.CommunityPharmacy ? "Integrations" : nameof(SolutionsController.Interoperability),
+                    Name = "Integrations",
                     Show = ShouldShowSection(sections.Integrations, contentStatus.ShowInteroperability),
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },

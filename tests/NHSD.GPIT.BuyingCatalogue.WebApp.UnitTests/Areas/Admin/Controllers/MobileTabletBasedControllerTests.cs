@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Fact]
         public static void ClassIsCorrectlyDecorated()
         {
-            typeof(MobileTabletBasedController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "ManageCatalogueSolutions");
+            typeof(MobileTabletBasedController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "AdminOnly");
             typeof(MobileTabletBasedController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
         }
 
