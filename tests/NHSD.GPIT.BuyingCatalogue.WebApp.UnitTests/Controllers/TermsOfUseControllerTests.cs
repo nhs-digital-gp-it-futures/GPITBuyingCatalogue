@@ -58,7 +58,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             TermsOfUseModel model,
             AspNetUser user,
             [Frozen] UserManager<AspNetUser> userManager,
-            [Frozen] TermsOfUseSettings settings)
+            [Frozen] TermsOfUseSettings settings,
+            IUrlHelper urlHelper)
         {
             user.AcceptedTermsOfUseDate = null;
             user.HasOptedInUserResearch = false;
@@ -75,6 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             var controller = new TermsOfUseController(userManager, settings)
             {
+                Url = urlHelper,
                 ControllerContext = new ControllerContext
                 {
                     HttpContext = new DefaultHttpContext
@@ -88,6 +90,87 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             result.Should().NotBeNull();
             await userManager.Received().UpdateAsync(Arg.Is<AspNetUser>(u => u.HasOptedInUserResearch == true));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_TermsOfUse_Accepts_WithLocalReturnUrl(
+            TermsOfUseModel model,
+            AspNetUser user,
+            [Frozen] UserManager<AspNetUser> userManager,
+            [Frozen] TermsOfUseSettings settings,
+            IUrlHelper urlHelper)
+        {
+            user.AcceptedTermsOfUseDate = null;
+            user.HasOptedInUserResearch = false;
+
+            model.HasAcceptedTermsOfUse
+                = model.HasAcceptedPrivacyPolicy
+                = model.HasOptedInUserResearch = true;
+            model.ReturnUrl = "/orders/dashboard";
+
+            urlHelper.IsLocalUrl(model.ReturnUrl).Returns(true);
+
+            userManager.FindByIdAsync(Arg.Any<string>()).Returns(user);
+
+            var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(
+                new Claim[] { new(ClaimTypes.Role, "Buyer") },
+                "mock"));
+
+            var controller = new TermsOfUseController(userManager, settings)
+            {
+                Url = urlHelper,
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext
+                    {
+                        User = userPrincipal,
+                    },
+                },
+            };
+
+            var result = (await controller.TermsOfUse(model)).As<LocalRedirectResult>();
+
+            result.Should().NotBeNull();
+            result.Url.Should().Be(model.ReturnUrl);
+            await userManager.Received().UpdateAsync(Arg.Is<AspNetUser>(u => u.HasOptedInUserResearch));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_TermsOfUse_Accepts_WithExternalReturnUrl_RedirectsHome(
+            TermsOfUseModel model,
+            AspNetUser user,
+            [Frozen] UserManager<AspNetUser> userManager,
+            [Frozen] TermsOfUseSettings settings,
+            IUrlHelper urlHelper)
+        {
+            user.AcceptedTermsOfUseDate = null;
+
+            model.HasAcceptedTermsOfUse = model.HasAcceptedPrivacyPolicy = true;
+            model.ReturnUrl = "https://evil.example/phish";
+
+            urlHelper.IsLocalUrl(model.ReturnUrl).Returns(false);
+
+            userManager.FindByIdAsync(Arg.Any<string>()).Returns(user);
+
+            var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(
+                new Claim[] { new(ClaimTypes.Role, "Buyer") },
+                "mock"));
+
+            var controller = new TermsOfUseController(userManager, settings)
+            {
+                Url = urlHelper,
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext { User = userPrincipal },
+                },
+            };
+
+            var result = (await controller.TermsOfUse(model)).As<RedirectResult>();
+
+            result.Should().NotBeNull();
+            result.Url.Should().Be("~/");
         }
     }
 }
