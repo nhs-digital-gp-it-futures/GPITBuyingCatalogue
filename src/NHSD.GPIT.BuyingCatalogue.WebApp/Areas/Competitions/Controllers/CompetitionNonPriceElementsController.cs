@@ -94,7 +94,7 @@ public class CompetitionNonPriceElementsController(
             competitionId,
             integrations);
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, false);
     }
 
     [CriteriaReviewedGuardFilter]
@@ -133,7 +133,7 @@ public class CompetitionNonPriceElementsController(
 
         await competitionsService.SetImplementationCriteria(internalOrgId, competitionId, model.Requirements);
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, false);
     }
 
     [CriteriaReviewedGuardFilter]
@@ -178,7 +178,7 @@ public class CompetitionNonPriceElementsController(
             model.ApplicableDays.Where(x => x.Selected).Select(x => x.Value),
             model.IncludesBankHolidays!.Value);
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, false);
     }
 
     [CriteriaReviewedGuardFilter]
@@ -260,7 +260,7 @@ public class CompetitionNonPriceElementsController(
             model.Requirements,
             model.SelectedCompliance!.Value);
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, false);
     }
 
     [CriteriaReviewedGuardFilter]
@@ -313,7 +313,7 @@ public class CompetitionNonPriceElementsController(
                 NonPriceElement.Features);
         }
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, false);
     }
 
     [HttpGet("weights")]
@@ -326,10 +326,7 @@ public class CompetitionNonPriceElementsController(
 
         var model = new NonPriceElementWeightsModel(competition)
         {
-            BackLink = returnUrl ?? Url.Action(
-                nameof(CompetitionTaskListController.Index),
-                typeof(CompetitionTaskListController).ControllerName(),
-                new { internalOrgId, competitionId }),
+            BackLink = GetBackLink(internalOrgId, competitionId, returnUrl),
         };
 
         return View(model);
@@ -354,12 +351,7 @@ public class CompetitionNonPriceElementsController(
             model.ServiceLevel,
             model.Features);
 
-        return !string.IsNullOrWhiteSpace(returnUrl)
-            ? Redirect(returnUrl)
-            : RedirectToAction(
-                nameof(CompetitionTaskListController.Index),
-                typeof(CompetitionTaskListController).ControllerName(),
-                new { internalOrgId, competitionId });
+        return GetRedirect(internalOrgId, competitionId, returnUrl, true);
     }
 
     [CriteriaReviewedGuardFilter]
@@ -406,16 +398,25 @@ public class CompetitionNonPriceElementsController(
         int competitionId,
         string returnUrl)
     {
-        return returnUrl ?? Url.Action(nameof(Index), new { internalOrgId, competitionId });
+        if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+            return returnUrl;
+
+        return Url.Action(nameof(CompetitionTaskListController.Index), typeof(CompetitionTaskListController).ControllerName(), new { internalOrgId, competitionId });
     }
 
     internal IActionResult GetRedirect(
         string internalOrgId,
         int competitionId,
-        string returnUrl)
+        string returnUrl,
+        bool backtoList)
     {
-        if (!string.IsNullOrWhiteSpace(returnUrl))
-            return Redirect(returnUrl);
+        if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+            return LocalRedirect(returnUrl);
+
+        if (backtoList)
+        {
+            return RedirectToAction(nameof(CompetitionTaskListController.Index), typeof(CompetitionTaskListController).ControllerName(), new { internalOrgId, competitionId });
+        }
 
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }

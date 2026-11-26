@@ -185,9 +185,10 @@ public class CompetitionTaskListController(
             model.Price.GetValueOrDefault(),
             model.NonPrice.GetValueOrDefault());
 
-        return string.IsNullOrWhiteSpace(returnUrl)
-            ? RedirectToAction(nameof(Index), new { internalOrgId, competitionId })
-            : Redirect(returnUrl);
+        if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+            return LocalRedirect(returnUrl);
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }
 
     [HttpGet("review-criteria")]
