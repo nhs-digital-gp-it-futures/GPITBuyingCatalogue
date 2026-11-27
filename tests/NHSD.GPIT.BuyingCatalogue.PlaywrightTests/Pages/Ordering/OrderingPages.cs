@@ -2,6 +2,7 @@
 using Microsoft.Playwright;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.CatalogueSolutions;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Login;
+using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.Amend;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.OrderType;
 using NHSD.GPIT.BuyingCatalogue.PlaywrightTests.Pages.Ordering.StepFour;
@@ -40,6 +41,8 @@ public class OrderingPages
     public ReviewOrderPage ReviewOrder { get; }
     public CatalogueSolutionsPage CatalogueSolutions { get; }
     public SolutionSummaryPage SolutionSummary { get; }
+    public AmendItemsPage AmendItems { get; }
+    public AmendOrderPage AmendOrder { get; }
 
     public OrderingPages(IPage page, ITestOutputHelper output, string baseUrl, OrderTestData data)
     {
@@ -68,6 +71,8 @@ public class OrderingPages
         ReviewOrder = new ReviewOrderPage(page);
         CatalogueSolutions = new CatalogueSolutionsPage(page);
         SolutionSummary = new SolutionSummaryPage(page);
+        AmendOrder = new AmendOrderPage(page);
+        AmendItems = new AmendItemsPage(page);
     }
 
     // ------------------------------------------------------------------------
@@ -274,11 +279,11 @@ public class OrderingPages
         await Declaration.NavigateAndAgreeAsync();
     }
 
-    public async Task StepFourReviewAndCompleteOrderAsync()
+    public async Task StepFourReviewAndCompleteOrderAsync(bool isAmendment = false)
     {
         _output.WriteLine("Step 4 — review and complete");
         await ReviewOrder.NavigateAsync();
-        await ReviewOrder.CompleteOrderAsync();
+        await ReviewOrder.CompleteOrderAsync(isAmendment ? "Order amendment completed" : "Order completed");
     }
 
     /// <summary>
@@ -491,5 +496,65 @@ public class OrderingPages
         await SolutionsAndServices.SelectPriceAsync();
 
         await Quantity.EnterQuantitiesAsync(_data.Quantities, stopOnQuantityPage: true);
+    }
+
+    // ------------------------------------------------------------------------
+    // Amend journey
+    // ------------------------------------------------------------------------
+
+    public async Task OpenOrderToAmendAsync(int orderId)
+    {
+        _output.WriteLine($"Open completed order C0{orderId}-01 and start amending");
+        await Dashboard.GoToOrdersAsync();
+        await AmendOrder.OpenCompletedOrderAsync(orderId);
+        await AmendOrder.StartAmendAsync();
+    }
+
+    public async Task AmendServiceRecipientsAsync()
+    {
+        _output.WriteLine($"Amend: add service recipient {_data.AmendPractice}");
+        await ServiceRecipients.NavigateAsync();
+        await ServiceRecipients.AddRecipientToAmendedOrderAsync(_data.AmendPractice);
+    }
+
+    public async Task AmendSolutionsAndServicesAsync(
+        string solutionName,
+        string existingAdditionalService = "",
+        string newAdditionalService = "",
+        string newAssociatedService = "")
+    {
+        _output.WriteLine("Amend: solutions and services");
+        await SolutionsAndServices.NavigateAsync();
+
+        await AmendItems.AmendQuantitiesAsync(solutionName, "Quantity of catalogue solution", _data.AmendQuantities);
+
+        if (!string.IsNullOrWhiteSpace(existingAdditionalService))
+            await AmendItems.AmendQuantitiesAsync(existingAdditionalService, AddOnServiceType.Additional.QuantityHeading(), _data.AmendQuantities);
+
+        if (!string.IsNullOrWhiteSpace(newAdditionalService))
+            await AmendItems.AddOnServiceAsync(AddOnServiceType.Additional, newAdditionalService, _data.Quantities);
+
+        if (!string.IsNullOrWhiteSpace(newAssociatedService))
+            await AmendItems.AddOnServiceAsync(AddOnServiceType.Associated, newAssociatedService, _data.AmendQuantities);
+
+        await AmendItems.SaveAndContinueAsync();
+    }
+
+    public async Task AmendDeliveryAndFundingAsync(
+        string newAdditionalService = "",
+        string newAssociatedService = "")
+    {
+        _output.WriteLine("Amend: delivery dates and funding");
+
+        await PlannedDeliveryDates.NavigateAsync();
+        await PlannedDeliveryDates.EnterDeliveryDateAsync(_data.DeliveryDay, _data.DeliveryMonth, _data.DeliveryYear);
+
+        // Only the new items need funding; the existing items keep their funding from the original order
+        var newItems = new List<string>();
+        if (!string.IsNullOrWhiteSpace(newAdditionalService)) newItems.Add(newAdditionalService);
+        if (!string.IsNullOrWhiteSpace(newAssociatedService)) newItems.Add(newAssociatedService);
+
+        await FundingSources.NavigateAsync();
+        await FundingSources.SelectFundingForSourcesAsync(_data.FundingType, newItems.ToArray());
     }
 }

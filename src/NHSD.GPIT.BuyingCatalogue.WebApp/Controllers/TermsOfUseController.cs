@@ -29,17 +29,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         {
             var user = await GetUserAsync();
             var userRoles = await GetUserRoles(user);
+
+            var safeReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : "./";
+
             return View(new TermsOfUseModel(user, userRoles, settings.RevisionDate)
             {
-                ReturnUrl = returnUrl,
+                ReturnUrl = safeReturnUrl,
                 IsAuthenticated = User.Identity.IsAuthenticated,
             });
         }
 
         [Authorize]
         [HttpPost("terms-of-use")]
-        public async Task<IActionResult> TermsOfUse(
-            TermsOfUseModel model)
+        public async Task<IActionResult> TermsOfUse(TermsOfUseModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -58,7 +60,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
             await userManager.UpdateAsync(user);
 
-            return Redirect(model.ReturnUrl);
+            if (!string.IsNullOrWhiteSpace(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                return LocalRedirect(model.ReturnUrl);
+
+            return Redirect("~/");
         }
 
         private async Task<AspNetUser> GetUserAsync()

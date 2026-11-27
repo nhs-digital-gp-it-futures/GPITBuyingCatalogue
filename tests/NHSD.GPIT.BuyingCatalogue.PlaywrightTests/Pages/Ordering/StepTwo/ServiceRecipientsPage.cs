@@ -124,4 +124,22 @@ public class ServiceRecipientsPage : BasePage
         Assert.True(legendCount > 0,
             "Recipient option fieldset has no legend (WAVE: fieldset missing legend, WCAG 1.3.1).");
     }
+
+    // Amend journey: the order already has its sublocation and practices, so this adds one more practice
+    public async Task AddRecipientToAmendedOrderAsync(string practice)
+    {
+        await AssertOnPageAsync();
+        await ManualOption.CheckAsync();
+        await ClickSaveAndContinueAsync();
+
+        await AssertHeadingAsync("Confirm sublocations");
+        await SelectLink.ClickAsync();
+        await Page.GetByRole(AriaRole.Checkbox, new() { Name = practice }).CheckAsync();
+        await ClickSaveAndContinueAsync();
+
+        await AssertHeadingAsync("Confirm sublocations");
+        await ClickSaveAndContinueAsync();
+
+        await ConfirmRecipientsAsync();
+    }
 }

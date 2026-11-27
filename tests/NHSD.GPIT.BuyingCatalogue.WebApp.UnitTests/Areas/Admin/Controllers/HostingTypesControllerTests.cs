@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Fact]
         public static void ClassIsCorrectlyDecorated()
         {
-            typeof(HostingTypesController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "AdminOnly");
+            typeof(HostingTypesController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "ManageCatalogueSolutions");
             typeof(HostingTypesController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
         }
 

@@ -5,7 +5,6 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
@@ -78,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Theory]
         [MockInlineAutoData(false)]
         [MockInlineAutoData(true)]
-        public static void AcceptCookies_NoReferrer_ReturnsExpectedResult(
+        public static void AcceptCookies_NoReturnUrl_ReturnsExpectedResult(
             bool agreeToAnalytics,
             ConsentController controller)
         {
@@ -92,21 +91,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Theory]
         [MockInlineAutoData(false)]
         [MockInlineAutoData(true)]
-        public static void AcceptCookies_WithReferrer_ReturnsExpectedResult(
+        public static void AcceptCookies_WithReferer_ReturnsExpectedResult(
             bool agreeToAnalytics,
-            [Frozen] HeaderDictionary headerDictionary,
             ConsentController controller)
         {
-            const string url = "https://buyingcatalogue.digital.nhs.uk/";
+            const string referer = "https://example.com/solutions?filter=test";
 
-            headerDictionary.IsReadOnly = false;
-            headerDictionary[HeaderNames.Referer] = url;
+            var httpContext = new DefaultHttpContext();
+            controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+            controller.HttpContext.Request.Headers.Referer = referer;
 
             var result = controller.AcceptCookies(agreeToAnalytics);
 
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.As<RedirectResult>().Url.Should().Be(url);
+            result.As<RedirectResult>().Url.Should().Be(referer);
+        }
+
+        [Theory]
+        [MockInlineAutoData(false)]
+        [MockInlineAutoData(true)]
+        public static void AcceptCookies_WithExternalReturnUrl_ReturnsExpectedResult(
+            bool agreeToAnalytics,
+            IUrlHelper urlHelper,
+            ConsentController controller)
+        {
+            const string returnUrl = "https://evil.example/phish";
+
+            urlHelper.IsLocalUrl(returnUrl).Returns(false);
+            controller.Url = urlHelper;
+
+            var result = controller.AcceptCookies(agreeToAnalytics);
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.As<RedirectResult>().Url.Should().Be("~/");
         }
 
         [Theory]

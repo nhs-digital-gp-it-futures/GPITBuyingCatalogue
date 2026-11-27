@@ -6,7 +6,9 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -159,15 +161,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task Post_TaskList_NoRecipientCountDiscrepancy_RedirectsWithoutSettingDisplayNumbers(
             string internalOrgId,
             CallOffId callOffId,
-            string onwardLink,
             [Frozen] IOrderItemRecipientDisplayNumberService displayNumberService,
+            [Frozen] IUrlHelper urlHelper,
             TaskListController controller)
         {
+            const string onwardLink = "/order/organisation/org-1/order/00001-1/task-list";
+
             displayNumberService.HasItemRecipientCountDiscrepancy(callOffId, internalOrgId).Returns(false);
+            urlHelper.IsLocalUrl(onwardLink).Returns(true);
 
             var result = await controller.TaskList(internalOrgId, callOffId, onwardLink);
 
             result.Should().BeOfType<LocalRedirectResult>();
+            result.As<LocalRedirectResult>().Url.Should().Be(onwardLink);
+
             await displayNumberService.DidNotReceive()
                 .SetOrderItemRecipientDisplayNumbers(Arg.Any<CallOffId>(), Arg.Any<string>());
         }
@@ -177,17 +184,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task PostTaskList_RecipientCountDiscrepancy_SetsDisplayNumbersAndRedirects(
             string internalOrgId,
             CallOffId callOffId,
-            string onwardLink,
             [Frozen] IOrderItemRecipientDisplayNumberService displayNumberService,
+            [Frozen] IUrlHelper urlHelper,
             TaskListController controller)
         {
-            displayNumberService.HasItemRecipientCountDiscrepancy(callOffId, internalOrgId).Returns(true);
+            const string onwardLink = "/order/organisation/org-1/order/00001-1/task-list";
 
+            displayNumberService.HasItemRecipientCountDiscrepancy(callOffId, internalOrgId).Returns(true);
+            urlHelper.IsLocalUrl(onwardLink).Returns(true);
             var result = await controller.TaskList(internalOrgId, callOffId, onwardLink);
 
             result.Should().BeOfType<LocalRedirectResult>();
+            result.As<LocalRedirectResult>().Url.Should().Be(onwardLink);
+
             await displayNumberService.Received(1)
                 .SetOrderItemRecipientDisplayNumbers(callOffId, internalOrgId);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task PostTaskList_WithExternalOnwardLink_RedirectsToTaskList(
+            string internalOrgId,
+            CallOffId callOffId,
+            [Frozen] IOrderItemRecipientDisplayNumberService displayNumberService,
+            TaskListController controller)
+        {
+            const string onwardLink = "https://evil.example/phish";
+
+            displayNumberService.HasItemRecipientCountDiscrepancy(callOffId, internalOrgId).Returns(false);
+
+            var result = await controller.TaskList(internalOrgId, callOffId, onwardLink);
+
+            result.Should().BeOfType<RedirectToActionResult>();
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(TaskListController.TaskList));
         }
 
         private static Dictionary<CatalogueItemId, int> AssociatedServicesForAdditionalServices(

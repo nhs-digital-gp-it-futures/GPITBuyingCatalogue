@@ -102,7 +102,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             await userManager.UpdateAsync(user);
 
             await odsService.UpdateOrganisationDetails(user.PrimaryOrganisation.ExternalIdentifier);
-            return Redirect(await GetLogonReturnUrl(viewModel.ReturnUrl, user));
+
+            var redirectUrl = await GetLogonReturnUrl(viewModel.ReturnUrl, user);
+            return LocalRedirect(redirectUrl);
         }
 
         [HttpGet("Logout")]
@@ -240,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
         private async Task<string> GetLogonReturnUrl(string returnUrl, AspNetUser user)
         {
-            if (!string.IsNullOrWhiteSpace(returnUrl))
+            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
                 return returnUrl;
 
             var isAdmin = await userManager.IsInRoleAsync(user, OrganisationFunction.Authority.Name)
@@ -249,13 +251,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
             return isAdmin
                 ? Url.Action(
-                    nameof(Admin.Controllers.HomeController.Index),
-                    typeof(Admin.Controllers.HomeController).ControllerName(),
-                    new { area = typeof(Admin.Controllers.HomeController).AreaName() })
+                      nameof(Admin.Controllers.HomeController.Index),
+                      typeof(Admin.Controllers.HomeController).ControllerName(),
+                      new { area = typeof(Admin.Controllers.HomeController).AreaName() }) ?? "~/"
                 : Url.Action(
-                    nameof(BuyerDashboardController.Index),
-                    typeof(BuyerDashboardController).ControllerName(),
-                    new { area = typeof(BuyerDashboardController).AreaName(), internalOrgId = User.GetPrimaryOrganisationInternalIdentifier() });
+                      nameof(BuyerDashboardController.Index),
+                      typeof(BuyerDashboardController).ControllerName(),
+                      new { area = typeof(BuyerDashboardController).AreaName(), internalOrgId = User.GetPrimaryOrganisationInternalIdentifier() }) ?? "~/";
         }
     }
 }
