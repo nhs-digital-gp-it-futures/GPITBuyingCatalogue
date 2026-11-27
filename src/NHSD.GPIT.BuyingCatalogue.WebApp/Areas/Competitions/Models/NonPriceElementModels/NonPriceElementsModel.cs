@@ -38,7 +38,7 @@ public class NonPriceElementsModel : NavBaseModel
         ? "These are the non-price elements you added to help you score your shortlisted solutions."
         : HasAllNonPriceElements()
             ? "All available non-price elements have been added for this competition."
-            : "Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.";
+            : "Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, integrations or service levels.";
 
     public bool HasAllNonPriceElements() =>
         NonPriceElements.HasAllNonPriceElements();
