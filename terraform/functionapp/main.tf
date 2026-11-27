@@ -74,6 +74,18 @@ resource "azurerm_storage_account" "function_app_storage" {
   account_replication_type  = "LRS"
   shared_access_key_enabled = false
 
+  blob_properties {
+    versioning_enabled = true
+
+    delete_retention_policy {
+      days = 30
+    }
+
+    container_delete_retention_policy {
+      days = 30
+    }
+  }
+
   network_rules {
     default_action             = "Deny"
     ip_rules                   = var.primary_vpn

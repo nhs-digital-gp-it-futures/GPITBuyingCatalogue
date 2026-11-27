@@ -11,6 +11,18 @@ resource "azurerm_storage_account" "storage_account" {
   min_tls_version            = "TLS1_2"
   https_traffic_only_enabled = true
 
+  blob_properties {
+    versioning_enabled = true
+
+    delete_retention_policy {
+      days = 30
+    }
+
+    container_delete_retention_policy {
+      days = 30
+    }
+  }
+
   network_rules {
     default_action             = "Deny"
     ip_rules                   = var.ip_rules
