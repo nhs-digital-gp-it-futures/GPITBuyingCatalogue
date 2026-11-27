@@ -6,6 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.PlaywrightTests.TestData;
 public class AdminTestData
 {
     public string Email { get; set; } = "bobsmith@email.com";
+    public string OnboardingEmail { get; set; } = "johnsmith@email.com";
     public string Password { get; set; } = "Pass123$";
 
     // User creation

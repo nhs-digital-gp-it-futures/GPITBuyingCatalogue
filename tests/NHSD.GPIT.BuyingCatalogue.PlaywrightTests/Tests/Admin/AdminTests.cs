@@ -15,6 +15,11 @@ public class AdminTests : BaseTest
     public AdminTests(TestServerFixture fixture, ITestOutputHelper output)
         : base(fixture, output) { }
 
+    private Task LoginAsync(AdminUserType userType) =>
+        userType == AdminUserType.Onboarding
+            ? AdminPages.LoginAsOnboardingUserAsync()
+            : AdminPages.LoginAsAdminAsync();
+
     [Fact]
     [Trait("Category", Categories.Admin)]
     public async Task AdminCreateNewUser()
@@ -42,26 +47,30 @@ public class AdminTests : BaseTest
         await AdminPages.DeleteEmailDomainAsync(data.EmailDomain);
     }
 
-    [Fact]
+    [Theory]
+    [InlineData(AdminUserType.Admin)]
+    [InlineData(AdminUserType.Onboarding)]
     [Trait("Category", Categories.Admin)]
-    public async Task AdminAddNewContractingVehicle()
+    public async Task AdminAddNewContractingVehicle(AdminUserType userType)
     {
         var data = new AdminTestData();
 
-        await AdminPages.LoginAsAdminAsync();
+        await LoginAsync(userType);
         await AdminPages.CreateContractingVehicleAsync(
             name: data.ContractingVehicleName,
             maxDuration: data.ContractingVehicleDuration,
             fundingTypes: ContractingVehicleFundingTypes);
     }
 
-    [Fact]
+    [Theory]
+    [InlineData(AdminUserType.Admin)]
+    [InlineData(AdminUserType.Onboarding)]
     [Trait("Category", Categories.Admin)]
-    public async Task AdminAddSupplierDefinedEpic()
+    public async Task AdminAddSupplierDefinedEpic(AdminUserType userType)
     {
         var data = new AdminTestData();
 
-        await AdminPages.LoginAsAdminAsync();
+        await LoginAsync(userType);
         await AdminPages.CreateSupplierDefinedEpicAsync(
             name: data.EpicName,
             description: data.EpicDescription,
@@ -82,9 +91,11 @@ public class AdminTests : BaseTest
         await AdminPages.AddIntegrationTypeAsync("NHS App", $"NHS App {data.IntegrationTypeName}", data.IntegrationTypeDescription);
     }
 
-    [Fact]
+    [Theory]
+    [InlineData(AdminUserType.Admin)]
+    [InlineData(AdminUserType.Onboarding)]
     [Trait("Category", Categories.Admin)]
-    public async Task AdminAddNewSupplier()
+    public async Task AdminAddNewSupplier(AdminUserType userType)
     {
         var data = new AdminTestData();
 
@@ -96,7 +107,7 @@ public class AdminTests : BaseTest
             data.SupplierContactFirstName, data.SupplierContactLastName, data.SupplierContactDepartment,
             data.SupplierContactPhone, data.SupplierContactEmail);
 
-        await AdminPages.LoginAsAdminAsync();
+        await LoginAsync(userType);
         await AdminPages.CreateSupplierAsync(
             name: data.SupplierName,
             legalName: data.SupplierLegalName,
@@ -105,13 +116,15 @@ public class AdminTests : BaseTest
             contact: contact);
     }
 
-    [Fact]
+    [Theory]
+    [InlineData(AdminUserType.Admin)]
+    [InlineData(AdminUserType.Onboarding)]
     [Trait("Category", Categories.Admin)]
-    public async Task AdminAddSolution()
+    public async Task AdminAddSolution(AdminUserType userType)
     {
         var data = new AdminTestData();
 
-        await AdminPages.LoginAsAdminAsync();
+        await LoginAsync(userType);
         await AdminPages.CreateSolutionAsync(
             data: data,
             supplierValue: "10000",
