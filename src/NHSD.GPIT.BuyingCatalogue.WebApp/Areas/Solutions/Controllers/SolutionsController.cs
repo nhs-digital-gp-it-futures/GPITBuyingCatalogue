@@ -582,8 +582,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(new ImplementationTimescalesModel(item, contentStatus, sections));
         }
 
-        [HttpGet("{solutionId}/interoperability")]
-        public async Task<IActionResult> Interoperability(CatalogueItemId solutionId)
+        [HttpGet("{solutionId}/integrations")]
+        public async Task<IActionResult> Integrations(CatalogueItemId solutionId)
         {
             var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
             if (item is null)

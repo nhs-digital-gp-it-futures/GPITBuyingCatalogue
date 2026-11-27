@@ -67,7 +67,7 @@
             }
         </nhs-card-v2>
         <nhs-card-v2>
-            <nhs-card-content title="Interoperability">
+            <nhs-card-content title="Integrations">
                 @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Interoperability))
                 {
                     <partial name="Partials/_Interoperability" model="@(new InteroperabilityPartialModel(Model.AvailableIntegrations, Model.NonPriceElements.IntegrationTypes))"/>
@@ -75,14 +75,14 @@
                 else
                 {
                     <p class="nhsuk-body-m">
-                        No interoperability requirements have been added for this competition.
+                        No integrations requirements have been added for this competition.
                     </p>
                 }
             </nhs-card-content>
             @if (!Model.HasReviewedCriteria)
             {
                 <nhs-card-footer>
-                    <vc:add-or-change href="@interoperabilityRequirementsLink" noun-phrase="interoperability requirements" is-change="@hasInteroperabilityNonPriceElement" test-id="interoperability-link" />
+                    <vc:add-or-change href="@interoperabilityRequirementsLink" noun-phrase="integrations requirements" is-change="@hasInteroperabilityNonPriceElement" test-id="interoperability-link" />
                 </nhs-card-footer>
             }
         </nhs-card-v2>
