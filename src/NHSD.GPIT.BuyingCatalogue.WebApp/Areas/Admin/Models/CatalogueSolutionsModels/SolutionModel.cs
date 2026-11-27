@@ -36,6 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
 
         public string SolutionName { get; set; }
 
+        public required SolutionType SolutionType { get; set; }
+
         public string SolutionDisplayName { get; set; }
 
         public bool IsPilotSolution { get; set; }

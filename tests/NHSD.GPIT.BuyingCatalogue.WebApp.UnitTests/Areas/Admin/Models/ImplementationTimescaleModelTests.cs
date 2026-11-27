@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             expected.SolutionName = catalogueItem.Name;
             expected.Description = catalogueItem.Solution?.ImplementationDetail;
 
-            var actual = new ImplementationTimescaleModel(catalogueItem);
+            var actual = new ImplementationTimescaleModel(catalogueItem) { SolutionType = SolutionType.GPIT };
 
             actual.SolutionId.Should().BeEquivalentTo(expected.SolutionId);
             actual.SolutionName.Should().BeEquivalentTo(expected.SolutionName);
@@ -28,7 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new ImplementationTimescaleModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new ImplementationTimescaleModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

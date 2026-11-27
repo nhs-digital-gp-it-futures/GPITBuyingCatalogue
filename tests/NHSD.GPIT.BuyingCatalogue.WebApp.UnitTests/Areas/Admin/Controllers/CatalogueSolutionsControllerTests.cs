@@ -5,7 +5,6 @@ using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Flurl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -18,7 +17,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
-using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
@@ -58,7 +56,7 @@ public static class CatalogueSolutionsControllerTests
     {
         model.SelectedApplicationType = ApplicationType.BrowserBased;
 
-        var result = (await controller.AddApplicationType(catalogueItemId, model)).As<RedirectToActionResult>();
+        var result = (await controller.AddApplicationType(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
         result.ActionName.Should().Be(nameof(BrowserBasedController.BrowserBased));
         result.ControllerName.Should().Be(typeof(BrowserBasedController).ControllerName());
@@ -73,7 +71,7 @@ public static class CatalogueSolutionsControllerTests
     {
         model.SelectedApplicationType = ApplicationType.Desktop;
 
-        var result = (await controller.AddApplicationType(catalogueItemId, model)).As<RedirectToActionResult>();
+        var result = (await controller.AddApplicationType(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
         result.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
         result.ControllerName.Should().Be(typeof(DesktopBasedController).ControllerName());
@@ -88,7 +86,7 @@ public static class CatalogueSolutionsControllerTests
     {
         model.SelectedApplicationType = ApplicationType.MobileTablet;
 
-        var result = (await controller.AddApplicationType(catalogueItemId, model)).As<RedirectToActionResult>();
+        var result = (await controller.AddApplicationType(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
         result.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
         result.ControllerName.Should().Be(typeof(MobileTabletBasedController).ControllerName());
@@ -97,20 +95,21 @@ public static class CatalogueSolutionsControllerTests
     [Theory]
     [MockAutoData]
     public static async Task Get_SearchResults_ValidSearchTerm_ReturnsExpectedResult(
+        SolutionType solutionType,
         string searchTerm,
         List<CatalogueItem> solutions,
         [Frozen] ISolutionsService mockSolutionsService,
         CatalogueSolutionsController controller)
     {
         mockSolutionsService
-            .GetAllSolutionsForSearchTerm(searchTerm)
+            .GetAllSolutionsForSearchTerm(solutionType, searchTerm)
             .Returns(solutions);
 
-        var result = await controller.SearchResults(searchTerm);
+        var result = await controller.SearchResults(solutionType, searchTerm);
 
         await mockSolutionsService
             .Received()
-            .GetAllSolutionsForSearchTerm(searchTerm);
+            .GetAllSolutionsForSearchTerm(solutionType, searchTerm);
 
         var actualResult = result.As<JsonResult>()
             .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
@@ -125,19 +124,20 @@ public static class CatalogueSolutionsControllerTests
     [Theory]
     [MockAutoData]
     public static async Task Get_SearchResults_ValidSearchTerm_NoMatches_ReturnsExpectedResult(
+        SolutionType solutionType,
         string searchTerm,
         [Frozen] ISolutionsService mockSolutionsService,
         CatalogueSolutionsController controller)
     {
         mockSolutionsService
-            .GetAllSolutionsForSearchTerm(searchTerm)
-            .Returns(new List<CatalogueItem>());
+            .GetAllSolutionsForSearchTerm(solutionType, searchTerm)
+            .Returns([]);
 
-        var result = await controller.SearchResults(searchTerm);
+        var result = await controller.SearchResults(solutionType, searchTerm);
 
         await mockSolutionsService
             .Received()
-            .GetAllSolutionsForSearchTerm(searchTerm);
+            .GetAllSolutionsForSearchTerm(solutionType, searchTerm);
 
         var actualResult = result.As<JsonResult>()
             .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
@@ -152,9 +152,10 @@ public static class CatalogueSolutionsControllerTests
     [MockInlineAutoData(" ")]
     public static async Task Get_SearchResults_InvalidSearchTerm_ReturnsExpectedResult(
         string searchTerm,
+        SolutionType solutionType,
         CatalogueSolutionsController controller)
     {
-        var result = await controller.SearchResults(searchTerm);
+        var result = await controller.SearchResults(solutionType, searchTerm);
 
         var actualResult = result.As<JsonResult>()
             .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
@@ -173,7 +174,7 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(new CatalogueItem());
 
-        await controller.Features(catalogueItemId);
+        await controller.Features(SolutionType.GPIT, catalogueItemId);
 
         await mockService
             .Received()
@@ -196,7 +197,7 @@ public static class CatalogueSolutionsControllerTests
             BackLink = "testUrl",
         };
 
-        var actual = (await controller.Features(catalogueItemId)).As<ViewResult>();
+        var actual = (await controller.Features(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
         await mockService
             .Received()
@@ -216,7 +217,7 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(default(CatalogueItem));
 
-        var actual = (await controller.Features(catalogueItemId)).As<BadRequestObjectResult>();
+        var actual = (await controller.Features(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
         actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
     }
@@ -229,7 +230,7 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] ISolutionsService mockService,
         CatalogueSolutionsController controller)
     {
-        await controller.Features(catalogueItemId, model);
+        await controller.Features(SolutionType.GPIT, catalogueItemId, model);
 
         await mockService
             .Received()
@@ -243,7 +244,7 @@ public static class CatalogueSolutionsControllerTests
         FeaturesModel model,
         CatalogueSolutionsController controller)
     {
-        var actual = (await controller.Features(catalogueItemId, model)).As<RedirectToActionResult>();
+        var actual = (await controller.Features(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
         actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
         actual.ControllerName.Should().BeNull();
@@ -266,7 +267,7 @@ public static class CatalogueSolutionsControllerTests
             BackLink = "testUrl",
         };
 
-        var actual = (await controller.Features(catalogueItemId)).As<ViewResult>();
+        var actual = (await controller.Features(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
         await mockService
             .Received()
@@ -286,14 +287,14 @@ public static class CatalogueSolutionsControllerTests
         var expected = solutions.Select(s => new CatalogueModel(s)).ToList();
 
         mockService
-            .GetAllSolutions(null)
+            .GetAllSolutions(SolutionType.GPIT, null)
             .Returns(solutions);
 
-        var actual = (await controller.Index()).As<ViewResult>();
+        var actual = (await controller.Index(SolutionType.GPIT)).As<ViewResult>();
 
         await mockService
             .Received()
-            .GetAllSolutions(null);
+            .GetAllSolutions(SolutionType.GPIT, null);
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -316,14 +317,14 @@ public static class CatalogueSolutionsControllerTests
         var expected = solutions.Select(x => new CatalogueModel(x));
 
         mockService
-            .GetAllSolutionsForSearchTerm(searchTerm)
+            .GetAllSolutionsForSearchTerm(SolutionType.GPIT, searchTerm)
             .Returns(solutions);
 
-        var actual = (await controller.Index(searchTerm)).As<ViewResult>();
+        var actual = (await controller.Index(SolutionType.GPIT, searchTerm)).As<ViewResult>();
 
         await mockService
             .Received()
-            .GetAllSolutionsForSearchTerm(searchTerm);
+            .GetAllSolutionsForSearchTerm(SolutionType.GPIT, searchTerm);
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -343,13 +344,14 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] ISolutionsService mockService,
         CatalogueSolutionsController controller)
     {
-        var model = new CatalogueSolutionsModel { SelectedPublicationStatus = status.ToString() };
+        var model = new CatalogueSolutionsModel { SelectedPublicationStatus = status.ToString(), SolutionType = SolutionType.GPIT };
 
         mockService
-            .GetAllSolutions(status)
+            .GetAllSolutions(SolutionType.GPIT, status)
             .Returns(solutions);
+        mockService.GetAllSolutions(SolutionType.GPIT).Returns(solutions);
 
-        var actual = (await controller.Index(model)).As<ViewResult>();
+        var actual = (await controller.Index(SolutionType.GPIT, model)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -373,15 +375,17 @@ public static class CatalogueSolutionsControllerTests
         {
             SearchTerm = searchTerm,
             SelectedPublicationStatus = status.ToString(),
+            SolutionType = SolutionType.GPIT,
         };
 
-        model.SetSolutions(new[] { expected });
+        model.SetSolutions([expected]);
 
         mockService
-            .GetAllSolutions(status)
+            .GetAllSolutions(SolutionType.GPIT, status)
             .Returns(solutions);
+        mockService.GetAllSolutionsForSearchTerm(SolutionType.GPIT, searchTerm).Returns(solutions);
 
-        var actual = (await controller.Index(model)).As<ViewResult>();
+        var actual = (await controller.Index(SolutionType.GPIT, model)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -397,23 +401,31 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] AspNetUser aspNetUser,
         Solution solution,
         SolutionLoadingStatusesModel solutionLoadingStatuses,
+        SolutionSections solutionSections,
         int userId,
         [Frozen] ISolutionsService mockSolutionService,
+        [Frozen] ISolutionSectionsService mockSolutionSectionsService,
         CatalogueSolutionsController controller)
     {
         solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
         solution.LastUpdatedBy = userId;
         solution.LastUpdatedByUser = aspNetUser;
         aspNetUser.Id = userId;
-        var expectedModel = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem);
+        var expectedModel = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem, solutionSections)
+        {
+            SolutionType = SolutionType.GPIT,
+        };
 
         mockSolutionService.GetSolutionThin(solution.CatalogueItemId)
             .Returns(solution.CatalogueItem);
 
-        mockSolutionService.GetSolutionLoadingStatuses(solution.CatalogueItemId)
+        mockSolutionSectionsService.GetSolutionSectionsAsync(SolutionType.GPIT)
+            .Returns(solutionSections);
+
+        mockSolutionService.GetSolutionLoadingStatuses(solution.CatalogueItemId, solutionSections)
             .Returns(solutionLoadingStatuses);
 
-        var actual = (await controller.ManageCatalogueSolution(solution.CatalogueItemId)).As<ViewResult>();
+        var actual = (await controller.ManageCatalogueSolution(SolutionType.GPIT, solution.CatalogueItemId)).As<ViewResult>();
 
         await mockSolutionService
             .Received()
@@ -445,7 +457,7 @@ public static class CatalogueSolutionsControllerTests
         mockSolutionService.GetSolutionThin(Arg.Any<CatalogueItemId>())
             .Returns(expected);
 
-        var actual = (await controller.Description(expected.Id)).As<ViewResult>();
+        var actual = (await controller.Description(SolutionType.GPIT, expected.Id)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -466,7 +478,7 @@ public static class CatalogueSolutionsControllerTests
         mockSolutionService.GetSolutionWithBasicInformation(solutionId)
             .Returns((CatalogueItem)null);
 
-        var actual = (await controller.Details(solutionId)).As<BadRequestObjectResult>();
+        var actual = (await controller.Details(SolutionType.GPIT, solutionId)).As<BadRequestObjectResult>();
 
         actual.Should().NotBeNull();
     }
@@ -502,9 +514,9 @@ public static class CatalogueSolutionsControllerTests
         };
 
         mockSolutionService.GetAllFrameworks()
-            .Returns(new List<EntityFramework.Catalogue.Models.Framework> { framework });
+            .Returns([framework]);
 
-        var actual = (await controller.Details(solutionId)).As<ViewResult>();
+        var actual = (await controller.Details(SolutionType.GPIT, solutionId)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -547,9 +559,9 @@ public static class CatalogueSolutionsControllerTests
         };
 
         mockSolutionService.GetAllFrameworks()
-            .Returns(new List<EntityFramework.Catalogue.Models.Framework> { framework });
+            .Returns([framework]);
 
-        var actual = (await controller.Details(solutionId)).As<ViewResult>();
+        var actual = (await controller.Details(SolutionType.GPIT, solutionId)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -565,7 +577,7 @@ public static class CatalogueSolutionsControllerTests
     {
         mockService.GetSolutionByName(Arg.Any<string>()).Returns(Task.FromResult(new CatalogueItem { Id = catalogueItemId }));
 
-        var actual = (await controller.Details(catalogueItemId, model)).As<RedirectToActionResult>();
+        var actual = (await controller.Details(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
         actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
         actual.ControllerName.Should().BeNull();
@@ -578,10 +590,13 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] CatalogueItemId id,
         CatalogueSolutionsController controller)
     {
-        var solutionModel = new SolutionModel();
+        var solutionModel = new SolutionModel()
+        {
+            SolutionType = SolutionType.GPIT,
+        };
         controller.ModelState.AddModelError("some-property", "some-error");
 
-        var actual = (await controller.Details(id, solutionModel)).As<ViewResult>();
+        var actual = (await controller.Details(SolutionType.GPIT, id, solutionModel)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -596,7 +611,7 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] ISolutionsService mockSolutionService,
         CatalogueSolutionsController controller)
     {
-        await controller.Details(id, model);
+        await controller.Details(SolutionType.GPIT, id, model);
 
         await mockSolutionService
             .Received()
@@ -613,7 +628,7 @@ public static class CatalogueSolutionsControllerTests
     {
         mockSolutionService.GetSolutionByName(Arg.Any<string>()).Returns(Task.FromResult(new CatalogueItem { Id = id }));
 
-        var actual = (await controller.Details(id, model)).As<RedirectToActionResult>();
+        var actual = (await controller.Details(SolutionType.GPIT, id, model)).As<RedirectToActionResult>();
 
         actual.Should().NotBeNull();
         actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
@@ -627,7 +642,7 @@ public static class CatalogueSolutionsControllerTests
         DescriptionModel model,
         CatalogueSolutionsController controller)
     {
-        var actual = (await controller.Description(catalogueItemId, model)).As<RedirectToActionResult>();
+        var actual = (await controller.Description(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
         actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
         actual.ControllerName.Should().BeNull();
@@ -643,7 +658,7 @@ public static class CatalogueSolutionsControllerTests
     {
         controller.ModelState.AddModelError("some-property", "some-error");
 
-        await controller.Description(id, new DescriptionModel());
+        await controller.Description(SolutionType.GPIT, id, new DescriptionModel() { SolutionType = SolutionType.GPIT });
 
         await mockSolutionService
             .Received(0)
@@ -659,7 +674,7 @@ public static class CatalogueSolutionsControllerTests
     {
         controller.ModelState.AddModelError("some-property", "some-error");
 
-        var actual = (await controller.Description(id, editDescriptionModel)).As<ViewResult>();
+        var actual = (await controller.Description(SolutionType.GPIT, id, editDescriptionModel)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().BeNull();
@@ -674,7 +689,7 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] ISolutionsService mockSolutionService,
         CatalogueSolutionsController controller)
     {
-        await controller.Description(id, model);
+        await controller.Description(SolutionType.GPIT, id, model);
 
         await mockSolutionService
             .Received()
@@ -687,7 +702,7 @@ public static class CatalogueSolutionsControllerTests
         DescriptionModel model,
         CatalogueSolutionsController controller)
     {
-        var actual = (await controller.Description(model.SolutionId!.Value, model)).As<RedirectToActionResult>();
+        var actual = (await controller.Description(SolutionType.GPIT, model.SolutionId!.Value, model)).As<RedirectToActionResult>();
 
         actual.Should().NotBeNull();
         actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
@@ -704,7 +719,7 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(new CatalogueItem());
 
-        await controller.Implementation(catalogueItemId);
+        await controller.Implementation(SolutionType.GPIT, catalogueItemId);
 
         await mockService
             .Received()
@@ -722,14 +737,14 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(catalogueItem);
 
-        var actual = (await controller.Implementation(catalogueItemId)).As<ViewResult>();
+        var actual = (await controller.Implementation(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
         await mockService
             .Received()
             .GetSolutionThin(catalogueItemId);
 
         actual.ViewName.Should().BeNull();
-        actual.Model.Should().BeEquivalentTo(new ImplementationTimescaleModel(catalogueItem));
+        actual.Model.Should().BeEquivalentTo(new ImplementationTimescaleModel(catalogueItem) { SolutionType = SolutionType.GPIT });
     }
 
     [Theory]
@@ -742,9 +757,9 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(default(CatalogueItem));
 
-        var actual = (await controller.Implementation(catalogueItemId)).As<BadRequestObjectResult>();
+        var actual = (await controller.Implementation(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
-        actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}, solution type: {SolutionType.GPIT}");
     }
 
     [Theory]
@@ -755,7 +770,7 @@ public static class CatalogueSolutionsControllerTests
         [Frozen] ISolutionsService mockService,
         CatalogueSolutionsController controller)
     {
-        await controller.Implementation(catalogueItemId, model);
+        await controller.Implementation(SolutionType.GPIT, catalogueItemId, model);
 
         await mockService
             .Received()
@@ -769,7 +784,7 @@ public static class CatalogueSolutionsControllerTests
         ImplementationTimescaleModel model,
         CatalogueSolutionsController controller)
     {
-        var actual = (await controller.Implementation(catalogueItemId, model)).As<RedirectToActionResult>();
+        var actual = (await controller.Implementation(SolutionType.GPIT, catalogueItemId, model)).As<RedirectToActionResult>();
 
         actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
         actual.ControllerName.Should().BeNull();
@@ -787,14 +802,14 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(catalogueItem);
 
-        var actual = (await controller.Implementation(catalogueItemId)).As<ViewResult>();
+        var actual = (await controller.Implementation(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
         await mockService
             .Received()
             .GetSolutionThin(catalogueItemId);
 
         actual.ViewName.Should().BeNull();
-        actual.Model.Should().BeEquivalentTo(new ImplementationTimescaleModel(catalogueItem));
+        actual.Model.Should().BeEquivalentTo(new ImplementationTimescaleModel(catalogueItem) { SolutionType = SolutionType.GPIT });
     }
 
     [Theory]
@@ -808,7 +823,7 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        await catalogueSolutionsController.ApplicationType(catalogueItem.Id);
+        await catalogueSolutionsController.ApplicationType(SolutionType.GPIT, catalogueItem.Id);
 
         await mockService
             .Received()
@@ -827,14 +842,19 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(catalogueItem);
 
-        var actual = (await controller.ApplicationType(catalogueItemId)).As<ViewResult>();
+        var actual = (await controller.ApplicationType(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
         await mockService
             .Received()
             .GetSolutionThin(catalogueItemId);
 
         actual.ViewName.Should().BeNull();
-        actual.Model.Should().BeEquivalentTo(new ApplicationTypeSectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+        actual.Model.Should().BeEquivalentTo(
+            new ApplicationTypeSectionModel(catalogueItem)
+            {
+                SolutionType = SolutionType.GPIT,
+            },
+            opt => opt.Excluding(m => m.BackLink));
     }
 
     [Theory]
@@ -847,7 +867,7 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(default(CatalogueItem));
 
-        var actual = (await controller.ApplicationType(catalogueItemId)).As<BadRequestObjectResult>();
+        var actual = (await controller.ApplicationType(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
         actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
     }
@@ -864,14 +884,19 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(catalogueItem);
 
-        var actual = (await controller.ApplicationType(catalogueItemId)).As<ViewResult>();
+        var actual = (await controller.ApplicationType(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
         await mockService
             .Received()
             .GetSolutionThin(catalogueItemId);
 
         actual.ViewName.Should().BeNull();
-        actual.Model.Should().BeEquivalentTo(new ApplicationTypeSectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+        actual.Model.Should().BeEquivalentTo(
+            new ApplicationTypeSectionModel(catalogueItem)
+            {
+                SolutionType = SolutionType.GPIT,
+            },
+            opt => opt.Excluding(m => m.BackLink));
     }
 
     [Theory]
@@ -885,7 +910,7 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(solution.CatalogueItem);
 
-        await controller.AddApplicationType(catalogueItemId);
+        await controller.AddApplicationType(SolutionType.GPIT, catalogueItemId);
 
         await mockService
             .Received()
@@ -904,14 +929,19 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(catalogueItem);
 
-        var actual = (await controller.AddApplicationType(catalogueItemId)).As<ViewResult>();
+        var actual = (await controller.AddApplicationType(SolutionType.GPIT, catalogueItemId)).As<ViewResult>();
 
         await mockService
             .Received()
             .GetSolutionThin(catalogueItemId);
 
         actual.ViewName.Should().BeNull();
-        actual.Model.Should().BeEquivalentTo(new ApplicationTypeSelectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+        actual.Model.Should().BeEquivalentTo(
+            new ApplicationTypeSelectionModel(catalogueItem)
+            {
+                SolutionType = SolutionType.GPIT,
+            },
+            opt => opt.Excluding(m => m.BackLink));
     }
 
     [Theory]
@@ -924,7 +954,7 @@ public static class CatalogueSolutionsControllerTests
         mockService.GetSolutionThin(catalogueItemId)
             .Returns(default(CatalogueItem));
 
-        var actual = (await controller.AddApplicationType(catalogueItemId)).As<BadRequestObjectResult>();
+        var actual = (await controller.AddApplicationType(SolutionType.GPIT, catalogueItemId)).As<BadRequestObjectResult>();
 
         actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
     }
@@ -940,12 +970,17 @@ public static class CatalogueSolutionsControllerTests
         var catalogueItem = solution.CatalogueItem;
         catalogueItem.PublishedStatus = PublicationStatus.Draft;
 
-        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = catalogueItem.PublishedStatus };
+        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel
+        {
+            SelectedPublicationStatus = catalogueItem.PublishedStatus,
+            SolutionPublicationStatus = catalogueItem.PublishedStatus,
+            SolutionType = SolutionType.GPIT,
+        };
 
         solutionsService.GetSolutionThin(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        var actual = (await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel)).As<RedirectToActionResult>();
+        var actual = (await controller.SetPublicationStatus(SolutionType.GPIT, catalogueItem.Id, manageCatalogueSolutionModel)).As<RedirectToActionResult>();
 
         await publicationStatusService
             .Received(0)
@@ -966,12 +1001,17 @@ public static class CatalogueSolutionsControllerTests
         var catalogueItem = solution.CatalogueItem;
         catalogueItem.PublishedStatus = PublicationStatus.Draft;
 
-        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = PublicationStatus.Published };
+        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel
+        {
+            SelectedPublicationStatus = PublicationStatus.Published,
+            SolutionPublicationStatus = catalogueItem.PublishedStatus,
+            SolutionType = SolutionType.GPIT,
+        };
 
         mockSolutionService.GetSolutionThin(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel);
+        await controller.SetPublicationStatus(SolutionType.GPIT, catalogueItem.Id, manageCatalogueSolutionModel);
 
         await mockPublicationStatusService
             .Received()
@@ -988,12 +1028,17 @@ public static class CatalogueSolutionsControllerTests
         var catalogueItem = solution.CatalogueItem;
         catalogueItem.PublishedStatus = PublicationStatus.Draft;
 
-        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = PublicationStatus.Published };
+        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel
+        {
+            SelectedPublicationStatus = PublicationStatus.Published,
+            SolutionPublicationStatus = catalogueItem.PublishedStatus,
+            SolutionType = SolutionType.GPIT,
+        };
 
         mockSolutionService.GetSolutionThin(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        var actual = (await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel)).As<RedirectToActionResult>();
+        var actual = (await controller.SetPublicationStatus(SolutionType.GPIT, catalogueItem.Id, manageCatalogueSolutionModel)).As<RedirectToActionResult>();
 
         actual.Should().NotBeNull();
         actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.Index));
@@ -1009,12 +1054,17 @@ public static class CatalogueSolutionsControllerTests
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = publicationStatus };
+        var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel
+        {
+            SelectedPublicationStatus = publicationStatus,
+            SolutionPublicationStatus = publicationStatus,
+            SolutionType = SolutionType.GPIT,
+        };
 
         mockSolutionService.GetSolutionThin(solution.Id)
             .Returns(solution);
 
-        var actual = (await controller.SetPublicationStatus(solution.Id, manageCatalogueSolutionModel)).As<ViewResult>();
+        var actual = (await controller.SetPublicationStatus(SolutionType.GPIT, solution.Id, manageCatalogueSolutionModel)).As<ViewResult>();
 
         actual.Should().NotBeNull();
         actual.ViewName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
@@ -1031,7 +1081,7 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionWithSupplierDetails(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        var result = (await controller.EditSupplierDetails(catalogueItem.Id)).As<ViewResult>();
+        var result = (await controller.EditSupplierDetails(SolutionType.GPIT, catalogueItem.Id)).As<ViewResult>();
         var model = result.Model.As<EditSolutionContactsModel>();
 
         result.Should().NotBeNull();
@@ -1053,7 +1103,7 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionWithSupplierDetails(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        var result = (await controller.EditSupplierDetails(catalogueItem.Id, model)).As<ViewResult>();
+        var result = (await controller.EditSupplierDetails(SolutionType.GPIT, catalogueItem.Id, model)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(model);
@@ -1070,7 +1120,7 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionWithSupplierDetails(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        var result = (await controller.EditSupplierDetails(catalogueItem.Id, model)).As<RedirectToActionResult>();
+        var result = (await controller.EditSupplierDetails(SolutionType.GPIT, catalogueItem.Id, model)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
@@ -1095,7 +1145,7 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionWithSupplierDetails(catalogueItem.Id)
             .Returns(catalogueItem);
 
-        _ = await controller.EditSupplierDetails(catalogueItem.Id, model);
+        _ = await controller.EditSupplierDetails(SolutionType.GPIT, catalogueItem.Id, model);
 
         await solutionsService
             .Received()
@@ -1114,7 +1164,7 @@ public static class CatalogueSolutionsControllerTests
         solutionsService.GetSolutionWithCapabilities(catalogueItemId)
             .Returns(default(CatalogueItem));
 
-        var result = await controller.EditCapabilities(catalogueItemId);
+        var result = await controller.EditCapabilities(SolutionType.GPIT, catalogueItemId);
 
         result.As<BadRequestObjectResult>().Should().NotBeNull();
         result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
@@ -1135,12 +1185,12 @@ public static class CatalogueSolutionsControllerTests
         };
 
         capabilitiesService.GetCapabilitiesByCategory()
-            .Returns(capabilityCategories.ToList());
+            .Returns([.. capabilityCategories]);
 
         solutionsService.GetSolutionWithCapabilities(solution.CatalogueItemId)
             .Returns(solution.CatalogueItem);
 
-        var result = await controller.EditCapabilities(solution.CatalogueItemId);
+        var result = await controller.EditCapabilities(SolutionType.GPIT, solution.CatalogueItemId);
 
         result.As<ViewResult>().Should().NotBeNull();
         result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -1163,7 +1213,7 @@ public static class CatalogueSolutionsControllerTests
         controller.ModelState.AddModelError("some-key", "some-error");
 
         var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
-        var result = await controller.EditCapabilities(catalogueItem.Id, postedModel);
+        var result = await controller.EditCapabilities(SolutionType.GPIT, catalogueItem.Id, postedModel);
 
         result.As<ViewResult>().Should().NotBeNull();
         result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -1201,6 +1251,7 @@ public static class CatalogueSolutionsControllerTests
             "some-error");
 
         var result = await controller.EditCapabilities(
+            SolutionType.GPIT,
             catalogueItem.Id,
             postedModel);
 
@@ -1226,7 +1277,7 @@ public static class CatalogueSolutionsControllerTests
             .Returns(default(CatalogueItem));
 
         var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
-        var result = await controller.EditCapabilities(solution.CatalogueItemId, postedModel);
+        var result = await controller.EditCapabilities(SolutionType.GPIT, solution.CatalogueItemId, postedModel);
 
         result.As<BadRequestObjectResult>().Should().NotBeNull();
         result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solution.CatalogueItemId}");
@@ -1245,7 +1296,7 @@ public static class CatalogueSolutionsControllerTests
             .Returns(solution.CatalogueItem);
 
         var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
-        _ = await controller.EditCapabilities(solution.CatalogueItemId, postedModel);
+        _ = await controller.EditCapabilities(SolutionType.GPIT, solution.CatalogueItemId, postedModel);
 
         await capabilitiesService
             .Received()
@@ -1264,7 +1315,7 @@ public static class CatalogueSolutionsControllerTests
             .Returns(solution.CatalogueItem);
 
         var postedModel = EditCapabilitiesModelHelper.GetPostableEditCapabilitiesModel(model);
-        var result = await controller.EditCapabilities(solution.CatalogueItemId, postedModel);
+        var result = await controller.EditCapabilities(SolutionType.GPIT, solution.CatalogueItemId, postedModel);
 
         result.As<RedirectToActionResult>().Should().NotBeNull();
         result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));

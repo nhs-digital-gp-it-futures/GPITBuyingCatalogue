@@ -28,7 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var model = new AssociatedServicesModel(
                 solution.CatalogueItem,
                 associatedServices.Select(x => x.CatalogueItem).ToList(),
-                contentStatus);
+                contentStatus,
+                new SolutionSections());
 
             model.IsSubPage.Should().BeFalse();
         }
@@ -44,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             catalogueItem.SupplierServiceAssociations.Add(new SupplierServiceAssociation { AssociatedServiceId = service.CatalogueItemId });
             List<CatalogueItem> associatedServices = new List<CatalogueItem> { service.CatalogueItem };
 
-            var model = new AssociatedServicesModel(catalogueItem, associatedServices, contentStatus);
+            var model = new AssociatedServicesModel(catalogueItem, associatedServices, contentStatus, new SolutionSections());
 
             model.Services.Count.Should().Be(1);
             model.HasServices().Should().BeTrue();
@@ -56,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var catalogueItem = solution.CatalogueItem;
 
-            var model = new AssociatedServicesModel(catalogueItem, new List<CatalogueItem>(), new CatalogueItemContentStatus());
+            var model = new AssociatedServicesModel(catalogueItem, new List<CatalogueItem>(), new CatalogueItemContentStatus(), new SolutionSections());
 
             model.HasServices().Should().BeFalse();
         }

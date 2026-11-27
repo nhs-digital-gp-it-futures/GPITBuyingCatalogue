@@ -20,6 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
 
         public string SolutionName { get; set; }
 
+        public required SolutionType SolutionType { get; set; }
+
         public ApplicationTypeDetail ApplicationTypeDetail { get; set; }
 
         public ApplicationTypeProgress ApplicationTypeProgress => new ApplicationTypeProgress(ApplicationTypeDetail);

@@ -21,6 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
 
         public CatalogueItemId ItemId { get; init; }
 
+        public required SolutionType SolutionType { get; init; }
+
         public string ItemName { get; init; }
 
         public IReadOnlyList<CatalogueItem> AdditionalServices { get; init; }

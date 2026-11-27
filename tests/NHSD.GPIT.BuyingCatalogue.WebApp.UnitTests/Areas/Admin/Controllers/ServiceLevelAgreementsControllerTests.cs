@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(solution.CatalogueItem);
             slaService.GetServiceLevelAgreementForSolution(itemId).Returns(default(ServiceLevelAgreements));
 
-            var actual = await controller.Index(itemId);
+            var actual = await controller.Index(SolutionType.GPIT, itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(solution.CatalogueItem);
             slaService.GetServiceLevelAgreementForSolution(itemId).Returns(solution.ServiceLevelAgreement);
 
-            var actual = await controller.Index(itemId);
+            var actual = await controller.Index(SolutionType.GPIT, itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(default(CatalogueItem));
 
-            var actual = await controller.Index(itemId);
+            var actual = await controller.Index(SolutionType.GPIT, itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new AddSlaTypeModel(solution.CatalogueItem);
 
-            var actual = await controller.AddServiceLevelAgreement(itemId);
+            var actual = await controller.AddServiceLevelAgreement(SolutionType.GPIT, itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(default(CatalogueItem));
 
-            var actual = await controller.AddServiceLevelAgreement(itemId);
+            var actual = await controller.AddServiceLevelAgreement(SolutionType.GPIT, itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.AddServiceLevelAgreement(itemId, addModel);
+            var actual = await controller.AddServiceLevelAgreement(SolutionType.GPIT, itemId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             };
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(default(CatalogueItem));
 
-            var actual = await controller.AddServiceLevelAgreement(itemId, addModel);
+            var actual = await controller.AddServiceLevelAgreement(SolutionType.GPIT, itemId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -191,7 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("Test", "A test error");
 
-            var actual = await controller.AddServiceLevelAgreement(itemId, new AddSlaTypeModel());
+            var actual = await controller.AddServiceLevelAgreement(SolutionType.GPIT, itemId, new AddSlaTypeModel());
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -214,12 +214,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CatalogueItemId itemId)
         {
-            var expectedModel = new EditServiceLevelAgreementModel(solution.CatalogueItem, solution.ServiceLevelAgreement);
-
+            var expectedModel = new EditServiceLevelAgreementModel(solution.CatalogueItem, solution.ServiceLevelAgreement)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(solution.CatalogueItem);
             slaService.GetServiceLevelAgreementForSolution(itemId).Returns(solution.ServiceLevelAgreement);
 
-            var actual = await controller.EditServiceLevelAgreement(itemId);
+            var actual = await controller.EditServiceLevelAgreement(SolutionType.GPIT, itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -236,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(default(CatalogueItem));
 
-            var actual = await controller.EditServiceLevelAgreement(itemId);
+            var actual = await controller.EditServiceLevelAgreement(SolutionType.GPIT, itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -257,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new AddSlaTypeModel(solution.CatalogueItem);
 
-            var actual = await controller.EditServiceLevelAgreementType(itemId);
+            var actual = await controller.EditServiceLevelAgreementType(SolutionType.GPIT, itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -274,7 +276,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(default(CatalogueItem));
 
-            var actual = await controller.EditServiceLevelAgreementType(itemId);
+            var actual = await controller.EditServiceLevelAgreementType(SolutionType.GPIT, itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -299,7 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.EditServiceLevelAgreementType(itemId, addModel);
+            var actual = await controller.EditServiceLevelAgreementType(SolutionType.GPIT, itemId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
@@ -323,7 +325,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.EditServiceLevelAgreementType(itemId, addModel);
+            var actual = await controller.EditServiceLevelAgreementType(SolutionType.GPIT, itemId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
@@ -345,7 +347,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             };
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(default(CatalogueItem));
 
-            var actual = await controller.EditServiceLevelAgreementType(itemId, addModel);
+            var actual = await controller.EditServiceLevelAgreementType(SolutionType.GPIT, itemId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -360,7 +362,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("Test", "A test error");
 
-            var actual = await controller.EditServiceLevelAgreementType(itemId, new AddSlaTypeModel());
+            var actual = await controller.EditServiceLevelAgreementType(SolutionType.GPIT, itemId, new AddSlaTypeModel());
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -383,7 +385,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.AddServiceAvailabilityTimes(solutionId);
+            var result = await controller.AddServiceAvailabilityTimes(SolutionType.GPIT, solutionId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -396,11 +398,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] ISolutionsService solutionsService,
             ServiceLevelAgreementsController controller)
         {
-            var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem);
-
+            var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.AddServiceAvailabilityTimes(solution.CatalogueItemId);
+            var result = await controller.AddServiceAvailabilityTimes(SolutionType.GPIT, solution.CatalogueItemId);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().ViewName.Should().Be("AddEditServiceAvailabilityTimes");
@@ -416,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = await controller.AddServiceAvailabilityTimes(solutionId, model);
+            var result = await controller.AddServiceAvailabilityTimes(SolutionType.GPIT, solutionId, model);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -432,7 +436,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.AddServiceAvailabilityTimes(solutionId, model);
+            var result = await controller.AddServiceAvailabilityTimes(SolutionType.GPIT, solutionId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -449,7 +453,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.AddServiceAvailabilityTimes(solution.CatalogueItemId, model);
+            var result = await controller.AddServiceAvailabilityTimes(SolutionType.GPIT, solution.CatalogueItemId, model);
 
             await serviceLevelAgreementsService.Received().SaveServiceAvailabilityTimes(solution.CatalogueItem, Arg.Any<ServiceAvailabilityTimesModel>());
 
@@ -467,7 +471,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
+            var result = await controller.EditServiceAvailabilityTimes(SolutionType.GPIT, solutionId, serviceAvailabilityTimesId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -485,7 +489,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
             serviceLevelAgreementsService.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimesId).Returns(default(ServiceAvailabilityTimes));
 
-            var result = await controller.EditServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimesId);
+            var result = await controller.EditServiceAvailabilityTimes(SolutionType.GPIT, solution.CatalogueItemId, serviceAvailabilityTimesId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Availability Times with Id {serviceAvailabilityTimesId} found for Solution: {solution.CatalogueItemId}");
@@ -502,13 +506,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
 
-            var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes);
-
+            var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             serviceLevelAgreementsService.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id).Returns(serviceAvailabilityTimes);
 
-            var result = await controller.EditServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id);
+            var result = await controller.EditServiceAvailabilityTimes(SolutionType.GPIT, solution.CatalogueItemId, serviceAvailabilityTimes.Id);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().ViewName.Should().Be("AddEditServiceAvailabilityTimes");
@@ -531,13 +537,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes)
             {
                 CanDelete = false,
+                SolutionType = SolutionType.GPIT,
             };
 
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             serviceLevelAgreementsService.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id).Returns(serviceAvailabilityTimes);
 
-            var result = await controller.EditServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id);
+            var result = await controller.EditServiceAvailabilityTimes(SolutionType.GPIT, solution.CatalogueItemId, serviceAvailabilityTimes.Id);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -559,13 +566,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var expectedModel = new EditServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes)
             {
                 CanDelete = true,
+                SolutionType = SolutionType.GPIT,
             };
 
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             serviceLevelAgreementsService.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id).Returns(serviceAvailabilityTimes);
 
-            var result = await controller.EditServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id);
+            var result = await controller.EditServiceAvailabilityTimes(SolutionType.GPIT, solution.CatalogueItemId, serviceAvailabilityTimes.Id);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -581,7 +589,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = await controller.EditServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId, model);
+            var result = await controller.EditServiceAvailabilityTimes(SolutionType.GPIT, solutionId, serviceAvailabilityTimesId, model);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -598,7 +606,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId, model);
+            var result = await controller.EditServiceAvailabilityTimes(SolutionType.GPIT, solutionId, serviceAvailabilityTimesId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -617,7 +625,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
             serviceLevelAgreementsService.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimesId).Returns(default(ServiceAvailabilityTimes));
 
-            var result = await controller.EditServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimesId, model);
+            var result = await controller.EditServiceAvailabilityTimes(SolutionType.GPIT, solution.CatalogueItemId, serviceAvailabilityTimesId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Availability Times with Id {serviceAvailabilityTimesId} found for Solution: {solution.CatalogueItemId}");
@@ -637,7 +645,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             serviceLevelAgreementsService.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id).Returns(serviceAvailabilityTimes);
 
-            var result = await controller.EditServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id, model);
+            var result = await controller.EditServiceAvailabilityTimes(SolutionType.GPIT, solution.CatalogueItemId, serviceAvailabilityTimes.Id, model);
 
             await serviceLevelAgreementsService.Received().UpdateServiceAvailabilityTimes(solution.CatalogueItem, serviceAvailabilityTimes.Id, Arg.Any<ServiceAvailabilityTimesModel>());
 
@@ -655,7 +663,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.DeleteServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId);
+            var result = await controller.DeleteServiceAvailabilityTimes(SolutionType.GPIT, solutionId, serviceAvailabilityTimesId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -673,7 +681,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
             serviceLevelAgreementsService.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimesId).Returns(default(ServiceAvailabilityTimes));
 
-            var result = await controller.DeleteServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimesId);
+            var result = await controller.DeleteServiceAvailabilityTimes(SolutionType.GPIT, solution.CatalogueItemId, serviceAvailabilityTimesId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Availability Times with Id {serviceAvailabilityTimesId} found for Solution: {solution.CatalogueItemId}");
@@ -694,7 +702,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             serviceLevelAgreementsService.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id).Returns(serviceAvailabilityTimes);
 
-            var result = await controller.DeleteServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id);
+            var result = await controller.DeleteServiceAvailabilityTimes(SolutionType.GPIT, solution.CatalogueItemId, serviceAvailabilityTimes.Id);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -710,7 +718,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = await controller.DeleteServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId, model);
+            var result = await controller.DeleteServiceAvailabilityTimes(SolutionType.GPIT, solutionId, serviceAvailabilityTimesId, model);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -727,7 +735,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.DeleteServiceAvailabilityTimes(solutionId, serviceAvailabilityTimesId, model);
+            var result = await controller.DeleteServiceAvailabilityTimes(SolutionType.GPIT, solutionId, serviceAvailabilityTimesId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -746,7 +754,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
             serviceLevelAgreementsService.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimesId).Returns(default(ServiceAvailabilityTimes));
 
-            var result = await controller.DeleteServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimesId, model);
+            var result = await controller.DeleteServiceAvailabilityTimes(SolutionType.GPIT, solution.CatalogueItemId, serviceAvailabilityTimesId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Availability Times with Id {serviceAvailabilityTimesId} found for Solution: {solution.CatalogueItemId}");
@@ -766,7 +774,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             serviceLevelAgreementsService.GetServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id).Returns(serviceAvailabilityTimes);
 
-            var result = await controller.DeleteServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id, model);
+            var result = await controller.DeleteServiceAvailabilityTimes(SolutionType.GPIT, solution.CatalogueItemId, serviceAvailabilityTimes.Id, model);
 
             await serviceLevelAgreementsService.Received().DeleteServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id);
 
@@ -783,7 +791,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(default(CatalogueItem));
 
-            var actual = await controller.AddContact(itemId);
+            var actual = await controller.AddContact(SolutionType.GPIT, itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -800,9 +808,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(solution.CatalogueItem);
 
-            var expectedModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(solution.CatalogueItem);
-
-            var actual = await controller.AddContact(itemId);
+            var expectedModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(solution.CatalogueItem)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
+            var actual = await controller.AddContact(SolutionType.GPIT, itemId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -828,11 +838,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             {
                 From = DateTime.UtcNow,
                 Until = DateTime.UtcNow,
+                SolutionType = SolutionType.GPIT,
             };
 
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(solution.CatalogueItem);
 
-            var actual = await controller.AddContact(itemId, addModel);
+            var actual = await controller.AddContact(SolutionType.GPIT, itemId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
@@ -848,9 +859,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(default(CatalogueItem));
 
-            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
-
-            var actual = await controller.AddContact(itemId, addModel);
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel()
+            {
+                SolutionType = SolutionType.GPIT,
+            };
+            var actual = await controller.AddContact(SolutionType.GPIT, itemId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -865,7 +878,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("Test", "A test error");
 
-            var actual = await controller.AddContact(itemId, new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel());
+            var actual = await controller.AddContact(
+                SolutionType.GPIT,
+                itemId,
+                new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel()
+                {
+                    SolutionType = SolutionType.GPIT,
+                });
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -873,9 +892,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = actual.As<ViewResult>().Model.As<WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel>();
             model.Should()
                     .BeEquivalentTo(
-                    new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(),
-                    opt => opt
-                        .Excluding(m => m.BackLink));
+                    new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel()
+                    {
+                        SolutionType = SolutionType.GPIT,
+                    },
+                    opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -888,7 +909,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(default(CatalogueItem));
 
-            var actual = await controller.EditContact(itemId, contactId);
+            var actual = await controller.EditContact(SolutionType.GPIT, itemId, contactId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -911,7 +932,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solution.ServiceLevelAgreement.Contacts.Clear();
 
-            var actual = await controller.EditContact(itemId, contactId);
+            var actual = await controller.EditContact(SolutionType.GPIT, itemId, contactId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -933,9 +954,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedContact = solution.ServiceLevelAgreement.Contacts.FirstOrDefault();
 
-            var expectedModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(solution.CatalogueItem, expectedContact, solution.ServiceLevelAgreement);
-
-            var actual = await controller.EditContact(itemId, expectedContact.Id);
+            var expectedModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(solution.CatalogueItem, expectedContact, solution.ServiceLevelAgreement)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
+            var actual = await controller.EditContact(SolutionType.GPIT, itemId, expectedContact.Id);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -962,13 +985,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             {
                 From = DateTime.UtcNow,
                 Until = DateTime.UtcNow,
+                SolutionType = SolutionType.GPIT,
             };
 
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(solution.CatalogueItem);
 
             var expectedContact = solution.ServiceLevelAgreement.Contacts.FirstOrDefault();
 
-            var actual = await controller.EditContact(itemId, expectedContact.Id, addModel);
+            var actual = await controller.EditContact(SolutionType.GPIT, itemId, expectedContact.Id, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
@@ -986,9 +1010,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(default(CatalogueItem));
 
-            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
-
-            var actual = await controller.EditContact(itemId, contactId, addModel);
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel()
+            {
+                SolutionType = SolutionType.GPIT,
+            };
+            var actual = await controller.EditContact(SolutionType.GPIT, itemId, contactId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -1006,9 +1032,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(solution.CatalogueItem);
 
-            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
-
-            var actual = await controller.EditContact(itemId, contactId, addModel);
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel()
+            {
+                SolutionType = SolutionType.GPIT,
+            };
+            var actual = await controller.EditContact(SolutionType.GPIT, itemId, contactId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -1024,7 +1052,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("Test", "A test error");
 
-            var actual = await controller.EditContact(itemId, contactId, new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel());
+            var actual = await controller.EditContact(
+                SolutionType.GPIT,
+                itemId,
+                contactId,
+                new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel()
+                {
+                    SolutionType = SolutionType.GPIT,
+                });
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -1032,9 +1067,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = actual.As<ViewResult>().Model.As<WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel>();
             model.Should()
                     .BeEquivalentTo(
-                    new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(),
-                    opt => opt
-                        .Excluding(m => m.BackLink));
+                    new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel()
+                    {
+                        SolutionType = SolutionType.GPIT,
+                    },
+                    opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -1047,7 +1084,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(default(CatalogueItem));
 
-            var actual = await controller.DeleteContact(itemId, contactId);
+            var actual = await controller.DeleteContact(SolutionType.GPIT, itemId, contactId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -1067,7 +1104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solution.ServiceLevelAgreement.Contacts.Clear();
 
-            var actual = await controller.DeleteContact(itemId, contactId);
+            var actual = await controller.DeleteContact(SolutionType.GPIT, itemId, contactId);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -1089,9 +1126,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedContact = solution.ServiceLevelAgreement.Contacts.FirstOrDefault();
 
-            var expectedModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(solution.CatalogueItem, expectedContact);
-
-            var actual = await controller.DeleteContact(itemId, expectedContact.Id);
+            var expectedModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel(solution.CatalogueItem, expectedContact)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
+            var actual = await controller.DeleteContact(SolutionType.GPIT, itemId, expectedContact.Id);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<ViewResult>();
@@ -1114,13 +1153,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId itemId,
             Solution solution)
         {
-            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
-
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel()
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(solution.CatalogueItem);
 
             var expectedContact = solution.ServiceLevelAgreement.Contacts.FirstOrDefault();
 
-            var actual = await controller.DeleteContact(itemId, expectedContact.Id, addModel);
+            var actual = await controller.DeleteContact(SolutionType.GPIT, itemId, expectedContact.Id, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<RedirectToActionResult>();
@@ -1138,9 +1179,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(default(CatalogueItem));
 
-            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
-
-            var actual = await controller.DeleteContact(itemId, contactId, addModel);
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel()
+            {
+                SolutionType = SolutionType.GPIT,
+            };
+            var actual = await controller.DeleteContact(SolutionType.GPIT, itemId, contactId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -1158,11 +1201,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(itemId).Returns(solution.CatalogueItem);
 
-            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel();
-
+            var addModel = new WebApp.Areas.Admin.Models.ServiceLevelAgreements.EditSLAContactModel()
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             solution.ServiceLevelAgreement.Contacts.Clear();
 
-            var actual = await controller.DeleteContact(itemId, contactId, addModel);
+            var actual = await controller.DeleteContact(SolutionType.GPIT, itemId, contactId, addModel);
 
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
@@ -1178,7 +1223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.AddServiceLevel(solutionId);
+            var result = await controller.AddServiceLevel(SolutionType.GPIT, solutionId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -1193,9 +1238,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var expectedModel = new AddEditServiceLevelModel(solution.CatalogueItem);
-
-            var result = await controller.AddServiceLevel(solution.CatalogueItemId);
+            var expectedModel = new AddEditServiceLevelModel(solution.CatalogueItem)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
+            var result = await controller.AddServiceLevel(SolutionType.GPIT, solution.CatalogueItemId);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -1210,7 +1257,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = await controller.AddServiceLevel(solutionId, model);
+            var result = await controller.AddServiceLevel(SolutionType.GPIT, solutionId, model);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -1226,7 +1273,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.AddServiceLevel(solutionId, model);
+            var result = await controller.AddServiceLevel(SolutionType.GPIT, solutionId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -1243,7 +1290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.AddServiceLevel(solution.CatalogueItemId, model);
+            var result = await controller.AddServiceLevel(SolutionType.GPIT, solution.CatalogueItemId, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Index));
@@ -1266,7 +1313,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditServiceLevel(solutionId, serviceLevelId);
+            var result = await controller.EditServiceLevel(SolutionType.GPIT, solutionId, serviceLevelId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -1284,7 +1331,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.EditServiceLevel(solution.CatalogueItemId, serviceLevelId);
+            var result = await controller.EditServiceLevel(SolutionType.GPIT, solution.CatalogueItemId, serviceLevelId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Level found for Id: {serviceLevelId}");
@@ -1303,11 +1350,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             serviceLevelAgreement.ServiceLevels.Add(serviceLevel);
             solution.ServiceLevelAgreement = serviceLevelAgreement;
 
-            var expectedModel = new AddEditServiceLevelModel(solution.CatalogueItem, serviceLevel);
-
+            var expectedModel = new AddEditServiceLevelModel(solution.CatalogueItem, serviceLevel)
+            {
+                SolutionType = SolutionType.GPIT,
+            };
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.EditServiceLevel(solution.CatalogueItemId, serviceLevel.Id);
+            var result = await controller.EditServiceLevel(SolutionType.GPIT, solution.CatalogueItemId, serviceLevel.Id);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -1323,7 +1372,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = await controller.EditServiceLevel(solutionId, serviceLevelId, model);
+            var result = await controller.EditServiceLevel(SolutionType.GPIT, solutionId, serviceLevelId, model);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -1340,7 +1389,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditServiceLevel(solutionId, serviceLevelId, model);
+            var result = await controller.EditServiceLevel(SolutionType.GPIT, solutionId, serviceLevelId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -1359,7 +1408,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.EditServiceLevel(solution.CatalogueItemId, serviceLevelId, model);
+            var result = await controller.EditServiceLevel(SolutionType.GPIT, solution.CatalogueItemId, serviceLevelId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Level found for Id: {serviceLevelId}");
@@ -1381,7 +1430,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.EditServiceLevel(solution.CatalogueItemId, serviceLevel.Id, model);
+            var result = await controller.EditServiceLevel(SolutionType.GPIT, solution.CatalogueItemId, serviceLevel.Id, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Index));
@@ -1405,7 +1454,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.DeleteServiceLevel(solutionId, serviceLevelId);
+            var result = await controller.DeleteServiceLevel(SolutionType.GPIT, solutionId, serviceLevelId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -1423,7 +1472,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.DeleteServiceLevel(solution.CatalogueItemId, serviceLevelId);
+            var result = await controller.DeleteServiceLevel(SolutionType.GPIT, solution.CatalogueItemId, serviceLevelId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Level found for Id: {serviceLevelId}");
@@ -1445,7 +1494,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.DeleteServiceLevel(solution.CatalogueItemId, serviceLevel.Id);
+            var result = await controller.DeleteServiceLevel(SolutionType.GPIT, solution.CatalogueItemId, serviceLevel.Id);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -1461,7 +1510,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = await controller.DeleteServiceLevel(solutionId, serviceLevelId, model);
+            var result = await controller.DeleteServiceLevel(SolutionType.GPIT, solutionId, serviceLevelId, model);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -1478,7 +1527,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.DeleteServiceLevel(solutionId, serviceLevelId, model);
+            var result = await controller.DeleteServiceLevel(SolutionType.GPIT, solutionId, serviceLevelId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -1497,7 +1546,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.DeleteServiceLevel(solution.CatalogueItemId, serviceLevelId, model);
+            var result = await controller.DeleteServiceLevel(SolutionType.GPIT, solution.CatalogueItemId, serviceLevelId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Service Level found for Id: {serviceLevelId}");
@@ -1519,7 +1568,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.DeleteServiceLevel(solution.CatalogueItemId, serviceLevel.Id, model);
+            var result = await controller.DeleteServiceLevel(SolutionType.GPIT, solution.CatalogueItemId, serviceLevel.Id, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Index));
@@ -1535,7 +1584,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditServiceLevelAgreementTypeConfirmation(solutionId);
+            var result = await controller.EditServiceLevelAgreementTypeConfirmation(SolutionType.GPIT, solutionId);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -1555,7 +1604,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.EditServiceLevelAgreementTypeConfirmation(solution.CatalogueItemId);
+            var result = await controller.EditServiceLevelAgreementTypeConfirmation(SolutionType.GPIT, solution.CatalogueItemId);
 
             result.As<ViewResult>().Should().NotBeNull();
             result.As<ViewResult>().ViewName.Should().BeNull();
@@ -1572,7 +1621,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             solutionsService.GetSolutionWithServiceLevelAgreements(solutionId).Returns(default(CatalogueItem));
 
-            var result = await controller.EditServiceLevelAgreementTypeConfirmation(solutionId, model);
+            var result = await controller.EditServiceLevelAgreementTypeConfirmation(SolutionType.GPIT, solutionId, model);
 
             result.As<BadRequestObjectResult>().Should().NotBeNull();
             result.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
@@ -1593,7 +1642,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            var result = await controller.EditServiceLevelAgreementTypeConfirmation(solution.CatalogueItemId, model);
+            var result = await controller.EditServiceLevelAgreementTypeConfirmation(SolutionType.GPIT, solution.CatalogueItemId, model);
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.EditServiceLevelAgreement));

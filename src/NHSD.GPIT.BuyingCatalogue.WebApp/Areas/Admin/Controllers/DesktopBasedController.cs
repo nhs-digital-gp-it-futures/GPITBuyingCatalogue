@@ -19,7 +19,7 @@ public sealed class DesktopBasedController(
     private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
 
     [HttpGet]
-    public async Task<IActionResult> Desktop(CatalogueItemId solutionId)
+    public async Task<IActionResult> Desktop(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -29,22 +29,23 @@ public sealed class DesktopBasedController(
         var applicationType = solution.Solution.EnsureAndGetApplicationType();
         var model = new DesktopBasedModel(solution)
         {
+            SolutionType = solutionType,
             BackLink = applicationType?.HasApplicationType(ApplicationType.Desktop) ?? false
-                       ? Url.Action(
-                           nameof(CatalogueSolutionsController.ApplicationType),
-                           typeof(CatalogueSolutionsController).ControllerName(),
-                           new { solutionId })
-                       : Url.Action(
-                           nameof(CatalogueSolutionsController.AddApplicationType),
-                           typeof(CatalogueSolutionsController).ControllerName(),
-                           new { solutionId }),
+                        ? Url.Action(
+                            nameof(CatalogueSolutionsController.ApplicationType),
+                            typeof(CatalogueSolutionsController).ControllerName(),
+                            new { solutionType, solutionId })
+                        : Url.Action(
+                            nameof(CatalogueSolutionsController.AddApplicationType),
+                            typeof(CatalogueSolutionsController).ControllerName(),
+                            new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
     [HttpGet("operating-systems")]
-    public async Task<IActionResult> OperatingSystems(CatalogueItemId solutionId)
+    public async Task<IActionResult> OperatingSystems(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -53,14 +54,18 @@ public sealed class DesktopBasedController(
 
         var model = new OperatingSystemsModel(solution)
         {
-            BackLink = Url.Action(nameof(Desktop), new { solutionId }),
+            SolutionType = solutionType,
+            BackLink = Url.Action(nameof(Desktop), new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
     [HttpPost("operating-systems")]
-    public async Task<IActionResult> OperatingSystems(CatalogueItemId solutionId, OperatingSystemsModel model)
+    public async Task<IActionResult> OperatingSystems(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        OperatingSystemsModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -76,11 +81,11 @@ public sealed class DesktopBasedController(
 
         await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-        return RedirectToAction(nameof(Desktop), new { solutionId });
+        return RedirectToAction(nameof(Desktop), new { solutionType, solutionId });
     }
 
     [HttpGet("connectivity")]
-    public async Task<IActionResult> Connectivity(CatalogueItemId solutionId)
+    public async Task<IActionResult> Connectivity(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -89,14 +94,18 @@ public sealed class DesktopBasedController(
 
         var model = new ConnectivityModel(solution)
         {
-            BackLink = Url.Action(nameof(Desktop), new { solutionId }),
+            SolutionType = solutionType,
+            BackLink = Url.Action(nameof(Desktop), new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
     [HttpPost("connectivity")]
-    public async Task<IActionResult> Connectivity(CatalogueItemId solutionId, ConnectivityModel model)
+    public async Task<IActionResult> Connectivity(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        ConnectivityModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -112,11 +121,11 @@ public sealed class DesktopBasedController(
 
         await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-        return RedirectToAction(nameof(Desktop), new { solutionId });
+        return RedirectToAction(nameof(Desktop), new { solutionType, solutionId });
     }
 
     [HttpGet("memory-and-storage")]
-    public async Task<IActionResult> MemoryAndStorage(CatalogueItemId solutionId)
+    public async Task<IActionResult> MemoryAndStorage(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -125,14 +134,18 @@ public sealed class DesktopBasedController(
 
         var model = new MemoryAndStorageModel(solution)
         {
-            BackLink = Url.Action(nameof(Desktop), new { solutionId }),
+            SolutionType = solutionType,
+            BackLink = Url.Action(nameof(Desktop), new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
     [HttpPost("memory-and-storage")]
-    public async Task<IActionResult> MemoryAndStorage(CatalogueItemId solutionId, MemoryAndStorageModel model)
+    public async Task<IActionResult> MemoryAndStorage(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        MemoryAndStorageModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -153,11 +166,11 @@ public sealed class DesktopBasedController(
 
         await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-        return RedirectToAction(nameof(Desktop), new { solutionId });
+        return RedirectToAction(nameof(Desktop), new { solutionType, solutionId });
     }
 
     [HttpGet("third-party-components")]
-    public async Task<IActionResult> ThirdPartyComponents(CatalogueItemId solutionId)
+    public async Task<IActionResult> ThirdPartyComponents(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -166,14 +179,18 @@ public sealed class DesktopBasedController(
 
         var model = new ThirdPartyComponentsModel(solution)
         {
-            BackLink = Url.Action(nameof(Desktop), new { solutionId }),
+            SolutionType = solutionType,
+            BackLink = Url.Action(nameof(Desktop), new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
     [HttpPost("third-party-components")]
-    public async Task<IActionResult> ThirdPartyComponents(CatalogueItemId solutionId, ThirdPartyComponentsModel model)
+    public async Task<IActionResult> ThirdPartyComponents(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        ThirdPartyComponentsModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -192,11 +209,11 @@ public sealed class DesktopBasedController(
 
         await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-        return RedirectToAction(nameof(Desktop), new { solutionId });
+        return RedirectToAction(nameof(Desktop), new { solutionType, solutionId });
     }
 
     [HttpGet("hardware-requirements")]
-    public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId)
+    public async Task<IActionResult> HardwareRequirements(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -205,14 +222,18 @@ public sealed class DesktopBasedController(
 
         var model = new HardwareRequirementsModel(solution)
         {
-            BackLink = Url.Action(nameof(Desktop), new { solutionId }),
+            SolutionType = solutionType,
+            BackLink = Url.Action(nameof(Desktop), new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
     [HttpPost("hardware-requirements")]
-    public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId, HardwareRequirementsModel model)
+    public async Task<IActionResult> HardwareRequirements(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        HardwareRequirementsModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -228,11 +249,11 @@ public sealed class DesktopBasedController(
 
         await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-        return RedirectToAction(nameof(Desktop), new { solutionId });
+        return RedirectToAction(nameof(Desktop), new { solutionType, solutionId });
     }
 
     [HttpGet("additional-information")]
-    public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId)
+    public async Task<IActionResult> AdditionalInformation(SolutionType solutionType, CatalogueItemId solutionId)
     {
         var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -241,14 +262,18 @@ public sealed class DesktopBasedController(
 
         var model = new AdditionalInformationModel(solution)
         {
-            BackLink = Url.Action(nameof(Desktop), new { solutionId }),
+            SolutionType = solutionType,
+            BackLink = Url.Action(nameof(Desktop), new { solutionType, solutionId }),
         };
 
         return View(model);
     }
 
     [HttpPost("additional-information")]
-    public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId, AdditionalInformationModel model)
+    public async Task<IActionResult> AdditionalInformation(
+        SolutionType solutionType,
+        CatalogueItemId solutionId,
+        AdditionalInformationModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -264,6 +289,6 @@ public sealed class DesktopBasedController(
 
         await solutionsService.SaveApplicationType(solutionId, applicationType);
 
-        return RedirectToAction(nameof(Desktop), new { solutionId });
+        return RedirectToAction(nameof(Desktop), new { solutionType, solutionId });
     }
 }

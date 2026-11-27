@@ -13,5 +13,9 @@
         public string CurrentPageUrl { get; set; }
 
         public string SearchText { get; set; }
+
+        public bool? HideLabel { get; set; }
+
+        public string PlaceholderText { get; set; }
     }
 }

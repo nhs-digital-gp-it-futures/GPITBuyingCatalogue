@@ -44,6 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans
 
         public string SolutionName { get; init; }
 
+        public required SolutionType SolutionType { get; init; }
+
         public CatalogueItemId SolutionId { get; init; }
 
         public string SelectedStandard { get; init; }

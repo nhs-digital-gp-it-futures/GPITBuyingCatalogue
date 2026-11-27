@@ -12,4 +12,6 @@ public class DataProcessingInformationModel : NavBaseModel
     }
 
     public Solution Solution { get; set; }
+
+    public required SolutionType SolutionType { get; set; }
 }

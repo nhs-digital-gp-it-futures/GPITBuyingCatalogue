@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             [Frozen] CatalogueItem catalogueItem,
             HostingTypeSectionModel expected)
         {
-            var actual = new HostingTypeSectionModel(catalogueItem);
+            var actual = new HostingTypeSectionModel(catalogueItem) { SolutionType = SolutionType.GPIT };
 
             actual.SolutionId.Should().BeEquivalentTo(expected.SolutionId);
             actual.SolutionName.Should().BeEquivalentTo(expected.SolutionName);
@@ -24,7 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new HostingTypeSectionModel(null));
+            var actual = Assert.Throws<ArgumentNullException>(()
+                => new HostingTypeSectionModel(null) { SolutionType = SolutionType.GPIT });
 
             actual.ParamName.Should().Be("catalogueItem");
         }

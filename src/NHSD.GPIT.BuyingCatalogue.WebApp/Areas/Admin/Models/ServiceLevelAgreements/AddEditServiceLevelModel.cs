@@ -31,6 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
             CreditsApplied = serviceLevel.ServiceCredits;
         }
 
+        public required SolutionType SolutionType { get; init; }
+
         public CatalogueItemId SolutionId { get; init; }
 
         public string SolutionName { get; init; }

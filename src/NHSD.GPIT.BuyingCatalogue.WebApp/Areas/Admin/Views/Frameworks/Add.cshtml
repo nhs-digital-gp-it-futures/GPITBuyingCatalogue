@@ -1,4 +1,6 @@
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels.AddEditFrameworkModel
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels
+
+@model AddEditFrameworkModel
 
 @{
     var titleModel = Model.GetPageTitle();
@@ -25,7 +27,6 @@
                                  label-hint="This is the maximum length of time a call-off agreement can run for under this contracting vehicle."
                                  Suffix="months" />
             <br />
-
             <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="What type of funding can be used?"
                                      label-hint="Select all that apply."
@@ -42,7 +43,16 @@
                 </nhs-checkbox-container>
             </nhs-fieldset-form-label>
             <br />
-
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="What type of solutions are associated with this contracting vehicle?"
+                                     label-hint="Select one option."
+                                     size="Small">
+                <nhs-radio-buttons asp-for="SolutionType"
+                                   values="AddEditFrameworkModel.SolutionTypeOptions.Cast<object>()"
+                                   value-name="Value"
+                                   display-name="Text" />
+            </nhs-fieldset-form-label>
+            <br />
             <nhs-submit-button />
             <br />
             <p class="nhsuk-body">

@@ -1,4 +1,5 @@
 ﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
@@ -12,5 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         CatalogueItemId SolutionId { get; set; }
 
         string SolutionName { get; set; }
+
+        SolutionType SolutionType { get; set; }
     }
 }
