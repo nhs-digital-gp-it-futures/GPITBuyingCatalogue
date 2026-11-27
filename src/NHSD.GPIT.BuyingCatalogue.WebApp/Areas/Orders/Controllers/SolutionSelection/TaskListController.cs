@@ -105,7 +105,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 await itemRecipientDisplayNumberService.SetOrderItemRecipientDisplayNumbers(callOffId, internalOrgId);
             }
 
-            return LocalRedirect(onwardLink);
+            if (!string.IsNullOrWhiteSpace(onwardLink) && Url.IsLocalUrl(onwardLink))
+                return LocalRedirect(onwardLink);
+
+            return RedirectToAction(nameof(TaskList), new { internalOrgId, callOffId });
         }
     }
 }
