@@ -17,6 +17,8 @@ public static class SelectInteroperabilityCriteriaModelTests
         Competition competition,
         List<Integration> integrations)
     {
+        competition.Name = "Integrations";
+
         var model = new SelectInteroperabilityCriteriaModel(competition, integrations);
 
         model.CompetitionName.Should().Be("Integrations");
