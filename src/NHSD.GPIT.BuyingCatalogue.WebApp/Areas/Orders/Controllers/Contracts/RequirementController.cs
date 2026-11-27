@@ -37,8 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var model = new RequirementModel(contract?.ContractBilling)
             {
                 BackLink = Url.Action(
-                    nameof(ContractBillingController.Index),
-                    typeof(ContractBillingController).ControllerName(),
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
                     new { internalOrgId, callOffId }),
                 CallOffId = callOffId,
                 InternalOrgId = internalOrgId,
