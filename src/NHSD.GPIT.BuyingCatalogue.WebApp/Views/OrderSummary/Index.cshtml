@@ -570,8 +570,11 @@
                                         <tbody>
                                             @foreach (var item in Model.BespokeBilling.ContractBillingItems)
                                             {
+                                                var itemName = item.OrderItem.Parent is not null
+                                                    ? $"{item.OrderItem.Parent.CatalogueItem.Name} - {item.OrderItem.CatalogueItem.Name}"
+                                                    : item.OrderItem.CatalogueItem.Name;
                                                 <tr>
-                                                    <td>@($"{item.OrderItem.Parent.CatalogueItem.Name} - {item.OrderItem.CatalogueItem.Name}")</td>
+                                                    <td>@itemName</td>
                                                     <td>@item.Milestone.Title</td>
                                                     <td>@item.Milestone.PaymentTrigger</td>
                                                 </tr>
@@ -600,8 +603,11 @@
                                         <tbody>
                                             @foreach (var item in Model.BespokeBilling.Requirements)
                                             {
+                                                var itemName = item.OrderItem.Parent is not null
+                                                    ? $"{item.OrderItem.Parent.CatalogueItem.Name} - {item.OrderItem.CatalogueItem.Name}"
+                                                    : item.OrderItem.CatalogueItem.Name;
                                                 <tr>
-                                                    <td>@($"{item.OrderItem.Parent.CatalogueItem.Name} - {item.OrderItem.CatalogueItem.Name}")</td>
+                                                    <td>@itemName</td>
                                                     <td>@item.Details</td>
                                                     <td>@item.RequiresExplanation.ToYesNo()</td>
                                                 </tr>
