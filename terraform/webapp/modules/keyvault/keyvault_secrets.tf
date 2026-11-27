@@ -29,7 +29,7 @@ resource "azurerm_key_vault_secret" "sqladminusername" {
     architecture = "new"
   }
 
-  depends_on = [azurerm_key_vault_access_policy.keyvault_pipeline_access]
+  depends_on = [azurerm_role_assignment.keyvault_pipeline_access]
 }
 
 resource "azurerm_key_vault_secret" "sqladminpassword" {
@@ -43,5 +43,5 @@ resource "azurerm_key_vault_secret" "sqladminpassword" {
     architecture = "new"
   }
 
-  depends_on = [azurerm_key_vault_access_policy.keyvault_pipeline_access]
+  depends_on = [azurerm_role_assignment.keyvault_pipeline_access]
 }
